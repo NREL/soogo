@@ -41,6 +41,14 @@ The Black-box optimization package currently supports the following algorithms:
 
 ## Installation
 
+Use PyPI to install this package:
+
+```sh
+pip install blackboxoptim
+```
+
+See other installation methods below.
+
 ### Binaries
 
 The binaries for the latest version are available at https://github.com/NREL/blackboxoptim/releases/latest. They can be installed through standard installation, e.g.,

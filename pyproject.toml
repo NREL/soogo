@@ -15,7 +15,7 @@ classifiers = [
 keywords = ["optimization", "surrogate", "black-box", "RBF", "GP"]
 requires-python = ">=3.9"
 dependencies = [
-    "numpy<2.0.0",
+    "numpy",
     "scipy",
     "pymoo",
     "scikit-learn",
