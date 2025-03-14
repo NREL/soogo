@@ -15,16 +15,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-__authors__ = [
-    "Weslley S. Pereira",
-]
+__authors__ = ["Weslley S. Pereira"]
 __contact__ = "weslley.dasilvapereira@nrel.gov"
 __maintainer__ = "Weslley S. Pereira"
 __email__ = "weslley.dasilvapereira@nrel.gov"
-__credits__ = [
-    "Weslley S. Pereira",
-]
-__version__ = "1.0.1"
+__credits__ = ["Weslley S. Pereira"]
 __deprecated__ = False
 
 import copy

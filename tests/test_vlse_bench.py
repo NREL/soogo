@@ -20,7 +20,6 @@ __contact__ = "weslley.dasilvapereira@nrel.gov"
 __maintainer__ = "Weslley S. Pereira"
 __email__ = "weslley.dasilvapereira@nrel.gov"
 __credits__ = ["Weslley S. Pereira"]
-__version__ = "1.0.1"
 __deprecated__ = False
 
 from copy import deepcopy
