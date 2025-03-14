@@ -5,7 +5,7 @@
 groups = ["default", "doc", "example", "lint", "test"]
 strategy = ["cross_platform", "inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:ad05939dafa2229042b08541549f3e84a57ebb6b255d5e24e866072be2fd5623"
+content_hash = "sha256:3671666aad20e07a913a3304af98252981f33cf468c1e25465a92f8fe02a09d4"
 
 [[metadata.targets]]
 requires_python = ">=3.9"
@@ -1952,7 +1952,7 @@ name = "ptyprocess"
 version = "0.7.0"
 summary = "Run a subprocess in a pseudo terminal"
 groups = ["example"]
-marker = "sys_platform != \"win32\" or os_name != \"nt\""
+marker = "os_name != \"nt\" or sys_platform != \"win32\""
 files = [
     {file = "ptyprocess-0.7.0-py2.py3-none-any.whl", hash = "sha256:4b41f3967fce3af57cc7e94b888626c18bf37a083e3651ca8feeb66d492fef35"},
     {file = "ptyprocess-0.7.0.tar.gz", hash = "sha256:5c5d0a3b48ceee0b48485e0c26037c0acd7d29765ca3fbb5cb3831d347423220"},

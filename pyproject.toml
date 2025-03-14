@@ -1,6 +1,6 @@
 [project]
 name = "blackboxoptim"
-version = "1.0.0"
+version = "1.0.1"
 description = "Solve black-box optimization problems using surrogate-based algorithms"
 authors = [
     {name = "Weslley da Silva Pereira", email = "weslley.dasilvapereira@nrel.gov"},

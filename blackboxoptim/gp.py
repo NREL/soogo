@@ -24,7 +24,7 @@ __email__ = "weslley.dasilvapereira@nrel.gov"
 __credits__ = [
     "Weslley S. Pereira",
 ]
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 __deprecated__ = False
 
 import copy
