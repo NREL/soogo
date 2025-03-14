@@ -1,3 +1,8 @@
+[![Python39](https://img.shields.io/badge/python-3.9-green.svg)](https://github.com/NREL/blackboxoptim/actions/workflows/python-package.yml)
+[![Python310](https://img.shields.io/badge/python-3.10-green.svg)](https://github.com/NREL/blackboxoptim/actions/workflows/python-package.yml)
+[![Python311](https://img.shields.io/badge/python-3.11-green.svg)](https://github.com/NREL/blackboxoptim/actions/workflows/python-package.yml)
+[![Python312](https://img.shields.io/badge/python-3.12-green.svg)](https://github.com/NREL/blackboxoptim/actions/workflows/python-package.yml)
+
 # Black-box Opt
 
 Solve black-box optimization problems using surrogate-based algorithms.
