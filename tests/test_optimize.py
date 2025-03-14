@@ -24,7 +24,7 @@ __deprecated__ = False
 
 import numpy as np
 import pytest
-from blackboxoptim.optimize import (
+from blackboxoptim import (
     OptimizeResult,
     bayesian_optimization,
     multistart_msrs,

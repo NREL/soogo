@@ -22,7 +22,7 @@ __email__ = "weslley.dasilvapereira@nrel.gov"
 __credits__ = ["Juliane Mueller", "Weslley S. Pereira"]
 __deprecated__ = False
 
-from blackboxoptim.optimize import gosac
+from blackboxoptim import gosac
 from blackboxoptim.rbf import RbfModel
 
 import numpy as np

@@ -15,7 +15,22 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-__all__ = ["acquisition", "optimize", "sampling", "rbf", "gp"]
+__all__ = [
+    "acquisition",
+    "optimize",
+    "sampling",
+    "rbf",
+    "gp",
+    "surrogate_optimization",
+    "multistart_msrs",
+    "dycors",
+    "cptv",
+    "cptvl",
+    "socemo",
+    "gosac",
+    "bayesian_optimization",
+    "OptimizeResult",
+]
 __version__ = "1.0.1"
 
 from . import acquisition
@@ -23,3 +38,16 @@ from . import optimize
 from . import sampling
 from . import rbf
 from . import gp
+
+# Expose optimization routines
+from .optimize import (
+    surrogate_optimization,
+    multistart_msrs,
+    dycors,
+    cptv,
+    cptvl,
+    socemo,
+    gosac,
+    bayesian_optimization,
+    OptimizeResult,
+)
