@@ -1,6 +1,7 @@
-"""Compare different learning strategies for RBF surrogate optimization."""
+"""Example with optimization and plot."""
 
 # Copyright (c) 2025 Alliance for Sustainable Energy, LLC
+# Copyright (C) 2014 Cornell University
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,11 +16,21 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-__authors__ = ["Weslley S. Pereira"]
+__authors__ = [
+    "Juliane Mueller",
+    "Christine A. Shoemaker",
+    "Haoyu Jia",
+    "Weslley S. Pereira",
+]
 __contact__ = "weslley.dasilvapereira@nrel.gov"
 __maintainer__ = "Weslley S. Pereira"
 __email__ = "weslley.dasilvapereira@nrel.gov"
-__credits__ = ["Weslley S. Pereira"]
+__credits__ = [
+    "Juliane Mueller",
+    "Christine A. Shoemaker",
+    "Haoyu Jia",
+    "Weslley S. Pereira",
+]
 __deprecated__ = False
 
 
@@ -32,6 +43,7 @@ import matplotlib.pyplot as plt
 from blackboxoptim import rbf, optimize, sampling
 from blackboxoptim.acquisition import (
     WeightedAcquisition,
+    TargetValueAcquisition,
     AcquisitionFunction,
     MinimizeSurrogate,
 )
@@ -45,31 +57,36 @@ def read_and_run(
     Ntrials: int = 0,
     batchSize: int = 0,
     rbf_type: rbf.RbfKernel = rbf.RbfKernel.CUBIC,
-    filter: rbf.RbfFilter = rbf.MedianLpfFilter(),
+    PlotResult: bool = True,
     optim_func=optimize.multistart_msrs,
     seeds=None,
 ) -> list[optimize.OptimizeResult]:
-    """Perform the optimization, save the solution and plot.
-
-    If PlotResult is True, it also plots the results and saves the plot to
-    "RBFPlot.png".
+    """Perform the optimization and plot the solution if asked.
 
     Parameters
     ----------
     data_file : str
         Path for the data file.
-    sampler : sampling.NormalSampler, optional
-        Sampler to be used.
-    weightpattern : list[float], optional
-        List of weights for the weighted RBF.
+    acquisitionFunc : blackboxoptim.acquisition.AcquisitionFunction, optional
+        Sampler to be used. Default: None, i.e., defined by the optimizer.
     maxeval : int, optional
         Maximum number of allowed function evaluations per trial.
+        Default: 0, i.e., defined by the :func:`check_set_parameters()`.
     Ntrials : int, optional
         Number of trials.
+        Default: 0, i.e., defined by the :func:`check_set_parameters()`.
     batchSize : int, optional
         Number of new sample points per step of the optimization algorithm.
+        Default: 0, i.e., defined by the :func:`check_set_parameters()`.
     rbf_type : rbf.RbfKernel, optional
-        Type of RBF to be used.
+        Type of RBF kernel to be used. Default rbf.RbfKernel.CUBIC.
+    PlotResult : bool, optional
+        If Trur, plot the results. Default: False.
+    optim_func : optional
+        Optimizer to be used. Default :func:`blackboxoptim.multistart_msrs()`.
+    seeds: optional
+        Sequence of random seeds to be used. One per trial.
+        Default: None, defined inside this function.
 
     Returns
     -------
@@ -94,24 +111,10 @@ def read_and_run(
         np.random.seed(seeds[j])
 
         # Create empty RBF model
-        rbfModel = rbf.RbfModel(rbf_type, data.iindex, filter=filter)
+        rbfModel = rbf.RbfModel(
+            rbf_type, data.iindex, filter=rbf.MedianLpfFilter()
+        )
         acquisitionFuncIter = deepcopy(acquisitionFunc)
-
-        # # Uncomment to compare with Surrogates.jl
-        # rbfModel.update_xtrain(
-        #     np.array(
-        #         [
-        #             [0.3125, 0.8125, 0.8125],
-        #             [0.6875, 0.0625, 0.4375],
-        #             [0.4375, 0.5625, 0.6875],
-        #             [0.9375, 0.6875, 0.3125],
-        #             [0.5625, 0.3125, 0.5625],
-        #             [0.0625, 0.9375, 0.1875],
-        #             [0.8125, 0.1875, 0.9375],
-        #             [0.1875, 0.4375, 0.0625],
-        #         ]
-        #     )
-        # )
 
         # Call the surrogate optimization function
         if (
@@ -149,16 +152,23 @@ def read_and_run(
         optres.append(opt)
     ## End Optimization
 
+    ## Plot Result
+    if PlotResult:
+        plot_results(optres, "RBFPlot.png")
+    ## End Plot Result
+
     return optres
 
 
-def get_meanPerNEval(optres: list[optimize.OptimizeResult]) -> np.ndarray:
-    """Get mean of the best function values per number of function evaluations.
+def plot_results(optres: list[optimize.OptimizeResult], filename: str):
+    """Plot the results.
 
     Parameters
     ----------
     optres: list[optimize.OptimizeResult]
         List of optimize.OptimizeResult objects with the optimization results.
+    filename : str
+        Path for the plot file.
     """
     Ntrials = len(optres)
     maxeval = min([len(optres[i].fsample) for i in range(Ntrials)])
@@ -173,11 +183,22 @@ def get_meanPerNEval(optres: list[optimize.OptimizeResult]) -> np.ndarray:
                 Y_cur_best[j, ii] = Y_cur_best[j - 1, ii]
     # compute means over matrix of current best values (Y_cur_best has dimension
     # maxeval x Ntrials)
-    return np.mean(Y_cur_best, axis=1)
+    Ymean = np.mean(Y_cur_best, axis=1)
+
+    plt.rcParams.update({"font.size": 16})
+
+    plt.plot(np.arange(1, maxeval + 1), Ymean)
+    plt.xlabel("Number of function evaluations")
+    plt.ylabel("Average best function value")
+    plt.yscale("log")
+    plt.grid(True, linestyle="dashed")
+    plt.draw()
+    # show()
+    plt.savefig(filename)
 
 
 def read_check_data_file(data_file: str) -> Data:
-    """Read and check the data file.
+    """Read and check the data file for correctness.
 
     Parameters
     ----------
@@ -207,7 +228,7 @@ def check_set_parameters(
     Ntrials: int = 0,
     batchSize: int = 0,
 ):
-    """Check and set the parameters for the optimization.
+    """Check and set the parameters for the optimization if not provided.
 
     Parameters
     ----------
@@ -266,13 +287,15 @@ def check_set_parameters(
     return maxeval, Ntrials, batchSize
 
 
-if __name__ == "__main__":
-    comparisonList = [3, 5, 6, 7, 8]
-    optresList = {}
-    strategyName = []
+def main(config: int) -> list[optimize.OptimizeResult]:
+    """
+    Main workflow
 
-    if 1 in comparisonList:
-        optresList[1] = read_and_run(
+    :param int config: Defines problem to solve and optimizer to use.
+    :return: List of optimization results.
+    """
+    if config == 1:
+        optres = read_and_run(
             data_file="datainput_Branin",
             acquisitionFunc=WeightedAcquisition(
                 sampling.NormalSampler(
@@ -287,13 +310,13 @@ if __name__ == "__main__":
                 ],
                 maxeval=200,
             ),
-            filter=rbf.MedianLpfFilter(),
             maxeval=200,
             Ntrials=3,
             batchSize=1,
+            PlotResult=True,
         )
-    if 2 in comparisonList:
-        optresList[2] = read_and_run(
+    elif config == 2:
+        optres = read_and_run(
             data_file="datainput_hartman3",
             acquisitionFunc=WeightedAcquisition(
                 sampling.NormalSampler(
@@ -306,25 +329,24 @@ if __name__ == "__main__":
                 [0.3, 0.5, 0.8, 0.95],
                 maxeval=200,
             ),
-            filter=rbf.MedianLpfFilter(),
             maxeval=200,
             Ntrials=1,
             batchSize=1,
+            PlotResult=True,
         )
-    if 3 in comparisonList:
-        strategyName.append("DYCORS")
-        optresList[3] = read_and_run(
+    elif config == 3:
+        optres = read_and_run(
             data_file="datainput_BraninWithInteger",
             acquisitionFunc=None,
-            filter=rbf.MedianLpfFilter(),
             maxeval=100,
             Ntrials=3,
             batchSize=1,
             rbf_type=rbf.RbfKernel.THINPLATE,
+            PlotResult=True,
             optim_func=optimize.dycors,
         )
-    if 4 in comparisonList:
-        optresList[4] = read_and_run(
+    elif config == 4:
+        optres = read_and_run(
             data_file="datainput_BraninWithInteger",
             acquisitionFunc=WeightedAcquisition(
                 sampling.NormalSampler(
@@ -337,69 +359,79 @@ if __name__ == "__main__":
                 [0.3, 0.5, 0.8, 0.95],
                 maxeval=100,
             ),
-            filter=rbf.MedianLpfFilter(),
             maxeval=100,
             Ntrials=3,
             batchSize=1,
             rbf_type=rbf.RbfKernel.THINPLATE,
+            PlotResult=True,
             optim_func=optimize.surrogate_optimization,
         )
-    if 5 in comparisonList:
-        strategyName.append("TargetValue")
-        optresList[5] = read_and_run(
+    elif config == 5:
+        optres = read_and_run(
             data_file="datainput_BraninWithInteger",
-            filter=rbf.MedianLpfFilter(),
+            acquisitionFunc=TargetValueAcquisition(),
             maxeval=100,
             Ntrials=3,
             batchSize=1,
             rbf_type=rbf.RbfKernel.THINPLATE,
+            PlotResult=True,
             optim_func=optimize.surrogate_optimization,
         )
-    if 6 in comparisonList:
-        strategyName.append("CPTV")
-        optresList[6] = read_and_run(
+    elif config == 6:
+        optres = read_and_run(
             data_file="datainput_BraninWithInteger",
-            filter=rbf.MedianLpfFilter(),
             maxeval=100,
             Ntrials=3,
             batchSize=1,
             rbf_type=rbf.RbfKernel.THINPLATE,
+            PlotResult=True,
             optim_func=optimize.cptv,
         )
-    if 7 in comparisonList:
-        strategyName.append("CPTVl")
-        optresList[7] = read_and_run(
+    elif config == 7:
+        optres = read_and_run(
             data_file="datainput_BraninWithInteger",
-            filter=rbf.MedianLpfFilter(),
             maxeval=100,
             Ntrials=3,
             batchSize=1,
             rbf_type=rbf.RbfKernel.THINPLATE,
+            PlotResult=True,
             optim_func=optimize.cptvl,
         )
-    if 8 in comparisonList:
-        strategyName.append("MinimizeSurrogate")
-        optresList[8] = read_and_run(
+    elif config == 8:
+        optres = read_and_run(
             data_file="datainput_BraninWithInteger",
             acquisitionFunc=MinimizeSurrogate(100, 0.005 * sqrt(2)),
-            filter=rbf.MedianLpfFilter(),
             maxeval=100,
             Ntrials=3,
             batchSize=10,
             rbf_type=rbf.RbfKernel.THINPLATE,
+            PlotResult=True,
             optim_func=optimize.surrogate_optimization,
         )
+    else:
+        raise ValueError("Invalid configuration number.")
 
-    ## Plot Results
-    plt.rcParams.update({"font.size": 16})
-    j = 0
-    for i in comparisonList:
-        Ymean = get_meanPerNEval(optresList[i])
-        plt.plot(np.arange(1, Ymean.size + 1), Ymean, label=strategyName[j])
-        j += 1
-    plt.xlabel("Number of function evaluations")
-    plt.ylabel("Average best function value")
-    plt.legend()
-    plt.yscale("log")
-    plt.draw()
-    plt.savefig("RBFComparePlot.png")
+    return optres
+
+
+if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser(
+        description="Run the optimization and plot the results."
+    )
+    parser.add_argument(
+        "--config",
+        type=int,
+        help="Configuration number to be used.",
+        default=1,
+    )
+    args = parser.parse_args()
+
+    optres = main(args.config)
+    Ntrials = len(optres)
+
+    print("BestValues", [optres[i].fx for i in range(Ntrials)])
+    print("BestPoints", [optres[i].x for i in range(Ntrials)])
+    print("NumFuncEval", [optres[i].nfev for i in range(Ntrials)])
+    print("NumberOfIterations", [optres[i].nit for i in range(Ntrials)])

@@ -1,0 +1,5 @@
+# Legacy optimization programs
+
+This example adapts code in the first version of the code basis before the refactoring. The code here presented is complimentary to [../optimization.ipynb](../optimization.ipynb).
+
+There are two main Python scripts: `optimization_program_1.py` and `optimization_program_2.py`. The first shows examples of different optimization problems "Branin", "Hartmann-3" and "Rastrigin", and configure optimizers to solve them. The second script shows the usage of the (local) SRS solver to optimize the "Hartmann-3" function. The problems are defined by the data structure in the file `data.py`. There are different files defining each of the problems. Mind that there are two files concerning the "Branin" problem, one uses continuous variables only and the other defines a mixed-integer optimization problem.

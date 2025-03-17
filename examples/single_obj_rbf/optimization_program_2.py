@@ -28,7 +28,7 @@ __credits__ = [
 ]
 __deprecated__ = False
 
-from optprogram1 import read_check_data_file
+from examples.single_obj_rbf.optimization_program_1 import read_check_data_file
 from blackboxoptim.rbf import RbfKernel, RbfModel, MedianLpfFilter
 from blackboxoptim import surrogate_optimization
 from blackboxoptim.sampling import NormalSampler, Sampler, SamplingStrategy
