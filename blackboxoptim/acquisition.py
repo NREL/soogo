@@ -46,8 +46,9 @@ from scipy.optimize import minimize, differential_evolution
 # Pymoo imports
 from pymoo.operators.survival.rank_and_crowding import RankAndCrowding
 from pymoo.core.mixed import MixedVariableGA, MixedVariableMating
+from pymoo.core.initialization import Initialization
 from pymoo.optimize import minimize as pymoo_minimize
-from pymoo.termination.max_gen import MaximumGenerationTermination
+from pymoo.core.population import Population
 
 # Local imports
 from .sampling import NormalSampler, Sampler, Mitchel91Sampler
@@ -165,7 +166,7 @@ class WeightedAcquisition(AcquisitionFunction):
     :param maxeval: Description
         Stored in :attr:`maxeval`.
 
-    .. attribute:: _neval
+    .. attribute:: neval
 
         Number of evaluations done so far. Used and updated in
         :meth:`acquire()`.
@@ -219,7 +220,7 @@ class WeightedAcquisition(AcquisitionFunction):
             self.weightpattern = [weightpattern]
         self.rtol = rtol
         self.maxeval = maxeval
-        self._neval = 0
+        self.neval = 0
 
     @staticmethod
     def argminscore(
@@ -237,6 +238,8 @@ class WeightedAcquisition(AcquisitionFunction):
           scaled to [0,1].
         - :math:`d_s(x)` is the minimum distance between x and the previously
           selected evaluation points, scaled to [-1,0].
+
+        Returns -1 if there is no feasible point.
 
         :param scaledvalue: Function values :math:`f_s(x)` scaled to [0, 1].
         :param dist: Minimum distance between a candidate point and previously
@@ -266,8 +269,7 @@ class WeightedAcquisition(AcquisitionFunction):
             print(
                 "Warning: all candidates are too close to already evaluated points. Choose a better tolerance."
             )
-            print(score)
-            exit()
+            return -1
 
         return int(iBest)
 
@@ -332,8 +334,12 @@ class WeightedAcquisition(AcquisitionFunction):
         selindex = self.argminscore(
             scaledvalue, dist, self.weightpattern[0], tol
         )
-        xselected[0, :] = x[selindex, :]
-        distselected[0, 0:m] = distx[selindex, :]
+        if selindex >= 0:
+            xselected[0, :] = x[selindex, :]
+            distselected[0, 0:m] = distx[selindex, :]
+        else:
+            return np.empty((0, dim)), np.empty((0, m))
+
         for ii in range(1, n):
             # compute distance of all candidate points to the previously selected
             # candidate point
@@ -346,7 +352,10 @@ class WeightedAcquisition(AcquisitionFunction):
                 self.weightpattern[ii % len(self.weightpattern)],
                 tol,
             )
-            xselected[ii, :] = x[selindex, :]
+            if selindex >= 0:
+                xselected[ii, :] = x[selindex, :]
+            else:
+                return xselected[0:ii], distselected[0:ii, 0 : m + ii]
 
             distselected[ii, 0:m] = distx[selindex, :]
             for j in range(ii - 1):
@@ -389,7 +398,7 @@ class WeightedAcquisition(AcquisitionFunction):
         **kwargs,
     ) -> np.ndarray:
         """Generate a number of candidates using the :attr:`sampler`. Then,
-        select n points that maximize the score.
+        select up to n points that maximize the score.
 
         When `sampler.strategy` is
         :attr:`blackboxoptim.sampling.SamplingStrategy.DDS` or
@@ -400,7 +409,7 @@ class WeightedAcquisition(AcquisitionFunction):
         :param surrogateModel: Surrogate model.
         :param sequence bounds: List with the limits [x_min,x_max] of each
             direction x in the space.
-        :param n: Number of points to be acquired.
+        :param n: Number of points requested.
         :param xbest: Best point so far. Used if :attr:`sampler` is an instance
             of :class:`blackboxoptim.sampling.NormalSampler`. If not provided,
             compute it based on the training data for the surrogate.
@@ -408,7 +417,6 @@ class WeightedAcquisition(AcquisitionFunction):
             If True,
             optimize over the continuous variables only. Used if :attr:`sampler`
             is an instance of :class:`blackboxoptim.sampling.NormalSampler`.
-        :return: n-by-dim matrix with the selected points.
         :return: m-by-dim matrix with the selected points, where m <= n.
         """
         dim = len(bounds)  # Dimension of the problem
@@ -441,10 +449,9 @@ class WeightedAcquisition(AcquisitionFunction):
                 coord = [i for i in range(dim)]
 
             # Compute probability in case DDS is used
-            if self.maxeval > 1:
-                assert self._neval < self.maxeval
+            if self.maxeval > 1 and self.neval < self.maxeval:
                 prob = min(20 / dim, 1) * (
-                    1 - (log(self._neval + 1) / log(self.maxeval))
+                    1 - (log(self.neval + 1) / log(self.maxeval))
                 )
             else:
                 prob = 1.0
@@ -475,7 +482,7 @@ class WeightedAcquisition(AcquisitionFunction):
         xselected, _ = self.minimize_weightedavg_fx_distx(
             x, cdist(x, sample), fx, n, self.tol(bounds)
         )
-        assert n == xselected.shape[0]
+        n = xselected.shape[0]
 
         # Rotate weight pattern
         self.weightpattern[:] = (
@@ -484,7 +491,7 @@ class WeightedAcquisition(AcquisitionFunction):
         )
 
         # Update number of evaluations
-        self._neval += n
+        self.neval += n
 
         return xselected
 
@@ -1176,7 +1183,6 @@ class ParetoFront(AcquisitionFunction):
                     eliminate_duplicates=BBOptDuplicateElimination()
                 ),
                 survival=RankAndCrowding(),
-                termination=MaximumGenerationTermination(100),
             )
             if mooptimizer is None
             else mooptimizer
@@ -1238,6 +1244,7 @@ class ParetoFront(AcquisitionFunction):
         bounds,
         n: int = 1,
         *,
+        nondominated=(),
         paretoFront=(),
         **kwargs,
     ) -> np.ndarray:
@@ -1249,6 +1256,7 @@ class ParetoFront(AcquisitionFunction):
         :param sequence bounds: List with the limits [x_min,x_max] of each
             direction x in the space.
         :param n: Number of points to be acquired.
+        :param nondominated: Nondominated set in the objective space.
         :param paretoFront: Pareto front in the objective space. If not
             provided, use the surrogate to compute it.
         :return: k-by-dim matrix with the selected points.
@@ -1257,10 +1265,15 @@ class ParetoFront(AcquisitionFunction):
         objdim = len(surrogateModels)
 
         if len(paretoFront) == 0:
-            paretoFront = find_pareto_front(surrogateModels[0].ytrain())
+            paretoFront = np.array(
+                [s.ytrain().flatten() for s in surrogateModels]
+            ).T
+            paretoFrontIdx = find_pareto_front(paretoFront)
+            paretoFront = paretoFront[paretoFrontIdx]
+            nondominated = surrogateModels[0].xtrain()[paretoFrontIdx]
 
         # If the Pareto front has only one point or is empty, there is no
-        # way to find a target value. Use random sampling instead.
+        # way to find a target value.
         if len(paretoFront) <= 1:
             return np.empty((0, dim))
 
@@ -1271,6 +1284,17 @@ class ParetoFront(AcquisitionFunction):
             self.oldTV = np.concatenate(
                 (self.oldTV.reshape(-1, objdim), [tau]), axis=0
             )
+
+            # Use non-dominated points if provided
+            if len(nondominated) > 0:
+                Xinit = np.array(
+                    [{i: x[i] for i in range(dim)} for x in nondominated]
+                )
+                self.mooptimizer.initialization = Initialization(
+                    Population.new("X", Xinit),
+                    repair=self.mooptimizer.repair,
+                    eliminate_duplicates=self.mooptimizer.eliminate_duplicates,
+                )
 
             # Find the Pareto-optimal solution set that minimizes dist(s(x),tau).
             # For discontinuous Pareto fronts in the original problem, such set
@@ -1286,14 +1310,31 @@ class ParetoFront(AcquisitionFunction):
             # If the Pareto-optimal solution set exists, define the sample point
             # that minimizes the L1 distance to the target value
             if res.X is not None:
-                idxs = np.sum(np.abs(res.F - tau), axis=1).argmin()
-                xselected = np.concatenate(
-                    (
-                        xselected,
-                        np.array([[res.X[idxs][i] for i in range(dim)]]),
-                    ),
-                    axis=0,
+                # Save X into an array
+                newX = np.array([[x[i] for i in range(dim)] for x in res.X])
+
+                # Transform the values of the optimization into a matrix
+                sx = np.array(
+                    [s(newX)[0].flatten() for s in surrogateModels]
+                ).T
+
+                # Find the values that are expected to be in the Pareto front
+                # of the original optimization problem
+                nondominated_idx = find_pareto_front(
+                    np.vstack((paretoFront, sx)), iStart=len(paretoFront)
                 )
+                nondominated_idx = [
+                    idx - len(paretoFront)
+                    for idx in nondominated_idx
+                    if idx >= len(paretoFront)
+                ]
+
+                # Add a point that is expected to be non-dominated
+                if len(nondominated_idx) > 0:
+                    idx = np.sum(res.F[nondominated_idx], axis=1).argmin()
+                    xselected = np.vstack(
+                        (xselected, newX[nondominated_idx][idx : idx + 1])
+                    )
 
         return xselected
 
@@ -1337,7 +1378,6 @@ class EndPointsParetoFront(AcquisitionFunction):
                 mating=MixedVariableMating(
                     eliminate_duplicates=BBOptDuplicateElimination()
                 ),
-                termination=MaximumGenerationTermination(100),
             )
             if optimizer is None
             else optimizer
@@ -1452,7 +1492,6 @@ class MinimizeMOSurrogate(AcquisitionFunction):
                     eliminate_duplicates=BBOptDuplicateElimination()
                 ),
                 survival=RankAndCrowding(),
-                termination=MaximumGenerationTermination(100),
             )
             if mooptimizer is None
             else mooptimizer
@@ -1595,13 +1634,18 @@ class CoordinatePerturbationOverNondominated(AcquisitionFunction):
             )
             # Choose points that are not too close to previously selected points
             if bestCandidates.size == 0:
-                bestCandidates = x.reshape(1, -1)
+                if x.size > 0:
+                    bestCandidates = x.reshape(1, -1)
             else:
                 distNeighborOfx = cdist(x, bestCandidates).min()
                 if distNeighborOfx >= tol:
                     bestCandidates = np.concatenate(
                         (bestCandidates, x), axis=0
                     )
+
+        # Return if no point was found
+        if bestCandidates.size == 0:
+            return bestCandidates
 
         # Eliminate points predicted to be dominated
         fnondominatedAndBestCandidates = np.concatenate(
@@ -1670,7 +1714,6 @@ class GosacSample(AcquisitionFunction):
                 mating=MixedVariableMating(
                     eliminate_duplicates=BBOptDuplicateElimination()
                 ),
-                termination=MaximumGenerationTermination(100),
             )
             if optimizer is None
             else optimizer

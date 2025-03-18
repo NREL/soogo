@@ -377,8 +377,8 @@ def surrogate_optimization(
         function at the initial guess.
     :param surrogateModel: Surrogate model to be used. If None is provided, a
         :class:`RbfModel` model with median low-pass filter is used.
-        On exit, if provided, the surrogate model is updated to represent the
-        one used in the last iteration.
+        On exit, if provided, the surrogate model the points used during the
+        optimization.
     :param acquisitionFunc: Acquisition function to be used. If None is
         provided, the :class:`TargetValueAcquisition` is used.
     :param batchSize: Number of new sample points to be generated per iteration.
@@ -412,7 +412,9 @@ def surrogate_optimization(
     assert dim > 0
 
     # Initialize optional variables
+    return_surrogate = True
     if surrogateModel is None:
+        return_surrogate = False
         surrogateModel = RbfModel(filter=MedianLpfFilter())
     if acquisitionFunc is None:
         acquisitionFunc = TargetValueAcquisition()
@@ -486,8 +488,17 @@ def surrogate_optimization(
             print("Time to acquire new sample points: %f s" % (tf - t0))
 
         # Compute f(xselected)
-        selectedBatchSize = xselected.shape[0]
-        ySelected = np.asarray(fun(xselected))
+        if len(xselected) > 0:
+            selectedBatchSize = xselected.shape[0]
+            ySelected = np.asarray(fun(xselected))
+        else:
+            ySelected = np.empty((0,))
+            out.nit = out.nit + 1
+            print(
+                "Acquisition function has failed to find a new sample! "
+                "Consider modifying it."
+            )
+            break
 
         # determine if significant improvement
         iSelectedBest = np.argmin(ySelected).item()
@@ -567,8 +578,16 @@ def surrogate_optimization(
             break
 
     # Update output
-    out.sample.resize(out.nfev, dim, refcheck=False)
-    out.fsample.resize(out.nfev, refcheck=False)
+    out.sample.resize(out.nfev, dim)
+    out.fsample.resize(out.nfev)
+
+    # Update surrogate model if it lives outside the function scope
+    if return_surrogate:
+        t0 = time.time()
+        surrogateModel.update(xselected, ySelected)
+        tf = time.time()
+        if disp:
+            print("Time to update surrogate model: %f s" % (tf - t0))
 
     return out
 
@@ -690,8 +709,8 @@ def dycors(
         function at the initial guess.
     :param surrogateModel: Surrogate model to be used. If None is provided, a
         :class:`RbfModel` model with median low-pass filter is used.
-        On exit, if provided, the surrogate model is updated to represent the
-        one used in the last iteration.
+        On exit, if provided, the surrogate model the points used during the
+        optimization.
     :param acquisitionFunc: Acquisition function to be used. If None is
         provided, the acquisition function is the one used in DYCORS-LMSRBF from
         Regis and Shoemaker (2012).
@@ -712,12 +731,8 @@ def dycors(
     dim = len(bounds)  # Dimension of the problem
     assert dim > 0
 
-    # Initialize optional variables
-    if surrogateModel is None:
-        surrogateModel = RbfModel(filter=MedianLpfFilter())
+    # Initialize acquisition function
     if acquisitionFunc is None:
-        m0 = surrogateModel.ntrain()
-        m_for_surrogate = surrogateModel.min_design_space_size(dim)
         acquisitionFunc = WeightedAcquisition(
             NormalSampler(
                 min(100 * dim, 5000),
@@ -735,7 +750,9 @@ def dycors(
         bounds,
         maxeval,
         x0y0,
-        surrogateModel=surrogateModel,
+        surrogateModel=surrogateModel
+        if surrogateModel is not None
+        else RbfModel(filter=MedianLpfFilter()),
         acquisitionFunc=acquisitionFunc,
         batchSize=batchSize,
         nSuccTol=3,
@@ -793,8 +810,8 @@ def cptv(
         function at the initial guess.
     :param surrogateModel: Surrogate model to be used. If None is provided, a
         :class:`RbfModel` model with median low-pass filter is used.
-        On exit, if provided, the surrogate model is updated to represent the
-        one used in the last iteration.
+        On exit, if provided, the surrogate model the points used during the
+        optimization.
     :param acquisitionFunc: Acquisition function to be used. If None is
         provided, a :class:`WeightedAcquisition` is used following what is
         described by Müller (2016).
@@ -828,8 +845,6 @@ def cptv(
     if consecutiveQuickFailuresTol == 0:
         consecutiveQuickFailuresTol = maxeval
     if acquisitionFunc is None:
-        m0 = surrogateModel.ntrain()
-        m_for_surrogate = surrogateModel.min_design_space_size(dim)
         acquisitionFunc = WeightedAcquisition(
             NormalSampler(
                 min(500 * dim, 5000),
@@ -889,11 +904,6 @@ def cptv(
             # Reset perturbation range
             acquisitionFunc.sampler.sigma = acquisitionFunc.sampler.sigma_max
 
-            surrogateModel.update(
-                out_local.sample[out_local.nfev - 1, :].reshape(1, -1),
-                out_local.fsample[out_local.nfev - 1 : out_local.nfev],
-            )
-
             if out_local.nit <= nFailTol:
                 consecutiveQuickFailures += 1
             else:
@@ -934,18 +944,13 @@ def cptv(
                 disp=disp,
             )
 
-            surrogateModel.update(
-                out_local.sample[out_local.nfev - 1, :].reshape(1, -1),
-                out_local.fsample[out_local.nfev - 1 : out_local.nfev],
-            )
-
             if out_local.nit <= 12:
                 consecutiveQuickFailures += 1
             else:
                 consecutiveQuickFailures = 0
 
             # Update neval in the CP acquisition function
-            acquisitionFunc._neval += out_local.nfev
+            acquisitionFunc.neval += out_local.nfev
 
             if disp:
                 print("TV step ended after ", out_local.nfev, "f evals.")
@@ -1000,7 +1005,7 @@ def cptv(
                 )
 
             # Update neval in the CP acquisition function
-            acquisitionFunc._neval += out_local.nfev
+            acquisitionFunc.neval += out_local.nfev
 
             if disp:
                 print("Local step ended after ", out_local.nfev, "f evals.")
@@ -1051,8 +1056,8 @@ def socemo(
     fun,
     bounds,
     maxeval: int,
+    surrogateModels,
     *,
-    surrogateModels=(RbfModel(),),
     acquisitionFunc: Optional[WeightedAcquisition] = None,
     acquisitionFuncGlobal: Optional[WeightedAcquisition] = None,
     disp: bool = False,
@@ -1065,7 +1070,7 @@ def socemo(
     :param bounds: List with the limits [x_min,x_max] of each direction x in the search
         space.
     :param maxeval: Maximum number of function evaluations.
-    :param surrogateModels: Surrogate models to be used. The default is (RbfModel(),).
+    :param surrogateModels: Surrogate models to be used.
     :param acquisitionFunc: Acquisition function to be used in the CP step. The default is
         WeightedAcquisition(0).
     :param acquisitionFuncGlobal: Acquisition function to be used in the global step. The default is
@@ -1139,11 +1144,20 @@ def socemo(
             print("Time to update surrogate model: %f s" % (tf - t0))
 
         #
+        # 0. Adjust parameters in the acquisition
+        #
+        acquisitionFunc.neval = acquisitionFunc.maxeval - (maxeval - out.nfev)
+
+        #
         # 1. Define target values to fill gaps in the Pareto front
         #
         t0 = time.time()
         xselected = step1acquisition.acquire(
-            surrogateModels, bounds, n=1, paretoFront=out.fx
+            surrogateModels,
+            bounds,
+            n=1,
+            nondominated=out.x,
+            paretoFront=out.fx,
         )
         tf = time.time()
         if disp:
@@ -1226,6 +1240,14 @@ def socemo(
                 if cdist(x, xselected[idxs, :]).min() >= tol:
                     idxs.append(i)
             xselected = xselected[idxs, :]
+        else:
+            ySelected = np.empty((0, objdim))
+            out.nit = out.nit + 1
+            print(
+                "Acquisition function has failed to find a new sample! "
+                "Consider modifying it."
+            )
+            break
 
         #
         # 7. Evaluate the objective function and update the Pareto front
@@ -1261,6 +1283,15 @@ def socemo(
     out.sample.resize(out.nfev, dim)
     out.fsample.resize(out.nfev, objdim)
 
+    # Update surrogate model if it lives outside the function scope
+    t0 = time.time()
+    if out.nfev > 0:
+        for i in range(objdim):
+            surrogateModels[i].update(xselected, ySelected[:, i])
+    tf = time.time()
+    if disp:
+        print("Time to update surrogate model: %f s" % (tf - t0))
+
     return out
 
 
@@ -1269,8 +1300,8 @@ def gosac(
     gfun,
     bounds,
     maxeval: int,
+    surrogateModels,
     *,
-    surrogateModels=(RbfModel(),),
     disp: bool = False,
     callback: Optional[Callable[[OptimizeResult], None]] = None,
 ):
@@ -1289,7 +1320,7 @@ def gosac(
     :param bounds: List with the limits [x_min,x_max] of each direction x in the search
         space.
     :param maxeval: Maximum number of function evaluations.
-    :param surrogateModels: Surrogate models to be used. The default is (RbfModel(),).
+    :param surrogateModels: Surrogate models to be used.
     :param disp: If True, print information about the optimization process. The default
         is False.
     :param callback: If provided, the callback function will be called after each iteration
@@ -1409,6 +1440,16 @@ def gosac(
         # No feasible solution was found
         out.sample.resize(out.nfev, dim)
         out.fsample.resize(out.nfev, gdim)
+
+        # Update surrogate model if it lives outside the function scope
+        t0 = time.time()
+        if out.nfev > 0:
+            for i in range(gdim):
+                surrogateModels[i].update(xselected, ySelected[:, i])
+        tf = time.time()
+        if disp:
+            print("Time to update surrogate model: %f s" % (tf - t0))
+
         return out
 
     # Phase 2: Optimize the objective function
@@ -1463,6 +1504,15 @@ def gosac(
         if callback is not None:
             callback(out)
 
+    # Update surrogate model if it lives outside the function scope
+    t0 = time.time()
+    if out.nfev > 0:
+        for i in range(gdim):
+            surrogateModels[i].update(xselected, ySelected[:, i])
+    tf = time.time()
+    if disp:
+        print("Time to update surrogate model: %f s" % (tf - t0))
+
     return out
 
 
@@ -1490,8 +1540,8 @@ def bayesian_optimization(
     :param x0y0: Initial guess for the solution and the value of the objective function
         at the initial guess.
     :param surrogateModel: Gaussian Process surrogate model. The default is GaussianProcess().
-        On exit, if provided, the surrogate model is updated to represent the
-        one used in the last iteration.
+        On exit, if provided, the surrogate model the points used during the
+        optimization.
     :param acquisitionFunc: Acquisition function to be used.
     :param batchSize: Number of new sample points to be generated per iteration. The default is 1.
     :param disp: If True, print information about the optimization process. The default
@@ -1511,7 +1561,9 @@ def bayesian_optimization(
     tol = 1e-6 * np.min([abs(b[1] - b[0]) for b in bounds])
 
     # Initialize optional variables
+    return_surrogate = True
     if surrogateModel is None:
+        return_surrogate = False
         surrogateModel = GaussianProcess()
     if acquisitionFunc is None:
         acquisitionFunc = MaximizeEI()
@@ -1608,5 +1660,13 @@ def bayesian_optimization(
     # Update output
     out.sample.resize(out.nfev, dim)
     out.fsample.resize(out.nfev)
+
+    # Update surrogate model if it lives outside the function scope
+    if return_surrogate:
+        t0 = time.time()
+        surrogateModel.update(xselected, ySelected)
+        tf = time.time()
+        if disp:
+            print("Time to update surrogate model: %f s" % (tf - t0))
 
     return out
