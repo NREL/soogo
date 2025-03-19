@@ -43,11 +43,28 @@ def run_optimizer(
     bounds=None,
     disp: bool = False,
 ) -> list[optimize.OptimizeResult]:
-    minval = objf.min()
+    """Runs the algorithm `algo` to find the minimum of the function `objf`.
+
+    In the ith run, the random seed is set to i. This assures every method uses
+    the same set of `2 * (n + 1)` initial sample points, where `n` is the
+    dimension of the input space.
+
+    If the `bounds` for a variable are two integers, that variable is considered
+    an integer automatically.
+
+    :param objf: Objective function.
+    :param maxEval: Maximum number of function evaluations allowed.
+    :param algo: Optimization algorithm.
+    :param nRuns: Number of times that optimization will be performed.
+    :param bounds: Bounds for the optimization. Default: the bounds for the
+        domain of `objf`.
+    :param disp: Whether or not to display information about the optimization
+        iterations.
+    :return: List of results for each of the `nRuns` optimization runs.
+    """
     bounds = objf.domain() if bounds is None else bounds
     nArgs = len(bounds)
 
-    assert minval < float("inf")
     assert len(bounds) == len(objf.domain())
 
     # integrality constraints
@@ -108,28 +125,7 @@ def run_optimizer(
     return optres
 
 
-# Functions to be tested
-myFuncStr = (
-    "branin",
-    "hart3",
-    "hart6",
-    "shekel",
-    "ackley",
-    "levy",
-    "powell",
-    "michal",
-    "spheref",
-    "rastr",
-    "mccorm",
-    "bukin6",
-    "camel6",
-    "crossit",
-    "drop",
-    "egg",
-    "griewank",
-    "holder",
-    "levy13",
-)
+# Functions that can be used in the tests
 myFuncs = {
     "branin": Branin(),
     "hart3": Hart3(),
@@ -152,7 +148,7 @@ myFuncs = {
     "levy13": Levy13(),
 }
 
-# Algorithms to be tested
+# Algorithms that can be used in the tests
 algorithms = {}
 algorithms["SRS"] = {
     "model": rbf.RbfModel(rbf.RbfKernel.CUBIC, filter=rbf.MedianLpfFilter()),
@@ -185,21 +181,23 @@ algorithms["GP"] = {
     "acquisition": acquisition.MaximizeEI(),
 }
 
-# Maximum number of evaluations
-maxEvals = {}  # [20*n for n in myNargs]
-for fStr in myFuncStr:
-    maxEvals[fStr] = 100 * (len(myFuncs[fStr].domain()) + 1)
+# Maximum number of evaluations per function. 100*n, where n is the input dimension
+maxEvals = {key: 100 * (len(f.domain()) + 1) for key, f in myFuncs.items()}
 
+# Program that runs the benchmark
 if __name__ == "__main__":
     import argparse
 
+    # Arguments for command line
     parser = argparse.ArgumentParser(
         description="Run given algorithm and problem from the vlse benchmark"
     )
     parser.add_argument(
         "-a", "--algorithm", choices=algorithms.keys(), default="CPTVl"
     )
-    parser.add_argument("-p", "--problem", choices=myFuncStr, default="branin")
+    parser.add_argument(
+        "-p", "--problem", choices=myFuncs.keys(), default="branin"
+    )
     parser.add_argument("-n", "--ntrials", type=int, default=3)
     parser.add_argument(
         "-b",
@@ -226,6 +224,7 @@ if __name__ == "__main__":
     print(bounds)
     print(args.ntrials)
 
+    # Run optimization and record time
     t0 = time.time()
     optres = run_optimizer(
         myFuncs[args.problem],
