@@ -30,7 +30,6 @@ from benchmark import *
 
 from blackboxoptim import optimize, acquisition, rbf, gp, sampling
 from pathlib import Path
-from sklearn.gaussian_process.kernels import RBF as GPkernelRBF
 from copy import deepcopy
 
 
@@ -176,7 +175,7 @@ algorithms["MLSL"] = {
     "acquisition": acquisition.MinimizeSurrogate(1, 0.005 * np.sqrt(2.0)),
 }
 algorithms["GP"] = {
-    "model": gp.GaussianProcess(kernel=GPkernelRBF(), normalize_y=True),
+    "model": gp.GaussianProcess(normalize_y=True),
     "optimizer": optimize.bayesian_optimization,
     "acquisition": acquisition.MaximizeEI(),
 }

@@ -29,7 +29,6 @@ from rpy2 import robjects
 import tests.vlse_benchmark as vlsebmk
 from blackboxoptim import rbf, optimize, sampling, acquisition, gp
 from scipy.optimize import differential_evolution
-from sklearn.gaussian_process.kernels import RBF as GPkernelRBF
 
 
 @pytest.mark.parametrize("func", list(vlsebmk.rfuncs.keys()))
@@ -221,7 +220,7 @@ def test_bayesianopt(func: str) -> None:
         nfev,
         {
             "model": gp.GaussianProcess(
-                kernel=GPkernelRBF(), n_restarts_optimizer=20, normalize_y=True
+                n_restarts_optimizer=20, normalize_y=True
             ),
             "optimizer": optimize.bayesian_optimization,
             "acquisition": acquisition.MaximizeEI(
@@ -265,7 +264,7 @@ if __name__ == "__main__":
         # },
         # {
         #     "model": gp.GaussianProcess(
-        #         kernel=GPkernelRBF(), n_restarts_optimizer=20, normalize_y=True
+        #         n_restarts_optimizer=20, normalize_y=True
         #     ),
         #     "optimizer": optimize.bayesian_optimization,
         #     "acquisition": acquisition.MaximizeEI(
