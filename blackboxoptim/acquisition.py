@@ -53,6 +53,7 @@ from pymoo.core.population import Population
 # Local imports
 from .sampling import NormalSampler, Sampler, Mitchel91Sampler
 from .rbf import RbfModel, RbfKernel
+from .gp import GaussianProcess
 from .problem import (
     ProblemWithConstraint,
     ProblemNoConstraint,
@@ -62,12 +63,13 @@ from .problem import (
 )
 
 
-def expected_improvement(mu, sigma, ybest):
+def expected_improvement(delta, sigma):
     """Expected Improvement function for a distribution from [#]_.
 
-    :param mu: The average value of a variable.
-    :param sigma: The standard deviation associated to the same variable.
-    :param ybest: The best (smallest) known value in the distribution.
+    :param delta: Difference :math:`f^*_n - \\mu_n(x)`, where :math:`f^*_n` is
+        the current best function value and :math:`\\mu_n(x)` is the expected
+        value for :math:`f(x)`.
+    :param sigma: The standard deviation :math:`\\sigma_n(x)`.
 
     References
     ----------
@@ -77,8 +79,12 @@ def expected_improvement(mu, sigma, ybest):
     """
     from scipy.stats import norm
 
-    nu = (ybest - mu) / sigma
-    return (ybest - mu) * norm.cdf(nu) + sigma * norm.pdf(nu)
+    return delta * norm.cdf(delta / sigma) + sigma * norm.pdf(delta / sigma)
+
+
+def gp_expected_improvement(model: GaussianProcess, x, ybest):
+    mu, sigma = model(x)
+    return expected_improvement(ybest - mu, sigma)
 
 
 def find_pareto_front(fx, iStart: int = 0) -> list:
@@ -1864,8 +1870,8 @@ class MaximizeEI(AcquisitionFunction):
 
         # Use the point that maximizes the EI
         res = differential_evolution(
-            lambda x: -expected_improvement(
-                *surrogateModel(np.asarray([x])), ybest
+            lambda x: -gp_expected_improvement(
+                surrogateModel, np.asarray([x]), ybest
             ),
             bounds,
         )
@@ -1897,9 +1903,7 @@ class MaximizeEI(AcquisitionFunction):
         nCand = len(x)
 
         # Create EI and kernel matrices
-        eiCand = np.array(
-            [expected_improvement(*surrogateModel([c]), ybest)[0] for c in x]
-        )
+        eiCand = gp_expected_improvement(surrogateModel, x, ybest)
 
         # If there is no need to avoid clustering return the maximum of EI
         if not self.avoid_clusters or n == 1:

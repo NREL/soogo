@@ -32,7 +32,7 @@ def test_expected_improvement():
     sigma = 1.0
     ybest = 0.0
     expected = 0.39894
-    result = expected_improvement(mu, sigma, ybest)
+    result = expected_improvement(ybest - mu, sigma)
     assert np.isclose(
         result, expected, rtol=1e-4
     ), f"Test case 1 failed: {result} != {expected}"
@@ -42,7 +42,7 @@ def test_expected_improvement():
     sigma = 1.0
     ybest = 0.0
     expected = 0.083315
-    result = expected_improvement(mu, sigma, ybest)
+    result = expected_improvement(ybest - mu, sigma)
     assert np.isclose(
         result, expected, rtol=1e-4
     ), f"Test case 2 failed: {result} != {expected}"
@@ -52,7 +52,7 @@ def test_expected_improvement():
     sigma = 1.0
     ybest = 0.0
     expected = 1.0833
-    result = expected_improvement(mu, sigma, ybest)
+    result = expected_improvement(ybest - mu, sigma)
     assert np.isclose(
         result, expected, rtol=1e-4
     ), f"Test case 3 failed: {result} != {expected}"
@@ -62,7 +62,7 @@ def test_expected_improvement():
     sigma = 10.0
     ybest = 0.0
     expected = 3.9894
-    result = expected_improvement(mu, sigma, ybest)
+    result = expected_improvement(ybest - mu, sigma)
     assert np.isclose(
         result, expected, rtol=1e-4
     ), f"Test case 4 failed: {result} != {expected}"
@@ -72,7 +72,7 @@ def test_expected_improvement():
     sigma = 0.1
     ybest = 0.0
     expected = 0.039894
-    result = expected_improvement(mu, sigma, ybest)
+    result = expected_improvement(ybest - mu, sigma)
     assert np.isclose(
         result, expected, rtol=1e-4
     ), f"Test case 5 failed: {result} != {expected}"
