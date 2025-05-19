@@ -1,6 +1,6 @@
 [project]
 name = "soogo"
-version = "1.1.0"
+version = "1.2.0"
 description = "Surrogate-based 0-th Order Global Optimization for black-box problems"
 authors = [
     {name = "Weslley da Silva Pereira", email = "weslley.dasilvapereira@nrel.gov"},
