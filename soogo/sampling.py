@@ -188,7 +188,7 @@ class NormalSampler(Sampler):
     distribution.
 
     :param sigma: Standard deviation of the truncated normal distribution,
-    relative to a unitary interval. Stored in :attr:`sigma`.
+        relative to a unitary interval. Stored in :attr:`sigma`.
     :param sigma_min: Minimum limit for the standard deviation, relative to
         a unitary interval. Stored in :attr:`sigma_min`.
     :param sigma_max: Maximum limit for the standard deviation, relative to
