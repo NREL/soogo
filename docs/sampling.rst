@@ -1,7 +1,7 @@
-blackboxoptim.sampling module
+soogo.sampling module
 ---------------------------
 
-.. automodule:: blackboxoptim.sampling
+.. automodule:: soogo.sampling
    :members:
    :undoc-members:
    :show-inheritance:

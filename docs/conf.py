@@ -14,7 +14,7 @@ sys.path.insert(0, os.path.abspath(".."))
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = "Black-box Opt"
+project = "soogo (Surrogate-based 0-th Order Global Optimization)"
 copyright = "2025, Alliance for Sustainable Energy, LLC"
 author = "Weslley S. Pereira"
 release = "1.1.0"

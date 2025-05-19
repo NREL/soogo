@@ -40,8 +40,8 @@ from math import sqrt
 from typing import Optional
 import numpy as np
 import matplotlib.pyplot as plt
-from blackboxoptim import rbf, optimize, sampling
-from blackboxoptim.acquisition import (
+from soogo import rbf, optimize, sampling
+from soogo.acquisition import (
     WeightedAcquisition,
     TargetValueAcquisition,
     AcquisitionFunction,
@@ -67,7 +67,7 @@ def read_and_run(
     ----------
     data_file : str
         Path for the data file.
-    acquisitionFunc : blackboxoptim.acquisition.AcquisitionFunction, optional
+    acquisitionFunc : soogo.acquisition.AcquisitionFunction, optional
         Sampler to be used. Default: None, i.e., defined by the optimizer.
     maxeval : int, optional
         Maximum number of allowed function evaluations per trial.
@@ -83,7 +83,7 @@ def read_and_run(
     PlotResult : bool, optional
         If Trur, plot the results. Default: False.
     optim_func : optional
-        Optimizer to be used. Default :func:`blackboxoptim.multistart_msrs()`.
+        Optimizer to be used. Default :func:`soogo.multistart_msrs()`.
     seeds: optional
         Sequence of random seeds to be used. One per trial.
         Default: None, defined inside this function.

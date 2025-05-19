@@ -1,7 +1,7 @@
-blackboxoptim.problem module
+soogo.problem module
 ---------------------------
 
-.. automodule:: blackboxoptim.problem
+.. automodule:: soogo.problem
    :members:
    :undoc-members:
    :show-inheritance:

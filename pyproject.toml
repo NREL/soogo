@@ -1,7 +1,7 @@
 [project]
-name = "blackboxoptim"
+name = "soogo"
 version = "1.1.0"
-description = "Solve black-box optimization problems using surrogate-based algorithms"
+description = "Surrogate-based 0-th Order Global Optimization for black-box problems"
 authors = [
     {name = "Weslley da Silva Pereira", email = "weslley.dasilvapereira@nrel.gov"},
 ]
@@ -12,7 +12,7 @@ classifiers = [
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
 ]
-keywords = ["optimization", "surrogate", "black-box", "RBF", "GP"]
+keywords = ["optimization", "surrogate", "black-box", "gradient-free"]
 requires-python = ">=3.9"
 dependencies = [
     "numpy",
@@ -22,8 +22,8 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/NREL/blackboxoptim"
-Docs = "https://nrel.github.io/blackboxoptim"
+Homepage = "https://github.com/NREL/soogo"
+Docs = "https://nrel.github.io/soogo"
 
 [build-system]
 requires = ["pdm-backend"]
@@ -54,7 +54,7 @@ example = [
 ]
 
 [tool.pdm.build]
-includes = ["blackboxoptim/*.py"]
+includes = ["soogo/*.py"]
 source-includes = [
     "tests/test_*.py",
     "**/__init__.py",

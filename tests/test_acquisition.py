@@ -23,7 +23,7 @@ __credits__ = ["Weslley S. Pereira"]
 __deprecated__ = False
 
 import numpy as np
-from blackboxoptim.acquisition import expected_improvement
+from soogo.acquisition import expected_improvement
 
 
 def test_expected_improvement():

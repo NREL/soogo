@@ -4,9 +4,9 @@ on:
   push:
     branches: [main] # branch to trigger deployment
     paths:
-      - '.github/workflows/gh-pages.yml'
-      - 'blackboxoptim/**'
-      - 'tests/**'
+      - ".github/workflows/gh-pages.yml"
+      - "soogo/**"
+      - "tests/**"
 
 jobs:
   pages:
@@ -18,5 +18,5 @@ jobs:
       pages: write
       id-token: write
     steps:
-    - id: deployment
-      uses: sphinx-notes/pages@v3
+      - id: deployment
+        uses: sphinx-notes/pages@v3

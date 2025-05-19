@@ -59,7 +59,7 @@ from .problem import (
     ProblemNoConstraint,
     MultiobjTVProblem,
     MultiobjSurrogateProblem,
-    BBOptDuplicateElimination,
+    ListDuplicateElimination,
 )
 
 
@@ -407,8 +407,8 @@ class WeightedAcquisition(AcquisitionFunction):
         select up to n points that maximize the score.
 
         When `sampler.strategy` is
-        :attr:`blackboxoptim.sampling.SamplingStrategy.DDS` or
-        :attr:`blackboxoptim.sampling.SamplingStrategy.DDS_UNIFORM`, the
+        :attr:`soogo.sampling.SamplingStrategy.DDS` or
+        :attr:`soogo.sampling.SamplingStrategy.DDS_UNIFORM`, the
         probability is computed based on the DYCORS method as proposed by Regis
         and Shoemaker (2012).
 
@@ -417,12 +417,12 @@ class WeightedAcquisition(AcquisitionFunction):
             direction x in the space.
         :param n: Number of points requested.
         :param xbest: Best point so far. Used if :attr:`sampler` is an instance
-            of :class:`blackboxoptim.sampling.NormalSampler`. If not provided,
+            of :class:`soogo.sampling.NormalSampler`. If not provided,
             compute it based on the training data for the surrogate.
         :param bool countinuousSearch:
             If True,
             optimize over the continuous variables only. Used if :attr:`sampler`
-            is an instance of :class:`blackboxoptim.sampling.NormalSampler`.
+            is an instance of :class:`soogo.sampling.NormalSampler`.
         :return: m-by-dim matrix with the selected points, where m <= n.
         """
         dim = len(bounds)  # Dimension of the problem
@@ -576,9 +576,9 @@ class TargetValueAcquisition(AcquisitionFunction):
         self.rtol = rtol
         self.optimizer = (
             MixedVariableGA(
-                eliminate_duplicates=BBOptDuplicateElimination(),
+                eliminate_duplicates=ListDuplicateElimination(),
                 mating=MixedVariableMating(
-                    eliminate_duplicates=BBOptDuplicateElimination()
+                    eliminate_duplicates=ListDuplicateElimination()
                 ),
             )
             if optimizer is None
@@ -1184,9 +1184,9 @@ class ParetoFront(AcquisitionFunction):
     ) -> None:
         self.mooptimizer = (
             MixedVariableGA(
-                eliminate_duplicates=BBOptDuplicateElimination(),
+                eliminate_duplicates=ListDuplicateElimination(),
                 mating=MixedVariableMating(
-                    eliminate_duplicates=BBOptDuplicateElimination()
+                    eliminate_duplicates=ListDuplicateElimination()
                 ),
                 survival=RankAndCrowding(),
             )
@@ -1380,9 +1380,9 @@ class EndPointsParetoFront(AcquisitionFunction):
     def __init__(self, optimizer=None, rtol=1e-6) -> None:
         self.optimizer = (
             MixedVariableGA(
-                eliminate_duplicates=BBOptDuplicateElimination(),
+                eliminate_duplicates=ListDuplicateElimination(),
                 mating=MixedVariableMating(
-                    eliminate_duplicates=BBOptDuplicateElimination()
+                    eliminate_duplicates=ListDuplicateElimination()
                 ),
             )
             if optimizer is None
@@ -1493,9 +1493,9 @@ class MinimizeMOSurrogate(AcquisitionFunction):
     def __init__(self, mooptimizer=None, rtol=1e-6) -> None:
         self.mooptimizer = (
             MixedVariableGA(
-                eliminate_duplicates=BBOptDuplicateElimination(),
+                eliminate_duplicates=ListDuplicateElimination(),
                 mating=MixedVariableMating(
-                    eliminate_duplicates=BBOptDuplicateElimination()
+                    eliminate_duplicates=ListDuplicateElimination()
                 ),
                 survival=RankAndCrowding(),
             )
@@ -1716,9 +1716,9 @@ class GosacSample(AcquisitionFunction):
         self.fun = fun
         self.optimizer = (
             MixedVariableGA(
-                eliminate_duplicates=BBOptDuplicateElimination(),
+                eliminate_duplicates=ListDuplicateElimination(),
                 mating=MixedVariableMating(
-                    eliminate_duplicates=BBOptDuplicateElimination()
+                    eliminate_duplicates=ListDuplicateElimination()
                 ),
             )
             if optimizer is None

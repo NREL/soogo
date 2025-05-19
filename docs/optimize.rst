@@ -1,7 +1,7 @@
-blackboxoptim.optimize module
+soogo.optimize module
 ---------------------------
 
-.. automodule:: blackboxoptim.optimize
+.. automodule:: soogo.optimize
    :members:
    :undoc-members:
    :show-inheritance:

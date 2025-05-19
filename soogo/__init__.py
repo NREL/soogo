@@ -1,4 +1,4 @@
-"""Black-Box Optimization Library"""
+"""soogo (Surrogate-based 0-th Order Global Optimization)"""
 
 # Copyright (c) 2025 Alliance for Sustainable Energy, LLC
 

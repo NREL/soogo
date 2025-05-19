@@ -1,4 +1,4 @@
-"""Optimization algorithms for blackboxoptim."""
+"""Optimization algorithms for soogo."""
 
 # Copyright (c) 2025 Alliance for Sustainable Energy, LLC
 # Copyright (C) 2014 Cornell University
@@ -974,7 +974,7 @@ def cptv(
             out_local_ = minimize(
                 func_continuous_search,
                 out.x[cindex],
-                method="Powell",  # Use d+1 fevals per iteration
+                method="Powell",
                 bounds=cbounds,
                 options={"maxfev": maxeval - out.nfev},
             )

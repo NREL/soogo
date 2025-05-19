@@ -29,10 +29,10 @@ __credits__ = [
 __deprecated__ = False
 
 from examples.single_obj_rbf.optimization_program_1 import read_check_data_file
-from blackboxoptim.rbf import RbfKernel, RbfModel, MedianLpfFilter
-from blackboxoptim import surrogate_optimization
-from blackboxoptim.sampling import NormalSampler, Sampler, SamplingStrategy
-from blackboxoptim.acquisition import WeightedAcquisition
+from soogo.rbf import RbfKernel, RbfModel, MedianLpfFilter
+from soogo import surrogate_optimization
+from soogo.sampling import NormalSampler, Sampler, SamplingStrategy
+from soogo.acquisition import WeightedAcquisition
 import numpy as np
 
 if __name__ == "__main__":

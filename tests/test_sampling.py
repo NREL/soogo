@@ -24,7 +24,7 @@ __deprecated__ = False
 
 import numpy as np
 import pytest
-from blackboxoptim.sampling import (
+from soogo.sampling import (
     Mitchel91Sampler,
     NormalSampler,
     Sampler,

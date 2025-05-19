@@ -28,7 +28,7 @@ import pickle
 import time
 from benchmark import *
 
-from blackboxoptim import optimize, acquisition, rbf, gp, sampling
+from soogo import optimize, acquisition, rbf, gp, sampling
 from pathlib import Path
 from copy import deepcopy
 

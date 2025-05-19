@@ -24,7 +24,7 @@ __deprecated__ = False
 
 import numpy as np
 import pytest
-from blackboxoptim import (
+from soogo import (
     OptimizeResult,
     bayesian_optimization,
     multistart_msrs,
@@ -33,8 +33,8 @@ from blackboxoptim import (
     cptv,
     cptvl,
 )
-from blackboxoptim.sampling import Sampler
-from blackboxoptim.acquisition import MaximizeEI
+from soogo.sampling import Sampler
+from soogo.acquisition import MaximizeEI
 
 
 @pytest.mark.parametrize(

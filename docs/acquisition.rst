@@ -1,7 +1,7 @@
-blackboxoptim.acquisition module
+soogo.acquisition module
 ------------------------------
 
-.. automodule:: blackboxoptim.acquisition
+.. automodule:: soogo.acquisition
    :members:
    :undoc-members:
    :show-inheritance:

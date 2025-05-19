@@ -62,7 +62,7 @@ def _dict_to_array(xdict: Union[dict, list[dict]]) -> np.ndarray:
         return np.array([[xi[i] for i in sorted(xi)] for xi in xdict])
 
 
-class BBOptDuplicateElimination(DefaultDuplicateElimination):
+class ListDuplicateElimination(DefaultDuplicateElimination):
     """Specialization of DefaultDuplicateElimination for better performance
     in the problems we have.
 

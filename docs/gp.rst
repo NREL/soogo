@@ -1,7 +1,7 @@
-blackboxoptim.gp module
+soogo.gp module
 ----------------------
 
-.. automodule:: blackboxoptim.gp
+.. automodule:: soogo.gp
    :members:
    :undoc-members:
    :show-inheritance:

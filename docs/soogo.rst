@@ -1,4 +1,4 @@
-blackboxoptim package
+soogo package
 ===================
 
 Submodules
@@ -17,7 +17,7 @@ Submodules
 Module contents
 ---------------
 
-.. automodule:: blackboxoptim
+.. automodule:: soogo
    :members:
    :undoc-members:
    :show-inheritance:

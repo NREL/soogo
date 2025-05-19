@@ -24,7 +24,7 @@ __deprecated__ = False
 
 import numpy as np
 import pytest
-from blackboxoptim.gp import GaussianProcess
+from soogo.gp import GaussianProcess
 
 
 @pytest.mark.parametrize("n", (10, 100))

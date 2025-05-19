@@ -1,7 +1,7 @@
-blackboxoptim.rbf module
+soogo.rbf module
 ---------------------------
 
-.. automodule:: blackboxoptim.rbf
+.. automodule:: soogo.rbf
    :members:
    :undoc-members:
    :show-inheritance:
