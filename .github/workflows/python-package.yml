@@ -47,8 +47,4 @@ jobs:
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
       - name: Test with pytest
         if: ${{ matrix.os == 'ubuntu-latest' }}
-        run: |
-          sudo apt-get update
-          sudo apt-get install r-base
-          python -m pip install pytest rpy2==3.5.1
-          pytest
+        run: pytest

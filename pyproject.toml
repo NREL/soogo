@@ -35,7 +35,6 @@ distribution = true
 [tool.pdm.dev-dependencies]
 test = [
     "pytest",
-    "rpy2==3.5.1",
 ]
 lint = [
     "ruff",
@@ -48,9 +47,6 @@ doc = [
 example = [
     "jupyter",
     "matplotlib",
-    "snakeviz",
-    "pandas",
-    "pyarrow"
 ]
 
 [tool.pdm.build]
@@ -58,7 +54,6 @@ includes = ["soogo/*.py"]
 source-includes = [
     "tests/test_*.py",
     "**/__init__.py",
-    "tests/vlse_benchmark/**.r",
     "tests/gosac_benchmark.py"
 ]
 source-excludes = ["tests/**"]
