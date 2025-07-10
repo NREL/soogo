@@ -324,7 +324,6 @@ def surrogate_optimization(
     fun,
     bounds,
     maxeval: int,
-    x0y0=(),
     *,
     surrogateModel=None,
     acquisitionFunc: Optional[AcquisitionFunction] = None,
@@ -373,8 +372,6 @@ def surrogate_optimization(
     :param bounds: List with the limits [x_min,x_max] of each direction x in the
         search space.
     :param maxeval: Maximum number of function evaluations.
-    :param x0y0: Initial guess for the solution and the value of the objective
-        function at the initial guess.
     :param surrogateModel: Surrogate model to be used. If None is provided, a
         :class:`RbfModel` model with median low-pass filter is used.
         On exit, if provided, the surrogate model the points used during the
@@ -426,10 +423,6 @@ def surrogate_optimization(
     out = OptimizeResult()
     out.init(fun, bounds, batchSize, maxeval, surrogateModel)
     out.init_best_values(surrogateModel)
-    if x0y0:
-        if x0y0[1] < out.fx:
-            out.x[:] = x0y0[0]
-            out.fx = x0y0[1]
 
     # Call the callback function
     if callback is not None:
@@ -687,7 +680,6 @@ def dycors(
     fun,
     bounds,
     maxeval: int,
-    x0y0=(),
     *,
     surrogateModel=None,
     acquisitionFunc: Optional[WeightedAcquisition] = None,
@@ -705,8 +697,6 @@ def dycors(
     :param bounds: List with the limits [x_min,x_max] of each direction x in the
         search space.
     :param maxeval: Maximum number of function evaluations.
-    :param x0y0: Initial guess for the solution and the value of the objective
-        function at the initial guess.
     :param surrogateModel: Surrogate model to be used. If None is provided, a
         :class:`RbfModel` model with median low-pass filter is used.
         On exit, if provided, the surrogate model the points used during the
@@ -749,7 +739,6 @@ def dycors(
         fun,
         bounds,
         maxeval,
-        x0y0,
         surrogateModel=surrogateModel
         if surrogateModel is not None
         else RbfModel(filter=MedianLpfFilter()),
@@ -767,7 +756,6 @@ def cptv(
     fun,
     bounds,
     maxeval: int,
-    x0y0=(),
     *,
     surrogateModel: Optional[RbfModel] = None,
     acquisitionFunc: Optional[WeightedAcquisition] = None,
@@ -806,8 +794,6 @@ def cptv(
     :param bounds: List with the limits [x_min,x_max] of each direction x in the
         search space.
     :param maxeval: Maximum number of function evaluations.
-    :param x0y0: Initial guess for the solution and the value of the objective
-        function at the initial guess.
     :param surrogateModel: Surrogate model to be used. If None is provided, a
         :class:`RbfModel` model with median low-pass filter is used.
         On exit, if provided, the surrogate model the points used during the
@@ -868,8 +854,8 @@ def cptv(
 
     # Initialize output
     out = OptimizeResult(
-        x=np.nan * np.ones(dim) if len(x0y0) == 0 else x0y0[0],
-        fx=np.inf if len(x0y0) == 0 else x0y0[1],
+        x=np.empty(dim),
+        fx=np.inf,
         nit=0,
         nfev=0,
         sample=np.zeros((maxeval, dim)),
@@ -890,7 +876,6 @@ def cptv(
                 fun,
                 bounds,
                 maxeval - out.nfev,
-                x0y0=(out.x, out.fx),
                 surrogateModel=surrogateModel,
                 acquisitionFunc=acquisitionFunc,
                 performContinuousSearch=True,
@@ -933,7 +918,6 @@ def cptv(
                 fun,
                 bounds,
                 maxeval - out.nfev,
-                x0y0=(out.x, out.fx),
                 surrogateModel=surrogateModel,
                 acquisitionFunc=TargetValueAcquisition(
                     cycleLength=10, rtol=acquisitionFunc.rtol
@@ -978,9 +962,9 @@ def cptv(
                 bounds=cbounds,
                 options={"maxfev": maxeval - out.nfev},
             )
-            assert (
-                out_local_.nfev <= (maxeval - out.nfev)
-            ), f"Sanity check, {out_local_.nfev} <= ({maxeval} - {out.nfev}). We should adjust either `maxfun` or change the `method`"
+            assert out_local_.nfev <= (maxeval - out.nfev), (
+                f"Sanity check, {out_local_.nfev} <= ({maxeval} - {out.nfev}). We should adjust either `maxfun` or change the `method`"
+            )
 
             out_local = OptimizeResult(
                 x=out.x.copy(),
@@ -994,12 +978,7 @@ def cptv(
             out_local.sample[-1, cindex] = out_local_.x
             out_local.fsample[-1] = out_local_.fun
 
-            if (
-                cdist(
-                    out_local.x.reshape(1, -1), surrogateModel.xtrain()
-                ).min()
-                >= tol
-            ):
+            if out_local.fx < out.fx:
                 surrogateModel.update(
                     out_local.x.reshape(1, -1), [out_local.fx]
                 )
@@ -1044,9 +1023,9 @@ def cptv(
 def cptvl(*args, **kwargs) -> OptimizeResult:
     """Wrapper to cptv. See :func:`cptv()`."""
     if "useLocalSearch" in kwargs:
-        assert (
-            kwargs["useLocalSearch"] is True
-        ), "`useLocalSearch` must be True for `cptvl`."
+        assert kwargs["useLocalSearch"] is True, (
+            "`useLocalSearch` must be True for `cptvl`."
+        )
     else:
         kwargs["useLocalSearch"] = True
     return cptv(*args, **kwargs)
@@ -1520,7 +1499,6 @@ def bayesian_optimization(
     fun,
     bounds,
     maxeval: int,
-    x0y0=(),
     *,
     surrogateModel=None,
     acquisitionFunc: Optional[MaximizeEI] = None,
@@ -1537,8 +1515,6 @@ def bayesian_optimization(
     :param bounds: List with the limits [x_min,x_max] of each direction x in the search
         space.
     :param maxeval: Maximum number of function evaluations.
-    :param x0y0: Initial guess for the solution and the value of the objective function
-        at the initial guess.
     :param surrogateModel: Gaussian Process surrogate model. The default is GaussianProcess().
         On exit, if provided, the surrogate model the points used during the
         optimization.
@@ -1574,10 +1550,6 @@ def bayesian_optimization(
     out = OptimizeResult()
     out.init(fun, bounds, batchSize, maxeval, surrogateModel)
     out.init_best_values(surrogateModel)
-    if x0y0:
-        if x0y0[1] < out.fx:
-            out.x[:] = x0y0[0]
-            out.fx = x0y0[1]
 
     # Call the callback function
     if callback is not None:
