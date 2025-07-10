@@ -49,6 +49,7 @@ from pymoo.core.mixed import MixedVariableGA, MixedVariableMating
 from pymoo.core.initialization import Initialization
 from pymoo.optimize import minimize as pymoo_minimize
 from pymoo.core.population import Population
+from pymoo.termination.default import DefaultSingleObjectiveTermination
 
 # Local imports
 from .sampling import NormalSampler, Sampler, Mitchel91Sampler
@@ -579,6 +580,9 @@ class TargetValueAcquisition(AcquisitionFunction):
                 eliminate_duplicates=ListDuplicateElimination(),
                 mating=MixedVariableMating(
                     eliminate_duplicates=ListDuplicateElimination()
+                ),
+                termination=DefaultSingleObjectiveTermination(
+                    xtol=rtol, period=3
                 ),
             )
             if optimizer is None

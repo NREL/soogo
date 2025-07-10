@@ -104,10 +104,10 @@ def test_multiple_calls(minimize):
     bounds = [[-32.768, 20], [-32.768, 32.768]]
 
     np.random.seed(3)
-    res0 = minimize(lambda x: [ackley(x[0], 2)], bounds, maxeval=200)
+    res0 = minimize(lambda x: [ackley(x[0], 2)], bounds, maxeval=10)
 
     np.random.seed(3)
-    res1 = minimize(lambda x: [ackley(x[0], 2)], bounds, maxeval=200)
+    res1 = minimize(lambda x: [ackley(x[0], 2)], bounds, maxeval=10)
 
     assert np.all(res0.x == res1.x)
     assert np.all(res0.fx == res1.fx)

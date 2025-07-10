@@ -54,6 +54,29 @@ class SamplingStrategy(Enum):
     MITCHEL91 = 6  #: Cover empty regions in the search space
 
 
+def _slhd_permutation_matrix(m: int, d: int):
+    # Generate permutation matrix P
+    P = np.zeros((m, d), dtype=int)
+    P[:, 0] = np.arange(m)
+    if m % 2 == 0:
+        k = m // 2
+    else:
+        k = (m - 1) // 2
+        P[k, :] = k * np.ones((1, d))
+    for j in range(1, d):
+        P[0:k, j] = np.random.permutation(np.arange(k))
+
+        for i in range(k):
+            # Use numpy functions for better performance
+            if np.random.rand() < 0.5:
+                P[m - 1 - i, j] = m - 1 - P[i, j]
+            else:
+                P[m - 1 - i, j] = P[i, j]
+                P[i, j] = m - 1 - P[i, j]
+
+    return P
+
+
 class Sampler:
     """Abstract base class for samplers.
 
@@ -139,26 +162,8 @@ class Sampler:
                 X[:, j] = [round(b0 + i * delta) for i in range(m)]
 
         if m > 1:
-            # Generate permutation matrix P
-            P = np.zeros((m, d), dtype=int)
-            P[:, 0] = np.arange(m)
-            if m % 2 == 0:
-                k = m // 2
-            else:
-                k = (m - 1) // 2
-                P[k, :] = k * np.ones((1, d))
-            for j in range(1, d):
-                P[0:k, j] = np.random.permutation(np.arange(k))
-
-                for i in range(k):
-                    # Use numpy functions for better performance
-                    if np.random.rand() < 0.5:
-                        P[m - 1 - i, j] = m - 1 - P[i, j]
-                    else:
-                        P[m - 1 - i, j] = P[i, j]
-                        P[i, j] = m - 1 - P[i, j]
-
             # Permute the initial design
+            P = _slhd_permutation_matrix(m, d)
             for j in range(d):
                 X[:, j] = X[P[:, j], j]
 
