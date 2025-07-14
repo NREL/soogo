@@ -17,7 +17,7 @@ sys.path.insert(0, os.path.abspath(".."))
 project = "soogo (Surrogate-based 0-th Order Global Optimization)"
 copyright = "2025, Alliance for Sustainable Energy, LLC"
 author = "Weslley S. Pereira"
-release = "1.2.1"
+release = "1.2.2"
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration

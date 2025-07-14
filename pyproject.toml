@@ -1,6 +1,6 @@
 [project]
 name = "soogo"
-version = "1.2.1"
+version = "1.2.2"
 description = "Surrogate-based 0-th Order Global Optimization for black-box problems"
 authors = [
     {name = "Weslley da Silva Pereira", email = "weslley.dasilvapereira@nrel.gov"},
@@ -50,13 +50,8 @@ example = [
 ]
 
 [tool.pdm.build]
-includes = ["soogo/*.py"]
-source-includes = [
-    "tests/test_*.py",
-    "**/__init__.py",
-    "tests/gosac_benchmark.py"
-]
-source-excludes = ["tests/**"]
+includes = ["soogo"]
+source-includes = ["tests/*.py"]
 
 [tool.ruff]
 line-length = 79
