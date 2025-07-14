@@ -498,10 +498,6 @@ class RbfModel:
         """Get the number of sampled points."""
         return self._m
 
-    def reset(self) -> None:
-        """Resets the RBF model."""
-        self._m = 0
-
     def xtrain(self) -> np.ndarray:
         """Get the training data points.
 
