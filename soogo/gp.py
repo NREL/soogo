@@ -127,18 +127,12 @@ class GaussianProcess(Surrogate):
             return self.scaler.inverse_transform(self.model.X_train_)
 
     def eval_kernel(self, x, y=None):
-        if self.scaler is None:
-            return (
-                self.model.kernel_(x, x)
-                if y is None
-                else self.model.kernel_(x, y)
-            )
+        xs = x if self.scaler is None else self.scaler.transform(x)
+        if y is None:
+            return self.model.kernel_(xs, xs)
         else:
-            xs = self.scaler.transform(x)
-            if y is None:
-                return self.model.kernel_(xs, xs)
-            else:
-                return self.model.kernel_(xs, self.scaler.transform(y))
+            ys = y if self.scaler is None else self.scaler.transform(y)
+            return self.model.kernel_(xs, ys)
 
     def min_design_space_size(self, dim: int) -> int:
         """Return the minimum design space size for a given space dimension."""

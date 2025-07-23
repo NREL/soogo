@@ -206,7 +206,7 @@ class RbfModel(Surrogate):
         self._PHI = np.array([])
         self._P = np.array([])
 
-    def reserve(self, maxeval: int, dim: int) -> None:
+    def reserve(self, maxeval: int, dim: int, ntarget: int = 1) -> None:
         """Reserve space for the RBF model.
 
         This routine avoids successive dynamic memory allocations with
@@ -228,21 +228,41 @@ class RbfModel(Surrogate):
             )
 
         if self._fx.size == 0:
-            self._fx = np.empty(maxeval)
+            self._fx = (
+                np.empty(maxeval)
+                if ntarget == 1
+                else np.empty((maxeval, ntarget))
+            )
         else:
             additional_values = max(0, maxeval - self._fx.size)
             self._fx = np.concatenate(
-                (self._fx, np.empty(additional_values)), axis=0
+                (
+                    self._fx,
+                    np.empty(additional_values)
+                    if ntarget == 1
+                    else np.empty((additional_values, ntarget)),
+                ),
+                axis=0,
             )
 
         if self._coef.size == 0:
-            self._coef = np.empty(maxeval + self.polynomial_tail_size())
+            self._coef = (
+                np.empty(maxeval + self.polynomial_tail_size())
+                if ntarget == 1
+                else np.empty((maxeval + self.polynomial_tail_size(), ntarget))
+            )
         else:
             additional_values = max(
                 0, maxeval + self.polynomial_tail_size() - self._coef.size
             )
             self._coef = np.concatenate(
-                (self._coef, np.empty(additional_values)), axis=0
+                (
+                    self._coef,
+                    np.empty(additional_values)
+                    if ntarget == 1
+                    else np.empty((additional_values, ntarget)),
+                ),
+                axis=0,
             )
 
         if self._PHI.size == 0:
