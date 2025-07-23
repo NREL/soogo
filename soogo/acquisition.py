@@ -35,6 +35,7 @@ __deprecated__ = False
 
 import numpy as np
 from math import log
+from abc import ABC, abstractmethod
 
 # Scipy imports
 from scipy.spatial.distance import cdist
@@ -52,6 +53,7 @@ from pymoo.core.population import Population
 from pymoo.termination.default import DefaultSingleObjectiveTermination
 
 # Local imports
+from .surrogate import Surrogate
 from .sampling import NormalSampler, Sampler, Mitchel91Sampler
 from .rbf import LinearRadialBasisFunction, RbfModel
 from .gp import GaussianProcess
@@ -112,7 +114,7 @@ def find_pareto_front(fx, iStart: int = 0) -> list:
     return [i for i in range(len(fx)) if pareto[i]]
 
 
-class AcquisitionFunction:
+class AcquisitionFunction(ABC):
     """Base class for acquisition functions.
 
     This an abstract class. Subclasses must implement the method
@@ -128,9 +130,10 @@ class AcquisitionFunction:
     def __init__(self) -> None:
         pass
 
+    @abstractmethod
     def acquire(
         self,
-        surrogateModel,
+        surrogateModel: Surrogate,
         bounds,
         n: int = 1,
         **kwargs,
@@ -143,7 +146,7 @@ class AcquisitionFunction:
         :param n: Number of points to be acquired, or maximum requested number.
         :return: m-by-dim matrix with the selected points, where m <= n.
         """
-        raise NotImplementedError
+        pass
 
 
 class WeightedAcquisition(AcquisitionFunction):
@@ -399,7 +402,7 @@ class WeightedAcquisition(AcquisitionFunction):
 
     def acquire(
         self,
-        surrogateModel,
+        surrogateModel: Surrogate,
         bounds,
         n: int = 1,
         **kwargs,
@@ -427,20 +430,14 @@ class WeightedAcquisition(AcquisitionFunction):
         :return: m-by-dim matrix with the selected points, where m <= n.
         """
         dim = len(bounds)  # Dimension of the problem
-
-        # Check if surrogateModel is a list of models
-        listOfSurrogates = hasattr(surrogateModel, "__len__")
-        iindex = (
-            surrogateModel[0].iindex
-            if listOfSurrogates
-            else surrogateModel.iindex
-        )
+        objdim = surrogateModel.ntarget
+        iindex = surrogateModel.iindex
 
         # Generate candidates
         if isinstance(self.sampler, NormalSampler):
             if "xbest" in kwargs:
                 xbest = kwargs["xbest"]
-            elif listOfSurrogates:
+            elif objdim > 1:
                 xbest = surrogateModel.X[find_pareto_front(surrogateModel.Y)]
             else:
                 xbest = surrogateModel.X[surrogateModel.Y.argmin()]
@@ -468,22 +465,13 @@ class WeightedAcquisition(AcquisitionFunction):
             )
         else:
             x = self.sampler.get_sample(bounds, iindex=iindex)
-        nCand = x.shape[0]
 
         # Evaluate candidates
-        if not listOfSurrogates:
-            sample = surrogateModel.X
-            fx = surrogateModel(x)
-        else:
-            sample = surrogateModel[0].X
-            objdim = len(surrogateModel)
-            fx = np.empty((nCand, objdim))
-            for i in range(objdim):
-                fx[:, i] = surrogateModel[i](x)
+        fx = surrogateModel(x)
 
         # Select best candidates
         xselected, _ = self.minimize_weightedavg_fx_distx(
-            x, cdist(x, sample), fx, n, self.tol(bounds)
+            x, cdist(x, surrogateModel.X), fx, n, self.tol(bounds)
         )
         n = xselected.shape[0]
 
@@ -860,7 +848,7 @@ class MinimizeSurrogate(AcquisitionFunction):
 
     def acquire(
         self,
-        surrogateModel,
+        surrogateModel: Surrogate,
         bounds,
         n: int = 1,
         **kwargs,
@@ -1146,7 +1134,7 @@ class ParetoFront(AcquisitionFunction):
 
     def acquire(
         self,
-        surrogateModels,
+        surrogateModel: Surrogate,
         bounds,
         n: int = 1,
         *,
@@ -1158,7 +1146,7 @@ class ParetoFront(AcquisitionFunction):
 
         Perform n attempts to find n points to fill gaps in the Pareto front.
 
-        :param surrogateModels: List of surrogate models.
+        :param surrogateModel: Multi-target surrogate model.
         :param sequence bounds: List with the limits [x_min,x_max] of each
             direction x in the space.
         :param n: Number of points to be acquired.
@@ -1168,13 +1156,12 @@ class ParetoFront(AcquisitionFunction):
         :return: k-by-dim matrix with the selected points.
         """
         dim = len(bounds)
-        objdim = len(surrogateModels)
+        objdim = surrogateModel.ntarget
 
         if len(paretoFront) == 0:
-            paretoFront = np.array([s.Y.flatten() for s in surrogateModels]).T
-            paretoFrontIdx = find_pareto_front(paretoFront)
-            paretoFront = paretoFront[paretoFrontIdx]
-            nondominated = surrogateModels[0].X[paretoFrontIdx]
+            paretoFrontIdx = find_pareto_front(surrogateModel.Y)
+            paretoFront = surrogateModel.Y[paretoFrontIdx]
+            nondominated = surrogateModel.X[paretoFrontIdx]
 
         # If the Pareto front has only one point or is empty, there is no
         # way to find a target value.
@@ -1203,7 +1190,7 @@ class ParetoFront(AcquisitionFunction):
             # Find the Pareto-optimal solution set that minimizes dist(s(x),tau).
             # For discontinuous Pareto fronts in the original problem, such set
             # may not exist, or it may be too far from the target value.
-            multiobjTVProblem = MultiobjTVProblem(surrogateModels, tau, bounds)
+            multiobjTVProblem = MultiobjTVProblem(surrogateModel, tau, bounds)
             res = pymoo_minimize(
                 multiobjTVProblem,
                 self.mooptimizer,
@@ -1218,7 +1205,7 @@ class ParetoFront(AcquisitionFunction):
                 newX = np.array([[x[i] for i in range(dim)] for x in res.X])
 
                 # Transform the values of the optimization into a matrix
-                sx = np.array([s(newX).flatten() for s in surrogateModels]).T
+                sx = surrogateModel(newX)
 
                 # Find the values that are expected to be in the Pareto front
                 # of the original optimization problem
@@ -1288,33 +1275,33 @@ class EndPointsParetoFront(AcquisitionFunction):
 
     def acquire(
         self,
-        surrogateModels,
+        surrogateModel: Surrogate,
         bounds,
         n: int = 1,
         **kwargs,
     ) -> np.ndarray:
         """Acquire k points at most, where k <= n.
 
-        :param surrogateModels: List of surrogate models.
+        :param surrogateModel: Multi-target surrogate model.
         :param sequence bounds: List with the limits [x_min,x_max] of each
             direction x in the space.
         :param n: Maximum number of points to be acquired.
         :return: k-by-dim matrix with the selected points.
         """
         dim = len(bounds)
-        objdim = len(surrogateModels)
-        iindex = surrogateModels[0].iindex
+        objdim = surrogateModel.ntarget
+        iindex = surrogateModel.iindex
 
         # Find endpoints of the Pareto front
         endpoints = np.empty((objdim, dim))
         for i in range(objdim):
             minimumPointProblem = ProblemNoConstraint(
-                surrogateModels[i], bounds, iindex
+                lambda x: surrogateModel(x, i=i), bounds, iindex
             )
             res = pymoo_minimize(
                 minimumPointProblem,
                 self.optimizer,
-                seed=surrogateModels[0].ntrain,
+                seed=surrogateModel.ntrain,
                 verbose=False,
             )
             assert res.X is not None
@@ -1322,7 +1309,7 @@ class EndPointsParetoFront(AcquisitionFunction):
                 endpoints[i, j] = res.X[j]
 
         # Create KDTree with the already evaluated points
-        tree = KDTree(surrogateModels[0].X)
+        tree = KDTree(surrogateModel.X)
         tol = self.rtol * np.min([abs(b[1] - b[0]) for b in bounds])
 
         # Discard points that are too close to previously sampled points.
@@ -1355,7 +1342,7 @@ class EndPointsParetoFront(AcquisitionFunction):
                 minimumPointProblem,
                 self.optimizer,
                 verbose=False,
-                seed=surrogateModels[0].ntrain + 1,
+                seed=surrogateModel.ntrain + 1,
             )
             assert res.X is not None
             endpoints = np.empty((1, dim))
@@ -1402,14 +1389,14 @@ class MinimizeMOSurrogate(AcquisitionFunction):
 
     def acquire(
         self,
-        surrogateModels,
+        surrogateModel: Surrogate,
         bounds,
         n: int = 1,
         **kwargs,
     ) -> np.ndarray:
         """Acquire k points, where k <= n.
 
-        :param surrogateModels: List of surrogate models.
+        :param surrogateModel: Multi-target surrogate model.
         :param sequence bounds: List with the limits [x_min,x_max] of each
             direction x in the space.
         :param n: Maximum number of points to be acquired. If n is zero, use all
@@ -1420,12 +1407,12 @@ class MinimizeMOSurrogate(AcquisitionFunction):
 
         # Solve the surrogate multiobjective problem
         multiobjSurrogateProblem = MultiobjSurrogateProblem(
-            surrogateModels, bounds
+            surrogateModel, bounds
         )
         res = pymoo_minimize(
             multiobjSurrogateProblem,
             self.mooptimizer,
-            seed=surrogateModels[0].ntrain,
+            seed=surrogateModel.ntrain,
             verbose=False,
         )
 
@@ -1440,9 +1427,7 @@ class MinimizeMOSurrogate(AcquisitionFunction):
             tol = self.rtol * np.min([abs(b[1] - b[0]) for b in bounds])
 
             # Discard points that are too close to previously sampled points.
-            distNeighbor = cdist(bestCandidates, surrogateModels[0].X).min(
-                axis=1
-            )
+            distNeighbor = cdist(bestCandidates, surrogateModel.X).min(axis=1)
             bestCandidates = bestCandidates[distNeighbor >= tol, :]
 
             # Return if no point was left
@@ -1504,7 +1489,7 @@ class CoordinatePerturbationOverNondominated(AcquisitionFunction):
 
     def acquire(
         self,
-        surrogateModels,
+        surrogateModel: Surrogate,
         bounds,
         n: int = 1,
         *,
@@ -1514,7 +1499,7 @@ class CoordinatePerturbationOverNondominated(AcquisitionFunction):
     ) -> np.ndarray:
         """Acquire k points, where k <= n.
 
-        :param surrogateModels: List of surrogate models.
+        :param surrogateModel: Multi-target surrogate model.
         :param sequence bounds: List with the limits [x_min,x_max] of each
             direction x in the space.
         :param n: Maximum number of points to be acquired.
@@ -1529,10 +1514,7 @@ class CoordinatePerturbationOverNondominated(AcquisitionFunction):
         bestCandidates = np.empty((0, dim))
         for ndpoint in nondominated:
             x = self.acquisitionFunc.acquire(
-                surrogateModels,
-                bounds,
-                1,
-                xbest=ndpoint,
+                surrogateModel, bounds, 1, xbest=ndpoint
             )
             # Choose points that are not too close to previously selected points
             if bestCandidates.size == 0:
@@ -1551,11 +1533,7 @@ class CoordinatePerturbationOverNondominated(AcquisitionFunction):
 
         # Eliminate points predicted to be dominated
         fnondominatedAndBestCandidates = np.concatenate(
-            (
-                paretoFront,
-                np.array([s(bestCandidates) for s in surrogateModels]).T,
-            ),
-            axis=0,
+            (paretoFront, surrogateModel(bestCandidates)), axis=0
         )
         idxPredictedPareto = find_pareto_front(
             fnondominatedAndBestCandidates,
@@ -1624,41 +1602,35 @@ class GosacSample(AcquisitionFunction):
 
     def acquire(
         self,
-        surrogateModels,
+        surrogateModel: Surrogate,
         bounds,
         n: int = 1,
         **kwargs,
     ) -> np.ndarray:
         """Acquire 1 point.
 
-        :param surrogateModels: List of surrogate models for the constraints.
+        :param surrogateModel: Multi-target surrogate model for the constraints.
         :param sequence bounds: List with the limits [x_min,x_max] of each
             direction x in the space.
         :param n: Unused.
         :return: 1-by-dim matrix with the selected points.
         """
         dim = len(bounds)
-        gdim = len(surrogateModels)
-        iindex = surrogateModels[0].iindex
+        gdim = surrogateModel.ntarget
+        iindex = surrogateModel.iindex
         assert n == 1
 
         # Create KDTree with previously evaluated points
-        tree = KDTree(surrogateModels[0].X)
+        tree = KDTree(surrogateModel.X)
         tol = self.rtol * np.min([abs(b[1] - b[0]) for b in bounds])
 
         cheapProblem = ProblemWithConstraint(
-            self.fun,
-            lambda x: np.transpose(
-                [surrogateModels[i](x) for i in range(gdim)]
-            ),
-            bounds,
-            iindex,
-            n_ieq_constr=gdim,
+            self.fun, surrogateModel, bounds, iindex, n_ieq_constr=gdim
         )
         res = pymoo_minimize(
             cheapProblem,
             self.optimizer,
-            seed=surrogateModels[0].ntrain,
+            seed=surrogateModel.ntrain,
             verbose=False,
         )
 
@@ -1681,7 +1653,7 @@ class GosacSample(AcquisitionFunction):
             res = pymoo_minimize(
                 minimumPointProblem,
                 self.optimizer,
-                seed=surrogateModels[0].ntrain + 1,
+                seed=surrogateModel.ntrain + 1,
                 verbose=False,
             )
             assert res.X is not None
@@ -1731,7 +1703,12 @@ class MaximizeEI(AcquisitionFunction):
         self.avoid_clusters = avoid_clusters
 
     def acquire(
-        self, surrogateModel, bounds, n: int = 1, *, ybest=None
+        self,
+        surrogateModel: GaussianProcess,
+        bounds,
+        n: int = 1,
+        *,
+        ybest=None,
     ) -> np.ndarray:
         """Acquire n points.
 

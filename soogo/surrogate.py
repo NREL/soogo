@@ -40,22 +40,24 @@ class Surrogate(ABC):
     """
 
     @abstractmethod
-    def reserve(self, n: int, dim: int) -> None:
+    def reserve(self, n: int, dim: int, ntarget: int = 1) -> None:
         """Reserve space for training data.
 
         :param n: Number of training points to reserve.
         :param dim: Dimension of the input space.
+        :param ntarget: Dimension of the target space.
         """
         pass
 
     @abstractmethod
     def __call__(
-        self, x: np.ndarray, **kwargs
+        self, x: np.ndarray, i: int = -1, **kwargs
     ) -> Union[np.ndarray, Tuple[np.ndarray, ...]]:
         """Evaluate the surrogate model at given points.
 
         :param x: m-by-d matrix with m point coordinates in a d-dimensional
             space.
+        :param i: Index of the target dimension to evaluate. If -1, evaluate all.
         :return: Model predictions at the input points. Some models may return
             additional information such as uncertainty estimates.
         """

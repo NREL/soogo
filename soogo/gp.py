@@ -81,12 +81,13 @@ class GaussianProcess(Surrogate):
         self.model = GaussianProcessRegressor(**kwargs)
 
     # TODO: Implement reserve method
-    def reserve(self, n: int, dim: int) -> None:
+    def reserve(self, n: int, dim: int, ntarget: int = 1) -> None:
         pass
 
     def __call__(
         self,
         x: np.ndarray,
+        i: int = -1,
         return_std: bool = False,
         return_cov: bool = False,
     ):
@@ -94,6 +95,7 @@ class GaussianProcess(Surrogate):
 
         :param x: m-by-d matrix with m point coordinates in a d-dimensional
             space.
+        :param i: Index of the target dimension to evaluate. If -1, evaluate all.
         :param return_std: If `True`, returns the standard deviation of the
             predictions.
         :param return_cov: If `True`, returns the covariance of the predictions.
@@ -107,11 +109,26 @@ class GaussianProcess(Surrogate):
             * If `return_cov` is `True`, the third output is a m-by-m matrix
             with the covariances if n=1, otherwise it is a m-by-m-by-n matrix.
         """
-        return self.model.predict(
+        res = self.model.predict(
             x if self.scaler is None else self.scaler.transform(x),
             return_std=return_std,
             return_cov=return_cov,
         )
+        assert i < self.ntarget
+        if i == -1 or self.ntarget == 1:
+            return res
+        else:
+            assert i >= 0
+            if isinstance(res, tuple):
+                if return_std:
+                    if return_cov:
+                        return res[0][:, i], res[1][:, i], res[2][:, :, i]
+                    else:
+                        return res[0][:, i], res[1][:, i]
+                else:
+                    return res[0][:, i], res[1][:, :, i]
+            else:
+                return res[:, i]
 
     @property
     def X(self) -> np.ndarray:

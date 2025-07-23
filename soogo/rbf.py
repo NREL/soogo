@@ -215,6 +215,7 @@ class RbfModel(Surrogate):
 
         :param maxeval: Maximum number of function evaluations.
         :param dim: Dimension of the domain space.
+        :param ntarget: Dimension of the target space.
         """
         if maxeval < self._m:
             return
@@ -234,7 +235,7 @@ class RbfModel(Surrogate):
                 else np.empty((maxeval, ntarget))
             )
         else:
-            additional_values = max(0, maxeval - self._fx.size)
+            additional_values = max(0, maxeval - self._fx.shape[0])
             self._fx = np.concatenate(
                 (
                     self._fx,
@@ -253,7 +254,7 @@ class RbfModel(Surrogate):
             )
         else:
             additional_values = max(
-                0, maxeval + self.polynomial_tail_size() - self._coef.size
+                0, maxeval + self.polynomial_tail_size() - self._coef.shape[0]
             )
             self._coef = np.concatenate(
                 (
@@ -352,12 +353,13 @@ class RbfModel(Surrogate):
         raise ValueError("Invalid polynomial tail")
 
     def __call__(
-        self, x: np.ndarray, return_dist: bool = False
+        self, x: np.ndarray, i: int = -1, return_dist: bool = False
     ) -> Union[np.ndarray, Tuple[np.ndarray, np.ndarray]]:
         """Evaluates the model at one or multiple points.
 
         :param x: m-by-d matrix with m point coordinates in a d-dimensional
             space.
+        :param i: Index of the target dimension to evaluate. If -1, evaluate all.
         :param return_dist: If `True`, returns the distance matrix between the
             input points and the training points.
         :return:
@@ -370,14 +372,25 @@ class RbfModel(Surrogate):
         dim = self.dim
         X = x.reshape(-1, dim)
 
+        # Coefficients for the RBF model
+        coef0 = self._coef[0 : self._m]
+        coef1 = self._coef[self._m : self._m + self.polynomial_tail_size()]
+        if i >= 0:
+            assert i < self.ntarget, (
+                "Index out of bounds for target dimension."
+            )
+            if self.ntarget > 1:
+                coef0 = coef0[:, i]
+                coef1 = coef1[:, i]
+
         # compute pairwise distances between candidates and sampled points
         D = cdist(X, self.X)
 
-        y = np.matmul(self.rbf(D), self._coef[0 : self._m])
+        y = np.matmul(self.rbf(D), coef0)
 
         Px = self.polynomial_tail(X)
         if Px.size > 0:
-            y += np.dot(Px, self._coef[self._m : self._m + Px.shape[1]])
+            y += np.dot(Px, coef1)
 
         if return_dist:
             return y, D
@@ -479,11 +492,11 @@ class RbfModel(Surrogate):
             return
 
         # Reserve space for the new data
-        self.reserve(m, dim)
+        self.reserve(m, dim, self.ntarget)
 
         # Update x and fx
         self._x[oldm:m] = xNew
-        self._fx[oldm:m] = fx
+        self._fx[oldm:m] = fx if self.ntarget > 1 else fx.reshape(-1)
 
         # Compute distances between new points and sampled points
         distNew = cdist(self._x[oldm:m], self._x[0:m])
@@ -499,27 +512,28 @@ class RbfModel(Surrogate):
         # Get full matrix for the fitting
         A = self._get_RBFmatrix()
 
+        # from numpy.linalg import cond
+
         # condA = cond(A)
         # print(f"Condition number of A: {condA}")
 
-        # condPHIP = cond(np.block([[self._PHI[0:m, 0:m], self.get_matrixP()]]))
+        # condPHIP = cond(np.block([[self._PHI[0:m, 0:m], self._get_matrixP()]]))
         # print(f"Condition number of [PHI,P]: {condPHIP}")
-        # condP = cond(self.get_matrixP())
+        # condP = cond(self._get_matrixP())
         # print(f"Condition number of P: {condP}")
         # condPHI = cond(self._PHI[0:m, 0:m])
         # print(f"Condition number of PHI: {condPHI}")
 
+        # print(self.X)
+
         # TODO: See if there is a solver specific for saddle-point systems
+        zero_shape = list(self.Y.shape)
+        zero_shape[0] = self.polynomial_tail_size()
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             self._coef = solve(
                 A,
-                np.concatenate(
-                    (
-                        self.filter(self.Y),
-                        np.zeros(self.polynomial_tail_size()),
-                    )
-                ),
+                np.concatenate((self.filter(self.Y), np.zeros(zero_shape))),
                 assume_a="sym",
             )
 

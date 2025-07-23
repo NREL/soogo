@@ -44,6 +44,7 @@ from scipy.optimize import minimize, differential_evolution
 from scipy.spatial.distance import cdist
 
 # Local imports
+from .surrogate import Surrogate
 from .acquisition import (
     WeightedAcquisition,
     CoordinatePerturbationOverNondominated,
@@ -74,7 +75,12 @@ class OptimizeResult:
     fsample: Optional[np.ndarray] = None  #: Vector with all n objective values
 
     def init(
-        self, fun, bounds, mineval: int, maxeval: int, surrogateModel
+        self,
+        fun,
+        bounds,
+        mineval: int,
+        maxeval: int,
+        surrogateModel: Surrogate,
     ) -> None:
         """Initialize :attr:`nfev` and :attr:`sample` and :attr:`fsample` with
         data about the optimization that is starting.
@@ -135,7 +141,7 @@ class OptimizeResult:
             self.fsample[0:m] = fun(self.sample[0:m])
             self.nfev = m
 
-    def init_best_values(self, surrogateModel) -> None:
+    def init_best_values(self, surrogateModel: Surrogate) -> None:
         """Initialize :attr:`x` and :attr:`fx` based on the best values for the
         surrogate.
 
@@ -164,7 +170,7 @@ def initialize_moo_surrogate(
     mineval: int,
     maxeval: int,
     *,
-    surrogateModels=(RbfModel(),),
+    surrogateModel: Surrogate = RbfModel(),
 ) -> OptimizeResult:
     """Initialize the surrogate model and the output of the optimization.
 
@@ -173,11 +179,11 @@ def initialize_moo_surrogate(
         space.
     :param mineval: Minimum number of function evaluations to build the surrogate model.
     :param maxeval: Maximum number of function evaluations.
-    :param surrogateModels: Surrogate models to be used. The default is (RbfModel(),).
+    :param surrogateModel: Multi-target surrogate model to be used. The default is RbfModel().
     :return: The optimization result.
     """
     dim = len(bounds)  # Dimension of the problem
-    objdim = len(surrogateModels)  # Dimension of the objective function
+    objdim = surrogateModel.ntarget  # Dimension of the objective function
     assert dim > 0 and objdim > 0
 
     # Initialize output
@@ -191,8 +197,8 @@ def initialize_moo_surrogate(
     )
 
     # Number of initial sample points
-    m0 = surrogateModels[0].ntrain
-    m_for_surrogate = surrogateModels[0].min_design_space_size(
+    m0 = surrogateModel.ntrain
+    m_for_surrogate = surrogateModel.min_design_space_size(
         dim
     )  # Smallest sample for a valid surrogate
     m = 0
@@ -202,13 +208,13 @@ def initialize_moo_surrogate(
         # Create a new sample with SLHD
         m = min(maxeval, max(mineval, 2 * m_for_surrogate))
         out.sample[0:m] = Sampler(m).get_slhd_sample(
-            bounds, iindex=surrogateModels[0].iindex
+            bounds, iindex=surrogateModel.iindex
         )
         if m >= 2 * m_for_surrogate:
             count = 0
-            while not surrogateModels[0].check_initial_design(out.sample[0:m]):
+            while not surrogateModel.check_initial_design(out.sample[0:m]):
                 out.sample[0:m] = Sampler(m).get_slhd_sample(
-                    bounds, iindex=surrogateModels[0].iindex
+                    bounds, iindex=surrogateModel.iindex
                 )
                 count += 1
                 if count > 100:
@@ -219,19 +225,14 @@ def initialize_moo_surrogate(
         out.nfev = m
 
         # Update surrogate
-        for i in range(objdim):
-            surrogateModels[i].update(out.sample[0:m], out.fsample[0:m, i])
+        surrogateModel.update(out.sample[0:m], out.fsample[0:m])
 
     # Create the pareto front
     fallpoints = np.concatenate(
-        (
-            np.transpose([surrogateModels[i].Y[:m0] for i in range(objdim)]),
-            out.fsample[0:m, :],
-        ),
-        axis=0,
+        (surrogateModel.Y[:m0], out.fsample[0:m, :]), axis=0
     )
     iPareto = find_pareto_front(fallpoints)
-    out.x = surrogateModels[0].X[iPareto, :].copy()
+    out.x = surrogateModel.X[iPareto, :].copy()
     out.fx = fallpoints[iPareto, :]
 
     return out
@@ -244,7 +245,7 @@ def initialize_surrogate_constraints(
     mineval: int,
     maxeval: int,
     *,
-    surrogateModels=(RbfModel(),),
+    surrogateModel: Surrogate = RbfModel(),
 ) -> OptimizeResult:
     """Initialize the surrogate models for the constraints.
 
@@ -256,11 +257,11 @@ def initialize_surrogate_constraints(
         space.
     :param mineval: Minimum number of function evaluations to build the surrogate model.
     :param maxeval: Maximum number of function evaluations.
-    :param surrogateModels: Surrogate models to be used. The default is (RbfModel(),).
+    :param surrogateModel: Multi-target surrogate model to be used. The default is RbfModel().
     :return: The optimization result.
     """
     dim = len(bounds)  # Dimension of the problem
-    gdim = len(surrogateModels)  # Number of constraints
+    gdim = surrogateModel.ntarget  # Number of constraints
     assert dim > 0 and gdim > 0
 
     # Initialize output
@@ -275,8 +276,8 @@ def initialize_surrogate_constraints(
     bestfx = np.inf
 
     # Number of initial sample points
-    m0 = surrogateModels[0].ntrain
-    m_for_surrogate = surrogateModels[0].min_design_space_size(
+    m0 = surrogateModel.ntrain
+    m_for_surrogate = surrogateModel.min_design_space_size(
         dim
     )  # Smallest sample for a valid surrogate
 
@@ -285,13 +286,13 @@ def initialize_surrogate_constraints(
         # Create a new sample with SLHD
         m = min(maxeval, max(mineval, 2 * m_for_surrogate))
         out.sample[0:m] = Sampler(m).get_slhd_sample(
-            bounds, iindex=surrogateModels[0].iindex
+            bounds, iindex=surrogateModel.iindex
         )
         if m >= 2 * m_for_surrogate:
             count = 0
-            while not surrogateModels[0].check_initial_design(out.sample[0:m]):
+            while not surrogateModel.check_initial_design(out.sample[0:m]):
                 out.sample[0:m] = Sampler(m).get_slhd_sample(
-                    bounds, iindex=surrogateModels[0].iindex
+                    bounds, iindex=surrogateModel.iindex
                 )
                 count += 1
                 if count > 100:
@@ -303,8 +304,7 @@ def initialize_surrogate_constraints(
         out.nfev = m
 
         # Update surrogate
-        for i in range(gdim):
-            surrogateModels[i].update(out.sample[0:m], out.fsample[0:m, i + 1])
+        surrogateModel.update(out.sample[0:m], out.fsample[0:m, 1:])
 
         # Update best point found so far
         for i in range(m):
@@ -1033,7 +1033,7 @@ def socemo(
     fun,
     bounds,
     maxeval: int,
-    surrogateModels,
+    surrogateModel: Surrogate,
     *,
     acquisitionFunc: Optional[WeightedAcquisition] = None,
     acquisitionFuncGlobal: Optional[WeightedAcquisition] = None,
@@ -1047,7 +1047,7 @@ def socemo(
     :param bounds: List with the limits [x_min,x_max] of each direction x in the search
         space.
     :param maxeval: Maximum number of function evaluations.
-    :param surrogateModels: Surrogate models to be used.
+    :param surrogateModel: Multi-target surrogate model to be used.
     :param acquisitionFunc: Acquisition function to be used in the CP step. The default is
         WeightedAcquisition(0).
     :param acquisitionFuncGlobal: Acquisition function to be used in the global step. The default is
@@ -1066,7 +1066,7 @@ def socemo(
         https://doi.org/10.1287/ijoc.2017.0749
     """
     dim = len(bounds)  # Dimension of the problem
-    objdim = len(surrogateModels)  # Number of objective functions
+    objdim = surrogateModel.ntarget  # Number of objective functions
     assert dim > 0 and objdim > 1
 
     # Initialize optional variables
@@ -1082,16 +1082,11 @@ def socemo(
         acquisitionFuncGlobal.sampler.n = min(500 * dim, 5000)
 
     # Reserve space for the surrogate model to avoid repeated allocations
-    for s in surrogateModels:
-        s.reserve(s.ntrain + maxeval, dim)
+    surrogateModel.reserve(surrogateModel.ntrain + maxeval, dim, objdim)
 
     # Initialize output
     out = initialize_moo_surrogate(
-        fun,
-        bounds,
-        0,
-        maxeval,
-        surrogateModels=surrogateModels,
+        fun, bounds, 0, maxeval, surrogateModel=surrogateModel
     )
     assert isinstance(out.fx, np.ndarray)
 
@@ -1104,7 +1099,7 @@ def socemo(
 
     # do until max number of f-evals reached or local min found
     xselected = np.empty((0, dim))
-    ySelected = np.copy(out.fsample[0 : out.nfev, :])
+    ySelected = np.array(out.fsample[0 : out.nfev], copy=True)
     while out.nfev < maxeval:
         nMax = maxeval - out.nfev
         if disp:
@@ -1114,8 +1109,7 @@ def socemo(
         # Update surrogate models
         t0 = time.time()
         if out.nfev > 0:
-            for i in range(objdim):
-                surrogateModels[i].update(xselected, ySelected[:, i])
+            surrogateModel.update(xselected, ySelected)
         tf = time.time()
         if disp:
             print("Time to update surrogate model: %f s" % (tf - t0))
@@ -1123,14 +1117,16 @@ def socemo(
         #
         # 0. Adjust parameters in the acquisition
         #
-        acquisitionFunc.neval = acquisitionFunc.maxeval - (maxeval - out.nfev)
+        acquisitionFunc.neval = max(
+            acquisitionFunc.maxeval - (maxeval - out.nfev), 0
+        )
 
         #
         # 1. Define target values to fill gaps in the Pareto front
         #
         t0 = time.time()
         xselected = step1acquisition.acquire(
-            surrogateModels,
+            surrogateModel,
             bounds,
             n=1,
             nondominated=out.x,
@@ -1148,7 +1144,7 @@ def socemo(
         #
         t0 = time.time()
         bestCandidates = step2acquisition.acquire(
-            surrogateModels,
+            surrogateModel,
             bounds,
             n=nMax,
             nondominated=out.x,
@@ -1167,7 +1163,7 @@ def socemo(
         #
         t0 = time.time()
         bestCandidates = step3acquisition.acquire(
-            surrogateModels, bounds, n=nMax
+            surrogateModel, bounds, n=nMax
         )
         xselected = np.concatenate((xselected, bestCandidates), axis=0)
         tf = time.time()
@@ -1182,7 +1178,7 @@ def socemo(
         #
         t0 = time.time()
         bestCandidates = acquisitionFuncGlobal.acquire(
-            surrogateModels, bounds, 1
+            surrogateModel, bounds, 1
         )
         xselected = np.concatenate((xselected, bestCandidates), axis=0)
         tf = time.time()
@@ -1197,7 +1193,7 @@ def socemo(
         #
         t0 = time.time()
         bestCandidates = step5acquisition.acquire(
-            surrogateModels, bounds, n=min(nMax, 2 * objdim)
+            surrogateModel, bounds, n=min(nMax, 2 * objdim)
         )
         xselected = np.concatenate((xselected, bestCandidates), axis=0)
         tf = time.time()
@@ -1263,8 +1259,7 @@ def socemo(
     # Update surrogate model if it lives outside the function scope
     t0 = time.time()
     if out.nfev > 0:
-        for i in range(objdim):
-            surrogateModels[i].update(xselected, ySelected[:, i])
+        surrogateModel.update(xselected, ySelected)
     tf = time.time()
     if disp:
         print("Time to update surrogate model: %f s" % (tf - t0))
@@ -1277,7 +1272,7 @@ def gosac(
     gfun,
     bounds,
     maxeval: int,
-    surrogateModels,
+    surrogateModel: Surrogate,
     *,
     disp: bool = False,
     callback: Optional[Callable[[OptimizeResult], None]] = None,
@@ -1297,7 +1292,8 @@ def gosac(
     :param bounds: List with the limits [x_min,x_max] of each direction x in the search
         space.
     :param maxeval: Maximum number of function evaluations.
-    :param surrogateModels: Surrogate models to be used.
+    :param surrogateModel: Multi-target surrogate model to be used for the
+        constraints.
     :param disp: If True, print information about the optimization process. The default
         is False.
     :param callback: If provided, the callback function will be called after each iteration
@@ -1312,12 +1308,11 @@ def gosac(
         https://doi.org/10.1007/s10898-017-0496-y
     """
     dim = len(bounds)  # Dimension of the problem
-    gdim = len(surrogateModels)  # Number of constraints
+    gdim = surrogateModel.ntarget  # Number of constraints
     assert dim > 0 and gdim > 0
 
     # Reserve space for the surrogate model to avoid repeated allocations
-    for s in surrogateModels:
-        s.reserve(s.ntrain + maxeval, dim)
+    surrogateModel.reserve(surrogateModel.ntrain + maxeval, dim, gdim)
 
     # Initialize output
     out = initialize_surrogate_constraints(
@@ -1326,7 +1321,7 @@ def gosac(
         bounds,
         0,
         maxeval,
-        surrogateModels=surrogateModels,
+        surrogateModel=surrogateModel,
     )
     assert isinstance(out.fx, np.ndarray)
 
@@ -1350,15 +1345,14 @@ def gosac(
         # Update surrogate models
         t0 = time.time()
         if out.nfev > 0:
-            for i in range(gdim):
-                surrogateModels[i].update(xselected, ySelected[:, i])
+            surrogateModel.update(xselected, ySelected)
         tf = time.time()
         if disp:
             print("Time to update surrogate model: %f s" % (tf - t0))
 
         # Solve the surrogate multiobjective problem
         t0 = time.time()
-        bestCandidates = acquisition1.acquire(surrogateModels, bounds, n=0)
+        bestCandidates = acquisition1.acquire(surrogateModel, bounds, n=0)
         tf = time.time()
         if disp:
             print(
@@ -1367,9 +1361,7 @@ def gosac(
             )
 
         # Evaluate the surrogate at the best candidates
-        sCandidates = np.empty((len(bestCandidates), gdim))
-        for i in range(gdim):
-            sCandidates[:, i] = surrogateModels[i](bestCandidates)
+        sCandidates = surrogateModel(bestCandidates)
 
         # Find the minimum number of constraint violations
         constraintViolation = [
@@ -1421,8 +1413,7 @@ def gosac(
         # Update surrogate model if it lives outside the function scope
         t0 = time.time()
         if out.nfev > 0:
-            for i in range(gdim):
-                surrogateModels[i].update(xselected, ySelected[:, i])
+            surrogateModel.update(xselected, ySelected)
         tf = time.time()
         if disp:
             print("Time to update surrogate model: %f s" % (tf - t0))
@@ -1439,15 +1430,14 @@ def gosac(
         # Update surrogate models
         t0 = time.time()
         if out.nfev > 0:
-            for i in range(gdim):
-                surrogateModels[i].update(xselected, ySelected[:, i])
+            surrogateModel.update(xselected, ySelected)
         tf = time.time()
         if disp:
             print("Time to update surrogate model: %f s" % (tf - t0))
 
         # Solve cheap problem with multiple constraints
         t0 = time.time()
-        xselected = acquisition2.acquire(surrogateModels, bounds)
+        xselected = acquisition2.acquire(surrogateModel, bounds)
         tf = time.time()
         if disp:
             print(
@@ -1484,8 +1474,7 @@ def gosac(
     # Update surrogate model if it lives outside the function scope
     t0 = time.time()
     if out.nfev > 0:
-        for i in range(gdim):
-            surrogateModels[i].update(xselected, ySelected[:, i])
+        surrogateModel.update(xselected, ySelected)
     tf = time.time()
     if disp:
         print("Time to update surrogate model: %f s" % (tf - t0))

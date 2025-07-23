@@ -31,6 +31,8 @@ from pymoo.core.problem import Problem
 from pymoo.core.variable import Real, Integer
 from pymoo.core.duplicate import DefaultDuplicateElimination
 
+from .surrogate import Surrogate
+
 
 def _get_vars(bounds, iindex=()) -> dict:
     """Get the type of variables for a problem.
@@ -158,15 +160,15 @@ class MultiobjTVProblem(Problem):
     entry-wise absolute difference between the surrogate models and the target
     values.
 
-    :param surrogateModels: List of surrogate models. Stored in
-        :attr:`surrogateModels`.
+    :param surrogateModel: Multi-target surrogate model. Stored in
+        :attr:`surrogateModel`.
     :param tau: List of target values. Stored in :attr:`tau`.
     :param bounds: List with the limits [x_min,x_max] of each direction x in
         the search space.
 
-    .. attribute:: surrogateModels
+    .. attribute:: surrogateModel
 
-        List of surrogate models.
+        Multi-target surrogate model.
 
     .. attribute:: tau
 
@@ -174,45 +176,39 @@ class MultiobjTVProblem(Problem):
 
     """
 
-    def __init__(self, surrogateModels, tau, bounds):
-        vars = _get_vars(bounds, surrogateModels[0].iindex)
-        self.surrogateModels = surrogateModels
+    def __init__(self, surrogateModel: Surrogate, tau, bounds):
+        vars = _get_vars(bounds, surrogateModel.iindex)
+        self.surrogateModel = surrogateModel
         self.tau = tau
-        super().__init__(vars=vars, n_obj=len(surrogateModels))
+        super().__init__(vars=vars, n_obj=surrogateModel.ntarget)
 
     def _evaluate(self, X, out):
         assert self.elementwise is False
         x = _dict_to_array(X)
-        out["F"] = np.empty((x.shape[0], self.n_obj))
-        for i in range(self.n_obj):
-            out["F"][:, i] = np.absolute(
-                self.surrogateModels[i](x) - self.tau[i]
-            )
+        out["F"] = np.absolute(self.surrogateModel(x) - self.tau)
 
 
 class MultiobjSurrogateProblem(Problem):
     """Mixed-integer multi-objective problem whose objective functions is the
     evaluation function of the surrogate models.
 
-    :param surrogateModels: List of surrogate models. Stored in
-        :attr:`surrogateModels`.
+    :param surrogateModel: Multi-target surrogate model. Stored in
+        :attr:`surrogateModel`.
     :param bounds: List with the limits [x_min,x_max] of each direction x in
         the search space.
 
-    .. attribute:: surrogateModels
+    .. attribute:: surrogateModel
 
-        List of surrogate models.
+        Multi-target surrogate model.
 
     """
 
-    def __init__(self, surrogateModels, bounds):
-        vars = _get_vars(bounds, surrogateModels[0].iindex)
-        self.surrogateModels = surrogateModels
-        super().__init__(vars=vars, n_obj=len(surrogateModels))
+    def __init__(self, surrogateModel: Surrogate, bounds):
+        vars = _get_vars(bounds, surrogateModel.iindex)
+        self.surrogateModel = surrogateModel
+        super().__init__(vars=vars, n_obj=surrogateModel.ntarget)
 
     def _evaluate(self, X, out):
         assert self.elementwise is False
         x = _dict_to_array(X)
-        out["F"] = np.empty((x.shape[0], self.n_obj))
-        for i in range(self.n_obj):
-            out["F"][:, i] = self.surrogateModels[i](x)
+        out["F"] = self.surrogateModel(x)
