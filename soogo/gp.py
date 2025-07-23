@@ -22,10 +22,8 @@ __email__ = "weslley.dasilvapereira@nrel.gov"
 __credits__ = ["Weslley S. Pereira"]
 __deprecated__ = False
 
-import copy
 import warnings
 import numpy as np
-from sklearn import preprocessing
 from sklearn.exceptions import ConvergenceWarning
 from sklearn.gaussian_process import GaussianProcessRegressor
 import scipy.optimize as scipy_opt
@@ -35,7 +33,7 @@ from sklearn.gaussian_process.kernels import RBF as GPkernelRBF
 from .surrogate import Surrogate
 
 
-class GaussianProcess(GaussianProcessRegressor, Surrogate):
+class GaussianProcess(Surrogate):
     """Gaussian Process model.
 
     This model uses default attributes and parameters from
@@ -51,48 +49,38 @@ class GaussianProcess(GaussianProcessRegressor, Surrogate):
 
     :param scaler: Scaler for the input data. For details, see
         https://scikit-learn.org/stable/modules/preprocessing.html.
-    :param maxiterLBFGS: Maximum number of iterations for the L-BFGS-B optimizer.
-        Stored in :attr:`maxiterLBFGS`.
-
-    .. attribute:: maxiterLBFGS
-
-        Maximum number of iterations for the L-BFGS-B optimizer. Used in the
-        training of the gaussian process.
 
     .. attribute:: scaler
 
         Scaler used to preprocess input data.
 
+    .. attribute:: model
+
+        The underlying GaussianProcessRegressor model instance.
+        This is initialized with the provided parameters and can be accessed
+        for further customization or inspection.
+
     """
 
-    def __init__(
-        self,
-        kernel=None,
-        *,
-        scaler=None,
-        maxiterLBFGS: int = 15000,
-        **kwargs,
-    ) -> None:
-        super().__init__(kernel, **kwargs)
-        self.X_train_ = np.array([])
-        self.y_train_ = np.array([])
-        self._y_train_mean = np.array([])
-        self._y_train_std = np.array([])
+    def __init__(self, scaler=None, **kwargs) -> None:
+        super().__init__()
 
-        # Not in GaussianProcessRegressor:
+        # Scaler for x
         self.scaler = scaler
-        self.maxiterLBFGS = maxiterLBFGS
 
-        # Redefine some of the defaults:
-        if kernel is None:
-            self.kernel = GPkernelRBF()
+        # Redefine some of the defaults in GaussianProcessRegressor:
+        if "kernel" not in kwargs:
+            kwargs["kernel"] = GPkernelRBF()
         if "optimizer" not in kwargs:
-            self.optimizer = self._optimizer
+            kwargs["optimizer"] = self._optimizer
         if "normalize_y" not in kwargs:
-            self.normalize_y = True
+            kwargs["normalize_y"] = True
         if "n_restarts_optimizer" not in kwargs:
-            self.n_restarts_optimizer = 10
+            kwargs["n_restarts_optimizer"] = 10
 
+        self.model = GaussianProcessRegressor(**kwargs)
+
+    # TODO: Implement reserve method
     def reserve(self, n: int, dim: int) -> None:
         pass
 
@@ -119,7 +107,7 @@ class GaussianProcess(GaussianProcessRegressor, Surrogate):
             * If `return_cov` is `True`, the third output is a m-by-m matrix
             with the covariances if n=1, otherwise it is a m-by-m-by-n matrix.
         """
-        return self.predict(
+        return self.model.predict(
             x if self.scaler is None else self.scaler.transform(x),
             return_std=return_std,
             return_cov=return_cov,
@@ -131,20 +119,26 @@ class GaussianProcess(GaussianProcessRegressor, Surrogate):
 
         :return: m-by-d matrix with m training points in a d-dimensional space.
         """
-        if len(self.X_train_) == 0 or self.scaler is None:
-            return self.X_train_
+        if not hasattr(self.model, "X_train_"):  # Unfitted
+            return np.empty((0, 0))
+        if self.scaler is None:
+            return self.model.X_train_
         else:
-            return self.scaler.inverse_transform(self.X_train_)
+            return self.scaler.inverse_transform(self.model.X_train_)
 
     def eval_kernel(self, x, y=None):
         if self.scaler is None:
-            return self.kernel_(x, x) if y is None else self.kernel_(x, y)
+            return (
+                self.model.kernel_(x, x)
+                if y is None
+                else self.model.kernel_(x, y)
+            )
         else:
             xs = self.scaler.transform(x)
             if y is None:
-                return self.kernel_(xs, xs)
+                return self.model.kernel_(xs, xs)
             else:
-                return self.kernel_(xs, self.scaler.transform(y))
+                return self.model.kernel_(xs, self.scaler.transform(y))
 
     def min_design_space_size(self, dim: int) -> int:
         """Return the minimum design space size for a given space dimension."""
@@ -158,14 +152,7 @@ class GaussianProcess(GaussianProcessRegressor, Surrogate):
         """
         if sample.ndim != 2 or len(sample) < 1:
             return False
-        try:
-            copy.deepcopy(self).fit(
-                preprocessing.MinMaxScaler().fit_transform(sample),
-                np.ones(len(sample)),
-            )
-            return True
-        except np.linalg.LinAlgError:
-            return False
+        return True
 
     def update(self, Xnew, ynew) -> None:
         """Updates the model with new pairs of data (x,y).
@@ -189,36 +176,27 @@ class GaussianProcess(GaussianProcessRegressor, Surrogate):
             X = Xnew
             y = ynew
 
-        if self.optimizer == self._optimizer:
-            # Prepare flag for verifying overall optimizer success
-            self._optimizer_success = False
-            self._optimizer_status = 0
-            self._optimizer_message = ""
-
         if self.scaler is None:
-            self.fit(X, y)
+            self.model.fit(X, y)
         else:
             self.scaler = self.scaler.fit(X)
-            self.fit(self.scaler.transform(X), y)
+            self.model.fit(self.scaler.transform(X), y)
 
-        if self.optimizer == self._optimizer:
+        if hasattr(self, "_optimizer_success"):
             # Check for overall failure
             if not self._optimizer_success:
                 warnings.warn(
                     (
                         "L-BFGS-B failed to converge (status={}):\n{}.\n\n"
-                        "Increase the number of iterations (maxiterLBFGS > {}) "
+                        "Increase the number of iterations (maxiter) "
                         "or scale the data as shown in:\n"
                         "    https://scikit-learn.org/stable/modules/"
                         "preprocessing.html"
-                    ).format(
-                        self._optimizer_status,
-                        self._optimizer_message,
-                        self.maxiterLBFGS,
-                    ),
+                    ).format(self._optimizer_status, self._optimizer_message),
                     ConvergenceWarning,
                     stacklevel=2,
                 )
+            del self._optimizer_success
 
     @property
     def iindex(self) -> tuple[int, ...]:
@@ -228,7 +206,12 @@ class GaussianProcess(GaussianProcessRegressor, Surrogate):
     @property
     def Y(self) -> np.ndarray:
         """Get f(x) for the sampled points."""
-        return self._y_train_mean + self.y_train_ * self._y_train_std
+        if not hasattr(self.model, "y_train_"):  # Unfitted
+            return np.empty((0,))
+        return (
+            self.model._y_train_mean
+            + self.model.y_train_ * self.model._y_train_std
+        )
 
     def _optimizer(self, obj_func, initial_theta, bounds):
         """Optimizer used in the GP fitting.
@@ -248,12 +231,7 @@ class GaussianProcess(GaussianProcessRegressor, Surrogate):
             the corresponding value of the target function.
         """
         res = scipy_opt.minimize(
-            obj_func,
-            initial_theta,
-            method="L-BFGS-B",
-            jac=True,
-            bounds=bounds,
-            options={"maxiter": self.maxiterLBFGS},
+            obj_func, initial_theta, method="L-BFGS-B", jac=True, bounds=bounds
         )
 
         if res.success:
