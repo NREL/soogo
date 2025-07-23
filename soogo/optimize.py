@@ -93,11 +93,11 @@ class OptimizeResult:
         assert dim > 0
 
         # Local variables
-        m0 = surrogateModel.ntrain()  # Number of initial sample points
+        m0 = surrogateModel.ntrain  # Number of initial sample points
         m_for_surrogate = surrogateModel.min_design_space_size(
             dim
         )  # Smallest sample for a valid surrogate
-        iindex = surrogateModel.get_iindex()  # Integer design variables
+        iindex = surrogateModel.iindex  # Integer design variables
         ydim = (
             surrogateModel.ydim()
             if callable(getattr(surrogateModel, "ydim", None))
@@ -148,14 +148,14 @@ class OptimizeResult:
         m = self.nfev
 
         iBest = np.argmin(
-            np.concatenate((self.fsample[0:m], surrogateModel.ytrain()))
+            np.concatenate((self.fsample[0:m], surrogateModel.Y))
         ).item()
         if iBest < m:
             self.x = self.sample[iBest].copy()
             self.fx = self.fsample[iBest].item()
         else:
-            self.x = surrogateModel.xtrain()[iBest - m].copy()
-            self.fx = surrogateModel.ytrain()[iBest - m].item()
+            self.x = surrogateModel.X[iBest - m].copy()
+            self.fx = surrogateModel.Y[iBest - m].item()
 
 
 def initialize_moo_surrogate(
@@ -191,7 +191,7 @@ def initialize_moo_surrogate(
     )
 
     # Number of initial sample points
-    m0 = surrogateModels[0].ntrain()
+    m0 = surrogateModels[0].ntrain
     m_for_surrogate = surrogateModels[0].min_design_space_size(
         dim
     )  # Smallest sample for a valid surrogate
@@ -225,15 +225,13 @@ def initialize_moo_surrogate(
     # Create the pareto front
     fallpoints = np.concatenate(
         (
-            np.transpose(
-                [surrogateModels[i].ytrain()[:m0] for i in range(objdim)]
-            ),
+            np.transpose([surrogateModels[i].Y[:m0] for i in range(objdim)]),
             out.fsample[0:m, :],
         ),
         axis=0,
     )
     iPareto = find_pareto_front(fallpoints)
-    out.x = surrogateModels[0].xtrain()[iPareto, :].copy()
+    out.x = surrogateModels[0].X[iPareto, :].copy()
     out.fx = fallpoints[iPareto, :]
 
     return out
@@ -274,10 +272,10 @@ def initialize_surrogate_constraints(
         sample=np.zeros((maxeval, dim)),
         fsample=np.zeros((maxeval, 1 + gdim)),
     )
-    bestfx = np.Inf
+    bestfx = np.inf
 
     # Number of initial sample points
-    m0 = surrogateModels[0].ntrain()
+    m0 = surrogateModels[0].ntrain
     m_for_surrogate = surrogateModels[0].min_design_space_size(
         dim
     )  # Smallest sample for a valid surrogate
@@ -417,7 +415,7 @@ def surrogate_optimization(
         acquisitionFunc = TargetValueAcquisition()
 
     # Reserve space for the surrogate model to avoid repeated allocations
-    surrogateModel.reserve(surrogateModel.ntrain() + maxeval, dim)
+    surrogateModel.reserve(surrogateModel.ntrain + maxeval, dim)
 
     # Initialize output
     out = OptimizeResult()
@@ -953,7 +951,7 @@ def cptv(
             def func_continuous_search(x):
                 x_ = out.x.reshape(1, -1).copy()
                 x_[0, cindex] = x
-                return fun(x_)[0]
+                return fun(x_)
 
             out_local_ = minimize(
                 func_continuous_search,
@@ -1085,7 +1083,7 @@ def socemo(
 
     # Reserve space for the surrogate model to avoid repeated allocations
     for s in surrogateModels:
-        s.reserve(s.ntrain() + maxeval, dim)
+        s.reserve(s.ntrain + maxeval, dim)
 
     # Initialize output
     out = initialize_moo_surrogate(
@@ -1319,7 +1317,7 @@ def gosac(
 
     # Reserve space for the surrogate model to avoid repeated allocations
     for s in surrogateModels:
-        s.reserve(s.ntrain() + maxeval, dim)
+        s.reserve(s.ntrain + maxeval, dim)
 
     # Initialize output
     out = initialize_surrogate_constraints(
@@ -1371,7 +1369,7 @@ def gosac(
         # Evaluate the surrogate at the best candidates
         sCandidates = np.empty((len(bestCandidates), gdim))
         for i in range(gdim):
-            sCandidates[:, i], _ = surrogateModels[i](bestCandidates)
+            sCandidates[:, i] = surrogateModels[i](bestCandidates)
 
         # Find the minimum number of constraint violations
         constraintViolation = [
@@ -1401,7 +1399,7 @@ def gosac(
             out.fx[1:] = ySelected
             out.fsample[out.nfev, 0] = fxSelected
         else:
-            out.fsample[out.nfev, 0] = np.Inf
+            out.fsample[out.nfev, 0] = np.inf
 
         # Update sample and fsample in out
         out.sample[out.nfev, :] = xselected
@@ -1469,7 +1467,7 @@ def gosac(
                 out.fx[1:] = ySelected
             out.fsample[out.nfev, 0] = fxSelected
         else:
-            out.fsample[out.nfev, 0] = np.Inf
+            out.fsample[out.nfev, 0] = np.inf
 
         # Update sample and fsample in out
         out.sample[out.nfev, :] = xselected
@@ -1580,10 +1578,10 @@ def bayesian_optimization(
         if out.nfev + batchSize == maxeval:
             t0 = time.time()
             res = differential_evolution(
-                lambda x: surrogateModel(np.asarray([x]))[0], bounds
+                lambda x: surrogateModel(np.asarray([x])), bounds
             )
             if res.x is not None:
-                if cdist([res.x], surrogateModel.xtrain()).min() >= tol:
+                if cdist([res.x], surrogateModel.X).min() >= tol:
                     xselected = np.concatenate((xselected, [res.x]), axis=0)
             tf = time.time()
             if disp:

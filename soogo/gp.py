@@ -31,8 +31,11 @@ from sklearn.gaussian_process import GaussianProcessRegressor
 import scipy.optimize as scipy_opt
 from sklearn.gaussian_process.kernels import RBF as GPkernelRBF
 
+# Local imports
+from .surrogate import Surrogate
 
-class GaussianProcess(GaussianProcessRegressor):
+
+class GaussianProcess(GaussianProcessRegressor, Surrogate):
     """Gaussian Process model.
 
     This model uses default attributes and parameters from
@@ -90,23 +93,40 @@ class GaussianProcess(GaussianProcessRegressor):
         if "n_restarts_optimizer" not in kwargs:
             self.n_restarts_optimizer = 10
 
-    def __call__(self, x: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    def reserve(self, n: int, dim: int) -> None:
+        pass
+
+    def __call__(
+        self,
+        x: np.ndarray,
+        return_std: bool = False,
+        return_cov: bool = False,
+    ):
         """Evaluates the model at one or multiple points.
 
         :param x: m-by-d matrix with m point coordinates in a d-dimensional
             space.
+        :param return_std: If `True`, returns the standard deviation of the
+            predictions.
+        :param return_cov: If `True`, returns the covariance of the predictions.
         :return:
 
-            * Mean value predicted by the GP model on each of the input points.
-            * Std value predicted by the GP model on each of the input points.
+            * m-by-n matrix with m predictions.
+
+            * If `return_std` is `True`, the second output is a m-by-n matrix
+                with the standard deviations.
+
+            * If `return_cov` is `True`, the third output is a m-by-m matrix
+            with the covariances if n=1, otherwise it is a m-by-m-by-n matrix.
         """
         return self.predict(
             x if self.scaler is None else self.scaler.transform(x),
-            return_std=True,
-            return_cov=False,
+            return_std=return_std,
+            return_cov=return_cov,
         )
 
-    def xtrain(self) -> np.ndarray:
+    @property
+    def X(self) -> np.ndarray:
         """Get the training data points.
 
         :return: m-by-d matrix with m training points in a d-dimensional space.
@@ -117,14 +137,6 @@ class GaussianProcess(GaussianProcessRegressor):
             return self.scaler.inverse_transform(self.X_train_)
 
     def eval_kernel(self, x, y=None):
-        """Evaluate the kernel function at a pair (x,y).
-
-        The structure of the kernel is the same as the one passed as parameter
-        but with optimized hyperparameters.
-
-        :param x: First entry in the tuple (x,y).
-        :param y: Second entry in the tuple (x,y). If None, use x.
-        """
         if self.scaler is None:
             return self.kernel_(x, x) if y is None else self.kernel_(x, y)
         else:
@@ -170,9 +182,9 @@ class GaussianProcess(GaussianProcessRegressor):
             space.
         :param ynew: Function values on the sampled points.
         """
-        if self.ntrain() > 0:
-            X = np.concatenate((self.xtrain(), Xnew), axis=0)
-            y = np.concatenate((self.ytrain(), ynew), axis=0)
+        if self.ntrain > 0:
+            X = np.concatenate((self.X, Xnew), axis=0)
+            y = np.concatenate((self.Y, ynew), axis=0)
         else:
             X = Xnew
             y = ynew
@@ -208,15 +220,13 @@ class GaussianProcess(GaussianProcessRegressor):
                     stacklevel=2,
                 )
 
-    def ntrain(self) -> int:
-        """Get the number of sampled points."""
-        return len(self.xtrain())
-
-    def get_iindex(self) -> tuple[int, ...]:
+    @property
+    def iindex(self) -> tuple[int, ...]:
         """Return iindex, the sequence of integer variable indexes."""
         return ()
 
-    def ytrain(self) -> np.ndarray:
+    @property
+    def Y(self) -> np.ndarray:
         """Get f(x) for the sampled points."""
         return self._y_train_mean + self.y_train_ * self._y_train_std
 

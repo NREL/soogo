@@ -40,7 +40,7 @@ from math import log
 from scipy.spatial.distance import cdist
 from scipy.spatial import KDTree
 from scipy.special import gamma
-from scipy.linalg import ldl, cholesky, solve_triangular
+from scipy.linalg import cholesky, solve_triangular
 from scipy.optimize import minimize, differential_evolution
 
 # Pymoo imports
@@ -53,7 +53,7 @@ from pymoo.termination.default import DefaultSingleObjectiveTermination
 
 # Local imports
 from .sampling import NormalSampler, Sampler, Mitchel91Sampler
-from .rbf import RbfModel, RbfKernel
+from .rbf import LinearRadialBasisFunction, RbfModel
 from .gp import GaussianProcess
 from .problem import (
     ProblemWithConstraint,
@@ -84,7 +84,7 @@ def expected_improvement(delta, sigma):
 
 
 def gp_expected_improvement(model: GaussianProcess, x, ybest):
-    mu, sigma = model(x)
+    mu, sigma = model(x, return_std=True)
     return expected_improvement(ybest - mu, sigma)
 
 
@@ -441,13 +441,9 @@ class WeightedAcquisition(AcquisitionFunction):
             if "xbest" in kwargs:
                 xbest = kwargs["xbest"]
             elif listOfSurrogates:
-                xbest = surrogateModel.samples()[
-                    find_pareto_front(surrogateModel.ytrain())
-                ]
+                xbest = surrogateModel.X[find_pareto_front(surrogateModel.Y)]
             else:
-                xbest = surrogateModel.samples()[
-                    surrogateModel.ytrain().argmin()
-                ]
+                xbest = surrogateModel.X[surrogateModel.Y.argmin()]
 
             # Do local continuous search when asked
             if "countinuousSearch" in kwargs and kwargs["countinuousSearch"]:
@@ -476,14 +472,14 @@ class WeightedAcquisition(AcquisitionFunction):
 
         # Evaluate candidates
         if not listOfSurrogates:
-            sample = surrogateModel.xtrain()
-            fx, _ = surrogateModel(x)
+            sample = surrogateModel.X
+            fx = surrogateModel(x)
         else:
-            sample = surrogateModel[0].xtrain()
+            sample = surrogateModel[0].X
             objdim = len(surrogateModel)
             fx = np.empty((nCand, objdim))
             for i in range(objdim):
-                fx[:, i], _ = surrogateModel[i](x)
+                fx[:, i] = surrogateModel[i](x)
 
         # Select best candidates
         xselected, _ = self.minimize_weightedavg_fx_distx(
@@ -590,99 +586,8 @@ class TargetValueAcquisition(AcquisitionFunction):
         )
 
     @staticmethod
-    def mu_measure(surrogate: RbfModel, x: np.ndarray, LDLt):
-        """Compute the value of abs(mu) for an RBF model.
-
-        The mu measure was first defined in [#]_ with suggestions of usage for
-        global optimization with RBF functions. In [#]_, the authors detail the
-        strategy to make the evaluations computationally viable.
-
-        The current
-        implementation, uses a different strategy than that from Björkman and
-        Holmström (2000), where a single LDLt factorization is used instead of
-        the QR and Cholesky factorizations. The new algorithm's performs 10
-        times less operations than the former. Like the former, the new
-        algorithm is also able to use high-intensity linear algebra operations
-        when the routine is called with multiple points :math:`x` are evaluated
-        at once.
-
-        :param surrogate: RBF surrogate model.
-        :param x: Possible point to be added to the surrogate model.
-        :param LDLt: LDLt factorization of the matrix A as returned by the
-            function scipy.linalg.ldl.
-
-        References
-        ----------
-        .. [#] Gutmann, HM. A Radial Basis Function Method for Global
-            Optimization. Journal of Global Optimization 19, 201–227 (2001).
-            https://doi.org/10.1023/A:1011255519438
-        .. [#] Björkman, M., Holmström, K. Global Optimization of Costly
-            Nonconvex Functions Using Radial Basis Functions. Optimization and
-            Engineering 1, 373–397 (2000). https://doi.org/10.1023/A:1011584207202
-        """
-        # compute rbf value of the new point x
-        xdist = cdist(surrogate.xtrain(), x)
-        newCols = np.concatenate(
-            (np.asarray(surrogate.phi(xdist)), surrogate.pbasis(x).T), axis=0
-        )
-
-        # Get the L factor, the block-diagonal matrix D, and the permutation
-        # vector p
-        ptL, D, p = LDLt
-        L = ptL[p]
-
-        # 0. Permute the new terms
-        newCols = newCols[p]
-
-        # 1. Solve P [a;b] = L (D l) for (D l)
-        Dl = solve_triangular(
-            L,
-            newCols,
-            lower=True,
-            unit_diagonal=True,
-            # check_finite=False,
-            overwrite_b=True,
-        )
-
-        # 2. Compute l := inv(D) (Dl)
-        ell = Dl.copy()
-        i = 0
-        while i < len(ell) - 1:
-            if D[i + 1, i] == 0:
-                # Invert block of size 1x1
-                ell[i] /= D[i, i]
-                i += 1
-            else:
-                # Invert block of size 2x2
-                det = D[i, i] * D[i + 1, i + 1] - D[i, i + 1] ** 2
-                ell[i], ell[i + 1] = (
-                    (ell[i] * D[i + 1, i + 1] - ell[i + 1] * D[i, i + 1])
-                    / det,
-                    (ell[i + 1] * D[i, i] - ell[i] * D[i, i + 1]) / det,
-                )
-                i += 2
-        if i == len(ell) - 1:
-            # Invert last block of size 1x1
-            ell[i] /= D[i, i]
-
-        # 3. d = \phi(0) - l^T D l and \mu = 1/d
-        d = surrogate.phi(0) - (ell * Dl).sum(axis=0)
-        mu = np.where(d != 0, 1 / d, np.inf)
-
-        # Get the absolute value of mu
-        if surrogate.kernel == RbfKernel.LINEAR:
-            mu = -mu
-        elif surrogate.kernel not in (RbfKernel.CUBIC, RbfKernel.THINPLATE):
-            raise ValueError("Unknown RBF type")
-
-        # Return huge value if the matrix is ill-conditioned
-        mu = np.where(mu <= 0, np.inf, mu)
-
-        return mu
-
-    @staticmethod
     def bumpiness_measure(
-        surrogate: RbfModel, x: np.ndarray, target, LDLt, target_range=1.0
+        surrogate: RbfModel, x: np.ndarray, target, target_range=1.0
     ):
         r"""Compute the bumpiness of the surrogate model.
 
@@ -703,18 +608,16 @@ class TargetValueAcquisition(AcquisitionFunction):
         :param surrogate: RBF surrogate model.
         :param x: Possible point to be added to the surrogate model.
         :param target: Target value.
-        :param LDLt: LDLt factorization of the matrix A as returned by the
-            function scipy.linalg.ldl.
         :param target_range: Known range in the target space. Used to scale
             the function values to avoid overflow.
         """
-        absmu = TargetValueAcquisition.mu_measure(surrogate, x, LDLt)
+        absmu = surrogate.mu_measure(x)
         assert all(
             absmu > 0
         )  # if absmu == 0, the linear system in the surrogate model singular
 
         # predict RBF value of x
-        yhat, _ = surrogate(x)
+        yhat = surrogate(x)
 
         # Compute the distance between the predicted value and the target
         dist = np.absolute(yhat - target) / target_range
@@ -756,14 +659,14 @@ class TargetValueAcquisition(AcquisitionFunction):
         assert n <= self.cycleLength + 2
 
         # Create a KDTree with the current training points
-        tree = KDTree(surrogateModel.xtrain())
+        tree = KDTree(surrogateModel.X)
         tol = self.rtol * np.min([abs(b[1] - b[0]) for b in bounds])
 
         # Compute fbounds of the surrogate. Use the filter as suggested by
         # Björkman and Holmström (2000)
         fbounds = [
-            surrogateModel.ytrain().min(),
-            surrogateModel.filter(surrogateModel.ytrain()).max(),
+            surrogateModel.Y.min(),
+            surrogateModel.filter(surrogateModel.Y).max(),
         ]
         target_range = fbounds[1] - fbounds[0]
         if target_range == 0:
@@ -771,7 +674,7 @@ class TargetValueAcquisition(AcquisitionFunction):
 
         # Allocate variables a priori targeting batched sampling
         x = np.empty((n, dim))
-        LDLt = None
+        mu_measure_is_prepared = False
         x_rbf = None
         f_rbf = None
 
@@ -783,20 +686,17 @@ class TargetValueAcquisition(AcquisitionFunction):
                 sample_stage = self._cycle
                 self._cycle = (self._cycle + 1) % (self.cycleLength + 2)
             if sample_stage == 0:  # InfStep - minimize Mu_n
-                if LDLt is None:
-                    LDLt = ldl(surrogateModel.get_RBFmatrix())
+                if not mu_measure_is_prepared:
+                    surrogateModel.prepare_mu_measure()
+                    mu_measure_is_prepared = True
                 problem = ProblemNoConstraint(
-                    lambda x: TargetValueAcquisition.mu_measure(
-                        surrogateModel, x, LDLt
-                    ),
-                    bounds,
-                    surrogateModel.iindex,
+                    surrogateModel.mu_measure, bounds, surrogateModel.iindex
                 )
 
                 res = pymoo_minimize(
                     problem,
                     self.optimizer,
-                    seed=surrogateModel.ntrain(),
+                    seed=surrogateModel.ntrain,
                     verbose=False,
                 )
 
@@ -809,14 +709,12 @@ class TargetValueAcquisition(AcquisitionFunction):
                 # find min of surrogate model
                 if f_rbf is None:
                     problem = ProblemNoConstraint(
-                        lambda x: surrogateModel(x)[0],
-                        bounds,
-                        surrogateModel.iindex,
+                        surrogateModel, bounds, surrogateModel.iindex
                     )
                     res = pymoo_minimize(
                         problem,
                         self.optimizer,
-                        seed=surrogateModel.ntrain(),
+                        seed=surrogateModel.ntrain,
                         verbose=False,
                     )
                     assert res.X is not None
@@ -833,11 +731,12 @@ class TargetValueAcquisition(AcquisitionFunction):
                 )  # target for objective function value
 
                 # use GA method to minimize bumpiness measure
-                if LDLt is None:
-                    LDLt = ldl(surrogateModel.get_RBFmatrix())
+                if not mu_measure_is_prepared:
+                    surrogateModel.prepare_mu_measure()
+                    mu_measure_is_prepared = True
                 problem = ProblemNoConstraint(
                     lambda x: TargetValueAcquisition.bumpiness_measure(
-                        surrogateModel, x, f_target, LDLt, target_range
+                        surrogateModel, x, f_target, target_range
                     ),
                     bounds,
                     surrogateModel.iindex,
@@ -846,7 +745,7 @@ class TargetValueAcquisition(AcquisitionFunction):
                 res = pymoo_minimize(
                     problem,
                     self.optimizer,
-                    seed=surrogateModel.ntrain(),
+                    seed=surrogateModel.ntrain,
                     verbose=False,
                 )
 
@@ -856,14 +755,12 @@ class TargetValueAcquisition(AcquisitionFunction):
                 # find the minimum of RBF surface
                 if f_rbf is None:
                     problem = ProblemNoConstraint(
-                        lambda x: surrogateModel(x)[0],
-                        bounds,
-                        surrogateModel.iindex,
+                        surrogateModel, bounds, surrogateModel.iindex
                     )
                     res = pymoo_minimize(
                         problem,
                         self.optimizer,
-                        seed=surrogateModel.ntrain(),
+                        seed=surrogateModel.ntrain,
                         verbose=False,
                     )
                     assert res.X is not None
@@ -881,11 +778,12 @@ class TargetValueAcquisition(AcquisitionFunction):
                         abs(fbounds[0]) if fbounds[0] != 0 else 1
                     )
                     # use GA method to minimize bumpiness measure
-                    if LDLt is None:
-                        LDLt = ldl(surrogateModel.get_RBFmatrix())
+                    if not mu_measure_is_prepared:
+                        surrogateModel.prepare_mu_measure()
+                        mu_measure_is_prepared = True
                     problem = ProblemNoConstraint(
                         lambda x: TargetValueAcquisition.bumpiness_measure(
-                            surrogateModel, x, f_target, LDLt, target_range
+                            surrogateModel, x, f_target, target_range
                         ),
                         bounds,
                         surrogateModel.iindex,
@@ -894,7 +792,7 @@ class TargetValueAcquisition(AcquisitionFunction):
                     res = pymoo_minimize(
                         problem,
                         self.optimizer,
-                        seed=surrogateModel.ntrain(),
+                        seed=surrogateModel.ntrain,
                         verbose=False,
                     )
 
@@ -902,9 +800,7 @@ class TargetValueAcquisition(AcquisitionFunction):
                     xselected = np.asarray([res.X[i] for i in range(dim)])
 
             # Replace points that are too close to current sample
-            current_sample = np.concatenate(
-                (surrogateModel.xtrain(), x[0:i]), axis=0
-            )
+            current_sample = np.concatenate((surrogateModel.X, x[0:i]), axis=0)
             while np.any(tree.query(xselected)[0] < tol) or (
                 i > 0 and cdist(xselected.reshape(1, -1), x[0:i]).min() < tol
             ):
@@ -1005,7 +901,7 @@ class MinimizeSurrogate(AcquisitionFunction):
         selected = np.empty((n, dim))
 
         # Create a KDTree with the training data points
-        tree = KDTree(surrogateModel.xtrain())
+        tree = KDTree(surrogateModel.X)
         tol = self.rtol * np.min([abs(b[1] - b[0]) for b in bounds])
 
         iter = 0
@@ -1041,7 +937,7 @@ class MinimizeSurrogate(AcquisitionFunction):
             ].T
 
             # Evaluate the surrogate model on the candidate points and sort them
-            fcand[iStart:iEnd], _ = surrogateModel(candidates[iStart:iEnd, :])
+            fcand[iStart:iEnd] = surrogateModel(candidates[iStart:iEnd, :])
             ids = np.argsort(fcand[0:iEnd])
             remevals -= iEnd - iStart
 
@@ -1067,7 +963,7 @@ class MinimizeSurrogate(AcquisitionFunction):
                 def func_continuous_search(x):
                     x_ = xi.copy()
                     x_[cindex] = x
-                    return surrogateModel(x_)[0]
+                    return surrogateModel(x_)
 
                 def dfunc_continuous_search(x):
                     x_ = xi.copy()
@@ -1105,7 +1001,7 @@ class MinimizeSurrogate(AcquisitionFunction):
                     else:
                         tree = KDTree(
                             np.concatenate(
-                                (surrogateModel.xtrain(), selected[0:k, :]),
+                                (surrogateModel.X, selected[0:k, :]),
                                 axis=0,
                             )
                         )
@@ -1134,13 +1030,13 @@ class MinimizeSurrogate(AcquisitionFunction):
             selected = singleCandSampler.get_mitchel91_sample(
                 bounds,
                 iindex=surrogateModel.iindex,
-                current_sample=surrogateModel.xtrain(),
+                current_sample=surrogateModel.X,
             )
             while tree.query(selected)[0] < tol:
                 selected = singleCandSampler.get_mitchel91_sample(
                     bounds,
                     iindex=surrogateModel.iindex,
-                    current_sample=surrogateModel.xtrain(),
+                    current_sample=surrogateModel.X,
                 )
             return selected.reshape(1, -1)
 
@@ -1216,17 +1112,17 @@ class ParetoFront(AcquisitionFunction):
         assert objdim > 1
 
         # Create a surrogate model for the Pareto front in the objective space
-        paretoModel = RbfModel(RbfKernel.LINEAR)
+        paretoModel = RbfModel(LinearRadialBasisFunction())
         k = np.random.choice(objdim)
         paretoModel.update(
             np.array([paretoFront[:, i] for i in range(objdim) if i != k]).T,
             paretoFront[:, k],
         )
-        dim = paretoModel.dim()
+        dim = paretoModel.dim
 
         # Bounds in the pareto sample
-        xParetoLow = np.min(paretoModel.xtrain(), axis=0)
-        xParetoHigh = np.max(paretoModel.xtrain(), axis=0)
+        xParetoLow = np.min(paretoModel.X, axis=0)
+        xParetoHigh = np.max(paretoModel.X, axis=0)
         boundsPareto = [(xParetoLow[i], xParetoHigh[i]) for i in range(dim)]
 
         # Minimum of delta_f maximizes the distance inside the Pareto front
@@ -1237,13 +1133,13 @@ class ParetoFront(AcquisitionFunction):
         )
 
         def delta_f(tau):
-            tauk, _ = paretoModel(tau)
+            tauk = paretoModel(tau)
             _tau = np.concatenate((tau[0:k], tauk, tau[k:]))
             return -tree.query(_tau)[0]
 
         # Minimize delta_f
         res = differential_evolution(delta_f, boundsPareto)
-        tauk, _ = paretoModel(res.x)
+        tauk = paretoModel(res.x)
         tau = np.concatenate((res.x[0:k], tauk, res.x[k:]))
 
         return tau
@@ -1275,12 +1171,10 @@ class ParetoFront(AcquisitionFunction):
         objdim = len(surrogateModels)
 
         if len(paretoFront) == 0:
-            paretoFront = np.array(
-                [s.ytrain().flatten() for s in surrogateModels]
-            ).T
+            paretoFront = np.array([s.Y.flatten() for s in surrogateModels]).T
             paretoFrontIdx = find_pareto_front(paretoFront)
             paretoFront = paretoFront[paretoFrontIdx]
-            nondominated = surrogateModels[0].xtrain()[paretoFrontIdx]
+            nondominated = surrogateModels[0].X[paretoFrontIdx]
 
         # If the Pareto front has only one point or is empty, there is no
         # way to find a target value.
@@ -1324,9 +1218,7 @@ class ParetoFront(AcquisitionFunction):
                 newX = np.array([[x[i] for i in range(dim)] for x in res.X])
 
                 # Transform the values of the optimization into a matrix
-                sx = np.array(
-                    [s(newX)[0].flatten() for s in surrogateModels]
-                ).T
+                sx = np.array([s(newX).flatten() for s in surrogateModels]).T
 
                 # Find the values that are expected to be in the Pareto front
                 # of the original optimization problem
@@ -1417,12 +1309,12 @@ class EndPointsParetoFront(AcquisitionFunction):
         endpoints = np.empty((objdim, dim))
         for i in range(objdim):
             minimumPointProblem = ProblemNoConstraint(
-                lambda x: surrogateModels[i](x)[0], bounds, iindex
+                surrogateModels[i], bounds, iindex
             )
             res = pymoo_minimize(
                 minimumPointProblem,
                 self.optimizer,
-                seed=surrogateModels[0].ntrain(),
+                seed=surrogateModels[0].ntrain,
                 verbose=False,
             )
             assert res.X is not None
@@ -1430,7 +1322,7 @@ class EndPointsParetoFront(AcquisitionFunction):
                 endpoints[i, j] = res.X[j]
 
         # Create KDTree with the already evaluated points
-        tree = KDTree(surrogateModels[0].xtrain())
+        tree = KDTree(surrogateModels[0].X)
         tol = self.rtol * np.min([abs(b[1] - b[0]) for b in bounds])
 
         # Discard points that are too close to previously sampled points.
@@ -1463,7 +1355,7 @@ class EndPointsParetoFront(AcquisitionFunction):
                 minimumPointProblem,
                 self.optimizer,
                 verbose=False,
-                seed=surrogateModels[0].ntrain() + 1,
+                seed=surrogateModels[0].ntrain + 1,
             )
             assert res.X is not None
             endpoints = np.empty((1, dim))
@@ -1533,7 +1425,7 @@ class MinimizeMOSurrogate(AcquisitionFunction):
         res = pymoo_minimize(
             multiobjSurrogateProblem,
             self.mooptimizer,
-            seed=surrogateModels[0].ntrain(),
+            seed=surrogateModels[0].ntrain,
             verbose=False,
         )
 
@@ -1548,9 +1440,9 @@ class MinimizeMOSurrogate(AcquisitionFunction):
             tol = self.rtol * np.min([abs(b[1] - b[0]) for b in bounds])
 
             # Discard points that are too close to previously sampled points.
-            distNeighbor = cdist(
-                bestCandidates, surrogateModels[0].xtrain()
-            ).min(axis=1)
+            distNeighbor = cdist(bestCandidates, surrogateModels[0].X).min(
+                axis=1
+            )
             bestCandidates = bestCandidates[distNeighbor >= tol, :]
 
             # Return if no point was left
@@ -1661,7 +1553,7 @@ class CoordinatePerturbationOverNondominated(AcquisitionFunction):
         fnondominatedAndBestCandidates = np.concatenate(
             (
                 paretoFront,
-                np.array([s(bestCandidates)[0] for s in surrogateModels]).T,
+                np.array([s(bestCandidates) for s in surrogateModels]).T,
             ),
             axis=0,
         )
@@ -1751,13 +1643,13 @@ class GosacSample(AcquisitionFunction):
         assert n == 1
 
         # Create KDTree with previously evaluated points
-        tree = KDTree(surrogateModels[0].xtrain())
+        tree = KDTree(surrogateModels[0].X)
         tol = self.rtol * np.min([abs(b[1] - b[0]) for b in bounds])
 
         cheapProblem = ProblemWithConstraint(
             self.fun,
             lambda x: np.transpose(
-                [surrogateModels[i](x)[0] for i in range(gdim)]
+                [surrogateModels[i](x) for i in range(gdim)]
             ),
             bounds,
             iindex,
@@ -1766,7 +1658,7 @@ class GosacSample(AcquisitionFunction):
         res = pymoo_minimize(
             cheapProblem,
             self.optimizer,
-            seed=surrogateModels[0].ntrain(),
+            seed=surrogateModels[0].ntrain,
             verbose=False,
         )
 
@@ -1789,7 +1681,7 @@ class GosacSample(AcquisitionFunction):
             res = pymoo_minimize(
                 minimumPointProblem,
                 self.optimizer,
-                seed=surrogateModels[0].ntrain() + 1,
+                seed=surrogateModels[0].ntrain + 1,
                 verbose=False,
             )
             assert res.X is not None
@@ -1858,7 +1750,7 @@ class MaximizeEI(AcquisitionFunction):
         :param ybest: Best point so far. If not provided, find the minimum value
             for the surrogate. Use it as a possible candidate.
         """
-        assert len(surrogateModel.get_iindex()) == 0
+        assert len(surrogateModel.iindex) == 0
         if n == 0:
             return np.empty((0, len(bounds)))
 
@@ -1866,7 +1758,7 @@ class MaximizeEI(AcquisitionFunction):
         if ybest is None:
             # Compute an estimate for ybest using the surrogate.
             res = differential_evolution(
-                lambda x: surrogateModel(np.asarray([x]))[0], bounds
+                lambda x: surrogateModel(np.asarray([x])), bounds
             )
             ybest = res.fun
             if res.success:
@@ -1887,7 +1779,7 @@ class MaximizeEI(AcquisitionFunction):
 
         # Generate the complete pool of candidates
         if isinstance(self.sampler, Mitchel91Sampler):
-            current_sample = surrogateModel.xtrain()
+            current_sample = surrogateModel.X
             if xs is not None:
                 current_sample = np.concatenate((current_sample, [xs]), axis=0)
             if xbest is not None:

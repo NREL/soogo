@@ -21,6 +21,7 @@ __all__ = [
     "sampling",
     "rbf",
     "gp",
+    "surrogate",
     "surrogate_optimization",
     "multistart_msrs",
     "dycors",
@@ -38,6 +39,7 @@ from . import optimize
 from . import sampling
 from . import rbf
 from . import gp
+from . import surrogate
 
 # Expose optimization routines
 from .optimize import (

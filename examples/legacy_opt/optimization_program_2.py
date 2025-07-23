@@ -29,7 +29,7 @@ __credits__ = [
 __deprecated__ = False
 
 from examples.single_obj_rbf.optimization_program_1 import read_check_data_file
-from soogo.rbf import RbfKernel, RbfModel, MedianLpfFilter
+from soogo.rbf import RbfModel, MedianLpfFilter
 from soogo import surrogate_optimization
 from soogo.sampling import NormalSampler, Sampler, SamplingStrategy
 from soogo.acquisition import WeightedAcquisition
@@ -47,7 +47,6 @@ if __name__ == "__main__":
     batchSize = 2
     data = read_check_data_file(data_file)
     nCand = 500 * data.dim
-    phifunction = RbfKernel.CUBIC
     m = 2 * (data.dim + 1)
     numstart = (
         0  # collect all objective function values of the current trial here
@@ -89,11 +88,10 @@ if __name__ == "__main__":
     print(data.objfunction)
     print(data.dim)
     print(nCand)
-    print(phifunction)
     print(sample)
     print("LocalStochRBFstop Start")
 
-    rbfModel = RbfModel(phifunction, filter=MedianLpfFilter())
+    rbfModel = RbfModel(filter=MedianLpfFilter())
     rbfModel.update(sample, data.objfunction(sample))
 
     optres = surrogate_optimization(
@@ -125,6 +123,5 @@ if __name__ == "__main__":
     print("Y", optres.fsample.shape)
     print("xbest", optres.x)
     print("Fbest", optres.fx)
-    print("lambda", rbfModel.ntrain())
-    print("ctail", rbfModel.pdim())
+    print("lambda", rbfModel.ntrain)
     print("NumberFevals", optres.nfev)

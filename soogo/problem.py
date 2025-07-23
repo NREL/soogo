@@ -186,7 +186,7 @@ class MultiobjTVProblem(Problem):
         out["F"] = np.empty((x.shape[0], self.n_obj))
         for i in range(self.n_obj):
             out["F"][:, i] = np.absolute(
-                self.surrogateModels[i](x)[0] - self.tau[i]
+                self.surrogateModels[i](x) - self.tau[i]
             )
 
 
@@ -215,4 +215,4 @@ class MultiobjSurrogateProblem(Problem):
         x = _dict_to_array(X)
         out["F"] = np.empty((x.shape[0], self.n_obj))
         for i in range(self.n_obj):
-            out["F"][:, i] = self.surrogateModels[i](x)[0]
+            out["F"][:, i] = self.surrogateModels[i](x)

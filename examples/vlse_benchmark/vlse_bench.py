@@ -150,27 +150,27 @@ myFuncs = {
 # Algorithms that can be used in the tests
 algorithms = {}
 algorithms["SRS"] = {
-    "model": rbf.RbfModel(rbf.RbfKernel.CUBIC, filter=rbf.MedianLpfFilter()),
+    "model": rbf.RbfModel(filter=rbf.MedianLpfFilter()),
     "optimizer": optimize.multistart_msrs,
     "acquisition": None,
 }
 algorithms["DYCORS"] = {
-    "model": rbf.RbfModel(rbf.RbfKernel.CUBIC, filter=rbf.MedianLpfFilter()),
+    "model": rbf.RbfModel(filter=rbf.MedianLpfFilter()),
     "optimizer": optimize.dycors,
     "acquisition": None,
 }
 algorithms["CPTV"] = {
-    "model": rbf.RbfModel(rbf.RbfKernel.CUBIC, filter=rbf.MedianLpfFilter()),
+    "model": rbf.RbfModel(filter=rbf.MedianLpfFilter()),
     "optimizer": optimize.cptv,
     "acquisition": None,
 }
 algorithms["CPTVl"] = {
-    "model": rbf.RbfModel(rbf.RbfKernel.CUBIC, filter=rbf.MedianLpfFilter()),
+    "model": rbf.RbfModel(filter=rbf.MedianLpfFilter()),
     "optimizer": optimize.cptvl,
     "acquisition": None,
 }
 algorithms["MLSL"] = {
-    "model": rbf.RbfModel(rbf.RbfKernel.CUBIC, filter=rbf.MedianLpfFilter()),
+    "model": rbf.RbfModel(filter=rbf.MedianLpfFilter()),
     "optimizer": optimize.surrogate_optimization,
     "acquisition": acquisition.MinimizeSurrogate(1, 0.005 * np.sqrt(2.0)),
 }

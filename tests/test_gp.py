@@ -29,15 +29,15 @@ from soogo.gp import GaussianProcess
 
 @pytest.mark.parametrize("n", (10, 100))
 @pytest.mark.parametrize("copy_X_train", (True, False))
-def test_xtrain(n: int, copy_X_train: bool):
+def test_X(n: int, copy_X_train: bool):
     gp = GaussianProcess(copy_X_train=copy_X_train)
 
     X0 = np.random.rand(n, 3)
     y = np.random.rand(n)
     gp.update(X0, y)
-    assert np.isclose(X0, gp.xtrain()).all()
+    assert np.isclose(X0, gp.X).all()
 
     X1 = np.random.rand(n, 3)
     y = np.random.rand(n)
     gp.update(X1, y)
-    assert np.isclose(np.concatenate((X0, X1), axis=0), gp.xtrain()).all()
+    assert np.isclose(np.concatenate((X0, X1), axis=0), gp.X).all()

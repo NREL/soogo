@@ -56,7 +56,7 @@ def read_and_run(
     maxeval: int = 0,
     Ntrials: int = 0,
     batchSize: int = 0,
-    rbf_type: rbf.RbfKernel = rbf.RbfKernel.CUBIC,
+    rbf_type: rbf.RadialBasisFunction = rbf.CubicRadialBasisFunction(),
     PlotResult: bool = True,
     optim_func=optimize.multistart_msrs,
     seeds=None,
@@ -78,10 +78,10 @@ def read_and_run(
     batchSize : int, optional
         Number of new sample points per step of the optimization algorithm.
         Default: 0, i.e., defined by the :func:`check_set_parameters()`.
-    rbf_type : rbf.RbfKernel, optional
-        Type of RBF kernel to be used. Default rbf.RbfKernel.CUBIC.
+    rbf_type : rbf.RadialBasisFunction, optional
+        Type of RBF kernel to be used. Default: CubicRadialBasisFunction.
     PlotResult : bool, optional
-        If Trur, plot the results. Default: False.
+        If True, plot the results. Default: False.
     optim_func : optional
         Optimizer to be used. Default :func:`soogo.multistart_msrs()`.
     seeds: optional
@@ -341,7 +341,7 @@ def main(config: int) -> list[optimize.OptimizeResult]:
             maxeval=100,
             Ntrials=3,
             batchSize=1,
-            rbf_type=rbf.RbfKernel.THINPLATE,
+            rbf_type=rbf.ThinPlateRadialBasisFunction(),
             PlotResult=True,
             optim_func=optimize.dycors,
         )
@@ -362,7 +362,7 @@ def main(config: int) -> list[optimize.OptimizeResult]:
             maxeval=100,
             Ntrials=3,
             batchSize=1,
-            rbf_type=rbf.RbfKernel.THINPLATE,
+            rbf_type=rbf.ThinPlateRadialBasisFunction(),
             PlotResult=True,
             optim_func=optimize.surrogate_optimization,
         )
@@ -373,7 +373,7 @@ def main(config: int) -> list[optimize.OptimizeResult]:
             maxeval=100,
             Ntrials=3,
             batchSize=1,
-            rbf_type=rbf.RbfKernel.THINPLATE,
+            rbf_type=rbf.ThinPlateRadialBasisFunction(),
             PlotResult=True,
             optim_func=optimize.surrogate_optimization,
         )
@@ -383,7 +383,7 @@ def main(config: int) -> list[optimize.OptimizeResult]:
             maxeval=100,
             Ntrials=3,
             batchSize=1,
-            rbf_type=rbf.RbfKernel.THINPLATE,
+            rbf_type=rbf.ThinPlateRadialBasisFunction(),
             PlotResult=True,
             optim_func=optimize.cptv,
         )
@@ -393,7 +393,7 @@ def main(config: int) -> list[optimize.OptimizeResult]:
             maxeval=100,
             Ntrials=3,
             batchSize=1,
-            rbf_type=rbf.RbfKernel.THINPLATE,
+            rbf_type=rbf.ThinPlateRadialBasisFunction(),
             PlotResult=True,
             optim_func=optimize.cptvl,
         )
@@ -404,7 +404,7 @@ def main(config: int) -> list[optimize.OptimizeResult]:
             maxeval=100,
             Ntrials=3,
             batchSize=10,
-            rbf_type=rbf.RbfKernel.THINPLATE,
+            rbf_type=rbf.ThinPlateRadialBasisFunction(),
             PlotResult=True,
             optim_func=optimize.surrogate_optimization,
         )

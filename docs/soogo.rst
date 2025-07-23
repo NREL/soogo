@@ -13,6 +13,7 @@ Submodules
    problem
    rbf
    sampling
+   surrogate
 
 Module contents
 ---------------

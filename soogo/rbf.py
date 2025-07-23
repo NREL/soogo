@@ -22,22 +22,23 @@ __email__ = "weslley.dasilvapereira@nrel.gov"
 __credits__ = ["Weslley S. Pereira"]
 __deprecated__ = False
 
-from typing import Optional
+from typing import Optional, Union, Tuple
 import warnings
 import numpy as np
-from enum import Enum
+from abc import abstractmethod, ABC
+from math import comb
+import sys
+
+# Autograd imports
+from autograd import numpy as anp
+from autograd import grad, hessian
 
 # Scipy imports
 from scipy.spatial.distance import cdist
-from scipy.linalg import solve
+from scipy.linalg import solve, ldl, solve_triangular
 
-
-class RbfKernel(Enum):
-    """RBF kernel tags."""
-
-    LINEAR = 1  #: Linear kernel, i.e., :math:`\phi(r) = r`
-    THINPLATE = 2  #: Thinplate spline: :math:`\phi(r) = r^2 \log(r)`
-    CUBIC = 3  #: Cubic kernel, i.e., :math:`\phi(r) = r^3`
+# Local imports
+from .surrogate import Surrogate
 
 
 class RbfFilter:
@@ -72,7 +73,85 @@ class MedianLpfFilter(RbfFilter):
         return np.where(x > np.median(x), np.median(x), x)
 
 
-class RbfModel:
+class RadialBasisFunction(ABC):
+    """Base class for radial basis functions used in RBF models."""
+
+    @abstractmethod
+    def __call__(self, r):
+        pass
+
+    def __init__(self):
+        """Initialize the radial basis function and set up autograd functions."""
+        self._grad = grad(self.__call__)
+        self._hess = grad(self._grad)
+
+    def grad(self, r):
+        """Gradient of the radial function."""
+        return self._grad(r)
+
+    def hess(self, r):
+        """Hessian of the radial function."""
+        return self._hess(r)
+
+    def grad_over_r(self, r):
+        """Gradient of the radial function."""
+        return self._grad(r) / r
+
+    @staticmethod
+    def polynomial_tail_order() -> int:
+        """Return the order of the polynomial tail.
+
+        :return: Order of the polynomial tail, or -1 if no polynomial tail
+            is present.
+        """
+        return -1
+
+
+class LinearRadialBasisFunction(RadialBasisFunction):
+    def __call__(self, r):
+        return -r
+
+    @staticmethod
+    def polynomial_tail_order() -> int:
+        return 0
+
+
+class CubicRadialBasisFunction(RadialBasisFunction):
+    def __call__(self, r):
+        return r**3
+
+    def grad_over_r(self, r):
+        return 3 * r
+
+    @staticmethod
+    def polynomial_tail_order() -> int:
+        return 1
+
+
+class ThinPlateRadialBasisFunction(RadialBasisFunction):
+    def __init__(self, safe_r=sys.float_info.min):
+        """Initialize the thin plate radial basis function.
+
+        :param safe_r: A small value to avoid numerical issues with log(0).
+                       Defaults to the smallest positive floating point number.
+        """
+        super().__init__()
+        self.safe_r = safe_r
+
+    def __call__(self, r):
+        _r = anp.where(r == 0, 1, r)
+        return _r**2 * anp.log(_r)
+
+    def grad_over_r(self, r):
+        _r = anp.where(r == 0, self.safe_r, r)
+        return 2 * anp.log(_r) + 1
+
+    @staticmethod
+    def polynomial_tail_order() -> int:
+        return 1
+
+
+class RbfModel(Surrogate):
     r"""Radial Basis Function model.
 
     .. math::
@@ -112,12 +191,12 @@ class RbfModel:
 
     def __init__(
         self,
-        kernel: RbfKernel = RbfKernel.CUBIC,
+        kernel: RadialBasisFunction = CubicRadialBasisFunction(),
         iindex: tuple[int, ...] = (),
         filter: Optional[RbfFilter] = None,
     ):
-        self.kernel = kernel
-        self.iindex = iindex
+        self.rbf = kernel
+        self._iindex = iindex
         self.filter = RbfFilter() if filter is None else filter
 
         self._m = 0
@@ -157,9 +236,11 @@ class RbfModel:
             )
 
         if self._coef.size == 0:
-            self._coef = np.empty(maxeval + self.pdim())
+            self._coef = np.empty(maxeval + self.polynomial_tail_size())
         else:
-            additional_values = max(0, maxeval + self.pdim() - self._coef.size)
+            additional_values = max(
+                0, maxeval + self.polynomial_tail_size() - self._coef.size
+            )
             self._coef = np.concatenate(
                 (self._coef, np.empty(additional_values)), axis=0
             )
@@ -185,176 +266,80 @@ class RbfModel:
             )
 
         if self._P.size == 0:
-            self._P = np.empty((maxeval, self.pdim()))
+            self._P = np.empty((maxeval, self.polynomial_tail_size()))
         else:
             additional_rows = max(0, maxeval - self._P.shape[0])
             self._P = np.concatenate(
                 (
                     self._P,
-                    np.empty((additional_rows, self.pdim())),
+                    np.empty((additional_rows, self.polynomial_tail_size())),
                 ),
                 axis=0,
             )
 
-    def dim(self) -> int:
-        """Get the dimension of the domain space."""
-        assert self._x.size == 0 or self._x.ndim == 2
-        if self._x.ndim == 2:
-            return self._x.shape[1]
-        else:
-            return 0
+    def eval_kernel(self, x, y=None):
+        if y is None:
+            y = x
+        return self.rbf(cdist(x, y))
 
-    def pdim(self) -> int:
-        """Get the dimension of the polynomial tail."""
-        return self.min_design_space_size(self.dim())
-
-    def phi(self, r):
-        """Applies the kernel function phi to the distance(s) r.
-
-        :param r: Vector with distance(s).
-        """
-        if self.kernel == RbfKernel.LINEAR:
-            return r
-        elif self.kernel == RbfKernel.CUBIC:
-            return np.power(r, 3)
-        elif self.kernel == RbfKernel.THINPLATE:
-            if not hasattr(r, "__len__"):
-                if r > 0:
-                    return r**2 * np.log(r)
-                else:
-                    return 0
-            else:
-                ret = np.zeros_like(r)
-                ret[r > 0] = np.multiply(
-                    np.power(r[r > 0], 2), np.log(r[r > 0])
-                )
-                return ret
-        else:
-            raise ValueError("Unknown RBF type")
-
-    def dphi(self, r):
-        """Derivative of the kernel function phi at the distance(s) r.
-
-        :param r: Vector with distance(s).
-        """
-        if self.kernel == RbfKernel.LINEAR:
-            return np.ones(r.shape)
-        elif self.kernel == RbfKernel.CUBIC:
-            return 3 * np.power(r, 2)
-        elif self.kernel == RbfKernel.THINPLATE:
-            if not hasattr(r, "__len__"):
-                if r > 0:
-                    return 2 * r * np.log(r) + r
-                else:
-                    return 0
-            else:
-                ret = np.zeros_like(r)
-                ret[r > 0] = (
-                    2 * np.multiply(r[r > 0], np.log(r[r > 0])) + r[r > 0]
-                )
-                return ret
-        else:
-            raise ValueError("Unknown RBF type")
-
-    def dphiOverR(self, r):
-        """Derivative of the kernel function phi divided by r at the distance(s)
-        r.
-
-        This routine may avoid excessive numerical accumulation errors when
-        phi(r)/r is needed.
-
-        :param r: Vector with distance(s).
-        """
-        if self.kernel == RbfKernel.LINEAR:
-            return np.ones(r.shape) / r
-        elif self.kernel == RbfKernel.CUBIC:
-            return 3 * r
-        elif self.kernel == RbfKernel.THINPLATE:
-            if not hasattr(r, "__len__"):
-                if r > 0:
-                    return 2 * np.log(r) + 1
-                else:
-                    return 0
-            else:
-                ret = np.zeros_like(r)
-                ret[r > 0] = 2 * np.log(r[r > 0]) + 1
-                return ret
-        else:
-            raise ValueError("Unknown RBF type")
-
-    def ddphi(self, r):
-        """Second derivative of the kernel function phi at the distance(s) r.
-
-        :param r: Vector with distance(s).
-        """
-        if self.kernel == RbfKernel.LINEAR:
-            return np.zeros(r.shape)
-        elif self.kernel == RbfKernel.CUBIC:
-            return 6 * r
-        elif self.kernel == RbfKernel.THINPLATE:
-            if not hasattr(r, "__len__"):
-                if r > 0:
-                    return 2 * np.log(r) + 3
-                else:
-                    return 0
-            else:
-                ret = np.zeros_like(r)
-                ret[r > 0] = 2 * np.log(r[r > 0]) + 3
-                return ret
-        else:
-            raise ValueError("Unknown RBF type")
-
-    def pbasis(self, x: np.ndarray) -> np.ndarray:
+    def polynomial_tail(self, x: np.ndarray) -> np.ndarray:
         """Computes the polynomial tail matrix for a given set of points.
 
         :param x: m-by-d matrix with m point coordinates in a d-dimensional
             space.
         """
         m = len(x)
+        dim = x.shape[1]
+        order = self.rbf.polynomial_tail_order()
 
-        # Set up the polynomial tail matrix P
-        if self.kernel == RbfKernel.LINEAR:
-            return np.ones((m, 1))
-        elif self.kernel in (RbfKernel.CUBIC, RbfKernel.THINPLATE):
-            return np.concatenate((np.ones((m, 1)), x), axis=1)
-        else:
-            raise ValueError("Invalid polynomial tail")
+        P = np.empty((m, 0))
+        if order >= 0:
+            P = np.ones((m, 1))
+            if order >= 1:
+                P = np.concatenate((P, x), axis=1)
+                if order >= 2:
+                    for i in range(dim):
+                        xi = x[:, i : i + 1]
+                        P = np.concatenate((P, xi * x[:, i:dim]), axis=1)
+                    if order >= 3:
+                        raise ValueError("Invalid polynomial tail")
 
-    def dpbasis(self, x: np.ndarray) -> np.ndarray:
-        """Computes the derivative of the polynomial tail matrix for a given x.
+        return P
 
-        :param x: Point in a d-dimensional space.
-        """
-        dim = self.dim()
-
-        if self.kernel == RbfKernel.LINEAR:
-            return np.zeros((1, 1))
-        elif self.kernel in (RbfKernel.CUBIC, RbfKernel.THINPLATE):
-            return np.concatenate((np.zeros((1, dim)), np.eye(dim)), axis=0)
-        else:
-            raise ValueError("Invalid polynomial tail")
-
-    def ddpbasis(self, x: np.ndarray, p: np.ndarray) -> np.ndarray:
-        """Computes the second derivative of the polynomial tail matrix for a
-        given x and direction p.
+    def _polynomial_tail_basis_single_x(self, x: np.ndarray, i: int):
+        """Computes the polynomial tail ith basis function matrix at a given x.
 
         :param x: Point in a d-dimensional space.
-        :param p: Direction in which the second derivative is evaluated.
+        :param i: Index of the basis function.
         """
-        dim = self.dim()
+        dim = len(x)
+        tail_size = self.polynomial_tail_size()
+        assert i < tail_size, "Index out of bounds for polynomial tail size."
 
-        if self.kernel == RbfKernel.LINEAR:
-            return np.zeros((1, 1))
-        elif self.kernel in (RbfKernel.CUBIC, RbfKernel.THINPLATE):
-            return np.zeros((dim + 1, dim))
-        else:
-            raise ValueError("Invalid polynomial tail")
+        if i <= 0:
+            return 1.0
 
-    def __call__(self, x: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+        i -= 1
+        if i < dim:
+            return x[i]
+
+        i -= dim
+        for j in range(dim):
+            if i < dim - j:
+                return x[j] * x[j + i]
+            i -= dim - j
+
+        raise ValueError("Invalid polynomial tail")
+
+    def __call__(
+        self, x: np.ndarray, return_dist: bool = False
+    ) -> Union[np.ndarray, Tuple[np.ndarray, np.ndarray]]:
         """Evaluates the model at one or multiple points.
 
         :param x: m-by-d matrix with m point coordinates in a d-dimensional
             space.
+        :param return_dist: If `True`, returns the distance matrix between the
+            input points and the training points.
         :return:
 
             * Value for the RBF model on each of the input points.
@@ -362,76 +347,97 @@ class RbfModel:
             * Matrix D where D[i, j] is the distance between the i-th
                 input point and the j-th training point.
         """
-        dim = self.dim()
+        dim = self.dim
         X = x.reshape(-1, dim)
 
         # compute pairwise distances between candidates and sampled points
-        D = cdist(X, self.xtrain())
+        D = cdist(X, self.X)
 
-        Px = self.pbasis(X)
-        y = np.matmul(self.phi(D), self._coef[0 : self._m]) + np.dot(
-            Px, self._coef[self._m : self._m + Px.shape[1]]
-        )
+        y = np.matmul(self.rbf(D), self._coef[0 : self._m])
 
-        return y, D
+        Px = self.polynomial_tail(X)
+        if Px.size > 0:
+            y += np.dot(Px, self._coef[self._m : self._m + Px.shape[1]])
+
+        if return_dist:
+            return y, D
+
+        return y
 
     def jac(self, x: np.ndarray) -> np.ndarray:
         r"""Evaluates the derivative of the model at one point.
 
         .. math::
 
-            \nabla f(x) = \sum_{i=1}^{m} \beta_i \frac{\phi'(\|x - x_i\|)}{\|x - x_i\|} x
+            \nabla f(x) = \sum_{i=1}^{m} \beta_i \frac{\phi'(r_i)}{r_i} x
                         + \sum_{i=1}^{n} \beta_{m+i} \nabla p_i(x).
+
+        where :math:`r_i = \|x - x_i\|`.
 
         :param x: Point in a d-dimensional space.
         """
-        dim = self.dim()
+        dim = self.dim
+        pdim = self.polynomial_tail_size()
 
         # compute pairwise distances between candidates and sampled points
-        d = cdist(x.reshape(-1, dim), self.xtrain()).flatten()
+        d = cdist(x.reshape(-1, dim), self.X).flatten()
 
-        A = np.array([self.dphiOverR(d[i]) * x for i in range(d.size)])
-        B = self.dpbasis(x)
-
-        y = np.matmul(A.T, self._coef[0 : self._m]) + np.matmul(
-            B.T, self._coef[self._m : self._m + B.shape[0]]
+        A = np.array([self.rbf.grad_over_r(d[i]) * x for i in range(d.size)])
+        B = np.array(
+            [
+                grad(self._polynomial_tail_basis_single_x, argnum=0)(x, i=i)
+                for i in range(pdim)
+            ]
         )
+
+        y = np.matmul(A.T, self._coef[0 : self._m])
+        if B.size > 0:
+            y += np.matmul(B.T, self._coef[self._m : self._m + pdim])
 
         return y.flatten()
 
-    def hessp(self, x: np.ndarray, p: np.ndarray) -> np.ndarray:
-        r"""Evaluates the Hessian of the model at x in the direction of p.
+    def hessp(self, x: np.ndarray, v: np.ndarray) -> np.ndarray:
+        r"""Evaluates the Hessian of the model at x in the direction of v.
 
         .. math::
 
             H(f)(x) v   = \sum_{i=1}^{m} \beta_i \left(
-                            \phi''(\|x - x_i\|)\frac{(x^Tv)x}{\|x - x_i\|^2} +
-                            \frac{\phi'(\|x - x_i\|)}{\|x - x_i\|}
-                            \left(v - \frac{(x^Tv)x}{\|x - x_i\|^2}\right)
+                            \phi''(r_i)\frac{(x^Tv)x}{r_i^2} +
+                            \frac{\phi'(r_i)}{r_i}
+                            \left(v - \frac{(x^Tv)x}{r_i^2}\right)
                         \right)
                         + \sum_{i=1}^{n} \beta_{m+i} H(p_i)(x) v.
 
+        where :math:`r_i = \|x - x_i\|`.
+
         :param x: Point in a d-dimensional space.
-        :param p: Direction in which the Hessian is evaluated.
+        :param v: Direction in which the Hessian is evaluated.
         """
-        dim = self.dim()
+        dim = self.dim
+        pdim = self.polynomial_tail_size()
 
         # compute pairwise distances between candidates and sampled points
-        d = cdist(x.reshape(-1, dim), self.xtrain()).flatten()
+        d = cdist(x.reshape(-1, dim), self.X).flatten()
 
-        xxTp = np.dot(p, x) * x
+        xxTp = np.dot(v, x) * x
         A = np.array(
             [
-                self.ddphi(d[i]) * (xxTp / (d[i] * d[i]))
-                + self.dphiOverR(d[i]) * (p - (xxTp / (d[i] * d[i])))
+                self.rbf.hess(d[i]) * (xxTp / (d[i] * d[i]))
+                + self.rbf.grad_over_r(d[i]) * (v - (xxTp / (d[i] * d[i])))
                 for i in range(d.size)
             ]
         )
-        B = self.ddpbasis(x, p)
-
-        y = np.matmul(A.T, self._coef[0 : self._m]) + np.matmul(
-            B.T, self._coef[self._m : self._m + B.shape[0]]
+        B = np.array(
+            [
+                hessian(self._polynomial_tail_basis_single_x, argnum=0)(x, i=i)
+                @ v
+                for i in range(pdim)
+            ]
         )
+
+        y = np.matmul(A.T, self._coef[0 : self._m])
+        if B.size > 0:
+            y += np.matmul(B.T, self._coef[self._m : self._m + pdim])
 
         return y.flatten()
 
@@ -448,7 +454,7 @@ class RbfModel:
         m = oldm + newm
 
         if oldm > 0:
-            assert dim == self.dim()
+            assert dim == self.dim
         if newm == 0:
             return
 
@@ -463,15 +469,15 @@ class RbfModel:
         distNew = cdist(self._x[oldm:m], self._x[0:m])
 
         # Update matrices _PHI and _P
-        self._PHI[oldm:m, 0:m] = self.phi(distNew)
+        self._PHI[oldm:m, 0:m] = self.rbf(distNew)
         self._PHI[0:oldm, oldm:m] = self._PHI[oldm:m, 0:oldm].T
-        self._P[oldm:m, :] = self.pbasis(self._x[oldm:m])
+        self._P[oldm:m, :] = self.polynomial_tail(self._x[oldm:m])
 
         # Update m
         self._m = m
 
         # Get full matrix for the fitting
-        A = self.get_RBFmatrix()
+        A = self._get_RBFmatrix()
 
         # condA = cond(A)
         # print(f"Condition number of A: {condA}")
@@ -489,31 +495,32 @@ class RbfModel:
             self._coef = solve(
                 A,
                 np.concatenate(
-                    (self.filter(self.ytrain()), np.zeros(self.pdim()))
+                    (
+                        self.filter(self.Y),
+                        np.zeros(self.polynomial_tail_size()),
+                    )
                 ),
                 assume_a="sym",
             )
 
-    def ntrain(self) -> int:
-        """Get the number of sampled points."""
-        return self._m
-
-    def xtrain(self) -> np.ndarray:
+    @property
+    def X(self) -> np.ndarray:
         """Get the training data points.
 
         :return: m-by-d matrix with m training points in a d-dimensional space.
         """
         return self._x[0 : self._m]
 
-    def ytrain(self) -> np.ndarray:
+    @property
+    def Y(self) -> np.ndarray:
         """Get f(x) for the sampled points."""
         return self._fx[0 : self._m]
 
-    def get_matrixP(self) -> np.ndarray:
+    def _get_matrixP(self) -> np.ndarray:
         """Get the m-by-pdim matrix with the polynomial tail."""
         return self._P[0 : self._m]
 
-    def get_RBFmatrix(self) -> np.ndarray:
+    def _get_RBFmatrix(self) -> np.ndarray:
         r"""Get the complete matrix used to compute the RBF weights.
 
         This is a blocked matrix :math:`[[\Phi, P],[P^T, 0]]`, where
@@ -522,29 +529,29 @@ class RbfModel:
 
         :return: (m+pdim)-by-(m+pdim) matrix used to compute the RBF weights.
         """
-        pdim = self.pdim()
+        pdim = self.polynomial_tail_size()
         return np.block(
             [
-                [self._PHI[0 : self._m, 0 : self._m], self.get_matrixP()],
-                [self.get_matrixP().T, np.zeros((pdim, pdim))],
+                [self._PHI[0 : self._m, 0 : self._m], self._get_matrixP()],
+                [self._get_matrixP().T, np.zeros((pdim, pdim))],
             ]
         )
 
-    def sample(self, i: int) -> np.ndarray:
-        """Get the i-th sampled point.
-
-        :param i: Index of the sampled point.
-        """
-        return self.xtrain()[i]
-
     def min_design_space_size(self, dim: int) -> int:
         """Return the minimum design space size for a given space dimension."""
-        if self.kernel == RbfKernel.LINEAR:
+        order = self.rbf.polynomial_tail_order()
+        if order == -1:
             return 1
-        elif self.kernel in (RbfKernel.CUBIC, RbfKernel.THINPLATE):
-            return 1 + dim
         else:
-            raise ValueError("Unknown RBF type")
+            return comb(dim + order, order)
+
+    def polynomial_tail_size(self) -> int:
+        """Get the dimension of the polynomial tail."""
+        order = self.rbf.polynomial_tail_order()
+        if order == -1:
+            return 0
+        else:
+            return comb(self.dim + order, order)
 
     def check_initial_design(self, sample: np.ndarray) -> bool:
         """Check if the sample is able to generate a valid surrogate.
@@ -552,11 +559,110 @@ class RbfModel:
         :param sample: m-by-d matrix with m training points in a d-dimensional
             space.
         """
-        if sample.ndim != 2 or len(sample) < 1:
+        if self.polynomial_tail_size() == 0:
+            return True
+        if len(sample) < 1:
             return False
-        P = self.pbasis(sample)
+        P = self.polynomial_tail(sample)
         return np.linalg.matrix_rank(P) == P.shape[1]
 
-    def get_iindex(self) -> tuple[int, ...]:
+    @property
+    def iindex(self) -> tuple[int, ...]:
         """Return iindex, the sequence of integer variable indexes."""
-        return self.iindex
+        return self._iindex
+
+    def prepare_mu_measure(self):
+        """Prepare the model for mu measure computation.
+
+        This routine computes the LDLt factorization of the matrix A, which is
+        used to compute the mu measure. The factorization is computed only once
+        and can be reused for multiple calls to :meth:`mu_measure`.
+        """
+        self._LDLt = ldl(self._get_RBFmatrix())
+
+    def mu_measure(self, x: np.ndarray) -> np.ndarray:
+        """Compute the value of abs(mu) for an RBF model.
+
+        The mu measure was first defined in [#]_ with suggestions of usage for
+        global optimization with RBF functions. In [#]_, the authors detail the
+        strategy to make the evaluations computationally viable.
+
+        The current
+        implementation, uses a different strategy than that from Björkman and
+        Holmström (2000), where a single LDLt factorization is used instead of
+        the QR and Cholesky factorizations. The new algorithm's performs 10
+        times less operations than the former. Like the former, the new
+        algorithm is also able to use high-intensity linear algebra operations
+        when the routine is called with multiple points :math:`x` are evaluated
+        at once.
+
+        .. note::
+            Before calling this method, the model must be prepared with
+            :meth:`prepare_mu_measure`.
+
+        :param x: m-by-d matrix with m point coordinates in a d-dimensional
+            space.
+        :return: The value of abs(mu) for every point in `x`.
+
+        References
+        ----------
+        .. [#] Gutmann, HM. A Radial Basis Function Method for Global
+            Optimization. Journal of Global Optimization 19, 201–227 (2001).
+            https://doi.org/10.1023/A:1011255519438
+        .. [#] Björkman, M., Holmström, K. Global Optimization of Costly
+            Nonconvex Functions Using Radial Basis Functions. Optimization and
+            Engineering 1, 373–397 (2000). https://doi.org/10.1023/A:1011584207202
+        """
+        # compute rbf value of the new point x
+        xdist = cdist(self.X, x)
+        newCols = np.concatenate(
+            (np.asarray(self.rbf(xdist)), self.polynomial_tail(x).T), axis=0
+        )
+
+        # Get the L factor, the block-diagonal matrix D, and the permutation
+        # vector p
+        ptL, D, p = self._LDLt
+        L = ptL[p]
+
+        # 0. Permute the new terms
+        newCols = newCols[p]
+
+        # 1. Solve P [a;b] = L (D l) for (D l)
+        Dl = solve_triangular(
+            L,
+            newCols,
+            lower=True,
+            unit_diagonal=True,
+            # check_finite=False,
+            overwrite_b=True,
+        )
+
+        # 2. Compute l := inv(D) (Dl)
+        ell = Dl.copy()
+        i = 0
+        while i < len(ell) - 1:
+            if D[i + 1, i] == 0:
+                # Invert block of size 1x1
+                ell[i] /= D[i, i]
+                i += 1
+            else:
+                # Invert block of size 2x2
+                det = D[i, i] * D[i + 1, i + 1] - D[i, i + 1] ** 2
+                ell[i], ell[i + 1] = (
+                    (ell[i] * D[i + 1, i + 1] - ell[i + 1] * D[i, i + 1])
+                    / det,
+                    (ell[i + 1] * D[i, i] - ell[i] * D[i, i + 1]) / det,
+                )
+                i += 2
+        if i == len(ell) - 1:
+            # Invert last block of size 1x1
+            ell[i] /= D[i, i]
+
+        # 3. d = \phi(0) - l^T D l and \mu = 1/d
+        d = self.rbf(np.array(0.0)).item() - (ell * Dl).sum(axis=0)
+        mu = np.where(d != 0, 1 / d, np.inf)
+
+        # Return huge value if the matrix is ill-conditioned
+        mu = np.where(mu <= 0, np.inf, mu)
+
+        return mu

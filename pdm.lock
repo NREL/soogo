@@ -5,7 +5,7 @@
 groups = ["default", "doc", "example", "lint", "test"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:6bd568bd5c419f440cd1e33b0f94e1b432174a4bfd7afb279f91c9a824fcb73d"
+content_hash = "sha256:6ea15663cd881da369b9047ab2b2b287c883f135ea87bbfe179b56236a3dd05f"
 
 [[metadata.targets]]
 requires_python = ">=3.9"
@@ -183,16 +183,16 @@ files = [
 
 [[package]]
 name = "autograd"
-version = "1.7.0"
-requires_python = ">=3.8"
+version = "1.8.0"
+requires_python = ">=3.9"
 summary = "Efficiently computes derivatives of NumPy code."
 groups = ["default"]
 dependencies = [
-    "numpy",
+    "numpy<3",
 ]
 files = [
-    {file = "autograd-1.7.0-py3-none-any.whl", hash = "sha256:49680300f842f3a8722b060ac0d3ed7aca071d1ad4d3d38c9fdadafdcc73c30b"},
-    {file = "autograd-1.7.0.tar.gz", hash = "sha256:de743fd368d6df523cd37305dcd171861a9752a144493677d2c9f5a56983ff2f"},
+    {file = "autograd-1.8.0-py3-none-any.whl", hash = "sha256:4ab9084294f814cf56c280adbe19612546a35574d67c574b04933c7d2ecb7d78"},
+    {file = "autograd-1.8.0.tar.gz", hash = "sha256:107374ded5b09fc8643ac925348c0369e7b0e73bbed9565ffd61b8fd04425683"},
 ]
 
 [[package]]
