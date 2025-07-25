@@ -94,12 +94,12 @@ class AcquisitionFunction(ABC):
     """Base class for acquisition functions.
 
     This an abstract class. Subclasses must implement the method
-    :meth:`acquire()`.
+    :meth:`optimize()`.
 
     Acquisition functions are strategies to propose new sample points to a
     surrogate. The acquisition functions here are modeled as objects with the
     goals of adding states to the learning process. Moreover, this design
-    enables the definition of the :meth:`acquire()` method with a similar API
+    enables the definition of the :meth:`optimize()` method with a similar API
     when we compare different acquisition strategies.
     """
 
@@ -107,7 +107,7 @@ class AcquisitionFunction(ABC):
         pass
 
     @abstractmethod
-    def acquire(
+    def optimize(
         self,
         surrogateModel: Surrogate,
         bounds,
@@ -155,16 +155,16 @@ class WeightedAcquisition(AcquisitionFunction):
     .. attribute:: neval
 
         Number of evaluations done so far. Used and updated in
-        :meth:`acquire()`.
+        :meth:`optimize()`.
 
     .. attribute:: sampler
 
-        Sampler to generate candidate points. Used in :meth:`acquire()`.
+        Sampler to generate candidate points. Used in :meth:`optimize()`.
 
     .. attribute:: weightpattern
 
         Weight(s) `w` to be used in the score. This is a circular list that is
-        rotated every time :meth:`acquire()` is called.
+        rotated every time :meth:`optimize()` is called.
 
     .. attribute:: rtol
 
@@ -376,7 +376,7 @@ class WeightedAcquisition(AcquisitionFunction):
         else:
             return tol0
 
-    def acquire(
+    def optimize(
         self,
         surrogateModel: Surrogate,
         bounds,
@@ -507,12 +507,12 @@ class TargetValueAcquisition(AcquisitionFunction):
 
     .. attribute:: cycleLength
 
-        Length of the global search cycle to be used in :meth:`acquire()`.
+        Length of the global search cycle to be used in :meth:`optimize()`.
 
     .. attribute:: _cycle
 
         Internal counter of cycles. The value to be used in the next call of
-        :meth:`acquire()`.
+        :meth:`optimize()`.
 
     References
     ----------
@@ -600,7 +600,7 @@ class TargetValueAcquisition(AcquisitionFunction):
         # Here:
         return np.where(absmu < np.inf, (absmu * dist) * dist, np.inf)
 
-    def acquire(
+    def optimize(
         self,
         surrogateModel: RbfModel,
         bounds,
@@ -822,7 +822,7 @@ class MinimizeSurrogate(AcquisitionFunction):
         self.sampler = Sampler(nCand)
         self.rtol = rtol
 
-    def acquire(
+    def optimize(
         self,
         surrogateModel: Surrogate,
         bounds,
@@ -1108,7 +1108,7 @@ class ParetoFront(AcquisitionFunction):
 
         return tau
 
-    def acquire(
+    def optimize(
         self,
         surrogateModel: Surrogate,
         bounds,
@@ -1249,7 +1249,7 @@ class EndPointsParetoFront(AcquisitionFunction):
         )
         self.rtol = rtol
 
-    def acquire(
+    def optimize(
         self,
         surrogateModel: Surrogate,
         bounds,
@@ -1363,7 +1363,7 @@ class MinimizeMOSurrogate(AcquisitionFunction):
         )
         self.rtol = rtol
 
-    def acquire(
+    def optimize(
         self,
         surrogateModel: Surrogate,
         bounds,
@@ -1463,7 +1463,7 @@ class CoordinatePerturbationOverNondominated(AcquisitionFunction):
         self.acquisitionFunc = acquisitionFunc
         assert isinstance(self.acquisitionFunc.sampler, NormalSampler)
 
-    def acquire(
+    def optimize(
         self,
         surrogateModel: Surrogate,
         bounds,
@@ -1489,7 +1489,7 @@ class CoordinatePerturbationOverNondominated(AcquisitionFunction):
         # Find a collection of points that are close to the Pareto front
         bestCandidates = np.empty((0, dim))
         for ndpoint in nondominated:
-            x = self.acquisitionFunc.acquire(
+            x = self.acquisitionFunc.optimize(
                 surrogateModel, bounds, 1, xbest=ndpoint
             )
             # Choose points that are not too close to previously selected points
@@ -1576,7 +1576,7 @@ class GosacSample(AcquisitionFunction):
         )
         self.rtol = rtol
 
-    def acquire(
+    def optimize(
         self,
         surrogateModel: Surrogate,
         bounds,
@@ -1678,7 +1678,7 @@ class MaximizeEI(AcquisitionFunction):
         self.sampler = Sampler(0) if sampler is None else sampler
         self.avoid_clusters = avoid_clusters
 
-    def acquire(
+    def optimize(
         self,
         surrogateModel: GaussianProcess,
         bounds,

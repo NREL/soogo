@@ -467,7 +467,7 @@ def surrogate_optimization(
 
         # Acquire new sample points
         t0 = time.time()
-        xselected = acquisitionFunc.acquire(
+        xselected = acquisitionFunc.optimize(
             surrogateModel,
             bounds,
             batchSize,
@@ -1125,7 +1125,7 @@ def socemo(
         # 1. Define target values to fill gaps in the Pareto front
         #
         t0 = time.time()
-        xselected = step1acquisition.acquire(
+        xselected = step1acquisition.optimize(
             surrogateModel,
             bounds,
             n=1,
@@ -1143,7 +1143,7 @@ def socemo(
         # 2. Random perturbation of the currently nondominated points
         #
         t0 = time.time()
-        bestCandidates = step2acquisition.acquire(
+        bestCandidates = step2acquisition.optimize(
             surrogateModel,
             bounds,
             n=nMax,
@@ -1162,7 +1162,7 @@ def socemo(
         # 3. Minimum point sampling to examine the endpoints of the Pareto front
         #
         t0 = time.time()
-        bestCandidates = step3acquisition.acquire(
+        bestCandidates = step3acquisition.optimize(
             surrogateModel, bounds, n=nMax
         )
         xselected = np.concatenate((xselected, bestCandidates), axis=0)
@@ -1177,7 +1177,7 @@ def socemo(
         # 4. Uniform random points and scoring
         #
         t0 = time.time()
-        bestCandidates = acquisitionFuncGlobal.acquire(
+        bestCandidates = acquisitionFuncGlobal.optimize(
             surrogateModel, bounds, 1
         )
         xselected = np.concatenate((xselected, bestCandidates), axis=0)
@@ -1192,7 +1192,7 @@ def socemo(
         # 5. Solving the surrogate multiobjective problem
         #
         t0 = time.time()
-        bestCandidates = step5acquisition.acquire(
+        bestCandidates = step5acquisition.optimize(
             surrogateModel, bounds, n=min(nMax, 2 * objdim)
         )
         xselected = np.concatenate((xselected, bestCandidates), axis=0)
@@ -1352,7 +1352,7 @@ def gosac(
 
         # Solve the surrogate multiobjective problem
         t0 = time.time()
-        bestCandidates = acquisition1.acquire(surrogateModel, bounds, n=0)
+        bestCandidates = acquisition1.optimize(surrogateModel, bounds, n=0)
         tf = time.time()
         if disp:
             print(
@@ -1437,7 +1437,7 @@ def gosac(
 
         # Solve cheap problem with multiple constraints
         t0 = time.time()
-        xselected = acquisition2.acquire(surrogateModel, bounds)
+        xselected = acquisition2.optimize(surrogateModel, bounds)
         tf = time.time()
         if disp:
             print(
@@ -1580,7 +1580,7 @@ def bayesian_optimization(
 
         # Acquire new sample points through minimization of EI
         t0 = time.time()
-        xMinEI = acquisitionFunc.acquire(
+        xMinEI = acquisitionFunc.optimize(
             surrogateModel, bounds, batchSize - len(xselected), ybest=out.fx
         )
         if len(xselected) > 0:
