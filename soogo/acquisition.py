@@ -66,30 +66,6 @@ from .problem import (
 )
 
 
-def expected_improvement(delta, sigma):
-    """Expected Improvement function for a distribution from [#]_.
-
-    :param delta: Difference :math:`f^*_n - \\mu_n(x)`, where :math:`f^*_n` is
-        the current best function value and :math:`\\mu_n(x)` is the expected
-        value for :math:`f(x)`.
-    :param sigma: The standard deviation :math:`\\sigma_n(x)`.
-
-    References
-    ----------
-    .. [#] Donald R. Jones, Matthias Schonlau, and William J. Welch. Efficient
-        global optimization of expensive black-box functions. Journal of Global
-        Optimization, 13(4):455–492, 1998.
-    """
-    from scipy.stats import norm
-
-    return delta * norm.cdf(delta / sigma) + sigma * norm.pdf(delta / sigma)
-
-
-def gp_expected_improvement(model: GaussianProcess, x, ybest):
-    mu, sigma = model(x, return_std=True)
-    return expected_improvement(ybest - mu, sigma)
-
-
 def find_pareto_front(fx, iStart: int = 0) -> list:
     """Find the Pareto front given a set of points in the target space.
 
@@ -1743,8 +1719,8 @@ class MaximizeEI(AcquisitionFunction):
 
         # Use the point that maximizes the EI
         res = differential_evolution(
-            lambda x: -gp_expected_improvement(
-                surrogateModel, np.asarray([x]), ybest
+            lambda x: -surrogateModel.expected_improvement(
+                np.asarray([x]), ybest
             ),
             bounds,
         )
@@ -1776,7 +1752,7 @@ class MaximizeEI(AcquisitionFunction):
         nCand = len(x)
 
         # Create EI and kernel matrices
-        eiCand = gp_expected_improvement(surrogateModel, x, ybest)
+        eiCand = surrogateModel.expected_improvement(x, ybest)
 
         # If there is no need to avoid clustering return the maximum of EI
         if not self.avoid_clusters or n == 1:

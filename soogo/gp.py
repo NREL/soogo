@@ -33,6 +33,25 @@ from sklearn.gaussian_process.kernels import RBF as GPkernelRBF
 from .surrogate import Surrogate
 
 
+def gp_expected_improvement(delta, sigma):
+    """Expected Improvement function for a distribution from [#]_.
+
+    :param delta: Difference :math:`f^*_n - \\mu_n(x)`, where :math:`f^*_n` is
+        the current best function value and :math:`\\mu_n(x)` is the expected
+        value for :math:`f(x)`.
+    :param sigma: The standard deviation :math:`\\sigma_n(x)`.
+
+    References
+    ----------
+    .. [#] Donald R. Jones, Matthias Schonlau, and William J. Welch. Efficient
+        global optimization of expensive black-box functions. Journal of Global
+        Optimization, 13(4):455–492, 1998.
+    """
+    from scipy.stats import norm
+
+    return delta * norm.cdf(delta / sigma) + sigma * norm.pdf(delta / sigma)
+
+
 class GaussianProcess(Surrogate):
     """Gaussian Process model.
 
@@ -252,3 +271,7 @@ class GaussianProcess(Surrogate):
             self._optimizer_message = res.message
 
         return res.x, res.fun
+
+    def expected_improvement(self, x, ybest):
+        mu, sigma = self(x, return_std=True)
+        return gp_expected_improvement(ybest - mu, sigma)
