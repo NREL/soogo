@@ -57,13 +57,7 @@ from .surrogate import Surrogate
 from .sampling import NormalSampler, Sampler, Mitchel91Sampler
 from .rbf import LinearRadialBasisFunction, RbfModel
 from .gp import GaussianProcess
-from .problem import (
-    ProblemWithConstraint,
-    ProblemNoConstraint,
-    MultiobjTVProblem,
-    MultiobjSurrogateProblem,
-    ListDuplicateElimination,
-)
+from .problem import PymooProblem, ListDuplicateElimination
 
 
 def find_pareto_front(fx, iStart: int = 0) -> list:
@@ -703,7 +697,7 @@ class TargetValueAcquisition(AcquisitionFunction):
                 if not mu_measure_is_prepared:
                     surrogateModel.prepare_mu_measure()
                     mu_measure_is_prepared = True
-                problem = ProblemNoConstraint(
+                problem = PymooProblem(
                     surrogateModel.mu_measure, bounds, surrogateModel.iindex
                 )
 
@@ -722,7 +716,7 @@ class TargetValueAcquisition(AcquisitionFunction):
             ):  # cycle step global search
                 # find min of surrogate model
                 if f_rbf is None:
-                    problem = ProblemNoConstraint(
+                    problem = PymooProblem(
                         surrogateModel, bounds, surrogateModel.iindex
                     )
                     res = pymoo_minimize(
@@ -748,7 +742,7 @@ class TargetValueAcquisition(AcquisitionFunction):
                 if not mu_measure_is_prepared:
                     surrogateModel.prepare_mu_measure()
                     mu_measure_is_prepared = True
-                problem = ProblemNoConstraint(
+                problem = PymooProblem(
                     lambda x: TargetValueAcquisition.bumpiness_measure(
                         surrogateModel, x, f_target, target_range
                     ),
@@ -768,7 +762,7 @@ class TargetValueAcquisition(AcquisitionFunction):
             else:  # cycle step local search
                 # find the minimum of RBF surface
                 if f_rbf is None:
-                    problem = ProblemNoConstraint(
+                    problem = PymooProblem(
                         surrogateModel, bounds, surrogateModel.iindex
                     )
                     res = pymoo_minimize(
@@ -795,7 +789,7 @@ class TargetValueAcquisition(AcquisitionFunction):
                     if not mu_measure_is_prepared:
                         surrogateModel.prepare_mu_measure()
                         mu_measure_is_prepared = True
-                    problem = ProblemNoConstraint(
+                    problem = PymooProblem(
                         lambda x: TargetValueAcquisition.bumpiness_measure(
                             surrogateModel, x, f_target, target_range
                         ),
@@ -1202,7 +1196,12 @@ class ParetoFront(AcquisitionFunction):
             # Find the Pareto-optimal solution set that minimizes dist(s(x),tau).
             # For discontinuous Pareto fronts in the original problem, such set
             # may not exist, or it may be too far from the target value.
-            multiobjTVProblem = MultiobjTVProblem(surrogateModel, tau, bounds)
+            multiobjTVProblem = PymooProblem(
+                lambda x: np.absolute(surrogateModel(x) - tau),
+                bounds,
+                surrogateModel.iindex,
+                n_obj=objdim,
+            )
             res = pymoo_minimize(
                 multiobjTVProblem,
                 self.optimizer,
@@ -1293,7 +1292,7 @@ class EndPointsParetoFront(AcquisitionFunction):
         # Find endpoints of the Pareto front
         endpoints = np.empty((objdim, dim))
         for i in range(objdim):
-            minimumPointProblem = ProblemNoConstraint(
+            minimumPointProblem = PymooProblem(
                 lambda x: surrogateModel(x, i=i), bounds, iindex
             )
             res = pymoo_minimize(
@@ -1333,7 +1332,7 @@ class EndPointsParetoFront(AcquisitionFunction):
         # consider the whole variable domain and sample at the point that
         # maximizes the minimum distance of sample points
         if endpoints.size == 0:
-            minimumPointProblem = ProblemNoConstraint(
+            minimumPointProblem = PymooProblem(
                 lambda x: -tree.query(x)[0], bounds, iindex
             )
             res = pymoo_minimize(
@@ -1390,8 +1389,11 @@ class MinimizeMOSurrogate(AcquisitionFunction):
         dim = len(bounds)
 
         # Solve the surrogate multiobjective problem
-        multiobjSurrogateProblem = MultiobjSurrogateProblem(
-            surrogateModel, bounds
+        multiobjSurrogateProblem = PymooProblem(
+            surrogateModel,
+            bounds,
+            surrogateModel.iindex,
+            n_obj=surrogateModel.ntarget,
         )
         res = pymoo_minimize(
             multiobjSurrogateProblem,
@@ -1596,8 +1598,8 @@ class GosacSample(AcquisitionFunction):
         tree = KDTree(surrogateModel.X)
         atol = self.tol(bounds)
 
-        cheapProblem = ProblemWithConstraint(
-            self.fun, surrogateModel, bounds, iindex, n_ieq_constr=gdim
+        cheapProblem = PymooProblem(
+            self.fun, bounds, iindex, gfunc=surrogateModel, n_ieq_constr=gdim
         )
         res = pymoo_minimize(
             cheapProblem,
@@ -1619,7 +1621,7 @@ class GosacSample(AcquisitionFunction):
                 isGoodCandidate = False
 
         if not isGoodCandidate:
-            minimumPointProblem = ProblemNoConstraint(
+            minimumPointProblem = PymooProblem(
                 lambda x: -tree.query(x)[0], bounds, iindex
             )
             res = pymoo_minimize(

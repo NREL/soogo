@@ -31,8 +31,6 @@ from pymoo.core.problem import Problem
 from pymoo.core.variable import Real, Integer
 from pymoo.core.duplicate import DefaultDuplicateElimination
 
-from .surrogate import Surrogate
-
 
 def _get_vars(bounds, iindex=()) -> dict:
     """Get the type of variables for a problem.
@@ -99,15 +97,17 @@ class ListDuplicateElimination(DefaultDuplicateElimination):
         return D
 
 
-class ProblemWithConstraint(Problem):
+class PymooProblem(Problem):
     """Mixed-integer problem with constraints for pymoo.
 
     :param objfunc: Objective function. Stored in :attr:`objfunc`.
-    :param gfunc: Constraint function. Stored in :attr:`gfunc`.
     :param bounds: List with the limits [x_min,x_max] of each direction x in
         the search space.
+    :param n_obj: Number of objective functions. Default is 1.
     :param iindex: Indices of the input space that are integer.
-    :param n_ieq_constr: Number of inequality constraints.
+    :param gfunc: Constraint function. Stored in :attr:`gfunc`. If None, no
+        constraints are defined.
+    :param n_ieq_constr: Number of inequality constraints. Default is 0.
 
     .. attribute:: objfunc
 
@@ -119,96 +119,22 @@ class ProblemWithConstraint(Problem):
 
     """
 
-    def __init__(self, objfunc, gfunc, bounds, iindex, n_ieq_constr: int = 1):
+    def __init__(
+        self,
+        objfunc,
+        bounds,
+        iindex,
+        n_obj=1,
+        gfunc=None,
+        n_ieq_constr: int = 0,
+    ):
         vars = _get_vars(bounds, iindex)
         self.objfunc = objfunc
         self.gfunc = gfunc
-        super().__init__(vars=vars, n_obj=1, n_ieq_constr=n_ieq_constr)
+        super().__init__(vars=vars, n_obj=n_obj, n_ieq_constr=n_ieq_constr)
 
     def _evaluate(self, X, out):
         x = _dict_to_array(X)
         out["F"] = self.objfunc(x)
-        out["G"] = self.gfunc(x)
-
-
-class ProblemNoConstraint(Problem):
-    """Mixed-integer problem with no constraints for pymoo.
-
-    :param objfunc: Objective function. Stored in :attr:`objfunc`.
-    :param bounds: List with the limits [x_min,x_max] of each direction x in
-        the search space.
-    :param iindex: Indices of the input space that are integer.
-
-    .. attribute:: objfunc
-
-        Objective function.
-
-    """
-
-    def __init__(self, objfunc, bounds, iindex):
-        vars = _get_vars(bounds, iindex)
-        self.objfunc = objfunc
-        super().__init__(vars=vars, n_obj=1)
-
-    def _evaluate(self, X, out):
-        x = _dict_to_array(X)
-        out["F"] = self.objfunc(x)
-
-
-class MultiobjTVProblem(Problem):
-    """Mixed-integer multi-objective problem whose objective functions is the
-    entry-wise absolute difference between the surrogate models and the target
-    values.
-
-    :param surrogateModel: Multi-target surrogate model. Stored in
-        :attr:`surrogateModel`.
-    :param tau: List of target values. Stored in :attr:`tau`.
-    :param bounds: List with the limits [x_min,x_max] of each direction x in
-        the search space.
-
-    .. attribute:: surrogateModel
-
-        Multi-target surrogate model.
-
-    .. attribute:: tau
-
-        List of target values.
-
-    """
-
-    def __init__(self, surrogateModel: Surrogate, tau, bounds):
-        vars = _get_vars(bounds, surrogateModel.iindex)
-        self.surrogateModel = surrogateModel
-        self.tau = tau
-        super().__init__(vars=vars, n_obj=surrogateModel.ntarget)
-
-    def _evaluate(self, X, out):
-        assert self.elementwise is False
-        x = _dict_to_array(X)
-        out["F"] = np.absolute(self.surrogateModel(x) - self.tau)
-
-
-class MultiobjSurrogateProblem(Problem):
-    """Mixed-integer multi-objective problem whose objective functions is the
-    evaluation function of the surrogate models.
-
-    :param surrogateModel: Multi-target surrogate model. Stored in
-        :attr:`surrogateModel`.
-    :param bounds: List with the limits [x_min,x_max] of each direction x in
-        the search space.
-
-    .. attribute:: surrogateModel
-
-        Multi-target surrogate model.
-
-    """
-
-    def __init__(self, surrogateModel: Surrogate, bounds):
-        vars = _get_vars(bounds, surrogateModel.iindex)
-        self.surrogateModel = surrogateModel
-        super().__init__(vars=vars, n_obj=surrogateModel.ntarget)
-
-    def _evaluate(self, X, out):
-        assert self.elementwise is False
-        x = _dict_to_array(X)
-        out["F"] = self.surrogateModel(x)
+        if self.gfunc is not None:
+            out["G"] = self.gfunc(x)
