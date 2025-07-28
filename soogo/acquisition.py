@@ -1494,7 +1494,7 @@ class CoordinatePerturbationOverNondominated(AcquisitionFunction):
         :param paretoFront: Pareto front in the objective space.
         """
         dim = len(bounds)
-        tol = self.acquisitionFunc.tol(bounds)
+        atol = self.acquisitionFunc.tol(bounds)
         assert isinstance(self.acquisitionFunc.sampler, NormalSampler)
 
         # Find a collection of points that are close to the Pareto front
@@ -1509,7 +1509,7 @@ class CoordinatePerturbationOverNondominated(AcquisitionFunction):
                     bestCandidates = x.reshape(1, -1)
             else:
                 distNeighborOfx = cdist(x, bestCandidates).min()
-                if distNeighborOfx >= tol:
+                if distNeighborOfx >= atol:
                     bestCandidates = np.concatenate(
                         (bestCandidates, x), axis=0
                     )

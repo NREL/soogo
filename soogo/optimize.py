@@ -73,6 +73,7 @@ class OptimizeResult:
     nfev: int = 0  #: Number of function evaluations taken
     sample: Optional[np.ndarray] = None  #: n-by-dim matrix with all n samples
     fsample: Optional[np.ndarray] = None  #: Vector with all n objective values
+    nobj: int = 1  #: Number of objective function targets
 
     def init(
         self,
@@ -81,11 +82,15 @@ class OptimizeResult:
         mineval: int,
         maxeval: int,
         surrogateModel: Surrogate,
+        ntarget: int = 1,
     ) -> None:
         """Initialize :attr:`nfev` and :attr:`sample` and :attr:`fsample` with
         data about the optimization that is starting.
 
         This routine calls the objective function :attr:`nfev` times.
+
+        By default, all targets are considered to be used in the objective. If
+        that is not the case, set `nobj` after calling this function.
 
         :param fun: The objective function to be minimized.
         :param sequence bounds: List with the limits [x_min,x_max] of each
@@ -94,6 +99,7 @@ class OptimizeResult:
             surrogate model.
         :param maxeval: Maximum number of function evaluations.
         :param surrogateModel: Surrogate model to be used.
+        :param ntarget: Number of target dimensions. Default is 1.
         """
         dim = len(bounds)  # Dimension of the problem
         assert dim > 0
@@ -104,16 +110,14 @@ class OptimizeResult:
             dim
         )  # Smallest sample for a valid surrogate
         iindex = surrogateModel.iindex  # Integer design variables
-        ydim = (
-            surrogateModel.ydim()
-            if callable(getattr(surrogateModel, "ydim", None))
-            else 1
-        )  # Dimension of the output
 
         # Initialize sample arrays in this object
+        self.nobj = ntarget
         self.sample = np.empty((maxeval, dim))
         self.sample[:] = np.nan
-        self.fsample = np.empty(maxeval if ydim <= 1 else (maxeval, ydim))
+        self.fsample = np.empty(
+            maxeval if self.nobj <= 1 else (maxeval, self.nobj)
+        )
         self.fsample[:] = np.nan
 
         # If the surrogate is empty and no initial sample was given
@@ -141,181 +145,51 @@ class OptimizeResult:
             self.fsample[0:m] = fun(self.sample[0:m])
             self.nfev = m
 
-    def init_best_values(self, surrogateModel: Surrogate) -> None:
-        """Initialize :attr:`x` and :attr:`fx` based on the best values for the
-        surrogate.
+    def init_best_values(
+        self, surrogateModel: Optional[Surrogate] = None
+    ) -> None:
+        """Initialize :attr:`x` and :attr:`fx` based on the best values obtained
+        so far.
 
         :param surrogateModel: Surrogate model.
         """
         # Initialize self.x and self.fx
         assert self.sample is not None
         assert self.fsample is not None
-        assert self.fsample.ndim == 1
         m = self.nfev
 
-        iBest = np.argmin(
-            np.concatenate((self.fsample[0:m], surrogateModel.Y))
-        ).item()
-        if iBest < m:
-            self.x = self.sample[iBest].copy()
-            self.fx = self.fsample[iBest].item()
+        if surrogateModel is not None and surrogateModel.ntrain > 0:
+            combined_x = np.concatenate(
+                (self.sample[0:m], surrogateModel.X), axis=0
+            )
+            if self.fsample.ndim == 1:
+                combined_y = np.concatenate(
+                    (self.fsample[0:m], surrogateModel.Y), axis=0
+                )
+            else:
+                nrows = surrogateModel.ntrain
+                ncols = self.fsample.shape[1]
+                combined_y = np.concatenate(
+                    (self.fsample[0:m], np.empty((nrows, ncols))), axis=0
+                )
+                combined_y[m:, 0 : surrogateModel.ntarget] = surrogateModel.Y
         else:
-            self.x = surrogateModel.X[iBest - m].copy()
-            self.fx = surrogateModel.Y[iBest - m].item()
+            combined_x = self.sample[0:m]
+            combined_y = self.fsample[0:m]
 
+        if self.nobj == 1:
+            if combined_y.ndim == 1:
+                iBest = np.argmin(combined_y).item()
+                self.fx = combined_y[iBest].item()
+            else:
+                iBest = np.argmin(combined_y[:, 0]).item()
+                self.fx = combined_y[iBest].copy()
 
-def initialize_moo_surrogate(
-    fun,
-    bounds,
-    mineval: int,
-    maxeval: int,
-    *,
-    surrogateModel: Surrogate = RbfModel(),
-) -> OptimizeResult:
-    """Initialize the surrogate model and the output of the optimization.
-
-    :param fun: The objective function to be minimized.
-    :param bounds: List with the limits [x_min,x_max] of each direction x in the search
-        space.
-    :param mineval: Minimum number of function evaluations to build the surrogate model.
-    :param maxeval: Maximum number of function evaluations.
-    :param surrogateModel: Multi-target surrogate model to be used. The default is RbfModel().
-    :return: The optimization result.
-    """
-    dim = len(bounds)  # Dimension of the problem
-    objdim = surrogateModel.ntarget  # Dimension of the objective function
-    assert dim > 0 and objdim > 0
-
-    # Initialize output
-    out = OptimizeResult(
-        x=np.array([]),
-        fx=np.array([]),
-        nit=0,
-        nfev=0,
-        sample=np.zeros((maxeval, dim)),
-        fsample=np.zeros((maxeval, objdim)),
-    )
-
-    # Number of initial sample points
-    m0 = surrogateModel.ntrain
-    m_for_surrogate = surrogateModel.min_design_space_size(
-        dim
-    )  # Smallest sample for a valid surrogate
-    m = 0
-
-    # Add new sample to the surrogate model
-    if m0 == 0:
-        # Create a new sample with SLHD
-        m = min(maxeval, max(mineval, 2 * m_for_surrogate))
-        out.sample[0:m] = Sampler(m).get_slhd_sample(
-            bounds, iindex=surrogateModel.iindex
-        )
-        if m >= 2 * m_for_surrogate:
-            count = 0
-            while not surrogateModel.check_initial_design(out.sample[0:m]):
-                out.sample[0:m] = Sampler(m).get_slhd_sample(
-                    bounds, iindex=surrogateModel.iindex
-                )
-                count += 1
-                if count > 100:
-                    raise RuntimeError("Cannot create valid initial design")
-
-        # Compute f(sample)
-        out.fsample[0:m] = fun(out.sample[0:m])
-        out.nfev = m
-
-        # Update surrogate
-        surrogateModel.update(out.sample[0:m], out.fsample[0:m])
-
-    # Create the pareto front
-    fallpoints = np.concatenate(
-        (surrogateModel.Y[:m0], out.fsample[0:m, :]), axis=0
-    )
-    iPareto = find_pareto_front(fallpoints)
-    out.x = surrogateModel.X[iPareto, :].copy()
-    out.fx = fallpoints[iPareto, :]
-
-    return out
-
-
-def initialize_surrogate_constraints(
-    fun,
-    gfun,
-    bounds,
-    mineval: int,
-    maxeval: int,
-    *,
-    surrogateModel: Surrogate = RbfModel(),
-) -> OptimizeResult:
-    """Initialize the surrogate models for the constraints.
-
-    :param fun: The objective function to be minimized.
-    :param gfun: The constraint functions. Each constraint function must return a scalar
-        value. If the constraint function returns a value greater than zero, it
-        is considered a violation of the constraint.
-    :param bounds: List with the limits [x_min,x_max] of each direction x in the search
-        space.
-    :param mineval: Minimum number of function evaluations to build the surrogate model.
-    :param maxeval: Maximum number of function evaluations.
-    :param surrogateModel: Multi-target surrogate model to be used. The default is RbfModel().
-    :return: The optimization result.
-    """
-    dim = len(bounds)  # Dimension of the problem
-    gdim = surrogateModel.ntarget  # Number of constraints
-    assert dim > 0 and gdim > 0
-
-    # Initialize output
-    out = OptimizeResult(
-        x=np.array([]),
-        fx=np.array([]),
-        nit=0,
-        nfev=0,
-        sample=np.zeros((maxeval, dim)),
-        fsample=np.zeros((maxeval, 1 + gdim)),
-    )
-    bestfx = np.inf
-
-    # Number of initial sample points
-    m0 = surrogateModel.ntrain
-    m_for_surrogate = surrogateModel.min_design_space_size(
-        dim
-    )  # Smallest sample for a valid surrogate
-
-    # Add new sample to the surrogate model
-    if m0 == 0:
-        # Create a new sample with SLHD
-        m = min(maxeval, max(mineval, 2 * m_for_surrogate))
-        out.sample[0:m] = Sampler(m).get_slhd_sample(
-            bounds, iindex=surrogateModel.iindex
-        )
-        if m >= 2 * m_for_surrogate:
-            count = 0
-            while not surrogateModel.check_initial_design(out.sample[0:m]):
-                out.sample[0:m] = Sampler(m).get_slhd_sample(
-                    bounds, iindex=surrogateModel.iindex
-                )
-                count += 1
-                if count > 100:
-                    raise RuntimeError("Cannot create valid initial design")
-
-        # Compute f(sample) and g(sample)
-        out.fsample[0:m, 0] = bestfx
-        out.fsample[0:m, 1:] = gfun(out.sample[0:m])
-        out.nfev = m
-
-        # Update surrogate
-        surrogateModel.update(out.sample[0:m], out.fsample[0:m, 1:])
-
-        # Update best point found so far
-        for i in range(m):
-            if np.max(out.fsample[i, 1:]) <= 0:
-                out.fsample[i, 0] = fun(out.sample[i, :].reshape(1, -1))
-                if out.x.size == 0 or out.fsample[i, 0] < bestfx:
-                    out.x = out.sample[i, :].copy()
-                    out.fx = out.fsample[i, :].copy()
-                    bestfx = out.fsample[i, 0]
-
-    return out
+            self.x = combined_x[iBest].copy()
+        else:
+            iPareto = find_pareto_front(combined_y[:, 0 : self.nobj])
+            self.x = combined_x[iPareto].copy()
+            self.fx = combined_y[iPareto].copy()
 
 
 def surrogate_optimization(
@@ -1084,9 +958,9 @@ def socemo(
     surrogateModel.reserve(surrogateModel.ntrain + maxeval, dim, objdim)
 
     # Initialize output
-    out = initialize_moo_surrogate(
-        fun, bounds, 0, maxeval, surrogateModel=surrogateModel
-    )
+    out = OptimizeResult()
+    out.init(fun, bounds, 0, maxeval, surrogateModel, ntarget=objdim)
+    out.init_best_values(surrogateModel)
     assert isinstance(out.fx, np.ndarray)
 
     # Define acquisition functions
@@ -1097,7 +971,7 @@ def socemo(
     step5acquisition = MinimizeMOSurrogate(rtol=acquisitionFunc.rtol)
 
     # do until max number of f-evals reached or local min found
-    xselected = np.empty((0, dim))
+    xselected = np.array(out.sample[0 : out.nfev, :], copy=True)
     ySelected = np.array(out.fsample[0 : out.nfev], copy=True)
     while out.nfev < maxeval:
         nMax = maxeval - out.nfev
@@ -1314,14 +1188,19 @@ def gosac(
     surrogateModel.reserve(surrogateModel.ntrain + maxeval, dim, gdim)
 
     # Initialize output
-    out = initialize_surrogate_constraints(
-        fun,
-        gfun,
+    out = OptimizeResult()
+    out.init(
+        lambda x: np.hstack(
+            (np.reshape(fun(x), (-1, 1)), np.reshape(gfun(x), (-1, gdim)))
+        ),
         bounds,
         0,
         maxeval,
-        surrogateModel=surrogateModel,
+        surrogateModel,
+        ntarget=gdim + 1,
     )
+    out.nobj = 1
+    out.init_best_values()
     assert isinstance(out.fx, np.ndarray)
 
     # Acquisition functions
@@ -1329,8 +1208,8 @@ def gosac(
     acquisition1 = MinimizeMOSurrogate(rtol=rtol)
     acquisition2 = GosacSample(fun, rtol=rtol)
 
-    xselected = np.empty((0, dim))
-    ySelected = np.copy(out.fsample[0 : out.nfev, 1:])
+    xselected = np.array(out.sample[0 : out.nfev, :], copy=True)
+    ySelected = np.array(out.fsample[0 : out.nfev, 1:], copy=True)
 
     # Phase 1: Find a feasible solution
     while out.nfev < maxeval and out.x.size == 0:
