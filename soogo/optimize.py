@@ -844,7 +844,6 @@ def cptv(
 
     # Tolerance parameters
     nFailTol = max(5, dim)  # Fail tolerance for the CP step
-    tol = acquisitionFunc.tol(bounds)  # Tolerance for excluding points
 
     # Get index and bounds of the continuous variables
     cindex = [i for i in range(dim) if i not in surrogateModel.iindex]
