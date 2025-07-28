@@ -219,6 +219,8 @@ class RbfModel(Surrogate):
         """
         if maxeval < self._m:
             return
+        if maxeval == self._m and self.dim == dim and self.ntarget == ntarget:
+            return
 
         if self._x.size == 0:
             self._x = np.empty((maxeval, dim))
@@ -492,11 +494,17 @@ class RbfModel(Surrogate):
             return
 
         # Reserve space for the new data
-        self.reserve(m, dim, self.ntarget)
+        self.reserve(
+            m,
+            dim,
+            np.asarray(fx).shape[-1]
+            if (oldm == 0 and np.asarray(fx).ndim > 1)
+            else self.ntarget,
+        )
 
         # Update x and fx
         self._x[oldm:m] = xNew
-        self._fx[oldm:m] = fx if self.ntarget > 1 else fx.reshape(-1)
+        self._fx[oldm:m] = fx
 
         # Compute distances between new points and sampled points
         distNew = cdist(self._x[oldm:m], self._x[0:m])

@@ -1210,6 +1210,8 @@ def gosac(
 
     xselected = np.array(out.sample[0 : out.nfev, :], copy=True)
     ySelected = np.array(out.fsample[0 : out.nfev, 1:], copy=True)
+    if gdim == 1:
+        ySelected = ySelected.flatten()
 
     # Phase 1: Find a feasible solution
     while out.nfev < maxeval and out.x.size == 0:
