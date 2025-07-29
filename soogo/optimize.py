@@ -111,16 +111,12 @@ class OptimizeResult:
         )  # Smallest sample for a valid surrogate
         iindex = surrogateModel.iindex  # Integer design variables
 
-        # Initialize sample arrays in this object
-        self.nobj = ntarget
+        # Initialize sample array in this object
         self.sample = np.empty((maxeval, dim))
         self.sample[:] = np.nan
-        self.fsample = np.empty(
-            maxeval if self.nobj <= 1 else (maxeval, self.nobj)
-        )
-        self.fsample[:] = np.nan
 
         # If the surrogate is empty and no initial sample was given
+        m = 0
         if m0 == 0:
             # Create a new sample with SLHD
             m = min(maxeval, max(mineval, 2 * m_for_surrogate))
@@ -141,9 +137,24 @@ class OptimizeResult:
                             "Cannot create valid initial design"
                         )
 
+        # Initialize fsample and nobj
+        if m0 == 0:
             # Compute f(sample)
-            self.fsample[0:m] = fun(self.sample[0:m])
+            fsample = np.array(fun(self.sample[0:m]))
             self.nfev = m
+            self.nobj = fsample.shape[1] if fsample.ndim > 1 else 1
+
+            # Store the function values
+            self.fsample = np.empty(
+                maxeval if self.nobj <= 1 else (maxeval, self.nobj)
+            )
+            self.fsample[0:m] = fsample
+        else:
+            self.nobj = max(ntarget, surrogateModel.ntarget)
+            self.fsample = np.empty(
+                maxeval if self.nobj <= 1 else (maxeval, self.nobj)
+            )
+        self.fsample[m:] = np.nan
 
     def init_best_values(
         self, surrogateModel: Optional[Surrogate] = None
@@ -906,8 +917,8 @@ def socemo(
     fun,
     bounds,
     maxeval: int,
-    surrogateModel: Surrogate,
     *,
+    surrogateModel: Optional[Surrogate] = None,
     acquisitionFunc: Optional[WeightedAcquisition] = None,
     acquisitionFuncGlobal: Optional[WeightedAcquisition] = None,
     disp: bool = False,
@@ -920,7 +931,8 @@ def socemo(
     :param bounds: List with the limits [x_min,x_max] of each direction x in the search
         space.
     :param maxeval: Maximum number of function evaluations.
-    :param surrogateModel: Multi-target surrogate model to be used.
+    :param surrogateModel: Multi-target surrogate model to be used. If None is provided, a
+        :class:`RbfModel` model is used.
     :param acquisitionFunc: Acquisition function to be used in the CP step. The default is
         WeightedAcquisition(0).
     :param acquisitionFuncGlobal: Acquisition function to be used in the global step. The default is
@@ -939,10 +951,13 @@ def socemo(
         https://doi.org/10.1287/ijoc.2017.0749
     """
     dim = len(bounds)  # Dimension of the problem
-    objdim = surrogateModel.ntarget  # Number of objective functions
-    assert dim > 0 and objdim > 1
+    assert dim > 0
 
     # Initialize optional variables
+    return_surrogate = True
+    if surrogateModel is None:
+        return_surrogate = False
+        surrogateModel = RbfModel()
     if acquisitionFunc is None:
         acquisitionFunc = WeightedAcquisition(NormalSampler(0, 0.1))
     if acquisitionFuncGlobal is None:
@@ -954,14 +969,16 @@ def socemo(
     if acquisitionFuncGlobal.sampler.n <= 1:
         acquisitionFuncGlobal.sampler.n = min(500 * dim, 5000)
 
-    # Reserve space for the surrogate model to avoid repeated allocations
-    surrogateModel.reserve(surrogateModel.ntrain + maxeval, dim, objdim)
-
     # Initialize output
     out = OptimizeResult()
-    out.init(fun, bounds, 0, maxeval, surrogateModel, ntarget=objdim)
+    out.init(fun, bounds, 0, maxeval, surrogateModel)
     out.init_best_values(surrogateModel)
     assert isinstance(out.fx, np.ndarray)
+
+    # Reserve space for the surrogate model to avoid repeated allocations
+    objdim = out.nobj
+    assert objdim > 1
+    surrogateModel.reserve(surrogateModel.ntrain + maxeval, dim, objdim)
 
     # Define acquisition functions
     tol = acquisitionFunc.tol(bounds)
@@ -1130,12 +1147,13 @@ def socemo(
     out.fsample.resize(out.nfev, objdim)
 
     # Update surrogate model if it lives outside the function scope
-    t0 = time.time()
-    if out.nfev > 0:
-        surrogateModel.update(xselected, ySelected)
-    tf = time.time()
-    if disp:
-        print("Time to update surrogate model: %f s" % (tf - t0))
+    if return_surrogate:
+        t0 = time.time()
+        if out.nfev > 0:
+            surrogateModel.update(xselected, ySelected)
+        tf = time.time()
+        if disp:
+            print("Time to update surrogate model: %f s" % (tf - t0))
 
     return out
 
@@ -1145,8 +1163,8 @@ def gosac(
     gfun,
     bounds,
     maxeval: int,
-    surrogateModel: Surrogate,
     *,
+    surrogateModel: Optional[Surrogate] = None,
     disp: bool = False,
     callback: Optional[Callable[[OptimizeResult], None]] = None,
 ):
@@ -1165,8 +1183,8 @@ def gosac(
     :param bounds: List with the limits [x_min,x_max] of each direction x in the search
         space.
     :param maxeval: Maximum number of function evaluations.
-    :param surrogateModel: Multi-target surrogate model to be used for the
-        constraints.
+    :param surrogateModel: Surrogate model to be used for the constraints. If None is provided, a
+        :class:`RbfModel` model is used.
     :param disp: If True, print information about the optimization process. The default
         is False.
     :param callback: If provided, the callback function will be called after each iteration
@@ -1181,27 +1199,32 @@ def gosac(
         https://doi.org/10.1007/s10898-017-0496-y
     """
     dim = len(bounds)  # Dimension of the problem
-    gdim = surrogateModel.ntarget  # Number of constraints
-    assert dim > 0 and gdim > 0
+    assert dim > 0
 
-    # Reserve space for the surrogate model to avoid repeated allocations
-    surrogateModel.reserve(surrogateModel.ntrain + maxeval, dim, gdim)
+    # Initialize optional variables
+    return_surrogate = True
+    if surrogateModel is None:
+        return_surrogate = False
+        surrogateModel = RbfModel()
 
     # Initialize output
     out = OptimizeResult()
     out.init(
-        lambda x: np.hstack(
-            (np.reshape(fun(x), (-1, 1)), np.reshape(gfun(x), (-1, gdim)))
-        ),
+        lambda x: np.column_stack((fun(x), gfun(x))),
         bounds,
         0,
         maxeval,
         surrogateModel,
-        ntarget=gdim + 1,
+        ntarget=1 + surrogateModel.ntarget,
     )
     out.nobj = 1
     out.init_best_values()
     assert isinstance(out.fx, np.ndarray)
+
+    # Reserve space for the surrogate model to avoid repeated allocations
+    gdim = out.fsample.shape[1] - 1
+    assert gdim > 0
+    surrogateModel.reserve(surrogateModel.ntrain + maxeval, dim, gdim)
 
     # Acquisition functions
     rtol = 1e-3
@@ -1352,12 +1375,13 @@ def gosac(
             callback(out)
 
     # Update surrogate model if it lives outside the function scope
-    t0 = time.time()
-    if out.nfev > 0:
-        surrogateModel.update(xselected, ySelected)
-    tf = time.time()
-    if disp:
-        print("Time to update surrogate model: %f s" % (tf - t0))
+    if return_surrogate:
+        t0 = time.time()
+        if out.nfev > 0:
+            surrogateModel.update(xselected, ySelected)
+        tf = time.time()
+        if disp:
+            print("Time to update surrogate model: %f s" % (tf - t0))
 
     return out
 
