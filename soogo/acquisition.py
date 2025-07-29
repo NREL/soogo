@@ -47,6 +47,8 @@ from scipy.optimize import minimize, differential_evolution
 # Pymoo imports
 from pymoo.operators.survival.rank_and_crowding import RankAndCrowding
 from pymoo.core.mixed import MixedVariableGA, MixedVariableMating
+from pymoo.algorithms.soo.nonconvex.de import DE
+from pymoo.algorithms.moo.nsga2 import NSGA2
 from pymoo.core.initialization import Initialization
 from pymoo.optimize import minimize as pymoo_minimize
 from pymoo.core.population import Population
@@ -96,15 +98,22 @@ class AcquisitionFunction(ABC):
     enables the definition of the :meth:`optimize()` method with a similar API
     when we compare different acquisition strategies.
 
-    :param optimizer: Optimizer to be used for the acquisition function. Default
-        is None.
+    :param optimizer: Continuous optimizer to be used for the acquisition
+        function. Default is Differential Evolution (DE) from pymoo.
+    :param mi_optimizer: Mixed-integer optimizer to be used for the acquisition
+        function. Default is Genetic Algorithm (MixedVariableGA) from pymoo.
     :param rtol: Minimum distance between a candidate point and the
         previously selected points relative to the domain size. Default is 1e-6.
 
     .. attribute:: optimizer
 
-        Optimizer to be used for the acquisition function. This is used in
-        :meth:`optimize()`.
+        Continuous optimizer to be used for the acquisition function. This is
+        used in :meth:`optimize()`.
+
+    .. attribute:: mi_optimizer
+
+        Mixed-integer optimizer to be used for the acquisition function. This is
+        used in :meth:`optimize()`.
 
     .. attribute:: rtol
 
@@ -113,8 +122,20 @@ class AcquisitionFunction(ABC):
         solved in :meth:`optimize()`.
     """
 
-    def __init__(self, optimizer=None, rtol: float = 1e-6) -> None:
-        self.optimizer = optimizer
+    def __init__(
+        self, optimizer=None, mi_optimizer=None, rtol: float = 1e-6
+    ) -> None:
+        self.optimizer = DE() if optimizer is None else optimizer
+        self.mi_optimizer = (
+            MixedVariableGA(
+                eliminate_duplicates=ListDuplicateElimination(),
+                mating=MixedVariableMating(
+                    eliminate_duplicates=ListDuplicateElimination()
+                ),
+            )
+            if mi_optimizer is None
+            else mi_optimizer
+        )
         self.rtol = rtol
 
     @abstractmethod
@@ -548,8 +569,6 @@ class TargetValueAcquisition(AcquisitionFunction):
     sample. If it is too close, we replace it by a random point in the domain
     drawn from an uniform distribution. This is strategy was proposed in [#]_.
 
-    :param optimizer: Single-objective optimizer. If None, use MixedVariableGA
-        from pymoo.
     :param cycleLength: Length of the global search cycle. Stored in
         :attr:`cycleLength`.
 
@@ -581,17 +600,14 @@ class TargetValueAcquisition(AcquisitionFunction):
         self._cycle = 0
         self.cycleLength = cycleLength
 
-        if "optimizer" not in kwargs:
-            kwargs["optimizer"] = MixedVariableGA(
-                eliminate_duplicates=ListDuplicateElimination(),
-                mating=MixedVariableMating(
-                    eliminate_duplicates=ListDuplicateElimination()
-                ),
-                termination=DefaultSingleObjectiveTermination(
-                    xtol=kwargs.get("rtol", 1e-3), period=3
-                ),
-            )
+        # Use termination criteria based on the relative tolerance. This is used
+        # to reduce the time spent in the optimization process.
         super().__init__(**kwargs)
+        termination = DefaultSingleObjectiveTermination(
+            xtol=self.rtol, period=3
+        )
+        self.optimizer.termination = termination
+        self.mi_optimizer.termination = termination
 
     @staticmethod
     def bumpiness_measure(
@@ -666,6 +682,9 @@ class TargetValueAcquisition(AcquisitionFunction):
         dim = len(bounds)  # Dimension of the problem
         assert n <= self.cycleLength + 2
 
+        iindex = surrogateModel.iindex
+        optimizer = self.optimizer if len(iindex) == 0 else self.mi_optimizer
+
         # Create a KDTree with the current training points
         tree = KDTree(surrogateModel.X)
         atol = self.tol(bounds)
@@ -698,12 +717,12 @@ class TargetValueAcquisition(AcquisitionFunction):
                     surrogateModel.prepare_mu_measure()
                     mu_measure_is_prepared = True
                 problem = PymooProblem(
-                    surrogateModel.mu_measure, bounds, surrogateModel.iindex
+                    surrogateModel.mu_measure, bounds, iindex
                 )
 
                 res = pymoo_minimize(
                     problem,
-                    self.optimizer,
+                    optimizer,
                     seed=surrogateModel.ntrain,
                     verbose=False,
                 )
@@ -716,12 +735,10 @@ class TargetValueAcquisition(AcquisitionFunction):
             ):  # cycle step global search
                 # find min of surrogate model
                 if f_rbf is None:
-                    problem = PymooProblem(
-                        surrogateModel, bounds, surrogateModel.iindex
-                    )
+                    problem = PymooProblem(surrogateModel, bounds, iindex)
                     res = pymoo_minimize(
                         problem,
-                        self.optimizer,
+                        optimizer,
                         seed=surrogateModel.ntrain,
                         verbose=False,
                     )
@@ -747,12 +764,12 @@ class TargetValueAcquisition(AcquisitionFunction):
                         surrogateModel, x, f_target, target_range
                     ),
                     bounds,
-                    surrogateModel.iindex,
+                    iindex,
                 )
 
                 res = pymoo_minimize(
                     problem,
-                    self.optimizer,
+                    optimizer,
                     seed=surrogateModel.ntrain,
                     verbose=False,
                 )
@@ -762,12 +779,10 @@ class TargetValueAcquisition(AcquisitionFunction):
             else:  # cycle step local search
                 # find the minimum of RBF surface
                 if f_rbf is None:
-                    problem = PymooProblem(
-                        surrogateModel, bounds, surrogateModel.iindex
-                    )
+                    problem = PymooProblem(surrogateModel, bounds, iindex)
                     res = pymoo_minimize(
                         problem,
-                        self.optimizer,
+                        optimizer,
                         seed=surrogateModel.ntrain,
                         verbose=False,
                     )
@@ -794,12 +809,12 @@ class TargetValueAcquisition(AcquisitionFunction):
                             surrogateModel, x, f_target, target_range
                         ),
                         bounds,
-                        surrogateModel.iindex,
+                        iindex,
                     )
 
                     res = pymoo_minimize(
                         problem,
-                        self.optimizer,
+                        optimizer,
                         seed=surrogateModel.ntrain,
                         verbose=False,
                     )
@@ -816,7 +831,7 @@ class TargetValueAcquisition(AcquisitionFunction):
                 # randomly select point from variable domain
                 xselected = Mitchel91Sampler(1).get_mitchel91_sample(
                     bounds,
-                    iindex=surrogateModel.iindex,
+                    iindex=iindex,
                     current_sample=current_sample,
                 )
 
@@ -1059,8 +1074,10 @@ class ParetoFront(AcquisitionFunction):
        point that minimizes the L1 distance to :math:`\\tau` to be part of the
        new sample.
 
-    :param optimizer: Multi-objective optimizer. If None, use MixedVariableGA
-        from pymoo with RankAndCrowding survival strategy.
+    :param optimizer: Continuous multi-objective optimizer. If None, use
+        NSGA2 from pymoo.
+    :param mi_optimizer: Mixed-integer multi-objective optimizer. If None, use
+        MixedVariableGA from pymoo with RankAndCrowding survival strategy.
     :param oldTV: Old target values to be avoided in the acquisition.
         Copied to :attr:`oldTV`.
 
@@ -1080,7 +1097,9 @@ class ParetoFront(AcquisitionFunction):
         self.oldTV = np.array(oldTV)
 
         if "optimizer" not in kwargs:
-            kwargs["optimizer"] = MixedVariableGA(
+            kwargs["optimizer"] = NSGA2()
+        if "mi_optimizer" not in kwargs:
+            kwargs["mi_optimizer"] = MixedVariableGA(
                 eliminate_duplicates=ListDuplicateElimination(),
                 mating=MixedVariableMating(
                     eliminate_duplicates=ListDuplicateElimination()
@@ -1164,6 +1183,9 @@ class ParetoFront(AcquisitionFunction):
         dim = len(bounds)
         objdim = surrogateModel.ntarget
 
+        iindex = surrogateModel.iindex
+        optimizer = self.optimizer if len(iindex) == 0 else self.mi_optimizer
+
         if len(paretoFront) == 0:
             paretoFrontIdx = find_pareto_front(surrogateModel.Y)
             paretoFront = surrogateModel.Y[paretoFrontIdx]
@@ -1184,13 +1206,17 @@ class ParetoFront(AcquisitionFunction):
 
             # Use non-dominated points if provided
             if len(nondominated) > 0:
-                Xinit = np.array(
-                    [{i: x[i] for i in range(dim)} for x in nondominated]
+                Xinit = (
+                    nondominated
+                    if len(iindex) == 0
+                    else np.array(
+                        [{i: x[i] for i in range(dim)} for x in nondominated]
+                    )
                 )
-                self.optimizer.initialization = Initialization(
+                optimizer.initialization = Initialization(
                     Population.new("X", Xinit),
-                    repair=self.optimizer.repair,
-                    eliminate_duplicates=self.optimizer.eliminate_duplicates,
+                    repair=optimizer.repair,
+                    eliminate_duplicates=optimizer.eliminate_duplicates,
                 )
 
             # Find the Pareto-optimal solution set that minimizes dist(s(x),tau).
@@ -1199,12 +1225,12 @@ class ParetoFront(AcquisitionFunction):
             multiobjTVProblem = PymooProblem(
                 lambda x: np.absolute(surrogateModel(x) - tau),
                 bounds,
-                surrogateModel.iindex,
+                iindex,
                 n_obj=objdim,
             )
             res = pymoo_minimize(
                 multiobjTVProblem,
-                self.optimizer,
+                optimizer,
                 seed=len(paretoFront),
                 verbose=False,
             )
@@ -1249,9 +1275,6 @@ class EndPointsParetoFront(AcquisitionFunction):
     consider the whole variable domain and sample at the point that maximizes
     the minimum distance to training sample points.
 
-    :param optimizer: Single-objective optimizer. If None, use MixedVariableGA
-        from pymoo.
-
     References
     ----------
     .. [#] Juliane Mueller. SOCEMO: Surrogate Optimization of Computationally
@@ -1261,13 +1284,6 @@ class EndPointsParetoFront(AcquisitionFunction):
     """
 
     def __init__(self, **kwargs) -> None:
-        if "optimizer" not in kwargs:
-            kwargs["optimizer"] = MixedVariableGA(
-                eliminate_duplicates=ListDuplicateElimination(),
-                mating=MixedVariableMating(
-                    eliminate_duplicates=ListDuplicateElimination()
-                ),
-            )
         super().__init__(**kwargs)
 
     def optimize(
@@ -1287,7 +1303,9 @@ class EndPointsParetoFront(AcquisitionFunction):
         """
         dim = len(bounds)
         objdim = surrogateModel.ntarget
+
         iindex = surrogateModel.iindex
+        optimizer = self.optimizer if len(iindex) == 0 else self.mi_optimizer
 
         # Find endpoints of the Pareto front
         endpoints = np.empty((objdim, dim))
@@ -1297,7 +1315,7 @@ class EndPointsParetoFront(AcquisitionFunction):
             )
             res = pymoo_minimize(
                 minimumPointProblem,
-                self.optimizer,
+                optimizer,
                 seed=surrogateModel.ntrain,
                 verbose=False,
             )
@@ -1337,7 +1355,7 @@ class EndPointsParetoFront(AcquisitionFunction):
             )
             res = pymoo_minimize(
                 minimumPointProblem,
-                self.optimizer,
+                optimizer,
                 verbose=False,
                 seed=surrogateModel.ntrain + 1,
             )
@@ -1354,14 +1372,18 @@ class MinimizeMOSurrogate(AcquisitionFunction):
     """Obtain pareto-optimal sample points for the multi-objective surrogate
     model.
 
-    :param optimizer: Multi-objective optimizer. If None, use MixedVariableGA
-        from pymoo with RankAndCrowding survival strategy.
+    :param optimizer: Continuous multi-objective optimizer. If None, use
+        NSGA2 from pymoo.
+    :param mi_optimizer: Mixed-integer multi-objective optimizer. If None, use
+        MixedVariableGA from pymoo with RankAndCrowding survival strategy.
 
     """
 
     def __init__(self, **kwargs) -> None:
         if "optimizer" not in kwargs:
-            kwargs["optimizer"] = MixedVariableGA(
+            kwargs["optimizer"] = NSGA2()
+        if "mi_optimizer" not in kwargs:
+            kwargs["mi_optimizer"] = MixedVariableGA(
                 eliminate_duplicates=ListDuplicateElimination(),
                 mating=MixedVariableMating(
                     eliminate_duplicates=ListDuplicateElimination()
@@ -1388,16 +1410,16 @@ class MinimizeMOSurrogate(AcquisitionFunction):
         """
         dim = len(bounds)
 
+        iindex = surrogateModel.iindex
+        optimizer = self.optimizer if len(iindex) == 0 else self.mi_optimizer
+
         # Solve the surrogate multiobjective problem
         multiobjSurrogateProblem = PymooProblem(
-            surrogateModel,
-            bounds,
-            surrogateModel.iindex,
-            n_obj=surrogateModel.ntarget,
+            surrogateModel, bounds, iindex, n_obj=surrogateModel.ntarget
         )
         res = pymoo_minimize(
             multiobjSurrogateProblem,
-            self.optimizer,
+            optimizer,
             seed=surrogateModel.ntrain,
             verbose=False,
         )
@@ -1544,11 +1566,9 @@ class GosacSample(AcquisitionFunction):
     the new sample. Otherwise, the new sample is the point that is farthest from
     previously selected sample points.
 
-    This acquisition function is only able to acuire 1 point at a time.
+    This acquisition function is only able to acquire 1 point at a time.
 
     :param fun: Objective function. Stored in :attr:`fun`.
-    :param optimizer: Single-objective optimizer. If None, use MixedVariableGA
-        from pymoo.
 
     .. attribute:: fun
 
@@ -1564,14 +1584,6 @@ class GosacSample(AcquisitionFunction):
 
     def __init__(self, fun, **kwargs) -> None:
         self.fun = fun
-
-        if "optimizer" not in kwargs:
-            kwargs["optimizer"] = MixedVariableGA(
-                eliminate_duplicates=ListDuplicateElimination(),
-                mating=MixedVariableMating(
-                    eliminate_duplicates=ListDuplicateElimination()
-                ),
-            )
         super().__init__(**kwargs)
 
     def optimize(
@@ -1591,7 +1603,10 @@ class GosacSample(AcquisitionFunction):
         """
         dim = len(bounds)
         gdim = surrogateModel.ntarget
+
         iindex = surrogateModel.iindex
+        optimizer = self.optimizer if len(iindex) == 0 else self.mi_optimizer
+
         assert n == 1
 
         # Create KDTree with previously evaluated points
@@ -1603,7 +1618,7 @@ class GosacSample(AcquisitionFunction):
         )
         res = pymoo_minimize(
             cheapProblem,
-            self.optimizer,
+            optimizer,
             seed=surrogateModel.ntrain,
             verbose=False,
         )
@@ -1626,7 +1641,7 @@ class GosacSample(AcquisitionFunction):
             )
             res = pymoo_minimize(
                 minimumPointProblem,
-                self.optimizer,
+                optimizer,
                 seed=surrogateModel.ntrain + 1,
                 verbose=False,
             )

@@ -103,8 +103,8 @@ class PymooProblem(Problem):
     :param objfunc: Objective function. Stored in :attr:`objfunc`.
     :param bounds: List with the limits [x_min,x_max] of each direction x in
         the search space.
+    :param iindex: Indices of the input space that are integer. Default is ().
     :param n_obj: Number of objective functions. Default is 1.
-    :param iindex: Indices of the input space that are integer.
     :param gfunc: Constraint function. Stored in :attr:`gfunc`. If None, no
         constraints are defined.
     :param n_ieq_constr: Number of inequality constraints. Default is 0.
@@ -117,24 +117,42 @@ class PymooProblem(Problem):
 
         Constraint function.
 
+    .. attribute:: is_mixed_integer
+
+        Indicates whether the problem is a mixed-integer problem.
+
     """
 
     def __init__(
         self,
         objfunc,
         bounds,
-        iindex,
-        n_obj=1,
+        iindex=(),
+        n_obj: int = 1,
         gfunc=None,
         n_ieq_constr: int = 0,
     ):
-        vars = _get_vars(bounds, iindex)
         self.objfunc = objfunc
         self.gfunc = gfunc
-        super().__init__(vars=vars, n_obj=n_obj, n_ieq_constr=n_ieq_constr)
+        self.is_mixed_integer = len(iindex) > 0
+
+        if self.is_mixed_integer:
+            vars = _get_vars(bounds, iindex)
+            super().__init__(vars=vars, n_obj=n_obj, n_ieq_constr=n_ieq_constr)
+        else:
+            n_var = len(bounds)
+            xl = [b[0] for b in bounds]
+            xu = [b[1] for b in bounds]
+            super().__init__(
+                n_var=n_var,
+                xl=xl,
+                xu=xu,
+                n_obj=n_obj,
+                n_ieq_constr=n_ieq_constr,
+            )
 
     def _evaluate(self, X, out):
-        x = _dict_to_array(X)
+        x = _dict_to_array(X) if self.is_mixed_integer else X
         out["F"] = self.objfunc(x)
         if self.gfunc is not None:
             out["G"] = self.gfunc(x)
