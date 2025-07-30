@@ -36,6 +36,7 @@ __deprecated__ = False
 import numpy as np
 from math import log
 from abc import ABC, abstractmethod
+from typing import Optional
 
 # Scipy imports
 from scipy.spatial.distance import cdist
@@ -60,30 +61,9 @@ from .sampling import NormalSampler, Sampler, Mitchel91Sampler
 from .rbf import LinearRadialBasisFunction, RbfModel
 from .gp import GaussianProcess
 from .problem import PymooProblem, ListDuplicateElimination
-
-
-def find_pareto_front(fx, iStart: int = 0) -> list:
-    """Find the Pareto front given a set of points in the target space.
-
-    :param fx: List with n points in the m-dimensional target space.
-    :param iStart: Points from 0 to iStart - 1 are already known to be in the
-        Pareto front.
-    :return: Indices of the points in the Pareto front.
-    """
-    pareto = [True] * len(fx)
-    for i in range(iStart, len(fx)):
-        for j in range(i):
-            if pareto[j]:
-                if all(fx[i] <= fx[j]) and any(fx[i] < fx[j]):
-                    # x[i] dominates x[j]
-                    pareto[j] = False
-                elif all(fx[j] <= fx[i]) and any(fx[j] < fx[i]):
-                    # x[j] dominates x[i]
-                    # No need to continue checking, otherwise the previous
-                    # iteration was not a balid Pareto front
-                    pareto[i] = False
-                    break
-    return [i for i in range(len(fx)) if pareto[i]]
+from .termination import NoTermination
+from .utils import find_pareto_front
+from .optimize_result import OptimizeResult
 
 
 class AcquisitionFunction(ABC):
@@ -123,7 +103,11 @@ class AcquisitionFunction(ABC):
     """
 
     def __init__(
-        self, optimizer=None, mi_optimizer=None, rtol: float = 1e-6
+        self,
+        optimizer=None,
+        mi_optimizer=None,
+        rtol: float = 1e-6,
+        termination=None,
     ) -> None:
         self.optimizer = DE() if optimizer is None else optimizer
         self.mi_optimizer = (
@@ -137,6 +121,9 @@ class AcquisitionFunction(ABC):
             else mi_optimizer
         )
         self.rtol = rtol
+        self.termination = (
+            NoTermination() if termination is None else termination
+        )
 
     @abstractmethod
     def optimize(
@@ -171,6 +158,18 @@ class AcquisitionFunction(ABC):
             * np.sqrt(len(bounds))
             * np.min([abs(b[1] - b[0]) for b in bounds])
         )
+
+    def has_converged(
+        self, out: OptimizeResult, model: Optional[Surrogate] = None
+    ) -> bool:
+        """Check if the acquisition function has converged.
+
+        This method is used to check if the acquisition function has converged
+        based on a termination criterion. The default implementation always
+        returns False, indicating that the acquisition function has not
+        converged.
+        """
+        return self.termination.has_terminated(out, model)
 
 
 class WeightedAcquisition(AcquisitionFunction):

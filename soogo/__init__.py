@@ -31,6 +31,9 @@ __all__ = [
     "gosac",
     "bayesian_optimization",
     "OptimizeResult",
+    "utils",
+    "optimize_result",
+    "termination",
 ]
 __version__ = "1.2.2"
 
@@ -40,6 +43,9 @@ from . import sampling
 from . import rbf
 from . import gp
 from . import surrogate
+from . import utils
+from . import optimize_result
+from . import termination
 
 # Expose optimization routines
 from .optimize import (
@@ -51,5 +57,5 @@ from .optimize import (
     socemo,
     gosac,
     bayesian_optimization,
-    OptimizeResult,
 )
+from .optimize_result import OptimizeResult

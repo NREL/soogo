@@ -24,7 +24,7 @@ __deprecated__ = False
 
 from abc import ABC, abstractmethod
 import numpy as np
-from typing import Union, Tuple
+from typing import Optional, Union, Tuple
 
 
 class Surrogate(ABC):
@@ -149,7 +149,9 @@ class Surrogate(ABC):
         pass
 
     @abstractmethod
-    def eval_kernel(self, x: np.ndarray, y: np.ndarray = None) -> np.ndarray:
+    def eval_kernel(
+        self, x: np.ndarray, y: Optional[np.ndarray] = None
+    ) -> np.ndarray:
         """Evaluate the kernel function at a pair (x,y).
 
         The structure of the kernel is the same as the one passed as parameter

@@ -40,7 +40,7 @@ from math import sqrt
 from typing import Optional
 import numpy as np
 import matplotlib.pyplot as plt
-from soogo import rbf, optimize, sampling
+from soogo import rbf, optimize, sampling, OptimizeResult
 from soogo.acquisition import (
     WeightedAcquisition,
     TargetValueAcquisition,
@@ -60,7 +60,7 @@ def read_and_run(
     PlotResult: bool = True,
     optim_func=optimize.multistart_msrs,
     seeds=None,
-) -> list[optimize.OptimizeResult]:
+) -> list[OptimizeResult]:
     """Perform the optimization and plot the solution if asked.
 
     Parameters
@@ -90,8 +90,8 @@ def read_and_run(
 
     Returns
     -------
-    optres : list[optimize.OptimizeResult]
-        List of optimize.OptimizeResult objects with the optimization results.
+    optres : list[OptimizeResult]
+        List of OptimizeResult objects with the optimization results.
     """
     # Define seeds
     if seeds is None:
@@ -160,13 +160,13 @@ def read_and_run(
     return optres
 
 
-def plot_results(optres: list[optimize.OptimizeResult], filename: str):
+def plot_results(optres: list[OptimizeResult], filename: str):
     """Plot the results.
 
     Parameters
     ----------
-    optres: list[optimize.OptimizeResult]
-        List of optimize.OptimizeResult objects with the optimization results.
+    optres: list[OptimizeResult]
+        List of OptimizeResult objects with the optimization results.
     filename : str
         Path for the plot file.
     """
@@ -287,7 +287,7 @@ def check_set_parameters(
     return maxeval, Ntrials, batchSize
 
 
-def main(config: int) -> list[optimize.OptimizeResult]:
+def main(config: int) -> list[OptimizeResult]:
     """
     Main workflow
 

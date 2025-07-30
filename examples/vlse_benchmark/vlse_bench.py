@@ -28,7 +28,7 @@ import pickle
 import time
 from benchmark import *
 
-from soogo import optimize, acquisition, rbf, gp, sampling
+from soogo import optimize, acquisition, rbf, gp, sampling, OptimizeResult
 from pathlib import Path
 from copy import deepcopy
 
@@ -41,7 +41,7 @@ def run_optimizer(
     *,
     bounds=None,
     disp: bool = False,
-) -> list[optimize.OptimizeResult]:
+) -> list[OptimizeResult]:
     """Runs the algorithm `algo` to find the minimum of the function `objf`.
 
     In the ith run, the random seed is set to i. This assures every method uses
