@@ -56,10 +56,9 @@ from pymoo.core.population import Population
 from pymoo.termination.default import DefaultSingleObjectiveTermination
 
 # Local imports
-from .surrogate import Surrogate
+from .model.base import Surrogate
 from .sampling import NormalSampler, Sampler, Mitchel91Sampler
-from .rbf import LinearRadialBasisFunction, RbfModel
-from .gp import GaussianProcess
+from .model import LinearRadialBasisFunction, RbfModel, GaussianProcess
 from .problem import PymooProblem, ListDuplicateElimination
 from .termination import NoTermination
 from .utils import find_pareto_front
@@ -252,9 +251,10 @@ class WeightedAcquisition(AcquisitionFunction):
         sx_max: float = 1.0,
         dx_max: float = 1.0,
     ) -> float:
-        """Computes the score.
+        r"""Computes the score.
 
         The score is
+
         .. math::
 
             w \frac{s(x)-s_{min}}{s_{max}-s_{min}} +
@@ -265,13 +265,14 @@ class WeightedAcquisition(AcquisitionFunction):
         - :math:`w` is a weight.
         - :math:`s(x)` is the value for the surrogate model on x.
         - :math:`d(x,X)` is the minimum distance between x and the previously
-          selected evaluation points.
+            selected evaluation points.
         - :math:`s_{min}` is the minimum value of the surrogate model.
         - :math:`s_{max}` is the maximum value of the surrogate model.
         - :math:`d_{max}` is the maximum distance between a candidate point and
             the set X of previously selected evaluation points.
 
         In case :math:`s_{max} = s_{min}`, the score is computed as
+
         .. math::
 
             \frac{d_{max}-d(x,X)}{d_{max}}.

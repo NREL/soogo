@@ -45,3 +45,22 @@ def find_pareto_front(fx, iStart: int = 0) -> list:
                     pareto[i] = False
                     break
     return [i for i in range(len(fx)) if pareto[i]]
+
+
+def gp_expected_improvement(delta, sigma):
+    """Expected Improvement function for a distribution from [#]_.
+
+    :param delta: Difference :math:`f^*_n - \\mu_n(x)`, where :math:`f^*_n` is
+        the current best function value and :math:`\\mu_n(x)` is the expected
+        value for :math:`f(x)`.
+    :param sigma: The standard deviation :math:`\\sigma_n(x)`.
+
+    References
+    ----------
+    .. [#] Donald R. Jones, Matthias Schonlau, and William J. Welch. Efficient
+        global optimization of expensive black-box functions. Journal of Global
+        Optimization, 13(4):455–492, 1998.
+    """
+    from scipy.stats import norm
+
+    return delta * norm.cdf(delta / sigma) + sigma * norm.pdf(delta / sigma)

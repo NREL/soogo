@@ -28,9 +28,11 @@ import pickle
 import time
 from benchmark import *
 
-from soogo import optimize, acquisition, rbf, gp, sampling, OptimizeResult
+from soogo import optimize, acquisition, sampling, OptimizeResult
 from pathlib import Path
 from copy import deepcopy
+
+from soogo.model import gp, rbf
 
 
 def run_optimizer(

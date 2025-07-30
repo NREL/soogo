@@ -2,9 +2,9 @@
 
 import numpy as np
 import pytest
-from soogo.surrogate import Surrogate
-from soogo.rbf import RbfModel
-from soogo.gp import GaussianProcess
+from soogo.model.base import Surrogate
+from soogo.model.rbf import RbfModel
+from soogo.model.gp import GaussianProcess
 
 
 def test_surrogate_is_abstract():

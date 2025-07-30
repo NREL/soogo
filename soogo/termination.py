@@ -29,7 +29,7 @@ from typing import Optional
 import numpy as np
 
 from .optimize_result import OptimizeResult
-from .surrogate import Surrogate
+from .model.base import Surrogate
 
 
 class Termination(ABC):

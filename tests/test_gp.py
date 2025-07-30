@@ -24,7 +24,7 @@ __deprecated__ = False
 
 import numpy as np
 import pytest
-from soogo.gp import GaussianProcess, gp_expected_improvement
+from soogo.model.gp import GaussianProcess, gp_expected_improvement
 
 
 @pytest.mark.parametrize("n", (10, 100))

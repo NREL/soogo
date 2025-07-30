@@ -43,7 +43,7 @@ from scipy.optimize import minimize, differential_evolution
 from scipy.spatial.distance import cdist
 
 # Local imports
-from .surrogate import Surrogate
+from .model.base import Surrogate
 from .acquisition import (
     WeightedAcquisition,
     CoordinatePerturbationOverNondominated,
@@ -56,8 +56,7 @@ from .acquisition import (
     AcquisitionFunction,
 )
 from .utils import find_pareto_front
-from .rbf import MedianLpfFilter, RbfModel
-from .gp import GaussianProcess
+from .model import MedianLpfFilter, RbfModel, GaussianProcess
 from .sampling import NormalSampler, Sampler, SamplingStrategy
 from .optimize_result import OptimizeResult
 

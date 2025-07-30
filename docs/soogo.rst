@@ -1,6 +1,14 @@
 soogo package
 ===================
 
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   model
+
 Submodules
 ----------
 
@@ -8,12 +16,12 @@ Submodules
    :maxdepth: 4
 
    acquisition
-   gp
    optimize
+   optimize_result
    problem
-   rbf
    sampling
-   surrogate
+   termination
+   utils
 
 Module contents
 ---------------

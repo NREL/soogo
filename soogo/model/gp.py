@@ -24,32 +24,16 @@ __deprecated__ = False
 
 import warnings
 import numpy as np
+import scipy.optimize as scipy_opt
+
+# Scikit-learn imports
 from sklearn.exceptions import ConvergenceWarning
 from sklearn.gaussian_process import GaussianProcessRegressor
-import scipy.optimize as scipy_opt
 from sklearn.gaussian_process.kernels import RBF as GPkernelRBF
 
 # Local imports
-from .surrogate import Surrogate
-
-
-def gp_expected_improvement(delta, sigma):
-    """Expected Improvement function for a distribution from [#]_.
-
-    :param delta: Difference :math:`f^*_n - \\mu_n(x)`, where :math:`f^*_n` is
-        the current best function value and :math:`\\mu_n(x)` is the expected
-        value for :math:`f(x)`.
-    :param sigma: The standard deviation :math:`\\sigma_n(x)`.
-
-    References
-    ----------
-    .. [#] Donald R. Jones, Matthias Schonlau, and William J. Welch. Efficient
-        global optimization of expensive black-box functions. Journal of Global
-        Optimization, 13(4):455–492, 1998.
-    """
-    from scipy.stats import norm
-
-    return delta * norm.cdf(delta / sigma) + sigma * norm.pdf(delta / sigma)
+from .base import Surrogate
+from ..utils import gp_expected_improvement
 
 
 class GaussianProcess(Surrogate):
@@ -126,7 +110,7 @@ class GaussianProcess(Surrogate):
                 with the standard deviations.
 
             * If `return_cov` is `True`, the third output is a m-by-m matrix
-            with the covariances if n=1, otherwise it is a m-by-m-by-n matrix.
+                with the covariances if n=1, otherwise it is a m-by-m-by-n matrix.
         """
         res = self.model.predict(
             x if self.scaler is None else self.scaler.transform(x),

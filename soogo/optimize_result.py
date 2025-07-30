@@ -27,7 +27,7 @@ from typing import Optional, Union
 import numpy as np
 
 from .sampling import Sampler
-from .surrogate import Surrogate
+from .model.base import Surrogate
 from .utils import find_pareto_front
 
 

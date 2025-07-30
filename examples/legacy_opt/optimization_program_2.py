@@ -28,12 +28,12 @@ __credits__ = [
 ]
 __deprecated__ = False
 
+import numpy as np
+
 from examples.legacy_opt.optimization_program_1 import read_check_data_file
-from soogo.rbf import RbfModel, MedianLpfFilter
-from soogo import surrogate_optimization
+from soogo import RbfModel, MedianLpfFilter, surrogate_optimization
 from soogo.sampling import NormalSampler, Sampler, SamplingStrategy
 from soogo.acquisition import WeightedAcquisition
-import numpy as np
 
 if __name__ == "__main__":
     np.random.seed(3)

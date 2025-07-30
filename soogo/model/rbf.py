@@ -25,12 +25,9 @@ __deprecated__ = False
 from typing import Optional, Union, Tuple
 import warnings
 import numpy as np
-from abc import abstractmethod, ABC
 from math import comb
-import sys
 
 # Autograd imports
-from autograd import numpy as anp
 from autograd import grad, hessian
 
 # Scipy imports
@@ -38,7 +35,8 @@ from scipy.spatial.distance import cdist
 from scipy.linalg import solve, ldl, solve_triangular
 
 # Local imports
-from .surrogate import Surrogate
+from .base import Surrogate
+from .rbf_kernel import RadialBasisFunction, CubicRadialBasisFunction
 
 
 class RbfFilter:
@@ -73,84 +71,6 @@ class MedianLpfFilter(RbfFilter):
         return np.where(x > np.median(x), np.median(x), x)
 
 
-class RadialBasisFunction(ABC):
-    """Base class for radial basis functions used in RBF models."""
-
-    @abstractmethod
-    def __call__(self, r):
-        pass
-
-    def __init__(self):
-        """Initialize the radial basis function and set up autograd functions."""
-        self._grad = grad(self.__call__)
-        self._hess = grad(self._grad)
-
-    def grad(self, r):
-        """Gradient of the radial function."""
-        return self._grad(r)
-
-    def hess(self, r):
-        """Hessian of the radial function."""
-        return self._hess(r)
-
-    def grad_over_r(self, r):
-        """Gradient of the radial function."""
-        return self._grad(r) / r
-
-    @staticmethod
-    def polynomial_tail_order() -> int:
-        """Return the order of the polynomial tail.
-
-        :return: Order of the polynomial tail, or -1 if no polynomial tail
-            is present.
-        """
-        return -1
-
-
-class LinearRadialBasisFunction(RadialBasisFunction):
-    def __call__(self, r):
-        return -r
-
-    @staticmethod
-    def polynomial_tail_order() -> int:
-        return 0
-
-
-class CubicRadialBasisFunction(RadialBasisFunction):
-    def __call__(self, r):
-        return r**3
-
-    def grad_over_r(self, r):
-        return 3 * r
-
-    @staticmethod
-    def polynomial_tail_order() -> int:
-        return 1
-
-
-class ThinPlateRadialBasisFunction(RadialBasisFunction):
-    def __init__(self, safe_r=sys.float_info.min):
-        """Initialize the thin plate radial basis function.
-
-        :param safe_r: A small value to avoid numerical issues with log(0).
-                       Defaults to the smallest positive floating point number.
-        """
-        super().__init__()
-        self.safe_r = safe_r
-
-    def __call__(self, r):
-        _r = anp.where(r == 0, 1, r)
-        return _r**2 * anp.log(_r)
-
-    def grad_over_r(self, r):
-        _r = anp.where(r == 0, self.safe_r, r)
-        return 2 * anp.log(_r) + 1
-
-    @staticmethod
-    def polynomial_tail_order() -> int:
-        return 1
-
-
 class RbfModel(Surrogate):
     r"""Radial Basis Function model.
 
@@ -178,10 +98,6 @@ class RbfModel(Surrogate):
     .. attribute:: kernel
 
         Kernel function :math:`\phi` used in the RBF model.
-
-    .. attribute:: iindex
-
-        Indices of integer variables in the feature (domain) space.
 
     .. attribute:: filter
 

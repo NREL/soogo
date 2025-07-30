@@ -1,7 +1,7 @@
-soogo.surrogate module
+soogo.model.base module
 ---------------------------
 
-.. automodule:: soogo.surrogate
+.. automodule:: soogo.model.base
    :members:
    :undoc-members:
    :show-inheritance:

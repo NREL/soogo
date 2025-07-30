@@ -25,7 +25,7 @@ __deprecated__ = False
 import numpy as np
 import sys
 import pytest
-from soogo.rbf import (
+from soogo.model import (
     CubicRadialBasisFunction,
     LinearRadialBasisFunction,
     MedianLpfFilter,

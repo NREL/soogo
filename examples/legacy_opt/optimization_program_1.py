@@ -40,13 +40,23 @@ from math import sqrt
 from typing import Optional
 import numpy as np
 import matplotlib.pyplot as plt
-from soogo import rbf, optimize, sampling, OptimizeResult
+
+import soogo
+from soogo import sampling, OptimizeResult
 from soogo.acquisition import (
     WeightedAcquisition,
     TargetValueAcquisition,
     AcquisitionFunction,
     MinimizeSurrogate,
 )
+from soogo.model.rbf_kernel import RadialBasisFunction
+from soogo.model import (
+    RbfModel,
+    MedianLpfFilter,
+    CubicRadialBasisFunction,
+    ThinPlateRadialBasisFunction,
+)
+
 from data import Data
 
 
@@ -56,9 +66,9 @@ def read_and_run(
     maxeval: int = 0,
     Ntrials: int = 0,
     batchSize: int = 0,
-    rbf_type: rbf.RadialBasisFunction = rbf.CubicRadialBasisFunction(),
+    rbf_type: RadialBasisFunction = CubicRadialBasisFunction(),
     PlotResult: bool = True,
-    optim_func=optimize.multistart_msrs,
+    optim_func=soogo.multistart_msrs,
     seeds=None,
 ) -> list[OptimizeResult]:
     """Perform the optimization and plot the solution if asked.
@@ -78,7 +88,7 @@ def read_and_run(
     batchSize : int, optional
         Number of new sample points per step of the optimization algorithm.
         Default: 0, i.e., defined by the :func:`check_set_parameters()`.
-    rbf_type : rbf.RadialBasisFunction, optional
+    rbf_type : RadialBasisFunction, optional
         Type of RBF kernel to be used. Default: CubicRadialBasisFunction.
     PlotResult : bool, optional
         If True, plot the results. Default: False.
@@ -111,15 +121,13 @@ def read_and_run(
         np.random.seed(seeds[j])
 
         # Create empty RBF model
-        rbfModel = rbf.RbfModel(
-            rbf_type, data.iindex, filter=rbf.MedianLpfFilter()
-        )
+        rbfModel = RbfModel(rbf_type, data.iindex, filter=MedianLpfFilter())
         acquisitionFuncIter = deepcopy(acquisitionFunc)
 
         # Call the surrogate optimization function
         if (
-            optim_func == optimize.surrogate_optimization
-            or optim_func == optimize.dycors
+            optim_func == soogo.surrogate_optimization
+            or optim_func == soogo.dycors
         ):
             opt = optim_func(
                 data.objfunction,
@@ -133,10 +141,10 @@ def read_and_run(
                 disp=True,
             )
         elif (
-            optim_func == optimize.surrogate_optimization
-            or optim_func == optimize.multistart_msrs
-            or optim_func == optimize.cptv
-            or optim_func == optimize.cptvl
+            optim_func == soogo.surrogate_optimization
+            or optim_func == soogo.multistart_msrs
+            or optim_func == soogo.cptv
+            or optim_func == soogo.cptvl
         ):
             opt = optim_func(
                 data.objfunction,
@@ -341,9 +349,9 @@ def main(config: int) -> list[OptimizeResult]:
             maxeval=100,
             Ntrials=3,
             batchSize=1,
-            rbf_type=rbf.ThinPlateRadialBasisFunction(),
+            rbf_type=ThinPlateRadialBasisFunction(),
             PlotResult=True,
-            optim_func=optimize.dycors,
+            optim_func=soogo.dycors,
         )
     elif config == 4:
         optres = read_and_run(
@@ -362,9 +370,9 @@ def main(config: int) -> list[OptimizeResult]:
             maxeval=100,
             Ntrials=3,
             batchSize=1,
-            rbf_type=rbf.ThinPlateRadialBasisFunction(),
+            rbf_type=ThinPlateRadialBasisFunction(),
             PlotResult=True,
-            optim_func=optimize.surrogate_optimization,
+            optim_func=soogo.surrogate_optimization,
         )
     elif config == 5:
         optres = read_and_run(
@@ -373,9 +381,9 @@ def main(config: int) -> list[OptimizeResult]:
             maxeval=100,
             Ntrials=3,
             batchSize=1,
-            rbf_type=rbf.ThinPlateRadialBasisFunction(),
+            rbf_type=ThinPlateRadialBasisFunction(),
             PlotResult=True,
-            optim_func=optimize.surrogate_optimization,
+            optim_func=soogo.surrogate_optimization,
         )
     elif config == 6:
         optres = read_and_run(
@@ -383,9 +391,9 @@ def main(config: int) -> list[OptimizeResult]:
             maxeval=100,
             Ntrials=3,
             batchSize=1,
-            rbf_type=rbf.ThinPlateRadialBasisFunction(),
+            rbf_type=ThinPlateRadialBasisFunction(),
             PlotResult=True,
-            optim_func=optimize.cptv,
+            optim_func=soogo.cptv,
         )
     elif config == 7:
         optres = read_and_run(
@@ -393,9 +401,9 @@ def main(config: int) -> list[OptimizeResult]:
             maxeval=100,
             Ntrials=3,
             batchSize=1,
-            rbf_type=rbf.ThinPlateRadialBasisFunction(),
+            rbf_type=ThinPlateRadialBasisFunction(),
             PlotResult=True,
-            optim_func=optimize.cptvl,
+            optim_func=soogo.cptvl,
         )
     elif config == 8:
         optres = read_and_run(
@@ -404,9 +412,9 @@ def main(config: int) -> list[OptimizeResult]:
             maxeval=100,
             Ntrials=3,
             batchSize=10,
-            rbf_type=rbf.ThinPlateRadialBasisFunction(),
+            rbf_type=ThinPlateRadialBasisFunction(),
             PlotResult=True,
-            optim_func=optimize.surrogate_optimization,
+            optim_func=soogo.surrogate_optimization,
         )
     else:
         raise ValueError("Invalid configuration number.")

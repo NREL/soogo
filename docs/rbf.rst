@@ -1,7 +1,7 @@
-soogo.rbf module
+soogo.model.rbf module
 ---------------------------
 
-.. automodule:: soogo.rbf
+.. automodule:: soogo.model.rbf
    :members:
    :undoc-members:
    :show-inheritance:

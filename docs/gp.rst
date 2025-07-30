@@ -1,7 +1,7 @@
-soogo.gp module
+soogo.model.gp module
 ----------------------
 
-.. automodule:: soogo.gp
+.. automodule:: soogo.model.gp
    :members:
    :undoc-members:
    :show-inheritance:
