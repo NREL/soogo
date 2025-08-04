@@ -30,12 +30,10 @@ Docs = "https://nrel.github.io/soogo"
 requires = ["pdm-backend"]
 build-backend = "pdm.backend"
 
-[tool.pdm]
-distribution = true
-
-[tool.pdm.dev-dependencies]
+[dependency-groups]
 test = [
     "pytest",
+    "jupyter",
 ]
 lint = [
     "ruff",
@@ -49,6 +47,9 @@ example = [
     "jupyter",
     "matplotlib",
 ]
+
+[tool.pdm]
+distribution = true
 
 [tool.pdm.build]
 includes = ["soogo"]
