@@ -37,6 +37,45 @@ class TestExamples:
             f"Examples directory not found: {cls.examples_dir}"
         )
 
+    @contextmanager
+    def _temporary_kernel(self, base_name: str = "soogo-test"):
+        """Context manager for temporary kernel creation and cleanup."""
+        import time
+
+        # Create unique kernel name
+        kernel_name = f"{base_name}-{int(time.time())}-{id(self)}"
+
+        try:
+            # Create kernel
+            cmd = [
+                sys.executable,
+                "-m",
+                "ipykernel",
+                "install",
+                "--user",
+                f"--name={kernel_name}",
+                f"--display-name=Python ({kernel_name})",
+            ]
+            subprocess.run(cmd, check=True, capture_output=True)
+
+            yield kernel_name
+
+        finally:
+            # Always clean up
+            try:
+                cmd = [
+                    sys.executable,
+                    "-m",
+                    "jupyter",
+                    "kernelspec",
+                    "remove",
+                    kernel_name,
+                    "-f",
+                ]
+                subprocess.run(cmd, check=True, capture_output=True)
+            except subprocess.CalledProcessError:
+                print(f"Warning: Could not remove kernel {kernel_name}")
+
     def _run_notebook(self, notebook_path: Path, timeout: int = 300) -> bool:
         """Run a Jupyter notebook and check if it executes successfully.
 
@@ -44,45 +83,46 @@ class TestExamples:
         :param timeout: Maximum execution time in seconds
         :return: True if notebook runs successfully
         """
-        try:
-            # Use nbconvert to execute the notebook
-            cmd = [
-                sys.executable,
-                "-m",
-                "jupyter",
-                "nbconvert",
-                "--to",
-                "notebook",
-                "--execute",
-                "--inplace",
-                "--ExecutePreprocessor.timeout={}".format(timeout),
-                "--ExecutePreprocessor.kernel_name=python3",
-                str(notebook_path),
-            ]
+        with self._temporary_kernel() as kernel_name:
+            try:
+                # Use nbconvert to execute the notebook
+                cmd = [
+                    sys.executable,
+                    "-m",
+                    "jupyter",
+                    "nbconvert",
+                    "--to",
+                    "notebook",
+                    "--execute",
+                    "--inplace",
+                    f"--ExecutePreprocessor.timeout={timeout}",
+                    f"--ExecutePreprocessor.kernel_name={kernel_name}",
+                    str(notebook_path),
+                ]
 
-            result = subprocess.run(
-                cmd,
-                capture_output=True,
-                text=True,
-                cwd=self.examples_dir,
-                timeout=timeout + 60,  # Add buffer time
-            )
+                result = subprocess.run(
+                    cmd,
+                    capture_output=True,
+                    text=True,
+                    cwd=self.examples_dir,
+                    timeout=timeout + 60,  # Add buffer time
+                )
 
-            if result.returncode != 0:
-                print(f"STDOUT: {result.stdout}")
-                print(f"STDERR: {result.stderr}")
+                if result.returncode != 0:
+                    print(f"STDOUT: {result.stdout}")
+                    print(f"STDERR: {result.stderr}")
+                    return False
+
+                return True
+
+            except subprocess.TimeoutExpired:
+                print(
+                    f"Notebook {notebook_path} timed out after {timeout} seconds"
+                )
                 return False
-
-            return True
-
-        except subprocess.TimeoutExpired:
-            print(
-                f"Notebook {notebook_path} timed out after {timeout} seconds"
-            )
-            return False
-        except Exception as e:
-            print(f"Error running notebook {notebook_path}: {e}")
-            return False
+            except Exception as e:
+                print(f"Error running notebook {notebook_path}: {e}")
+                return False
 
     def _run_python_script(
         self, script_path: Path, timeout: int = 300
@@ -235,7 +275,7 @@ class TestExamples:
             # Test basic imports - just import without assigning
             import soogo  # noqa: F401
             from soogo import gosac, socemo, surrogate_optimization  # noqa: F401
-            from soogo.model.rbf import RbfModel  # noqa: F401
+            from soogo import RbfModel  # noqa: F401
             from soogo import acquisition, sampling  # noqa: F401
             # Note: GaussianProcess import might fail in some environments
         except ImportError as e:

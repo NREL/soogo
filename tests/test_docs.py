@@ -7,25 +7,6 @@ from pathlib import Path
 import pytest
 
 
-def get_python_executable():
-    """Get the appropriate Python executable."""
-    # Check if we're in a virtual environment
-    if hasattr(sys, "real_prefix") or (
-        hasattr(sys, "base_prefix") and sys.base_prefix != sys.prefix
-    ):
-        # We're in a virtual environment, use current Python
-        return sys.executable
-
-    # Not in a virtual environment, try to find venv Python
-    repo_root = Path(__file__).parent.parent
-    venv_python = repo_root / ".venv" / "bin" / "python"
-    if venv_python.exists():
-        return str(venv_python)
-
-    # Fall back to current Python
-    return sys.executable
-
-
 class TestSphinxDocumentation:
     """Test class for Sphinx documentation generation."""
 
@@ -34,12 +15,11 @@ class TestSphinxDocumentation:
         # Get the repository root directory
         repo_root = Path(__file__).parent.parent
         docs_dir = repo_root / "docs"
-        python_exec = get_python_executable()
 
         # Skip test if sphinx is not available
         try:
             subprocess.run(
-                [python_exec, "-c", "import sphinx"],
+                [sys.executable, "-c", "import sphinx"],
                 capture_output=True,
                 check=True,
                 cwd=repo_root,
@@ -53,7 +33,7 @@ class TestSphinxDocumentation:
 
             # Run sphinx-build
             cmd = [
-                python_exec,
+                sys.executable,
                 "-m",
                 "sphinx",
                 "-b",
@@ -99,12 +79,11 @@ class TestSphinxDocumentation:
         # Get the repository root directory
         repo_root = Path(__file__).parent.parent
         docs_dir = repo_root / "docs"
-        python_exec = get_python_executable()
 
         # Skip test if sphinx is not available
         try:
             subprocess.run(
-                [python_exec, "-c", "import sphinx"],
+                [sys.executable, "-c", "import sphinx"],
                 capture_output=True,
                 check=True,
                 cwd=repo_root,
@@ -119,7 +98,7 @@ class TestSphinxDocumentation:
 
             # Run sphinx-build to create doctrees
             cmd = [
-                python_exec,
+                sys.executable,
                 "-m",
                 "sphinx",
                 "-b",
@@ -153,12 +132,11 @@ class TestSphinxDocumentation:
         # Get the repository root directory
         repo_root = Path(__file__).parent.parent
         docs_dir = repo_root / "docs"
-        python_exec = get_python_executable()
 
         # Skip test if sphinx is not available
         try:
             subprocess.run(
-                [python_exec, "-c", "import sphinx"],
+                [sys.executable, "-c", "import sphinx"],
                 capture_output=True,
                 check=True,
                 cwd=repo_root,
@@ -172,7 +150,7 @@ class TestSphinxDocumentation:
 
             # Run sphinx-build with verbose warnings
             cmd = [
-                python_exec,
+                sys.executable,
                 "-m",
                 "sphinx",
                 "-b",

@@ -30,7 +30,7 @@ __deprecated__ = False
 
 import numpy as np
 
-from examples.legacy_opt.optimization_program_1 import read_check_data_file
+from optimization_program_1 import read_check_data_file
 from soogo import RbfModel, MedianLpfFilter, surrogate_optimization
 from soogo.sampling import NormalSampler, Sampler, SamplingStrategy
 from soogo.acquisition import WeightedAcquisition

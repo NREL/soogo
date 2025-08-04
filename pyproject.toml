@@ -34,6 +34,7 @@ build-backend = "pdm.backend"
 test = [
     "pytest",
     "jupyter",
+    "ipykernel",
 ]
 lint = [
     "ruff",
@@ -46,6 +47,7 @@ doc = [
 example = [
     "jupyter",
     "matplotlib",
+    "ipykernel",
 ]
 
 [tool.pdm]
