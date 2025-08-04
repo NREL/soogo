@@ -60,7 +60,7 @@ from .model.base import Surrogate
 from .sampling import NormalSampler, Sampler, Mitchel91Sampler
 from .model import LinearRadialBasisFunction, RbfModel, GaussianProcess
 from .problem import PymooProblem, ListDuplicateElimination
-from .termination import NoTermination
+from .termination import UnsuccessfulImprovement
 from .utils import find_pareto_front
 from .optimize_result import OptimizeResult
 
@@ -120,9 +120,7 @@ class AcquisitionFunction(ABC):
             else mi_optimizer
         )
         self.rtol = rtol
-        self.termination = (
-            NoTermination() if termination is None else termination
-        )
+        self.termination = termination
 
     @abstractmethod
     def optimize(
@@ -137,7 +135,8 @@ class AcquisitionFunction(ABC):
         :param surrogateModel: Surrogate model.
         :param sequence bounds: List with the limits [x_min,x_max] of each
             direction x in the space.
-        :param n: Number of points to be acquired, or maximum requested number.
+        :param n: Number of requested points. Mind that the number of points
+            returned may be smaller than n, depending on the implementation.
         :return: m-by-dim matrix with the selected points, where m <= n.
         """
         pass
@@ -168,7 +167,10 @@ class AcquisitionFunction(ABC):
         returns False, indicating that the acquisition function has not
         converged.
         """
-        return self.termination.has_terminated(out, model)
+        if self.termination is not None:
+            return self.termination.update(out, model)
+        else:
+            return False
 
 
 class WeightedAcquisition(AcquisitionFunction):
@@ -228,7 +230,13 @@ class WeightedAcquisition(AcquisitionFunction):
     """
 
     def __init__(
-        self, sampler, weightpattern=None, maxeval: int = 0, **kwargs
+        self,
+        sampler,
+        weightpattern=None,
+        maxeval: int = 0,
+        sigma_min: float = 0.0,
+        sigma_max: float = 0.25,
+        **kwargs,
     ) -> None:
         super().__init__(**kwargs)
         self.sampler = sampler
@@ -241,6 +249,23 @@ class WeightedAcquisition(AcquisitionFunction):
 
         self.maxeval = maxeval
         self.neval = 0
+
+        if isinstance(self.sampler, NormalSampler):
+            # Continuous local search
+            self.remainingCountinuousSearch = 0
+            self.nMaxContinuousSearch = len(self.weightpattern)
+
+            # Local search updates
+            self.unsuccessful_improvement = UnsuccessfulImprovement(0.001)
+            self.success_count = 0
+            self.failure_count = 0
+            self.success_period = 3
+            self.sigma_min = sigma_min
+            self.sigma_max = sigma_max
+
+            # Best point found so far
+            self.best_known_x = None
+            self.last_batch_size = 0
 
     @staticmethod
     def score(
@@ -479,10 +504,6 @@ class WeightedAcquisition(AcquisitionFunction):
         :param xbest: Best point so far. Used if :attr:`sampler` is an instance
             of :class:`soogo.sampling.NormalSampler`. If not provided,
             compute it based on the training data for the surrogate.
-        :param bool countinuousSearch:
-            If True,
-            optimize over the continuous variables only. Used if :attr:`sampler`
-            is an instance of :class:`soogo.sampling.NormalSampler`.
         :return: m-by-dim matrix with the selected points, where m <= n.
         """
         dim = len(bounds)  # Dimension of the problem
@@ -499,7 +520,7 @@ class WeightedAcquisition(AcquisitionFunction):
                 xbest = surrogateModel.X[surrogateModel.Y.argmin()]
 
             # Do local continuous search when asked
-            if "countinuousSearch" in kwargs and kwargs["countinuousSearch"]:
+            if self.remainingCountinuousSearch > 0:
                 coord = [i for i in range(dim) if i not in iindex]
             else:
                 coord = [i for i in range(dim)]
@@ -540,7 +561,110 @@ class WeightedAcquisition(AcquisitionFunction):
         # Update number of evaluations
         self.neval += n
 
+        # Set last batch size
+        if isinstance(self.sampler, NormalSampler):
+            self.last_batch_size = n
+
         return xselected
+
+    def has_converged(
+        self, out: OptimizeResult, model: Optional[Surrogate] = None
+    ) -> bool:
+        """Check if the acquisition function has converged.
+
+        This method is used to check if the acquisition function has converged
+        based on a termination criterion. The default implementation always
+        returns False, indicating that the acquisition function has not
+        converged.
+        """
+        if not isinstance(self.sampler, NormalSampler) or out.nobj != 1:
+            if self.termination is not None:
+                return self.termination.update(out, model)
+            else:
+                return False
+
+        # Assume the acquisition function has not converged
+        res = False
+
+        # Check if the last sample was successful
+        recent_success = self.unsuccessful_improvement.is_not_met(out, model)
+        # old_best_value = self.unsuccessful_improvement.lowest_value
+        # old_range = self.unsuccessful_improvement.value_range
+        self.unsuccessful_improvement.update(out, model)
+        # new_best_value = self.unsuccessful_improvement.lowest_value
+
+        # In continuous search mode
+        if self.remainingCountinuousSearch > 0:
+            # In case of a successful sample, reset the counter to the maximum
+            if recent_success:
+                self.remainingCountinuousSearch = self.nMaxContinuousSearch
+            # Otherwise, decrease the counter
+            else:
+                self.remainingCountinuousSearch -= self.last_batch_size
+
+        # In case of a full search
+        else:
+            # If the last sample was successful
+            if recent_success:
+                # If there is an improvement in an integer variable
+                if (
+                    model is not None
+                    and self.best_known_x is not None
+                    and any(
+                        [
+                            out.x[i] != self.best_known_x[i]
+                            for i in model.iindex
+                        ]
+                    )
+                ):
+                    # Activate the continuous search mode
+                    self.remainingCountinuousSearch = self.nMaxContinuousSearch
+
+                    # Reset the success and failure counters
+                    self.success_count = 0
+                    self.failure_count = 0
+                else:
+                    # Update counters
+                    self.success_count += 1
+                    self.failure_count = 0
+            else:
+                # Update counters
+                self.success_count = 0
+                self.failure_count += 1
+
+            if self.termination is not None:
+                if self.termination.update(out, model):
+                    self.sampler.sigma *= 0.5
+                    if self.sampler.sigma < self.sigma_min:
+                        # Algorithm is probably in a local minimum!
+                        self.sampler.sigma = self.sigma_min
+                        res = True
+                    else:
+                        self.termination.reset()
+                        self.failure_count = 0
+            else:
+                dim = out.x.shape[-1]
+                failure_period = max(5, dim)
+
+                if self.failure_count >= failure_period:
+                    self.sampler.sigma *= 0.5
+                    if self.sampler.sigma < self.sigma_min:
+                        # Algorithm is probably in a local minimum!
+                        self.sampler.sigma = self.sigma_min
+                    else:
+                        self.failure_count = 0
+
+            if self.success_count >= self.success_period:
+                self.sampler.sigma *= 2
+                if self.sampler.sigma > self.sigma_max:
+                    self.sampler.sigma = self.sigma_max
+                else:
+                    self.success_count = 0
+
+        # Update the best known x
+        self.best_known_x = np.copy(out.x)
+
+        return res
 
 
 class TargetValueAcquisition(AcquisitionFunction):

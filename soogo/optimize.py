@@ -59,6 +59,7 @@ from .utils import find_pareto_front
 from .model import MedianLpfFilter, RbfModel, GaussianProcess
 from .sampling import NormalSampler, Sampler, SamplingStrategy
 from .optimize_result import OptimizeResult
+from .termination import UnsuccessfulImprovement, RobustCondition
 
 
 def surrogate_optimization(
@@ -69,11 +70,6 @@ def surrogate_optimization(
     surrogateModel: Optional[Surrogate] = None,
     acquisitionFunc: Optional[AcquisitionFunction] = None,
     batchSize: int = 1,
-    improvementTol: float = 1e-3,
-    nSuccTol: int = 3,
-    nFailTol: int = 5,
-    performContinuousSearch: bool = True,
-    termination=None,
     disp: bool = False,
     callback: Optional[Callable[[OptimizeResult], None]] = None,
 ) -> OptimizeResult:
@@ -169,26 +165,6 @@ def surrogate_optimization(
     if callback is not None:
         callback(out)
 
-    # counters
-    failctr = 0  # number of consecutive unsuccessful iterations
-    succctr = 0  # number of consecutive successful iterations
-    remainingCountinuousSearch = (
-        0  # number of consecutive iterations with continuous search remaining
-    )
-
-    # tolerance parameters
-    if nSuccTol == 0:
-        nSuccTol = maxeval
-    if nFailTol == 0:
-        nFailTol = maxeval
-
-    # Continuous local search
-    nMaxContinuousSearch = 0
-    if performContinuousSearch:
-        if isinstance(acquisitionFunc, WeightedAcquisition):
-            if isinstance(acquisitionFunc.sampler, NormalSampler):
-                nMaxContinuousSearch = len(acquisitionFunc.weightpattern)
-
     # do until max number of f-evals reached or local min found
     xselected = np.array(out.sample[0 : out.nfev, :], copy=True)
     ySelected = np.array(out.fsample[0 : out.nfev], copy=True)
@@ -211,11 +187,7 @@ def surrogate_optimization(
         # Acquire new sample points
         t0 = time.time()
         xselected = acquisitionFunc.optimize(
-            surrogateModel,
-            bounds,
-            batchSize,
-            xbest=out.x,
-            countinuousSearch=(remainingCountinuousSearch > 0),
+            surrogateModel, bounds, batchSize, xbest=out.x
         )
         tf = time.time()
         if disp:
@@ -234,32 +206,10 @@ def surrogate_optimization(
             )
             break
 
-        # determine if significant improvement
+        # determine best one of newly sampled points
         iSelectedBest = np.argmin(ySelected).item()
         fxSelectedBest = ySelected[iSelectedBest]
-        if (out.fx - fxSelectedBest) >= improvementTol * (
-            out.fsample.max() - out.fx
-        ):
-            # "significant" improvement
-            failctr = 0
-            if remainingCountinuousSearch == 0:
-                succctr = succctr + 1
-            elif performContinuousSearch:
-                remainingCountinuousSearch = nMaxContinuousSearch
-        elif remainingCountinuousSearch == 0:
-            failctr = failctr + 1
-            succctr = 0
-        else:
-            remainingCountinuousSearch = (
-                remainingCountinuousSearch - selectedBatchSize
-            )
-
-        # determine best one of newly sampled points
-        modifiedCoordinates = [False] * dim
         if fxSelectedBest < out.fx:
-            modifiedCoordinates = [
-                xselected[iSelectedBest, i] != out.x[i] for i in range(dim)
-            ]
             out.x[:] = xselected[iSelectedBest, :]
             out.fx = fxSelectedBest
 
@@ -273,42 +223,8 @@ def surrogate_optimization(
         if callback is not None:
             callback(out)
 
-        if remainingCountinuousSearch == 0:
-            # Activate continuous search if an integer variables have changed and
-            # a significant improvement was found
-            if failctr == 0 and performContinuousSearch:
-                intCoordHasChanged = False
-                for i in surrogateModel.iindex:
-                    if modifiedCoordinates[i]:
-                        intCoordHasChanged = True
-                        break
-                if intCoordHasChanged:
-                    remainingCountinuousSearch = nMaxContinuousSearch
-
-            # Update counters and acquisition
-            if isinstance(acquisitionFunc, WeightedAcquisition):
-                if isinstance(acquisitionFunc.sampler, NormalSampler):
-                    if failctr >= nFailTol:
-                        acquisitionFunc.sampler.sigma *= 0.5
-                        if (
-                            acquisitionFunc.sampler.sigma
-                            < acquisitionFunc.sampler.sigma_min
-                        ):
-                            # Algorithm is probably in a local minimum!
-                            acquisitionFunc.sampler.sigma = (
-                                acquisitionFunc.sampler.sigma_min
-                            )
-                        else:
-                            failctr = 0
-                    elif succctr >= nSuccTol:
-                        acquisitionFunc.sampler.sigma = min(
-                            2 * acquisitionFunc.sampler.sigma,
-                            acquisitionFunc.sampler.sigma_max,
-                        )
-                        succctr = 0
-
-        # Check for convergence
-        if failctr >= nFailTol and termination == "nFailTol":
+        # Terminate if acquisition function has converged
+        if acquisitionFunc.has_converged(out, surrogateModel):
             break
 
     # Update output
@@ -379,26 +295,27 @@ def multistart_msrs(
 
     # do until max number of f-evals reached
     while out.nfev < maxeval:
+        # Acquisition function
+        acquisitionFunc = WeightedAcquisition(
+            NormalSampler(
+                min(1000 * dim, 10000), 0.1, strategy=SamplingStrategy.NORMAL
+            ),
+            weightpattern=(0.95,),
+            termination=RobustCondition(
+                UnsuccessfulImprovement(), max(5, dim)
+            ),
+            sigma_min=0.1 * 0.5**5,
+        )
+        acquisitionFunc.success_period = maxeval  # to never increase sigma
+
         # Run local optimization
         out_local = surrogate_optimization(
             fun,
             bounds,
             maxeval - out.nfev,
             surrogateModel=deepcopy(surrogateModel),
-            acquisitionFunc=WeightedAcquisition(
-                NormalSampler(
-                    min(1000 * dim, 10000),
-                    0.1,
-                    sigma_min=0.1 * 0.5**5,
-                    strategy=SamplingStrategy.NORMAL,
-                ),
-                weightpattern=(0.95,),
-            ),
+            acquisitionFunc=acquisitionFunc,
             batchSize=batchSize,
-            nSuccTol=maxeval,
-            nFailTol=max(5, dim),
-            performContinuousSearch=True,
-            termination="nFailTol",
             disp=disp,
             callback=callback,
         )
@@ -466,14 +383,12 @@ def dycors(
     if acquisitionFunc is None:
         acquisitionFunc = WeightedAcquisition(
             NormalSampler(
-                min(100 * dim, 5000),
-                0.2,
-                sigma_min=0.2 * 0.5**6,
-                sigma_max=0.2,
-                strategy=SamplingStrategy.DDS,
+                min(100 * dim, 5000), 0.2, strategy=SamplingStrategy.DDS
             ),
             weightpattern=(0.3, 0.5, 0.8, 0.95),
             maxeval=maxeval,
+            sigma_min=0.2 * 0.5**6,
+            sigma_max=0.2,
         )
 
     return surrogate_optimization(
@@ -485,9 +400,6 @@ def dycors(
         else RbfModel(filter=MedianLpfFilter()),
         acquisitionFunc=acquisitionFunc,
         batchSize=batchSize,
-        nSuccTol=3,
-        nFailTol=max(dim, 5),
-        performContinuousSearch=True,
         disp=disp,
         callback=callback,
     )
@@ -566,6 +478,9 @@ def cptv(
     dim = len(bounds)  # Dimension of the problem
     assert dim > 0
 
+    # Tolerance parameters
+    nFailTol = max(5, dim)  # Fail tolerance for the CP step
+
     # Initialize optional variables
     if surrogateModel is None:
         surrogateModel = RbfModel(filter=MedianLpfFilter())
@@ -576,17 +491,17 @@ def cptv(
             NormalSampler(
                 min(500 * dim, 5000),
                 0.2,
-                sigma_min=0.2 * 0.5**6,
-                sigma_max=0.2,
                 strategy=SamplingStrategy.DDS,
             ),
             weightpattern=(0.3, 0.5, 0.8, 0.95),
             rtol=1e-6,
             maxeval=maxeval,
+            sigma_min=0.2 * 0.5**6,
+            sigma_max=0.2,
+            termination=RobustCondition(
+                UnsuccessfulImprovement(improvementTol), nFailTol
+            ),
         )
-
-    # Tolerance parameters
-    nFailTol = max(5, dim)  # Fail tolerance for the CP step
 
     # Get index and bounds of the continuous variables
     cindex = [i for i in range(dim) if i not in surrogateModel.iindex]
@@ -618,16 +533,11 @@ def cptv(
                 maxeval - out.nfev,
                 surrogateModel=surrogateModel,
                 acquisitionFunc=acquisitionFunc,
-                performContinuousSearch=True,
-                improvementTol=improvementTol,
-                nSuccTol=3,
-                nFailTol=nFailTol,
-                termination="nFailTol",
                 disp=disp,
             )
 
             # Reset perturbation range
-            acquisitionFunc.sampler.sigma = acquisitionFunc.sampler.sigma_max
+            acquisitionFunc.sampler.sigma = acquisitionFunc.sigma_max
 
             if out_local.nit <= nFailTol:
                 consecutiveQuickFailures += 1
@@ -660,11 +570,12 @@ def cptv(
                 maxeval - out.nfev,
                 surrogateModel=surrogateModel,
                 acquisitionFunc=TargetValueAcquisition(
-                    cycleLength=10, rtol=acquisitionFunc.rtol
+                    cycleLength=10,
+                    rtol=acquisitionFunc.rtol,
+                    termination=RobustCondition(
+                        UnsuccessfulImprovement(improvementTol), 12
+                    ),
                 ),
-                improvementTol=improvementTol,
-                nFailTol=12,
-                termination="nFailTol",
                 disp=disp,
             )
 

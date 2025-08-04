@@ -1,4 +1,9 @@
-"""Termination criteria for optimization processes."""
+"""Condition module for optimization termination criteria.
+
+This module defines various conditions that can be used to determine when
+an optimization process should terminate. It includes conditions based on
+successful improvements, robustness of conditions, and more.
+"""
 
 # Copyright (c) 2025 Alliance for Sustainable Energy, LLC
 
@@ -24,7 +29,6 @@ __deprecated__ = False
 
 from abc import ABC, abstractmethod
 from collections import deque
-from math import isinf
 from typing import Optional
 import numpy as np
 
@@ -32,86 +36,148 @@ from .optimize_result import OptimizeResult
 from .model.base import Surrogate
 
 
-class Termination(ABC):
-    """Base class for termination criteria."""
+class TerminationCondition(ABC):
+    """Base class for termination conditions.
+
+    This class defines the interface for conditions that can be used to
+    determine when an optimization process should terminate.
+
+    :param out: The optimization result containing the current state.
+    :param model: The surrogate model used in the optimization, if any.
+    :return: True if the condition is met, False otherwise.
+    """
 
     @abstractmethod
-    def has_terminated(
+    def is_met(
         self, out: OptimizeResult, model: Optional[Surrogate] = None
     ) -> bool:
-        """Check if the termination criterion has been met."""
+        """Check if the condition is met without updating internal state.
+
+        :param out: The optimization result containing the current state.
+        :param model: The surrogate model used in the optimization, if any.
+        :return: True if the condition is met, False otherwise.
+        """
         pass
 
-
-class NoTermination(Termination):
-    """Termination criterion that never terminates."""
-
-    def has_terminated(
+    def is_not_met(
         self, out: OptimizeResult, model: Optional[Surrogate] = None
     ) -> bool:
-        """Always returns False, indicating that termination has not occurred."""
-        return False
+        """Check if the condition is not met."""
+        return not self.is_met(out, model)
+
+    def update(
+        self, out: OptimizeResult, model: Optional[Surrogate] = None
+    ) -> bool:
+        """Update the condition based on the optimization result and model.
+
+        :param out: The optimization result containing the current state.
+        :param model: The surrogate model used in the optimization, if any.
+        :return: True if the condition is met, False otherwise.
+        """
+        return self.is_met(out, model)
+
+    def reset(self) -> None:
+        """Reset the internal state of the condition."""
+        return None
 
 
-class SuccessfulImprovementTermination(Termination):
-    """Termination criterion that checks for successful improvements."""
+class UnsuccessfulImprovement(TerminationCondition):
+    """Condition that checks for unsuccessful improvements.
 
-    def __init__(self, threshold=0.01) -> None:
+    The condition is met when the relative improvement in the best objective
+    function value is less than a specified threshold.
+
+    :param threshold: The relative improvement threshold to determine
+        when the condition is met.
+
+    .. attribute:: threshold
+
+        The relative improvement threshold for the condition.
+
+    .. attribute:: value_range
+
+        The range of objective function values known so far, used to
+        normalize the improvement check.
+
+    .. attribute:: lowest_value
+
+        The lowest objective function value found so far in the optimization.
+
+    """
+
+    def __init__(self, threshold=0.001) -> None:
         self.threshold = threshold
-        self.worst_value = float("inf")
-        self.best_value = float("inf")
+        self.value_range = 0.0
+        self.lowest_value = float("inf")
 
-    def _update(self, fx) -> None:
-        """Inform the termination criterion about the current state."""
-        maxf = max(fx)
-        minf = min(fx)
-        self.worst_value = (
-            maxf if isinf(self.worst_value) else max(self.worst_value, maxf)
-        )
-        self.best_value = (
-            minf if isinf(self.best_value) else min(self.best_value, minf)
-        )
-
-    def has_terminated(
+    def is_met(
         self, out: OptimizeResult, model: Optional[Surrogate] = None
     ) -> bool:
-        """Check if the improvement is below the threshold."""
         assert out.nobj == 1, (
             "Expected a single objective function value, but got multiple objectives."
         )
-        current_best_value = (
+        new_best_value = (
             out.fx[0].item() if isinstance(out.fx, np.ndarray) else out.fx
         )
 
-        if self.worst_value == self.best_value:
-            improvement = self.best_value - current_best_value
-            ret = improvement <= 0
-        else:
-            improvement = (self.best_value - current_best_value) / (
-                self.worst_value - self.best_value
-            )
-            ret = improvement < self.threshold
+        value_improvement = self.lowest_value - new_best_value
+        return value_improvement < self.threshold * self.value_range
 
-        self._update(np.atleast_2d(out.fsample)[:, 0])
-        if model is not None:
-            self._update(model.Y)
+    def update(
+        self, out: OptimizeResult, model: Optional[Surrogate] = None
+    ) -> bool:
+        ret = self.is_met(out, model)
+
+        maxf = max(
+            np.atleast_2d(out.fsample.T)[0, 0 : out.nfev].max(), model.Y.max()
+        )
+        minf = min(
+            np.atleast_2d(out.fsample.T)[0, 0 : out.nfev].min(), model.Y.min()
+        )
+        self.value_range = max(self.value_range, maxf - minf)
+        self.lowest_value = min(self.lowest_value, minf)
 
         return ret
 
+    def reset(self) -> None:
+        self.value_range = 0.0
+        self.lowest_value = float("inf")
+        return None
 
-class RobustTermination(Termination):
+
+class RobustCondition(TerminationCondition):
     """Termination criterion that makes another termination criterion robust."""
 
-    def __init__(self, termination: Termination, period=30) -> None:
+    def __init__(self, termination: TerminationCondition, period=30) -> None:
         self.termination = termination
         self.history = deque(maxlen=period)
 
-    def has_terminated(self, *args, **kwargs) -> bool:
-        """Check if the base termination criterion has been met."""
-        self.history.append(self.termination.has_terminated(*args, **kwargs))
+    def is_met(
+        self, out: OptimizeResult, model: Optional[Surrogate] = None
+    ) -> bool:
+        history = self.history.copy()
+        history.append(self.termination.is_met(out, model))
+
+        assert isinstance(history.maxlen, int), (
+            "History maxlen must be an integer."
+        )
+        if len(history) < history.maxlen:
+            return False
+        return all(history)
+
+    def update(
+        self, out: OptimizeResult, model: Optional[Surrogate] = None
+    ) -> bool:
+        self.history.append(self.termination.update(out, model))
+
         assert isinstance(self.history.maxlen, int), (
             "History maxlen must be an integer."
         )
         if len(self.history) < self.history.maxlen:
             return False
         return all(self.history)
+
+    def reset(self) -> None:
+        self.history.clear()
+        self.termination.reset()
+        return None

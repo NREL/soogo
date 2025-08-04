@@ -34,6 +34,7 @@ from examples.legacy_opt.optimization_program_1 import read_check_data_file
 from soogo import RbfModel, MedianLpfFilter, surrogate_optimization
 from soogo.sampling import NormalSampler, Sampler, SamplingStrategy
 from soogo.acquisition import WeightedAcquisition
+from soogo.termination import RobustCondition, UnsuccessfulImprovement
 
 if __name__ == "__main__":
     np.random.seed(3)
@@ -103,16 +104,16 @@ if __name__ == "__main__":
             NormalSampler(
                 nCand,
                 sigma=0.2,
-                sigma_min=0.2 * 0.5**5,
-                sigma_max=0.2,
                 strategy=SamplingStrategy.NORMAL,
             ),
             weightpattern=[0.3, 0.5],
             rtol=1e-3,
             maxeval=maxeval - numevals,
+            sigma_min=0.2 * 0.5**5,
+            sigma_max=0.2,
+            termination=RobustCondition(UnsuccessfulImprovement(0.001), 5),
         ),
         batchSize=batchSize,
-        termination="nFailTol",
     )
 
     print("Results")

@@ -194,27 +194,12 @@ class NormalSampler(Sampler):
 
     :param sigma: Standard deviation of the truncated normal distribution,
         relative to a unitary interval. Stored in :attr:`sigma`.
-    :param sigma_min: Minimum limit for the standard deviation, relative to
-        a unitary interval. Stored in :attr:`sigma_min`.
-    :param sigma_max: Maximum limit for the standard deviation, relative to
-        a unitary interval. Stored in :attr:`sigma_max`.
 
     .. attribute:: sigma
 
         Standard deviation of the truncated normal distribution, relative to a
         unitary interval. Used by :meth:`get_normal_sample()` and
         :meth:`get_dds_sample()`.
-
-    .. attribute:: sigma_min
-
-        Minimum standard deviation of the truncated normal distribution,
-        relative to a unitary interval.
-
-    .. attribute:: sigma_max
-
-        Maximum standard deviation of the truncated normal distribution,
-        relative to a unitary interval.
-
     """
 
     def __init__(
@@ -222,15 +207,10 @@ class NormalSampler(Sampler):
         n: int,
         sigma: float,
         *,
-        sigma_min: float = 0,
-        sigma_max: float = 0.25,
         strategy: SamplingStrategy = SamplingStrategy.NORMAL,
     ) -> None:
         super().__init__(n, strategy=strategy)
         self.sigma = sigma
-        self.sigma_min = sigma_min
-        self.sigma_max = sigma_max
-        assert 0 <= self.sigma_min <= self.sigma <= self.sigma_max
 
     def get_normal_sample(
         self,
