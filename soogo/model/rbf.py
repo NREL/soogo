@@ -624,3 +624,6 @@ class RbfModel(Surrogate):
         mu = np.where(mu <= 0, np.inf, mu)
 
         return mu
+
+    def reset_data(self) -> None:
+        self._m = 0

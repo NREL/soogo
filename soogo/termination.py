@@ -48,10 +48,15 @@ class TerminationCondition(ABC):
     """
 
     @abstractmethod
-    def is_met(
+    def is_met(self) -> bool:
+        """Check if the condition is met."""
+        pass
+
+    @abstractmethod
+    def update(
         self, out: OptimizeResult, model: Optional[Surrogate] = None
-    ) -> bool:
-        """Check if the condition is met without updating internal state.
+    ) -> None:
+        """Update the condition based on the optimization result and model.
 
         :param out: The optimization result containing the current state.
         :param model: The surrogate model used in the optimization, if any.
@@ -59,24 +64,7 @@ class TerminationCondition(ABC):
         """
         pass
 
-    def is_not_met(
-        self, out: OptimizeResult, model: Optional[Surrogate] = None
-    ) -> bool:
-        """Check if the condition is not met."""
-        return not self.is_met(out, model)
-
-    def update(
-        self, out: OptimizeResult, model: Optional[Surrogate] = None
-    ) -> bool:
-        """Update the condition based on the optimization result and model.
-
-        :param out: The optimization result containing the current state.
-        :param model: The surrogate model used in the optimization, if any.
-        :return: True if the condition is met, False otherwise.
-        """
-        return self.is_met(out, model)
-
-    def reset(self) -> None:
+    def reset(self, **kwargs) -> None:
         """Reset the internal state of the condition."""
         return None
 
@@ -109,40 +97,50 @@ class UnsuccessfulImprovement(TerminationCondition):
         self.threshold = threshold
         self.value_range = 0.0
         self.lowest_value = float("inf")
+        self._is_met = False
 
-    def is_met(
-        self, out: OptimizeResult, model: Optional[Surrogate] = None
-    ) -> bool:
-        assert out.nobj == 1, (
-            "Expected a single objective function value, but got multiple objectives."
-        )
-        new_best_value = (
-            out.fx[0].item() if isinstance(out.fx, np.ndarray) else out.fx
-        )
-
-        value_improvement = self.lowest_value - new_best_value
-        return value_improvement < self.threshold * self.value_range
+    def is_met(self) -> bool:
+        return self._is_met
 
     def update(
         self, out: OptimizeResult, model: Optional[Surrogate] = None
-    ) -> bool:
-        ret = self.is_met(out, model)
+    ) -> None:
+        if out.nfev == 0:
+            # No function evaluations, cannot update condition
+            return
 
-        maxf = max(
-            np.atleast_2d(out.fsample.T)[0, 0 : out.nfev].max(), model.Y.max()
+        assert out.nobj == 1, (
+            "Expected a single objective function value, but got multiple objectives."
         )
-        minf = min(
-            np.atleast_2d(out.fsample.T)[0, 0 : out.nfev].min(), model.Y.min()
+
+        # Get the new best value from the optimization result
+        new_best_value = (
+            out.fx[0].item() if isinstance(out.fx, np.ndarray) else out.fx
         )
+        assert isinstance(new_best_value, float), (
+            "Expected out.fx to be a float, but got a different type."
+        )
+
+        # Compute the relative improvement
+        value_improvement = self.lowest_value - new_best_value
+
+        # Update the condition state
+        self._is_met = value_improvement <= self.threshold * self.value_range
+
+        # Update the knowledge about the optimization problem
+        maxf = np.atleast_2d(out.fsample.T)[0, 0 : out.nfev].max()
+        minf = np.atleast_2d(out.fsample.T)[0, 0 : out.nfev].min()
+        if model is not None and len(model.Y) > 0:
+            maxf = max(maxf, model.Y.max())
+            minf = min(minf, model.Y.min())
         self.value_range = max(self.value_range, maxf - minf)
         self.lowest_value = min(self.lowest_value, minf)
 
-        return ret
-
-    def reset(self) -> None:
-        self.value_range = 0.0
-        self.lowest_value = float("inf")
-        return None
+    def reset(self, keep_data_knowledge: bool = False, **kwargs) -> None:
+        self._is_met = False
+        if not keep_data_knowledge:
+            self.value_range = 0.0
+            self.lowest_value = float("inf")
 
 
 class RobustCondition(TerminationCondition):
@@ -152,32 +150,21 @@ class RobustCondition(TerminationCondition):
         self.termination = termination
         self.history = deque(maxlen=period)
 
-    def is_met(
-        self, out: OptimizeResult, model: Optional[Surrogate] = None
-    ) -> bool:
-        history = self.history.copy()
-        history.append(self.termination.is_met(out, model))
-
-        assert isinstance(history.maxlen, int), (
-            "History maxlen must be an integer."
-        )
-        if len(history) < history.maxlen:
-            return False
-        return all(history)
-
-    def update(
-        self, out: OptimizeResult, model: Optional[Surrogate] = None
-    ) -> bool:
-        self.history.append(self.termination.update(out, model))
-
+    def is_met(self) -> bool:
         assert isinstance(self.history.maxlen, int), (
-            "History maxlen must be an integer."
+            "History maxlen must be set."
         )
+
         if len(self.history) < self.history.maxlen:
             return False
         return all(self.history)
 
-    def reset(self) -> None:
+    def update(
+        self, out: OptimizeResult, model: Optional[Surrogate] = None
+    ) -> None:
+        self.termination.update(out, model)
+        self.history.append(self.termination.is_met())
+
+    def reset(self, **kwargs) -> None:
         self.history.clear()
-        self.termination.reset()
-        return None
+        self.termination.reset(**kwargs)

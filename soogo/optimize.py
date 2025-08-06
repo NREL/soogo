@@ -224,7 +224,8 @@ def surrogate_optimization(
             callback(out)
 
         # Terminate if acquisition function has converged
-        if acquisitionFunc.has_converged(out, surrogateModel):
+        acquisitionFunc.update(out, surrogateModel)
+        if acquisitionFunc.has_converged():
             break
 
     # Update output
@@ -293,6 +294,9 @@ def multistart_msrs(
         fsample=np.zeros(maxeval),
     )
 
+    # Copy the surrogate model
+    _surrogateModel = deepcopy(surrogateModel)
+
     # do until max number of f-evals reached
     while out.nfev < maxeval:
         # Acquisition function
@@ -313,7 +317,7 @@ def multistart_msrs(
             fun,
             bounds,
             maxeval - out.nfev,
-            surrogateModel=deepcopy(surrogateModel),
+            surrogateModel=_surrogateModel,
             acquisitionFunc=acquisitionFunc,
             batchSize=batchSize,
             disp=disp,
@@ -330,6 +334,10 @@ def multistart_msrs(
 
         # Update counters
         out.nit = out.nit + 1
+
+        # Reset the surrogate model
+        if _surrogateModel is not None:
+            _surrogateModel.reset_data()
 
     return out
 
@@ -503,6 +511,14 @@ def cptv(
             ),
         )
 
+    tv_acquisition = TargetValueAcquisition(
+        cycleLength=10,
+        rtol=acquisitionFunc.rtol,
+        termination=RobustCondition(
+            UnsuccessfulImprovement(improvementTol), 12
+        ),
+    )
+
     # Get index and bounds of the continuous variables
     cindex = [i for i in range(dim) if i not in surrogateModel.iindex]
     cbounds = [bounds[i] for i in cindex]
@@ -527,6 +543,16 @@ def cptv(
         and consecutiveQuickFailures < consecutiveQuickFailuresTol
     ):
         if method == 0:
+            # Reset acquisition parameters
+            acquisitionFunc.sampler.neval = out.nfev
+            acquisitionFunc.sampler.sigma = acquisitionFunc.sigma_max
+            acquisitionFunc.best_known_x = np.copy(out.x)
+            acquisitionFunc.success_count = 0
+            acquisitionFunc.failure_count = 0
+            acquisitionFunc.termination.update(out, surrogateModel)
+            acquisitionFunc.termination.reset(keep_data_knowledge=True)
+
+            # Run the CP step
             out_local = surrogate_optimization(
                 fun,
                 bounds,
@@ -536,9 +562,7 @@ def cptv(
                 disp=disp,
             )
 
-            # Reset perturbation range
-            acquisitionFunc.sampler.sigma = acquisitionFunc.sigma_max
-
+            # Check for quick failure
             if out_local.nit <= nFailTol:
                 consecutiveQuickFailures += 1
             else:
@@ -564,18 +588,16 @@ def cptv(
             else:
                 method = 1
         elif method == 1:
+            # Reset acquisition parameters
+            tv_acquisition.termination.update(out, surrogateModel)
+            tv_acquisition.termination.reset(keep_data_knowledge=True)
+
             out_local = surrogate_optimization(
                 fun,
                 bounds,
                 maxeval - out.nfev,
                 surrogateModel=surrogateModel,
-                acquisitionFunc=TargetValueAcquisition(
-                    cycleLength=10,
-                    rtol=acquisitionFunc.rtol,
-                    termination=RobustCondition(
-                        UnsuccessfulImprovement(improvementTol), 12
-                    ),
-                ),
+                acquisitionFunc=tv_acquisition,
                 disp=disp,
             )
 
@@ -583,9 +605,6 @@ def cptv(
                 consecutiveQuickFailures += 1
             else:
                 consecutiveQuickFailures = 0
-
-            # Update neval in the CP acquisition function
-            acquisitionFunc.neval += out_local.nfev
 
             if disp:
                 print("TV step ended after ", out_local.nfev, "f evals.")
@@ -633,9 +652,6 @@ def cptv(
                 surrogateModel.update(
                     out_local.x.reshape(1, -1), [out_local.fx]
                 )
-
-            # Update neval in the CP acquisition function
-            acquisitionFunc.neval += out_local.nfev
 
             if disp:
                 print("Local step ended after ", out_local.nfev, "f evals.")

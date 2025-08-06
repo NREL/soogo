@@ -259,3 +259,9 @@ class GaussianProcess(Surrogate):
     def expected_improvement(self, x, ybest):
         mu, sigma = self(x, return_std=True)
         return gp_expected_improvement(ybest - mu, sigma)
+
+    def reset_data(self) -> None:
+        if hasattr(self.model, "X_train_"):
+            del self.model.X_train_
+        if hasattr(self.model, "y_train_"):
+            del self.model.y_train_

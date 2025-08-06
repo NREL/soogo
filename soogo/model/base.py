@@ -162,3 +162,12 @@ class Surrogate(ABC):
         :return: Kernel evaluation result.
         """
         pass
+
+    @abstractmethod
+    def reset_data(self) -> None:
+        """Reset the surrogate model training data.
+
+        This method is used to clear the training data of the surrogate model,
+        allowing it to be reused for a new optimization run.
+        """
+        pass

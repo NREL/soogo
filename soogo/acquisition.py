@@ -60,7 +60,7 @@ from .model.base import Surrogate
 from .sampling import NormalSampler, Sampler, Mitchel91Sampler
 from .model import LinearRadialBasisFunction, RbfModel, GaussianProcess
 from .problem import PymooProblem, ListDuplicateElimination
-from .termination import UnsuccessfulImprovement
+from .termination import TerminationCondition, UnsuccessfulImprovement
 from .utils import find_pareto_front
 from .optimize_result import OptimizeResult
 
@@ -106,7 +106,7 @@ class AcquisitionFunction(ABC):
         optimizer=None,
         mi_optimizer=None,
         rtol: float = 1e-6,
-        termination=None,
+        termination: Optional[TerminationCondition] = None,
     ) -> None:
         self.optimizer = DE() if optimizer is None else optimizer
         self.mi_optimizer = (
@@ -157,20 +157,24 @@ class AcquisitionFunction(ABC):
             * np.min([abs(b[1] - b[0]) for b in bounds])
         )
 
-    def has_converged(
-        self, out: OptimizeResult, model: Optional[Surrogate] = None
-    ) -> bool:
+    def has_converged(self) -> bool:
         """Check if the acquisition function has converged.
 
         This method is used to check if the acquisition function has converged
         based on a termination criterion. The default implementation always
-        returns False, indicating that the acquisition function has not
-        converged.
+        returns False.
         """
         if self.termination is not None:
-            return self.termination.update(out, model)
+            return self.termination.is_met()
         else:
             return False
+
+    def update(self, out: OptimizeResult, model: Surrogate) -> None:
+        """Update the acquisition function knowledge about the optimization
+        process.
+        """
+        if self.termination is not None:
+            self.termination.update(out, model)
 
 
 class WeightedAcquisition(AcquisitionFunction):
@@ -265,7 +269,6 @@ class WeightedAcquisition(AcquisitionFunction):
 
             # Best point found so far
             self.best_known_x = None
-            self.last_batch_size = 0
 
     @staticmethod
     def score(
@@ -561,37 +564,30 @@ class WeightedAcquisition(AcquisitionFunction):
         # Update number of evaluations
         self.neval += n
 
-        # Set last batch size
+        # In case of continuous search, update counter
+        # Keep at least one iteration in continuous search mode since it can
+        # only be deactivated by `update()`.
         if isinstance(self.sampler, NormalSampler):
-            self.last_batch_size = n
+            if self.remainingCountinuousSearch > 0:
+                self.remainingCountinuousSearch = max(
+                    self.remainingCountinuousSearch - n, 1
+                )
 
         return xselected
 
-    def has_converged(
-        self, out: OptimizeResult, model: Optional[Surrogate] = None
-    ) -> bool:
-        """Check if the acquisition function has converged.
+    def update(self, out: OptimizeResult, model: Surrogate) -> None:
+        # Update the termination condition if it is set
+        if self.termination is not None:
+            self.termination.update(out, model)
 
-        This method is used to check if the acquisition function has converged
-        based on a termination criterion. The default implementation always
-        returns False, indicating that the acquisition function has not
-        converged.
-        """
-        if not isinstance(self.sampler, NormalSampler) or out.nobj != 1:
-            if self.termination is not None:
-                return self.termination.update(out, model)
-            else:
-                return False
-
-        # Assume the acquisition function has not converged
-        res = False
+        # Check if the sampler is a NormalSampler and the output has only one
+        # objective. If not, do nothing.
+        if (not isinstance(self.sampler, NormalSampler)) or (out.nobj != 1):
+            return
 
         # Check if the last sample was successful
-        recent_success = self.unsuccessful_improvement.is_not_met(out, model)
-        # old_best_value = self.unsuccessful_improvement.lowest_value
-        # old_range = self.unsuccessful_improvement.value_range
         self.unsuccessful_improvement.update(out, model)
-        # new_best_value = self.unsuccessful_improvement.lowest_value
+        recent_success = not self.unsuccessful_improvement.is_met()
 
         # In continuous search mode
         if self.remainingCountinuousSearch > 0:
@@ -600,11 +596,15 @@ class WeightedAcquisition(AcquisitionFunction):
                 self.remainingCountinuousSearch = self.nMaxContinuousSearch
             # Otherwise, decrease the counter
             else:
-                self.remainingCountinuousSearch -= self.last_batch_size
+                self.remainingCountinuousSearch -= 1
+
+            # Update termination and reset internal state
+            if self.termination is not None:
+                self.termination.reset(keep_data_knowledge=True)
 
         # In case of a full search
         else:
-            # If the last sample was successful
+            # Update counters and activate continuous search mode if needed
             if recent_success:
                 # If there is an improvement in an integer variable
                 if (
@@ -632,16 +632,18 @@ class WeightedAcquisition(AcquisitionFunction):
                 self.success_count = 0
                 self.failure_count += 1
 
+            # Check if sigma should be reduced based on the failures
+            # If the termination condition is set, use it instead of
+            # failure_count
             if self.termination is not None:
-                if self.termination.update(out, model):
+                if self.termination.is_met():
                     self.sampler.sigma *= 0.5
                     if self.sampler.sigma < self.sigma_min:
                         # Algorithm is probably in a local minimum!
                         self.sampler.sigma = self.sigma_min
-                        res = True
                     else:
-                        self.termination.reset()
                         self.failure_count = 0
+                        self.termination.reset(keep_data_knowledge=True)
             else:
                 dim = out.x.shape[-1]
                 failure_period = max(5, dim)
@@ -654,6 +656,7 @@ class WeightedAcquisition(AcquisitionFunction):
                     else:
                         self.failure_count = 0
 
+            # Check if sigma should be increased based on the successes
             if self.success_count >= self.success_period:
                 self.sampler.sigma *= 2
                 if self.sampler.sigma > self.sigma_max:
@@ -663,8 +666,6 @@ class WeightedAcquisition(AcquisitionFunction):
 
         # Update the best known x
         self.best_known_x = np.copy(out.x)
-
-        return res
 
 
 class TargetValueAcquisition(AcquisitionFunction):
@@ -1977,3 +1978,67 @@ class MaximizeEI(AcquisitionFunction):
             eiCand[iBest[j]] = 0.0  # Remove this candidate expectancy
 
         return x[iBest, :]
+
+
+# class AlternatedAcquisition(AcquisitionFunction):
+#     def __init__(
+#         self,
+#         acquisitionf_array: Sequence[AcquisitionFunction],
+#         acquisitionf_min_feval: Sequence[int] = [],
+#         **kwargs,
+#     ) -> None:
+#         super().__init__(**kwargs)
+#         self.acquisitionf_array = acquisitionf_array
+#         self.idx = 0
+
+#         if len(acquisitionf_min_feval) == 0:
+#             self.acquisition_feval = [0] * len(acquisitionf_array)
+#         self.acquisition_feval = acquisitionf_min_feval
+#         assert len(self.acquisition_feval) == len(self.acquisitionf_array)
+
+#         self.history = deque(maxlen=(len(acquisitionf_array) + 1))
+
+#     def optimize(
+#         self,
+#         surrogateModel: RbfModel,
+#         bounds,
+#         n: int = 1,
+#         **kwargs,
+#     ) -> np.ndarray:
+#         return self.acquisitionf_array[self.idx].optimize(
+#             surrogateModel, bounds, n, **kwargs
+#         )
+
+#     def update(self, out: OptimizeResult, model: Surrogate) -> None:
+#         self.acquisitionf_array[self.idx].update(out, model)
+
+#         # Alternate if the current acquisition function has converged
+#         if self.acquisitionf_array[self.idx].has_converged():
+#             # Check for quick convergence
+#             self.acquisition_feval[self.idx] -=
+#             if len(self.acquisition_feval) > 0:
+#                 self.history.append(self.acquisitionf_array[self.idx].nfeval)
+
+#             self.idx += 1 % len(self.acquisitionf_array)
+#             self.acquisitionf_array[self.idx].reset()
+
+#     def reset(self) -> None:
+#         for acquisitionf in self.acquisitionf_array:
+#             acquisitionf.reset()
+#         self.idx = 0
+#         self.history.clear()
+
+
+# class CPTV(AlternatedAcquisition):
+#     def __init__(self, *args, **kwargs) -> None:
+#         super().__init__(*args, **kwargs)
+
+#     def update(self, out: OptimizeResult, model: Surrogate) -> None:
+#         self.acquisitionf_array[self.idx].update(out, model)
+
+#         # Alternate
+#         if self.acquisitionf_array[self.idx].has_converged():
+#             # Check for quick convergence
+
+#             self.idx += 1 % len(self.acquisitionf_array)
+#             self.acquisitionf_array[self.idx].reset()
