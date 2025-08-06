@@ -1249,6 +1249,10 @@ class ParetoFront(AcquisitionFunction):
         objdim = paretoFront.shape[1]
         assert objdim > 1
 
+        # Discard duplicated points in the Pareto front
+        # TODO: Use a more efficient method to discard duplicates
+        paretoFront = np.unique(paretoFront, axis=0)
+
         # Create a surrogate model for the Pareto front in the objective space
         paretoModel = RbfModel(LinearRadialBasisFunction())
         k = np.random.choice(objdim)

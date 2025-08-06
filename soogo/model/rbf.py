@@ -120,7 +120,9 @@ class RbfModel(Surrogate):
         self._fx = np.array([])
         self._coef = np.array([])
         self._PHI = np.array([])
-        self._P = np.array([])
+
+        self.shift = 0.0
+        self.scale = 1.0
 
     def reserve(self, maxeval: int, dim: int, ntarget: int = 1) -> None:
         """Reserve space for the RBF model.
@@ -204,18 +206,6 @@ class RbfModel(Surrogate):
                 axis=1,
             )
 
-        if self._P.size == 0:
-            self._P = np.empty((maxeval, self.polynomial_tail_size()))
-        else:
-            additional_rows = max(0, maxeval - self._P.shape[0])
-            self._P = np.concatenate(
-                (
-                    self._P,
-                    np.empty((additional_rows, self.polynomial_tail_size())),
-                ),
-                axis=0,
-            )
-
     def eval_kernel(self, x, y=None):
         if y is None:
             y = x
@@ -230,16 +220,17 @@ class RbfModel(Surrogate):
         m = len(x)
         dim = x.shape[1]
         order = self.rbf.polynomial_tail_order()
+        xs = (x - self.shift) / self.scale
 
         P = np.empty((m, 0))
         if order >= 0:
             P = np.ones((m, 1))
             if order >= 1:
-                P = np.concatenate((P, x), axis=1)
+                P = np.concatenate((P, xs), axis=1)
                 if order >= 2:
                     for i in range(dim):
-                        xi = x[:, i : i + 1]
-                        P = np.concatenate((P, xi * x[:, i:dim]), axis=1)
+                        xi = xs[:, i : i + 1]
+                        P = np.concatenate((P, xi * xs[:, i:dim]), axis=1)
                     if order >= 3:
                         raise ValueError("Invalid polynomial tail")
 
@@ -255,17 +246,19 @@ class RbfModel(Surrogate):
         tail_size = self.polynomial_tail_size()
         assert i < tail_size, "Index out of bounds for polynomial tail size."
 
+        xs = (x - self.shift) / self.scale
+
         if i <= 0:
             return 1.0
 
         i -= 1
         if i < dim:
-            return x[i]
+            return xs[i]
 
         i -= dim
         for j in range(dim):
             if i < dim - j:
-                return x[j] * x[j + i]
+                return xs[j] * xs[j + i]
             i -= dim - j
 
         raise ValueError("Invalid polynomial tail")
@@ -428,7 +421,6 @@ class RbfModel(Surrogate):
         # Update matrices _PHI and _P
         self._PHI[oldm:m, 0:m] = self.rbf(distNew)
         self._PHI[0:oldm, oldm:m] = self._PHI[oldm:m, 0:oldm].T
-        self._P[oldm:m, :] = self.polynomial_tail(self._x[oldm:m])
 
         # Update m
         self._m = m
@@ -436,30 +428,30 @@ class RbfModel(Surrogate):
         # Get full matrix for the fitting
         A = self._get_RBFmatrix()
 
-        # from numpy.linalg import cond
-
-        # condA = cond(A)
-        # print(f"Condition number of A: {condA}")
-
-        # condPHIP = cond(np.block([[self._PHI[0:m, 0:m], self._get_matrixP()]]))
-        # print(f"Condition number of [PHI,P]: {condPHIP}")
-        # condP = cond(self._get_matrixP())
-        # print(f"Condition number of P: {condP}")
-        # condPHI = cond(self._PHI[0:m, 0:m])
-        # print(f"Condition number of PHI: {condPHI}")
-
-        # print(self.X)
-
         # TODO: See if there is a solver specific for saddle-point systems
         zero_shape = list(self.Y.shape)
         zero_shape[0] = self.polynomial_tail_size()
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            self._coef = solve(
-                A,
-                np.concatenate((self.filter(self.Y), np.zeros(zero_shape))),
-                assume_a="sym",
-            )
+            try:
+                self._coef = solve(
+                    A,
+                    np.concatenate(
+                        (self.filter(self.Y), np.zeros(zero_shape))
+                    ),
+                    assume_a="sym",
+                )
+            except np.linalg.LinAlgError as e:
+                from numpy.linalg import cond
+
+                condA = cond(A)
+                print(f"Condition number of A: {condA}")
+                print(f"A.X: {self.X}")
+
+                raise np.linalg.LinAlgError(
+                    "Failed to solve the RBF model system. "
+                    "This may be due to a singular matrix or insufficient data."
+                ) from e
 
     @property
     def X(self) -> np.ndarray:
@@ -474,9 +466,13 @@ class RbfModel(Surrogate):
         """Get f(x) for the sampled points."""
         return self._fx[0 : self._m]
 
-    def _get_matrixP(self) -> np.ndarray:
-        """Get the m-by-pdim matrix with the polynomial tail."""
-        return self._P[0 : self._m]
+    def _compute_shift_and_scale(self) -> None:
+        if len(self.X) > 0:
+            min_x = np.min(self.X, axis=0)
+            max_x = np.max(self.X, axis=0)
+            self.shift = (max_x + min_x) / 2
+            self.scale = (max_x - min_x) / 2
+            self.scale[self.scale == 0.0] = 1.0
 
     def _get_RBFmatrix(self) -> np.ndarray:
         r"""Get the complete matrix used to compute the RBF weights.
@@ -488,10 +484,14 @@ class RbfModel(Surrogate):
         :return: (m+pdim)-by-(m+pdim) matrix used to compute the RBF weights.
         """
         pdim = self.polynomial_tail_size()
+
+        self._compute_shift_and_scale()
+        _P = self.polynomial_tail(self.X)
+
         return np.block(
             [
-                [self._PHI[0 : self._m, 0 : self._m], self._get_matrixP()],
-                [self._get_matrixP().T, np.zeros((pdim, pdim))],
+                [self._PHI[0 : self._m, 0 : self._m], _P],
+                [_P.T, np.zeros((pdim, pdim))],
             ]
         )
 
@@ -574,7 +574,11 @@ class RbfModel(Surrogate):
         # compute rbf value of the new point x
         xdist = cdist(self.X, x)
         newCols = np.concatenate(
-            (np.asarray(self.rbf(xdist)), self.polynomial_tail(x).T), axis=0
+            (
+                np.asarray(self.rbf(xdist)),
+                self.polynomial_tail(x).T,
+            ),
+            axis=0,
         )
 
         # Get the L factor, the block-diagonal matrix D, and the permutation
