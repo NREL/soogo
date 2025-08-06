@@ -2046,3 +2046,140 @@ class MaximizeEI(AcquisitionFunction):
 
 #             self.idx += 1 % len(self.acquisitionf_array)
 #             self.acquisitionf_array[self.idx].reset()
+
+
+class CycleSearch(AcquisitionFunction):
+    """
+    Cycle search acquisition function as described in [#]_.
+
+    This acquisition function is used to find new sample points by perturbing
+    the current best sample point and uniformly selecting points from the
+    domain.
+
+    The evaluability of candidate points is predicted using the candidate
+    surrogate model. If the evaluability probaility of a candidate point
+    is below a threshold, the point is discarded. If no candidate points
+    remain after this filtering, all candidate points are considered
+    evaluable.
+
+    The candidate points are scored using a weighted value of their predicted
+    function value and the distance to previously sampled points. The candidate
+    with the best total score is selected as the new sample point.
+
+    References
+    ----------
+    .. [#] Juliane Müller and Marcus Day. Surrogate Optimization of
+        Computationally Expensive Black-Box Problems with Hidden Constraints.
+        INFORMS Journal on Computing, 31(4):689-702, 2019.
+        https://doi.org/10.1287/ijoc.2018.0864
+    """
+
+    def __init__(self, **kwargs) -> None:
+        super().__init__(**kwargs)
+
+    def optimize(
+        self,
+        surrogateModel: Surrogate,
+        bounds,
+        n: int = 1,
+        *,
+        evaluabilitySurrogate: Surrogate = None,
+        evaluabilityThreshold: float = 0.25,
+        scoreWeight: float = 0.5
+    ) -> np.ndarray:
+        """
+        Acquire one point.
+
+        This acquisition function generates candidate points by perturbing the
+        current best point and uniformly sampling from the bounds. It then
+        selects the best candidate point based on a weighted score that combines
+        the predicted function value and the distance to previously sampled
+        points.
+
+        :param surrogateModel: Surrogate model for the objective function.
+        :param bounds: List with the limits [x_min, x_max] of each direction.
+        :param n: Number of points to be acquired.
+        :param evaluabilitySurrogate: Surrogate model for the evaluability
+            probability of the candidate points. If provided, candidates with
+            evaluability probability below the threshold are discarded.
+        :param evaluabilityThreshold: Threshold for the evaluability probability.
+        :param scoreWeight: Weight for the predicted function value and distance
+            scores in the total score. The total score is computed as:
+            `scoreWeight * valueScore + (1 - scoreWeight) * distanceScore`.
+        """
+        # Set Ncand = 500*dim
+        dim = len(bounds)
+        nCand = 500 * dim
+
+        bounds = np.asarray(bounds)
+
+        # Get current best point
+        best_idx = np.argmin(surrogateModel.Y)
+        xbest = surrogateModel.X[best_idx]
+
+        ## Create nCand points by perturbing the current best point
+        # Set perturbation probability
+        if dim <= 10:
+            perturbProbability = 1.0
+        else:
+            perturbProbability = np.random.uniform(0, 1)
+
+        # Generate perturbation candidates
+        perturbationSampler = NormalSampler(n=nCand, sigma=0.02)
+        perturbationCandidates = perturbationSampler.get_dds_sample(
+            bounds,
+            mu=xbest,
+            probability=perturbProbability
+        )
+
+        ## Generate nCand points uniformly from the bounds
+        uniform_sampler = Sampler(nCand)
+        uniformCandidates = uniform_sampler.get_uniform_sample(bounds)
+
+        # Combine perturbation and uniform candidates
+        candidates = np.vstack((perturbationCandidates, uniformCandidates))
+
+        ## Check evaluability of candidates
+        if evaluabilitySurrogate is not None:
+            evaluability = evaluabilitySurrogate(candidates)
+            # Keep candidates above the evaluability threshold
+            if len(candidates[evaluability > evaluabilityThreshold]) > 0:
+                candidates = candidates[evaluability > evaluabilityThreshold]
+            else:
+                # If no candidates are above the evaluability threshold, keep
+                # candidates with positive evaluability
+                candidates = candidates[evaluability > 0]
+
+        ## Rank candidates based on their predicted function value and
+        # distance to previously sampled points
+
+        # Get the predicted function values for the candidates
+        predicted_values = surrogateModel(candidates)
+
+        # Scale the predicted values to [0, 1]
+        # Maps highest value to 1 and lowest to 0
+        # Smaller predicted values are better
+        valueScore = (predicted_values - predicted_values.min()) / (predicted_values.max() - predicted_values.min())
+
+        # Compute distances to previously evaluated points
+        if evaluabilitySurrogate is not None:
+            tree = KDTree(evaluabilitySurrogate.X)
+        else:
+            tree = KDTree(surrogateModel.X)
+
+        distances, _ = tree.query(candidates, k=1)
+
+        # Scale distances to [0, 1]
+        # Maps furtherst point to 0 and closest to 1
+        # Higher distances are better
+        distanceScore = -(distances - distances.min()) / (distances.max() - distances.min()) + 1
+
+        # Compute the total score for each candidate
+        # Both the predicted values and distances are scaled to [0, 1]
+        # with lower values being better. Smallest weighted score is best.
+        totalScores = scoreWeight * valueScore + (1 - scoreWeight) * distanceScore
+
+        # Select the n best candidate(s)
+        bestIndices = np.argsort(totalScores)[:n]
+        bestCandidates = candidates[bestIndices]
+        return bestCandidates
