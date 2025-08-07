@@ -2077,6 +2077,159 @@ class CycleSearch(AcquisitionFunction):
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
 
+    def generate_candidates(
+        self,
+        surrogateModel: Surrogate,
+        bounds,
+        nCand: int,
+        xbest: np.ndarray = None,
+    ) -> np.ndarray:
+        """
+        Generate candidate points by perturbing the current best point and
+        uniformly sampling from the bounds. A total of 2* nCand candidate
+        points are generated, where the first nCand points are perturbations of
+        the current best point and the second nCand points are uniformly sampled
+        from the bounds.
+
+        :param surrogateModel: Surrogate model for the objective function.
+        :param bounds: List with the limits [x_min, x_max] of each direction.
+        :param nCand: Number of candidate points to be generated.
+        :param xbest: Current best point. If None, use the best point from the
+            surrogate model.
+        :return: Array of candidate points.
+        """
+        dim = len(bounds)
+        bounds = np.asarray(bounds)
+
+        if xbest is None:
+            best_idx = np.argmin(surrogateModel.Y)
+            xbest = surrogateModel.X[best_idx]
+
+        ## Create nCand points by perturbing the current best point
+        # Set perturbation probability
+        if dim <= 10:
+            perturbProbability = 1.0
+        else:
+            perturbProbability = np.random.uniform(0, 1)
+
+        # Generate perturbation candidates
+        perturbationSampler = NormalSampler(n=nCand, sigma=0.02)
+        perturbationCandidates = perturbationSampler.get_dds_sample(
+            bounds, mu=xbest, probability=perturbProbability
+        )
+
+        ## Generate nCand points uniformly from the bounds
+        uniform_sampler = Sampler(nCand)
+        uniformCandidates = uniform_sampler.get_uniform_sample(bounds)
+
+        # Combine perturbation and uniform candidates
+        candidates = np.vstack((perturbationCandidates, uniformCandidates))
+        return candidates
+
+    def select_candidates(
+        self,
+        surrogateModel: Surrogate,
+        candidates: np.ndarray,
+        n: int = 1,
+        scoreWeight: float = 0.5,
+        evaluabilityThreshold: float = 0.25,
+        evaluabilitySurrogate: Surrogate = None,
+        tol: float = 0.001,
+    ) -> np.ndarray:
+        """
+        Select the best candidate points based on the predicted function
+        value and distance to previously sampled points. The candidates are
+        scored using a weighted score that combines the predicted function
+        value and the distance to previously sampled points. Uses iterative
+        selection for multiple points.
+
+        :param surrogateModel: Surrogate model for the objective function.
+        :param candidates: Array of candidate points.
+        :param n: Number of best candidates to return.
+        :param scoreWeight: Weight for the predicted function value and distance
+            scores in the total score.
+        :param evaluabilityThreshold: Threshold for the evaluability
+            probability. Candidates with evaluability probability below this
+            threshold are discarded.
+        :param evaluabilitySurrogate: Surrogate model for the evaluability
+            probability of the candidate points. If provided, candidates with
+            evaluability probability below the threshold are discarded.
+        :param tol: Minimum distance new points must be from already sampled
+            points. Defaults to 0.001.
+        :return: The n best candidate points.
+        """
+        ## Check evaluability of candidates
+        if evaluabilitySurrogate is not None:
+            evaluability = evaluabilitySurrogate(candidates)
+            # Keep candidates above the evaluability threshold
+            if len(candidates[evaluability > evaluabilityThreshold]) > 0:
+                candidates = candidates[evaluability > evaluabilityThreshold]
+            else:
+                # If no candidates are above the evaluability threshold, keep
+                # candidates with positive evaluability
+                candidates = candidates[evaluability > 0]
+
+        ## Rank candidates based on their predicted function value and
+        # distance to previously sampled points
+        # Get the predicted function values for the candidates
+        predicted_values = surrogateModel(candidates)
+
+        # Scale the predicted values to [0, 1]
+        # Maps highest value to 1 and lowest to 0
+        # Smaller predicted values are better
+        if predicted_values.max() == predicted_values.min():
+            valueScore = np.ones_like(predicted_values)
+        else:
+            valueScore = (predicted_values - predicted_values.min()) / (
+                predicted_values.max() - predicted_values.min()
+            )
+        # Compute distances to previously evaluated points
+        if evaluabilitySurrogate is not None:
+            tree = KDTree(evaluabilitySurrogate.X)
+        else:
+            tree = KDTree(surrogateModel.X)
+
+        distances, _ = tree.query(candidates, k=1)
+
+        scorer = WeightedAcquisition(None)
+
+        # Initialize arrays to store selected points
+        dim = candidates.shape[1]
+        selected_points = np.zeros((n, dim))
+        n_selected = 0
+
+        # Copy distances array for iterative updates
+        current_distances = distances.copy()
+
+        # Iteratively select n points
+        for i in range(n):
+            best_idx = scorer.argminscore(
+                valueScore,
+                current_distances,
+                weight=scoreWeight,
+                tol=tol
+            )
+
+            if best_idx == -1:
+                break
+
+            selected_points[i] = candidates[best_idx]
+            n_selected += 1
+
+            # If more points needed, update distances to include distance to
+            # newly selected point
+            if i < n - 1:
+                new_distances = cdist(candidates[best_idx].reshape(1, -1), candidates)[0]
+                current_distances = np.minimum(current_distances, new_distances)
+
+        # Return only the successfully selected points
+        if n_selected == 0:
+            return np.empty((0, dim))
+        elif n_selected == 1:
+            return selected_points
+        else:
+            return selected_points[:n_selected]
+
     def optimize(
         self,
         surrogateModel: Surrogate,
@@ -2085,11 +2238,9 @@ class CycleSearch(AcquisitionFunction):
         *,
         evaluabilitySurrogate: Surrogate = None,
         evaluabilityThreshold: float = 0.25,
-        scoreWeight: float = 0.5
+        scoreWeight: float = 0.5,
     ) -> np.ndarray:
         """
-        Acquire one point.
-
         This acquisition function generates candidate points by perturbing the
         current best point and uniformly sampling from the bounds. It then
         selects the best candidate point based on a weighted score that combines
@@ -2117,69 +2268,19 @@ class CycleSearch(AcquisitionFunction):
         best_idx = np.argmin(surrogateModel.Y)
         xbest = surrogateModel.X[best_idx]
 
-        ## Create nCand points by perturbing the current best point
-        # Set perturbation probability
-        if dim <= 10:
-            perturbProbability = 1.0
-        else:
-            perturbProbability = np.random.uniform(0, 1)
-
-        # Generate perturbation candidates
-        perturbationSampler = NormalSampler(n=nCand, sigma=0.02)
-        perturbationCandidates = perturbationSampler.get_dds_sample(
-            bounds,
-            mu=xbest,
-            probability=perturbProbability
+        # Generate candidate points
+        candidates = self.generate_candidates(
+            surrogateModel, bounds, nCand, xbest=xbest
         )
 
-        ## Generate nCand points uniformly from the bounds
-        uniform_sampler = Sampler(nCand)
-        uniformCandidates = uniform_sampler.get_uniform_sample(bounds)
+        #Select n best candidates
+        bestCandidates = self.select_candidates(
+            surrogateModel,
+            candidates,
+            n=n,
+            scoreWeight=scoreWeight,
+            evaluabilityThreshold=evaluabilityThreshold,
+            evaluabilitySurrogate=evaluabilitySurrogate,
+        )
 
-        # Combine perturbation and uniform candidates
-        candidates = np.vstack((perturbationCandidates, uniformCandidates))
-
-        ## Check evaluability of candidates
-        if evaluabilitySurrogate is not None:
-            evaluability = evaluabilitySurrogate(candidates)
-            # Keep candidates above the evaluability threshold
-            if len(candidates[evaluability > evaluabilityThreshold]) > 0:
-                candidates = candidates[evaluability > evaluabilityThreshold]
-            else:
-                # If no candidates are above the evaluability threshold, keep
-                # candidates with positive evaluability
-                candidates = candidates[evaluability > 0]
-
-        ## Rank candidates based on their predicted function value and
-        # distance to previously sampled points
-
-        # Get the predicted function values for the candidates
-        predicted_values = surrogateModel(candidates)
-
-        # Scale the predicted values to [0, 1]
-        # Maps highest value to 1 and lowest to 0
-        # Smaller predicted values are better
-        valueScore = (predicted_values - predicted_values.min()) / (predicted_values.max() - predicted_values.min())
-
-        # Compute distances to previously evaluated points
-        if evaluabilitySurrogate is not None:
-            tree = KDTree(evaluabilitySurrogate.X)
-        else:
-            tree = KDTree(surrogateModel.X)
-
-        distances, _ = tree.query(candidates, k=1)
-
-        # Scale distances to [0, 1]
-        # Maps furtherst point to 0 and closest to 1
-        # Higher distances are better
-        distanceScore = -(distances - distances.min()) / (distances.max() - distances.min()) + 1
-
-        # Compute the total score for each candidate
-        # Both the predicted values and distances are scaled to [0, 1]
-        # with lower values being better. Smallest weighted score is best.
-        totalScores = scoreWeight * valueScore + (1 - scoreWeight) * distanceScore
-
-        # Select the n best candidate(s)
-        bestIndices = np.argsort(totalScores)[:n]
-        bestCandidates = candidates[bestIndices]
         return bestCandidates
