@@ -2046,3 +2046,67 @@ class MaximizeEI(AcquisitionFunction):
 
 #             self.idx += 1 % len(self.acquisitionf_array)
 #             self.acquisitionf_array[self.idx].reset()
+
+
+class MaximizeDistance(AcquisitionFunction):
+    """
+    Maximizing distance acquisition function as described in [#]_.
+
+    This acquisition function is used to find new sample points that maximize
+    the minimum distance to previously sampled points.
+
+    :param rtol: Minimum distance between a candidate point and the
+        previously selected points relative to the domain size. Default is 1e-3.
+
+    References
+    ----------
+    .. [#] Juliane Müller and Marcus Day. Surrogate Optimization of
+        Computationally Expensive Black-Box Problems with Hidden Constraints.
+        INFORMS Journal on Computing, 31(4):689-702, 2019.
+        https://doi.org/10.1287/ijoc.2018.0864
+    """
+
+    def __init__(self, rtol: float = 1e-3, **kwargs) -> None:
+        super().__init__(rtol=rtol, **kwargs)
+
+    def optimize(
+        self,
+        surrogateModel: Surrogate,
+        bounds,
+        n: int = 1,
+        **kwargs,
+    ) -> np.ndarray:
+        tree = KDTree(surrogateModel.X)
+        iindex = surrogateModel.iindex
+        optimizer = self.optimizer if len(iindex) == 0 else self.mi_optimizer
+
+        # Calculate tolerance using the tol function
+        atol = self.tol(bounds)
+
+        selected_points = []
+        current_points = surrogateModel.X.copy()
+
+        for i in range(n):
+            tree = KDTree(current_points)
+
+            problem = PymooProblem(
+                lambda x: -tree.query(x)[0],
+                bounds,
+                iindex,
+            )
+
+            res = pymoo_minimize(problem, optimizer, verbose=False)
+            if res.X is not None:
+                new_point = np.array([res.X[j] for j in range(len(bounds))])
+
+                # Check if the new point is far enough from existing points
+                distance_to_existing = tree.query(new_point.reshape(1, -1))[0]
+                if distance_to_existing >= atol:
+                    selected_points.append(new_point)
+                    current_points = np.vstack([current_points, new_point])
+
+        return (
+            np.array(selected_points)
+            if selected_points
+            else np.empty((0, len(bounds)))
+        )
