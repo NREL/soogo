@@ -42,6 +42,7 @@ from copy import deepcopy
 # Scipy imports
 from scipy.optimize import minimize, differential_evolution
 from scipy.spatial.distance import cdist
+from scipy.spatial import KDTree
 
 # Local imports
 from .model.base import Surrogate
@@ -1449,21 +1450,32 @@ def shebo(
     # Nomad wrapper for the objective function
     def nomadFunction(x):
         """Wrapper for the objective function to be used with NOMAD."""
-        nonlocal out, sampleE, fValE, fun
+        nonlocal out, sampleE, fValE, fun, evalSurrogate, objSurrogate
 
         point = np.array([x.get_coord(i) for i in range(x.size())]).reshape(1, -1)
 
         f, successful, newBest = evaluatePoint(point)
 
-        if point not in evalSurrogate.X:
+        # Calculate minimum distance of point to all other points
+        tree = KDTree(evalSurrogate.X)
+        dist = tree.query(point)[0]
+
+        # Update evalSurrogate if new point is far enough
+        if dist >= 1e-7:
             evalSurrogate.update(
                 point,
                 np.logical_not(np.isnan(f)).astype(float)
             )
 
         if successful:
+            # Set NOMAD objective function value
             x.setBBO(str(f).encode("UTF-8"))
-            objSurrogate.update(point, f)
+
+            # Update objSurrogate if new point is far enough
+            if dist >= 1e-7:
+                print("Updating surrogate from within NOMAD run")
+                objSurrogate.update(point, f)
+
             return 1
         else:
             return 0
