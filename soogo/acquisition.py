@@ -2066,6 +2066,9 @@ class CycleSearch(AcquisitionFunction):
     function value and the distance to previously sampled points. The candidate
     with the best total score is selected as the new sample point.
 
+    :param rtol: Minimum distance between a candidate point and the
+        previously selected points relative to the domain size. Default is 1e-3.
+
     References
     ----------
     .. [#] Juliane Müller and Marcus Day. Surrogate Optimization of
@@ -2074,8 +2077,8 @@ class CycleSearch(AcquisitionFunction):
         https://doi.org/10.1287/ijoc.2018.0864
     """
 
-    def __init__(self, **kwargs) -> None:
-        super().__init__(**kwargs)
+    def __init__(self, rtol: float = 1e-3, **kwargs) -> None:
+        super().__init__(rtol=rtol, **kwargs)
 
     def generate_candidates(
         self,
@@ -2130,11 +2133,11 @@ class CycleSearch(AcquisitionFunction):
         self,
         surrogateModel: Surrogate,
         candidates: np.ndarray,
+        bounds,
         n: int = 1,
         scoreWeight: float = 0.5,
         evaluabilityThreshold: float = 0.25,
         evaluabilitySurrogate: Surrogate = None,
-        tol: float = 0.001,
     ) -> np.ndarray:
         """
         Select the best candidate points based on the predicted function
@@ -2145,6 +2148,7 @@ class CycleSearch(AcquisitionFunction):
 
         :param surrogateModel: Surrogate model for the objective function.
         :param candidates: Array of candidate points.
+        :param bounds: List with the limits [x_min, x_max] of each direction.
         :param n: Number of best candidates to return.
         :param scoreWeight: Weight for the predicted function value and distance
             scores in the total score.
@@ -2154,10 +2158,10 @@ class CycleSearch(AcquisitionFunction):
         :param evaluabilitySurrogate: Surrogate model for the evaluability
             probability of the candidate points. If provided, candidates with
             evaluability probability below the threshold are discarded.
-        :param tol: Minimum distance new points must be from already sampled
-            points. Defaults to 0.001.
         :return: The n best candidate points.
         """
+        # Calculate tolerance using the tol function
+        atol = self.tol(bounds)
         ## Check evaluability of candidates
         if evaluabilitySurrogate is not None:
             evaluability = evaluabilitySurrogate(candidates)
@@ -2204,10 +2208,7 @@ class CycleSearch(AcquisitionFunction):
         # Iteratively select n points
         for i in range(n):
             best_idx = scorer.argminscore(
-                valueScore,
-                current_distances,
-                weight=scoreWeight,
-                tol=tol
+                valueScore, current_distances, weight=scoreWeight, tol=atol
             )
 
             if best_idx == -1:
@@ -2219,8 +2220,12 @@ class CycleSearch(AcquisitionFunction):
             # If more points needed, update distances to include distance to
             # newly selected point
             if i < n - 1:
-                new_distances = cdist(candidates[best_idx].reshape(1, -1), candidates)[0]
-                current_distances = np.minimum(current_distances, new_distances)
+                new_distances = cdist(
+                    candidates[best_idx].reshape(1, -1), candidates
+                )[0]
+                current_distances = np.minimum(
+                    current_distances, new_distances
+                )
 
         # Return only the successfully selected points
         if n_selected == 0:
@@ -2273,10 +2278,11 @@ class CycleSearch(AcquisitionFunction):
             surrogateModel, bounds, nCand, xbest=xbest
         )
 
-        #Select n best candidates
+        # Select n best candidates
         bestCandidates = self.select_candidates(
             surrogateModel,
             candidates,
+            bounds,
             n=n,
             scoreWeight=scoreWeight,
             evaluabilityThreshold=evaluabilityThreshold,

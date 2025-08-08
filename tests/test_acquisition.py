@@ -184,6 +184,7 @@ class TestCycleSearch:
         """
         X_train = np.array([[5, 5]])
         Y_train = np.array([0.0])
+        bounds = np.array([[0, 10], [0, 10]])
 
         mock_surrogate = self.MockSurrogateModel(X_train, Y_train)
         mock_evaluability = self.MockEvaluabilitySurrogate(X_train, Y_train)
@@ -192,12 +193,12 @@ class TestCycleSearch:
         # Both tests would return [0.0, 0.0] if the evaluability filter fails
         # Test case 1: Same function values, different distances
         candidates = np.array([[0.0, 0.0], [9.0, 1.0], [4.0, 6.0]])
-        point = cycle_search.select_candidates(mock_surrogate, candidates, n=1, scoreWeight=0.5, evaluabilitySurrogate=mock_evaluability)
+        point = cycle_search.select_candidates(mock_surrogate, candidates, bounds, n=1, scoreWeight=0.5, evaluabilitySurrogate=mock_evaluability)
         assert np.allclose(point, np.array([[9.0, 1.0]]))
 
         # Test case 2: Same distances, different function values
         candidates = np.array([[0.0, 0.0], [3.0, 5.0], [7.0, 5.0]])
-        point = cycle_search.select_candidates(mock_surrogate, candidates, n=1, scoreWeight=0.5, evaluabilitySurrogate=mock_evaluability)
+        point = cycle_search.select_candidates(mock_surrogate, candidates, bounds, n=1, scoreWeight=0.5, evaluabilitySurrogate=mock_evaluability)
         assert np.allclose(point, np.array([[3.0, 5.0]]))
 
         # Test case 3: Weighted sum
@@ -206,5 +207,5 @@ class TestCycleSearch:
         mock_surrogate = self.MockSurrogateModel(X_train, Y_train)
         mock_evaluability = self.MockEvaluabilitySurrogate(X_train, Y_train)
         candidates = np.array([[0.0, 0.0], [2.0, 6.0], [7.0, 0.5]])
-        point = cycle_search.select_candidates(mock_surrogate, candidates, n=1, scoreWeight=0.75, evaluabilitySurrogate=mock_evaluability)
+        point = cycle_search.select_candidates(mock_surrogate, candidates, bounds, n=1, scoreWeight=0.75, evaluabilitySurrogate=mock_evaluability)
         assert np.allclose(point, np.array([[7.0, 0.5]]))
