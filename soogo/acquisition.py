@@ -2122,8 +2122,8 @@ class CycleSearch(AcquisitionFunction):
         )
 
         ## Generate nCand points uniformly from the bounds
-        uniform_sampler = Sampler(nCand)
-        uniformCandidates = uniform_sampler.get_uniform_sample(bounds)
+        uniformSampler = Sampler(nCand)
+        uniformCandidates = uniformSampler.get_uniform_sample(bounds)
 
         # Combine perturbation and uniform candidates
         candidates = np.vstack((perturbationCandidates, uniformCandidates))
@@ -2176,16 +2176,16 @@ class CycleSearch(AcquisitionFunction):
         ## Rank candidates based on their predicted function value and
         # distance to previously sampled points
         # Get the predicted function values for the candidates
-        predicted_values = surrogateModel(candidates)
+        predictedValues = surrogateModel(candidates)
 
         # Scale the predicted values to [0, 1]
         # Maps highest value to 1 and lowest to 0
         # Smaller predicted values are better
-        if predicted_values.max() == predicted_values.min():
-            valueScore = np.ones_like(predicted_values)
+        if predictedValues.max() == predictedValues.min():
+            valueScore = np.ones_like(predictedValues)
         else:
-            valueScore = (predicted_values - predicted_values.min()) / (
-                predicted_values.max() - predicted_values.min()
+            valueScore = (predictedValues - predictedValues.min()) / (
+                predictedValues.max() - predictedValues.min()
             )
         # Compute distances to previously evaluated points
         if evaluabilitySurrogate is not None:
@@ -2199,41 +2199,41 @@ class CycleSearch(AcquisitionFunction):
 
         # Initialize arrays to store selected points
         dim = candidates.shape[1]
-        selected_points = np.zeros((n, dim))
-        n_selected = 0
+        selectedPoints = np.zeros((n, dim))
+        nSelected = 0
 
         # Copy distances array for iterative updates
-        current_distances = distances.copy()
+        currentDistances = distances.copy()
 
         # Iteratively select n points
         for i in range(n):
             best_idx = scorer.argminscore(
-                valueScore, current_distances, weight=scoreWeight, tol=atol
+                valueScore, currentDistances, weight=scoreWeight, tol=atol
             )
 
             if best_idx == -1:
                 break
 
-            selected_points[i] = candidates[best_idx]
-            n_selected += 1
+            selectedPoints[i] = candidates[best_idx]
+            nSelected += 1
 
             # If more points needed, update distances to include distance to
             # newly selected point
             if i < n - 1:
-                new_distances = cdist(
+                newDistances = cdist(
                     candidates[best_idx].reshape(1, -1), candidates
                 )[0]
-                current_distances = np.minimum(
-                    current_distances, new_distances
+                currentDistances = np.minimum(
+                    currentDistances, newDistances
                 )
 
         # Return only the successfully selected points
-        if n_selected == 0:
+        if nSelected == 0:
             return np.empty((0, dim))
-        elif n_selected == 1:
-            return selected_points
+        elif nSelected == 1:
+            return selectedPoints
         else:
-            return selected_points[:n_selected]
+            return selectedPoints[:nSelected]
 
     def optimize(
         self,
@@ -2327,11 +2327,11 @@ class MaximizeDistance(AcquisitionFunction):
         # Calculate tolerance using the tol function
         atol = self.tol(bounds)
 
-        selected_points = []
-        current_points = surrogateModel.X.copy()
+        selectedPoints = []
+        currentPoints = surrogateModel.X.copy()
 
         for i in range(n):
-            tree = KDTree(current_points)
+            tree = KDTree(currentPoints)
 
             problem = PymooProblem(
                 lambda x: -tree.query(x)[0],
@@ -2341,16 +2341,16 @@ class MaximizeDistance(AcquisitionFunction):
 
             res = pymoo_minimize(problem, optimizer, verbose=False)
             if res.X is not None:
-                new_point = np.array([res.X[j] for j in range(len(bounds))])
+                newPoint = np.array([res.X[j] for j in range(len(bounds))])
 
                 # Check if the new point is far enough from existing points
-                distance_to_existing = tree.query(new_point.reshape(1, -1))[0]
-                if distance_to_existing >= atol:
-                    selected_points.append(new_point)
-                    current_points = np.vstack([current_points, new_point])
+                distanceToExisting = tree.query(newPoint.reshape(1, -1))[0]
+                if distanceToExisting >= atol:
+                    selectedPoints.append(newPoint)
+                    currentPoints = np.vstack([currentPoints, newPoint])
 
         return (
-            np.array(selected_points)
-            if selected_points
+            np.array(selectedPoints)
+            if selectedPoints
             else np.empty((0, len(bounds)))
         )
