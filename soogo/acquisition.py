@@ -1479,19 +1479,12 @@ class EndPointsParetoFront(AcquisitionFunction):
         # consider the whole variable domain and sample at the point that
         # maximizes the minimum distance of sample points
         if endpoints.size == 0:
-            minimumPointProblem = PymooProblem(
-                lambda x: -tree.query(x)[0], bounds, iindex
+            maximizeDistance = MaximizeDistance(rtol=self.rtol)
+            endpoints = maximizeDistance.optimize(
+                surrogateModel,
+                bounds,
+                n=1
             )
-            res = pymoo_minimize(
-                minimumPointProblem,
-                optimizer,
-                verbose=False,
-                seed=surrogateModel.ntrain + 1,
-            )
-            assert res.X is not None
-            endpoints = np.empty((1, dim))
-            for j in range(dim):
-                endpoints[0, j] = res.X[j]
 
         # Return a maximum of n points
         return endpoints[:n, :]
@@ -1765,17 +1758,13 @@ class GosacSample(AcquisitionFunction):
                 isGoodCandidate = False
 
         if not isGoodCandidate:
-            minimumPointProblem = PymooProblem(
-                lambda x: -tree.query(x)[0], bounds, iindex
+            maximizeDistance = MaximizeDistance(rtol=self.rtol)
+
+            xnew = maximizeDistance.optimize(
+                surrogateModel,
+                bounds,
+                n=1
             )
-            res = pymoo_minimize(
-                minimumPointProblem,
-                optimizer,
-                seed=surrogateModel.ntrain + 1,
-                verbose=False,
-            )
-            assert res.X is not None
-            xnew = np.asarray([[res.X[i] for i in range(dim)]])
 
         return xnew
 
@@ -2339,7 +2328,12 @@ class MaximizeDistance(AcquisitionFunction):
                 iindex,
             )
 
-            res = pymoo_minimize(problem, optimizer, verbose=False)
+            res = pymoo_minimize(
+                problem,
+                optimizer,
+                seed=surrogateModel.ntrain + 1,
+                verbose=False
+            )
             if res.X is not None:
                 newPoint = np.array([res.X[j] for j in range(len(bounds))])
 
