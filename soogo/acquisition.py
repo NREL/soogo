@@ -2072,11 +2072,11 @@ class MaximizeDistance(AcquisitionFunction):
         # Calculate tolerance using the tol function
         atol = self.tol(bounds)
 
-        selected_points = []
-        current_points = surrogateModel.X.copy()
+        selectedPoints = []
+        currentPoints = surrogateModel.X.copy()
 
         for i in range(n):
-            tree = KDTree(current_points)
+            tree = KDTree(currentPoints)
 
             problem = PymooProblem(
                 lambda x: -tree.query(x)[0],
@@ -2096,11 +2096,11 @@ class MaximizeDistance(AcquisitionFunction):
                 # Check if the new point is far enough from existing points
                 distance_to_existing = tree.query(new_point.reshape(1, -1))[0]
                 if distance_to_existing >= atol:
-                    selected_points.append(new_point)
-                    current_points = np.vstack([current_points, new_point])
+                    selectedPoints.append(new_point)
+                    currentPoints = np.vstack([currentPoints, new_point])
 
         return (
-            np.array(selected_points)
-            if selected_points
+            np.array(selectedPoints)
+            if selectedPoints
             else np.empty((0, len(bounds)))
         )
