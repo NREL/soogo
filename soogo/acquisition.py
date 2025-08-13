@@ -1986,13 +1986,16 @@ class MaximizeEI(AcquisitionFunction):
         return x[iBest, :]
 
 
-class CycleSearch(AcquisitionFunction):
+class TransitionSearch(AcquisitionFunction):
     """
-    Cycle search acquisition function as described in [#]_.
+    Transition search acquisition function as described in [#]_.
 
     This acquisition function is used to find new sample points by perturbing
     the current best sample point and uniformly selecting points from the
-    domain.
+    domain. The scoreWeight parameter can be used to control the transition
+    from local to global search. A scoreWeight close to 1.0 will favor
+    the predicted function value (local search), while a scoreWeight close to
+    0.0 will favor the distance to previously sampled points (global search).
 
     The evaluability of candidate points is predicted using the candidate
     surrogate model. If the evaluability probaility of a candidate point

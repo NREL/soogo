@@ -27,7 +27,7 @@ import pytest
 from typing import Union, Tuple, Optional
 
 from soogo.model.base import Surrogate
-from soogo.acquisition import AcquisitionFunction, CycleSearch, MaximizeDistance, AlternatedAcquisition
+from soogo.acquisition import AcquisitionFunction, TransitionSearch, MaximizeDistance, AlternatedAcquisition
 from soogo.termination import IterateNTimes
 from soogo.optimize_result import OptimizeResult
 
@@ -134,8 +134,8 @@ class MockEvaluabilitySurrogate(Surrogate):
     def reset_data(self) -> None:
         pass
 
-class TestCycleSearch:
-    """Test suite for the CycleSearch acquisition function."""
+class TestTransitionSearch:
+    """Test suite for the TransitionSearch acquisition function."""
 
     @pytest.mark.parametrize(["n_points", "dims"], [([1, 5], [2, 5, 25])])
     def test_optimize_generates_expected_points(self, dims, n_points):
@@ -153,7 +153,7 @@ class TestCycleSearch:
                 X_train = np.array([[0.5 for _ in range(dim)]])
                 Y_train = np.array([0.0])
                 mock_surrogate = MockSurrogateModel(X_train, Y_train)
-                cycle_search = CycleSearch()
+                cycle_search = TransitionSearch()
 
                 result = cycle_search.optimize(
                     mock_surrogate, bounds, n=n, scoreWeight=0.5)
@@ -172,7 +172,7 @@ class TestCycleSearch:
         Y_train = np.array([0.0])
 
         mock_surrogate = MockSurrogateModel(X_train, Y_train)
-        cycle_search = CycleSearch()
+        cycle_search = TransitionSearch()
 
         for n in nCand:
             candidates = cycle_search.generate_candidates(mock_surrogate, bounds, nCand=n)
@@ -200,7 +200,7 @@ class TestCycleSearch:
 
         mock_surrogate = MockSurrogateModel(X_train, Y_train)
         mock_evaluability = MockEvaluabilitySurrogate(X_train, Y_train)
-        cycle_search = CycleSearch()
+        cycle_search = TransitionSearch()
 
         # Both tests would return [0.0, 0.0] if the evaluability filter fails
         # Test case 1: Same function values, different distances
@@ -352,12 +352,12 @@ class TestAlternatedAcquisition:
         correct shape and within bounds while alternating between acquisition
         functions.
         """
-        # Use cycle search and maximize distance as acquisition functions
-        cycleSearch = CycleSearch(termination=IterateNTimes(1))
+        # Use transition search and maximize distance as acquisition functions
+        transitionSearch = TransitionSearch(termination=IterateNTimes(1))
         maximizeDistance = MaximizeDistance(termination=IterateNTimes(2))
 
         # Create a list of mock acquisition functions
-        acquisition_funcs = [cycleSearch, maximizeDistance]
+        acquisition_funcs = [transitionSearch, maximizeDistance]
 
         # Initialize the AlternatedAcquisition with the mock functions
         alternated_acq = AlternatedAcquisition(acquisition_funcs)
