@@ -2245,9 +2245,20 @@ class MaximizeDistance(AcquisitionFunction):
         surrogateModel: Surrogate,
         bounds,
         n: int = 1,
+        points: Optional[np.ndarray] = None,
         **kwargs,
     ) -> np.ndarray:
-        tree = KDTree(surrogateModel.X)
+        """
+        Acquire n points that maximize the minimum distance to previously
+        sampled points.
+
+        :param surrogateModel: The surrogate model.
+        :param sequence bounds: List with the limits [x_min,x_max] of each
+            direction x in the space.
+        :param n: Number of points to be acquired.
+        :param points: Points to consider for distance maximization. If None,
+            use all previously sampled points in the surrogate model.
+        """
         iindex = surrogateModel.iindex
         optimizer = self.optimizer if len(iindex) == 0 else self.mi_optimizer
 
@@ -2255,7 +2266,10 @@ class MaximizeDistance(AcquisitionFunction):
         atol = self.tol(bounds)
 
         selectedPoints = []
-        currentPoints = surrogateModel.X.copy()
+        if points is None:
+            currentPoints = surrogateModel.X.copy()
+        else:
+            currentPoints = points.copy()
 
         for i in range(n):
             tree = KDTree(currentPoints)
