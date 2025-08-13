@@ -36,7 +36,7 @@ __deprecated__ = False
 import numpy as np
 from math import log
 from abc import ABC, abstractmethod
-from typing import Optional
+from typing import Optional, Sequence
 
 # Scipy imports
 from scipy.spatial.distance import cdist
@@ -60,7 +60,7 @@ from .model.base import Surrogate
 from .sampling import NormalSampler, Sampler, Mitchel91Sampler
 from .model import LinearRadialBasisFunction, RbfModel, GaussianProcess
 from .problem import PymooProblem, ListDuplicateElimination
-from .termination import TerminationCondition, UnsuccessfulImprovement
+from .termination import TerminationCondition, UnsuccessfulImprovement, IterateNTimes
 from .utils import find_pareto_front
 from .optimize_result import OptimizeResult
 
@@ -1973,70 +1973,6 @@ class MaximizeEI(AcquisitionFunction):
         return x[iBest, :]
 
 
-# class AlternatedAcquisition(AcquisitionFunction):
-#     def __init__(
-#         self,
-#         acquisitionf_array: Sequence[AcquisitionFunction],
-#         acquisitionf_min_feval: Sequence[int] = [],
-#         **kwargs,
-#     ) -> None:
-#         super().__init__(**kwargs)
-#         self.acquisitionf_array = acquisitionf_array
-#         self.idx = 0
-
-#         if len(acquisitionf_min_feval) == 0:
-#             self.acquisition_feval = [0] * len(acquisitionf_array)
-#         self.acquisition_feval = acquisitionf_min_feval
-#         assert len(self.acquisition_feval) == len(self.acquisitionf_array)
-
-#         self.history = deque(maxlen=(len(acquisitionf_array) + 1))
-
-#     def optimize(
-#         self,
-#         surrogateModel: RbfModel,
-#         bounds,
-#         n: int = 1,
-#         **kwargs,
-#     ) -> np.ndarray:
-#         return self.acquisitionf_array[self.idx].optimize(
-#             surrogateModel, bounds, n, **kwargs
-#         )
-
-#     def update(self, out: OptimizeResult, model: Surrogate) -> None:
-#         self.acquisitionf_array[self.idx].update(out, model)
-
-#         # Alternate if the current acquisition function has converged
-#         if self.acquisitionf_array[self.idx].has_converged():
-#             # Check for quick convergence
-#             self.acquisition_feval[self.idx] -=
-#             if len(self.acquisition_feval) > 0:
-#                 self.history.append(self.acquisitionf_array[self.idx].nfeval)
-
-#             self.idx += 1 % len(self.acquisitionf_array)
-#             self.acquisitionf_array[self.idx].reset()
-
-#     def reset(self) -> None:
-#         for acquisitionf in self.acquisitionf_array:
-#             acquisitionf.reset()
-#         self.idx = 0
-#         self.history.clear()
-
-
-# class CPTV(AlternatedAcquisition):
-#     def __init__(self, *args, **kwargs) -> None:
-#         super().__init__(*args, **kwargs)
-
-#     def update(self, out: OptimizeResult, model: Surrogate) -> None:
-#         self.acquisitionf_array[self.idx].update(out, model)
-
-#         # Alternate
-#         if self.acquisitionf_array[self.idx].has_converged():
-#             # Check for quick convergence
-
-#             self.idx += 1 % len(self.acquisitionf_array)
-#             self.acquisitionf_array[self.idx].reset()
-
-
 class CycleSearch(AcquisitionFunction):
     """
     Cycle search acquisition function as described in [#]_.
@@ -2066,8 +2002,9 @@ class CycleSearch(AcquisitionFunction):
         https://doi.org/10.1287/ijoc.2018.0864
     """
 
-    def __init__(self, rtol: float = 1e-3, **kwargs) -> None:
+    def __init__(self, rtol: float = 1e-3, termination: Optional[TerminationCondition] = None, **kwargs) -> None:
         super().__init__(rtol=rtol, **kwargs)
+        self.termination = termination
 
     def generate_candidates(
         self,
@@ -2299,8 +2236,9 @@ class MaximizeDistance(AcquisitionFunction):
         https://doi.org/10.1287/ijoc.2018.0864
     """
 
-    def __init__(self, rtol: float = 1e-3, **kwargs) -> None:
+    def __init__(self, rtol: float = 1e-3, termination: Optional[TerminationCondition] = None, **kwargs) -> None:
         super().__init__(rtol=rtol, **kwargs)
+        self.termination = termination
 
     def optimize(
         self,
@@ -2348,3 +2286,47 @@ class MaximizeDistance(AcquisitionFunction):
             if selectedPoints
             else np.empty((0, len(bounds)))
         )
+
+
+class AlternatedAcquisition(AcquisitionFunction):
+    """
+    Alternated acquisition function that cycles through a list of acquisition
+    functions.
+
+    The current acquisition function moves to the next in the list when the
+    current one's termination criterion is met. To progress through the
+    acquisition functions, the `update` method must be called after each
+    optimization step. This provides the function with the current optimization
+    state, allowing it to determine if the termination condition has been
+    satisfied.
+
+    :param acquisitionFuncArray: List of acquisition functions to be used in
+        sequence.
+    """
+    def __init__(
+        self,
+        acquisitionFuncArray: Sequence[AcquisitionFunction],
+        **kwargs,
+    ) -> None:
+        super().__init__(**kwargs)
+        self.acquisitionFuncArray = acquisitionFuncArray
+        self.idx = 0
+
+    def optimize(
+        self,
+        surrogateModel: RbfModel,
+        bounds,
+        n: int = 1,
+        **kwargs,
+    ) -> np.ndarray:
+        return self.acquisitionFuncArray[self.idx].optimize(
+            surrogateModel, bounds, n, **kwargs
+        )
+
+    def update(self, out: OptimizeResult, model: Surrogate) -> None:
+        self.acquisitionFuncArray[self.idx].update(out, model)
+
+        # Alternate if the current acquisition function's termination is met
+        if self.acquisitionFuncArray[self.idx].has_converged():
+            self.idx = (self.idx + 1) % len(self.acquisitionFuncArray)
+            self.acquisitionFuncArray[self.idx].termination.reset()
