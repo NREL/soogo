@@ -1713,6 +1713,7 @@ class GosacSample(AcquisitionFunction):
         surrogateModel: Surrogate,
         bounds,
         n: int = 1,
+        constraintTransform: callable = None,
         **kwargs,
     ) -> np.ndarray:
         """Acquire 1 point.
@@ -1721,6 +1722,10 @@ class GosacSample(AcquisitionFunction):
         :param sequence bounds: List with the limits [x_min,x_max] of each
             direction x in the space.
         :param n: Unused.
+        :param constraintTransform: Function to transform the constraints.
+            If not provided, use the identity function. The optimizer, pymoo,
+            expects that negative and zero values are feasible, and positive
+            values are infeasible.
         :return: 1-by-dim matrix with the selected points.
         """
         dim = len(bounds)
@@ -1731,12 +1736,20 @@ class GosacSample(AcquisitionFunction):
 
         assert n == 1
 
+        if constraintTransform is None:
+            def constraintTransform(x):
+                return x
+
+        def transformedConstraint(x):
+            surrogateOutput = surrogateModel(x)
+            return constraintTransform(surrogateOutput)
+
         # Create KDTree with previously evaluated points
         tree = KDTree(surrogateModel.X)
         atol = self.tol(bounds)
 
         cheapProblem = PymooProblem(
-            self.fun, bounds, iindex, gfunc=surrogateModel, n_ieq_constr=gdim
+            self.fun, bounds, iindex, gfunc=transformedConstraint, n_ieq_constr=gdim
         )
         res = pymoo_minimize(
             cheapProblem,
