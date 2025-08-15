@@ -1369,6 +1369,7 @@ def shebo(
     weightPattern = [1, 0.95, 0.85, 0.75, 0.5, 0.35, 0.25, 0.1, 0.0]
     dim = len(bounds)
     nStart = 4 * (dim + 1)
+    bounds = np.asarray(bounds)
 
     # Initialize the surrogates
     objSurrogate = RbfModel(CubicRadialBasisFunction())
@@ -1407,21 +1408,25 @@ def shebo(
         """Evaluate a point and update the output."""
         nonlocal out, sampleE, fValE
 
+        x = x.reshape(-1, )
+
         successful = False
         newBest = False
 
         # Add point to all sampled points
         out.sample[out.nfev, :] = x
 
+        rescaledX = x * (bounds[:, 1] - bounds[:, 0]) + bounds[:, 0]
+
         # Attempt to evaluate the point
         try:
-            y = np.asarray(fun(x))
+            y = np.asarray(fun(rescaledX))
 
             # Validate the output
             if validationFunc(y):
                 successful = True
                 # If valid, add to successful points
-                sampleE.append(x.flatten())
+                sampleE.append(x)
                 fValE.append(y)
                 out.fsample[out.nfev] = y
 
@@ -1450,10 +1455,12 @@ def shebo(
 
         f, successful, newBest = evaluatePoint(point)
 
-        evalSurrogate.update(
-            point,
-            np.logical_not(np.isnan(f)).astype(float)
-        )
+        if point not in evalSurrogate.X:
+            evalSurrogate.update(
+                point,
+                np.logical_not(np.isnan(f)).astype(float)
+            )
+
         if successful:
             x.setBBO(str(f).encode("UTF-8"))
             objSurrogate.update(point, f)
@@ -1463,7 +1470,7 @@ def shebo(
 
     # Generate initial points using Latin Hypercube sampling
     sampler = Sampler(nStart)
-    x0 = sampler.get_slhd_sample(bounds)
+    x0 = sampler.get_slhd_sample([[0, 1] for _ in range(dim)])
 
     if disp:
         print("Evaluating initial points...")
@@ -1506,7 +1513,7 @@ def shebo(
 
     while (rank < dim + 1) and (out.nfev < maxeval):
         ## Generate new point
-        xNew = maximizeDistance.optimize(evalSurrogate, bounds, 1)
+        xNew = maximizeDistance.optimize(evalSurrogate, [[0, 1] for _ in range(dim)], 1)
 
         y, successful, newBest = evaluatePoint(xNew)
 
@@ -1551,7 +1558,7 @@ def shebo(
         # Generate new point
         xNew = acquisitionFunc.optimize(
             objSurrogate,
-            bounds,
+            [[0, 1] for _ in range(dim)],
             n=1,
             points=evalSurrogate.X,
             constraintTransform=lambda x: -x + threshold, # Pymoo expects g(x) <= 0
@@ -1566,7 +1573,6 @@ def shebo(
         if disp:
             print("fEvals: %d" % out.nfev)
             print("Best value: %f" % out.fx)
-            print(f"New point: {xNew}, Evaluated value: {y}, Successful: {successful}, New best: {newBest}")
 
         # Update evaluability surrogate model
         evalSurrogate.update(
@@ -1590,8 +1596,8 @@ def shebo(
             PyNomad.optimize(
                 fBB=nomadFunction,
                 pX0=xNew.flatten(),
-                pLB=np.array(bounds)[:, 0],
-                pUB=np.array(bounds)[:, 1],
+                pLB=np.array([0 for _ in range(dim)]),
+                pUB=np.array([1 for _ in range(dim)]),
                 params=[
                     "BB_OUTPUT_TYPE OBJ",
                     f"MAX_BB_EVAL {min(4 * dim, maxeval - out.nfev)}",
@@ -1607,5 +1613,9 @@ def shebo(
             # Call the callback function with the current optimization result
             callback(out)
 
-    # Return OptimizeResult after maxevals
+    # Rescale the x and sample arrays to the original bounds
+    out.x = out.x * (bounds[:, 1] - bounds[:, 0]) + bounds[:, 0]
+    out.sample = out.sample * (bounds[:, 1] - bounds[:, 0]) + bounds[:, 0]
+
+    # Return OptimizeResult
     return out
