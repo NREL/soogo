@@ -1704,9 +1704,10 @@ class GosacSample(AcquisitionFunction):
         https://doi.org/10.1007/s10898-017-0496-y
     """
 
-    def __init__(self, fun, **kwargs) -> None:
+    def __init__(self, fun, rtol: float = 1e-3, termination: Optional[TerminationCondition] = None, **kwargs) -> None:
+        super().__init__(rtol=rtol, **kwargs)
         self.fun = fun
-        super().__init__(**kwargs)
+        self.termination = termination
 
     def optimize(
         self,
