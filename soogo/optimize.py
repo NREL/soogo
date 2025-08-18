@@ -41,7 +41,7 @@ from copy import deepcopy
 
 # Scipy imports
 from scipy.optimize import minimize, differential_evolution
-from scipy.spatial.distance import cdist
+from scipy.spatial.distance import cdist, pdist, squareform
 from scipy.spatial import KDTree
 
 # Local imports
@@ -1483,6 +1483,19 @@ def shebo(
     # Generate initial points using Latin Hypercube sampling
     sampler = Sampler(nStart)
     x0 = sampler.get_slhd_sample([[0, 1] for _ in range(dim)])
+
+    # Check that all points are far enough apart
+    # Compute all pairwise distances
+    distances = squareform(pdist(x0))
+    keptIndices = [0]
+
+    for i in range(1, len(x0)):
+        # Check if this point is far enough from all previously kept points
+        if all(distances[i, kept_idx] >= 0.001 for kept_idx in keptIndices):
+            keptIndices.append(i)
+
+    keptIndices = np.array(keptIndices)
+    x0 = x0[keptIndices]
 
     if disp:
         print("Evaluating initial points...")
