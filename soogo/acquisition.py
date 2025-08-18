@@ -1832,6 +1832,7 @@ class MaximizeEI(AcquisitionFunction):
         n: int = 1,
         *,
         ybest=None,
+        **kwargs,
     ) -> np.ndarray:
         """Acquire n points.
 
@@ -2187,6 +2188,7 @@ class TransitionSearch(AcquisitionFunction):
         evaluabilitySurrogate: Surrogate = None,
         evaluabilityThreshold: float = 0.25,
         scoreWeight: float = 0.5,
+        **kwargs,
     ) -> np.ndarray:
         """
         This acquisition function generates candidate points by perturbing the
