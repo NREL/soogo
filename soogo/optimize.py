@@ -1638,6 +1638,9 @@ def shebo(
             # Call the callback function with the current optimization result
             callback(out)
 
+        # Update the acquisition function
+        acquisitionFunc.update(out, objSurrogate)
+
     # Rescale the x and sample arrays to the original bounds
     out.x = out.x * (bounds[:, 1] - bounds[:, 0]) + bounds[:, 0]
     out.sample = out.sample * (bounds[:, 1] - bounds[:, 0]) + bounds[:, 0]
