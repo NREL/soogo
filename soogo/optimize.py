@@ -1473,7 +1473,6 @@ def shebo(
 
             # Update objSurrogate if new point is far enough
             if dist >= 1e-7:
-                print("Updating surrogate from within NOMAD run")
                 objSurrogate.update(point, f)
 
             return 1
@@ -1627,6 +1626,7 @@ def shebo(
                     "BB_OUTPUT_TYPE OBJ",
                     f"MAX_BB_EVAL {min(4 * dim, maxeval - out.nfev)}",
                     "DISPLAY_DEGREE 0",
+                    "QUAD_MODEL_SEARCH 0",
                 ]
             )
             if disp:
