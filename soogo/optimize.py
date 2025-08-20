@@ -33,11 +33,15 @@ __credits__ = [
 ]
 __deprecated__ = False
 
+import time
+import warnings
+from copy import deepcopy
 from typing import Callable, Optional
 import numpy as np
-import time
-import PyNomad
-from copy import deepcopy
+try:
+    import PyNomad
+except ImportError:
+    PyNomad = None
 
 # Scipy imports
 from scipy.optimize import minimize, differential_evolution
@@ -1366,6 +1370,11 @@ def shebo(
         INFORMS Journal on Computing, 31(4):689-702, 2019.
         https://doi.org/10.1287/ijoc.2018.0864
     """
+    # Check that required PyNomad package is available
+    if PyNomad is None:
+        warnings.warn("PyNomad package is required but not installed. Install the PyNomad package and try again.")
+        return
+
     # Initialize parameters
     weightPattern = [1, 0.95, 0.85, 0.75, 0.5, 0.35, 0.25, 0.1, 0.0]
     dim = len(bounds)
