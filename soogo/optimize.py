@@ -1527,43 +1527,28 @@ def shebo(
         np.logical_not(np.isnan(out.fsample[0 : out.nfev])).astype(float)
     )
 
-    # Construct Pe matrix - successful points are rows, additional column of
-    # ones is added to the end
-    if len(sampleE) != 0:
-        Pe = np.vstack(sampleE)
-        Pe = np.concatenate((Pe, np.ones((Pe.shape[0], 1))), axis=1)
-        rank = np.linalg.matrix_rank(Pe)
-    else:
-        Pe = np.empty((0, dim + 1))
-        rank = 0
-
     # Check if rank of Pe >= dim + 1 - needed for making the surrogate model
     # If not, keep sampling until we have enough points
-    if rank < dim + 1:
+    if not objSurrogate.check_initial_design(np.array(sampleE)):
         maximizeDistance = MaximizeDistance(rtol=0.001)
         if disp:
             print("Sampling additional points to initialize the surrogate model...")
 
-    while (rank < dim + 1) and (out.nfev < maxeval):
-        ## Generate new point
-        xNew = maximizeDistance.optimize(evalSurrogate, [[0, 1] for _ in range(dim)], 1)
+        while (not objSurrogate.check_initial_design(np.array(sampleE))) and (out.nfev < maxeval):
+            ## Generate new point
+            xNew = maximizeDistance.optimize(evalSurrogate, [[0, 1] for _ in range(dim)], 1)
 
-        y, successful, newBest = evaluatePoint(xNew)
+            y, successful, newBest = evaluatePoint(xNew)
 
-        if disp:
-            print("fEvals: %d" % out.nfev)
-            print("Best value: %f" % out.fx)
+            if disp:
+                print("fEvals: %d" % out.nfev)
+                print("Best value: %f" % out.fx)
 
-        if successful:
-            # Update the Pe matrix with the new point
-            Pe = np.vstack((Pe, np.hstack((xNew.copy().flatten(), 1))))
-            rank = np.linalg.matrix_rank(Pe)
-
-        # Update the surrogate model with the new point
-        evalSurrogate.update(
-            np.array(xNew),
-            np.logical_not(np.isnan(y)).astype(float)
-        )
+            # Update the surrogate model with the new point
+            evalSurrogate.update(
+                np.array(xNew),
+                np.logical_not(np.isnan(y)).astype(float)
+            )
 
     # If we have run out of evaluations, we cannot continue
     if out.nfev >= maxeval:
