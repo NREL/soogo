@@ -1704,10 +1704,9 @@ class GosacSample(AcquisitionFunction):
         https://doi.org/10.1007/s10898-017-0496-y
     """
 
-    def __init__(self, fun, rtol: float = 1e-3, termination: Optional[TerminationCondition] = None, **kwargs) -> None:
-        super().__init__(rtol=rtol, **kwargs)
+    def __init__(self, fun, **kwargs) -> None:
+        super().__init__(**kwargs)
         self.fun = fun
-        self.termination = termination
 
     def optimize(
         self,
@@ -2009,9 +2008,6 @@ class TransitionSearch(AcquisitionFunction):
     function value and the distance to previously sampled points. The candidate
     with the best total score is selected as the new sample point.
 
-    :param rtol: Minimum distance between a candidate point and the
-        previously selected points relative to the domain size. Default is 1e-3.
-
     References
     ----------
     .. [#] Juliane Müller and Marcus Day. Surrogate Optimization of
@@ -2020,9 +2016,8 @@ class TransitionSearch(AcquisitionFunction):
         https://doi.org/10.1287/ijoc.2018.0864
     """
 
-    def __init__(self, rtol: float = 1e-3, termination: Optional[TerminationCondition] = None, **kwargs) -> None:
-        super().__init__(rtol=rtol, **kwargs)
-        self.termination = termination
+    def __init__(self, **kwargs) -> None:
+        super().__init__(**kwargs)
 
     def generate_candidates(
         self,
@@ -2244,9 +2239,6 @@ class MaximizeDistance(AcquisitionFunction):
     This acquisition function is used to find new sample points that maximize
     the minimum distance to previously sampled points.
 
-    :param rtol: Minimum distance between a candidate point and the
-        previously selected points relative to the domain size. Default is 1e-3.
-
     References
     ----------
     .. [#] Juliane Müller and Marcus Day. Surrogate Optimization of
@@ -2255,9 +2247,8 @@ class MaximizeDistance(AcquisitionFunction):
         https://doi.org/10.1287/ijoc.2018.0864
     """
 
-    def __init__(self, rtol: float = 1e-3, termination: Optional[TerminationCondition] = None, **kwargs) -> None:
-        super().__init__(rtol=rtol, **kwargs)
-        self.termination = termination
+    def __init__(self, **kwargs) -> None:
+        super().__init__(**kwargs)
 
     def optimize(
         self,
