@@ -1391,10 +1391,6 @@ def shebo(
         fsample=np.zeros(maxeval),
     )
 
-    # Initialize lists to store successful samples and their function values
-    sampleE = []
-    fValE = []
-
     # Default acquisition function
     if acquisitionFunc is None:
         acquisitionFunc = AlternatedAcquisition([
@@ -1406,7 +1402,7 @@ def shebo(
     # Helper evaluate function to reduce code duplication
     def evaluatePoint(x):
         """Evaluate a point and update the output."""
-        nonlocal out, sampleE, fValE
+        nonlocal out
 
         x = x.reshape(-1, )
 
@@ -1426,8 +1422,6 @@ def shebo(
             if (not (np.isnan(y) or np.isinf(y))):
                 successful = True
                 # If valid, add to successful points
-                sampleE.append(x)
-                fValE.append(y)
                 out.fsample[out.nfev] = y
 
                 if y < out.fx:
@@ -1449,7 +1443,7 @@ def shebo(
     # Nomad wrapper for the objective function
     def nomadFunction(x):
         """Wrapper for the objective function to be used with NOMAD."""
-        nonlocal out, sampleE, fValE, fun, evalSurrogate, objSurrogate
+        nonlocal out, fun, evalSurrogate, objSurrogate
 
         point = np.array([x.get_coord(i) for i in range(x.size())]).reshape(1, -1)
 
@@ -1519,12 +1513,12 @@ def shebo(
 
     # Check if rank of Pe >= dim + 1 - needed for making the surrogate model
     # If not, keep sampling until we have enough points
-    if not objSurrogate.check_initial_design(np.array(sampleE)):
+    if not objSurrogate.check_initial_design(np.array(out.sample[:out.nfev - 1][~np.isnan(out.fsample[:out.nfev - 1])])):
         maximizeDistance = MaximizeDistance(rtol=0.001)
         if disp:
             print("Sampling additional points to initialize the surrogate model...")
 
-        while (not objSurrogate.check_initial_design(np.array(sampleE))) and (out.nfev < maxeval):
+        while (not objSurrogate.check_initial_design(np.array(out.sample[:out.nfev - 1][~np.isnan(out.fsample[:out.nfev - 1])]))) and (out.nfev < maxeval):
             ## Generate new point
             xNew = maximizeDistance.optimize(evalSurrogate, [[0, 1] for _ in range(dim)], 1)
 
@@ -1547,12 +1541,12 @@ def shebo(
 
     # Generate the surrogate model for the objective function
     objSurrogate.update(
-        np.array(sampleE),
-        np.array(fValE)
+        np.array(out.sample[:out.nfev - 1][~np.isnan(out.fsample[:out.nfev - 1])]),
+        np.array(out.fsample[:out.nfev - 1][~np.isnan(out.fsample[:out.nfev - 1])])
     )
 
     if disp:
-        print("Initial surrogate model built with %d points." % len(sampleE))
+        print("Initial surrogate model built with %d points." % sum(~np.isnan(out.fsample[:out.nfev - 1])))
         print("Starting optimization search...")
 
     if callback is not None:
