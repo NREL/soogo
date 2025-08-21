@@ -1335,7 +1335,6 @@ def shebo(
     maxeval: int,
     *,
     acquisitionFunc: Optional[AcquisitionFunction] = None,
-    validationFunc: Optional[Callable[[float], bool]] = None,
     disp: bool = False,
     callback: Optional[Callable[[OptimizeResult], None]] = None,
 ) -> OptimizeResult:
@@ -1352,10 +1351,6 @@ def shebo(
         surrogate objective model, bounds, and number of points to sample as
         positional arguments and the keyword arguments points,
         evaluabilitySurrogate, evaluabilityThreshold, and scoreWeight.
-    :validationFunc: Function to validate the output of the objective function.
-        If None is provided, a default validation function is used that checks
-        if the output is not NaN or Inf. A validation function should return
-        True if the output is valid, and False otherwise.
     :param disp: If True, print information about the optimization process. The
         default is False.
     :param callback: If provided, the callback function will be called after
@@ -1408,11 +1403,6 @@ def shebo(
             MaximizeDistance(rtol=0.001, termination=IterateNTimes(1))
         ])
 
-    # Default validation function
-    if validationFunc is None:
-        def validationFunc(y):
-            return not (np.isnan(y) or np.isinf(y))
-
     # Helper evaluate function to reduce code duplication
     def evaluatePoint(x):
         """Evaluate a point and update the output."""
@@ -1433,7 +1423,7 @@ def shebo(
             y = np.asarray(fun(rescaledX))
 
             # Validate the output
-            if validationFunc(y):
+            if (not (np.isnan(y) or np.isinf(y))):
                 successful = True
                 # If valid, add to successful points
                 sampleE.append(x)
