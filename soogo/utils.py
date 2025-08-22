@@ -22,6 +22,11 @@ __email__ = "weslley.dasilvapereira@nrel.gov"
 __credits__ = ["Weslley S. Pereira"]
 __deprecated__ = False
 
+from typing import TYPE_CHECKING
+import numpy as np
+if TYPE_CHECKING:
+    from .optimize_result import OptimizeResult
+
 
 def find_pareto_front(fx, iStart: int = 0) -> list:
     """Find the Pareto front given a set of points in the target space.
@@ -64,3 +69,44 @@ def gp_expected_improvement(delta, sigma):
     from scipy.stats import norm
 
     return delta * norm.cdf(delta / sigma) + sigma * norm.pdf(delta / sigma)
+
+
+def evaluate_and_log_point(fun: callable, x: np.ndarray, out: "OptimizeResult"):
+    """
+    Evaluate a point or array of points and log the results. If the function
+    errors or the result is invalid (NaN or Inf), the output is logged as NaN.
+    If the function value is less than the current best, the current best (
+    out.x & out.fx) is updated. Each point is evaluated individually. This
+    function only supports single-objective functions.
+
+    :param fun: The function to evaluate.
+    :param x: The point(s) to evaluate. Can be a 1D array (single point) or
+              2D array (multiple points).
+    :param out: The output object to log the results.
+
+    :return: The function value(s) or NaN. Returns a scalar for single point,
+             array for multiple points.
+    """
+    x = np.atleast_2d(x)
+    results = []
+
+    for point in x:
+        try:
+            y = fun(point)
+            if hasattr(y, '__len__'):
+                y = y[0]
+            if np.isnan(y) or np.isinf(y):
+                y = np.nan
+        except Exception:
+            y = np.nan
+
+        out.sample[out.nfev, :] = point
+        out.fsample[out.nfev] = y
+        out.nfev += 1
+        results.append(y)
+
+        if not np.isnan(y) and (out.fx is None or y < out.fx):
+            out.x = point
+            out.fx = y
+
+    return results[0] if len(results) == 1 else np.array(results)
