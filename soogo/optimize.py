@@ -1588,6 +1588,8 @@ def shebo(
 
         # Update the acquisition function
         acquisitionFunc.update(out, objSurrogate)
+        if acquisitionFunc.has_converged():
+            break
 
     # Rescale the x and sample arrays to the original bounds
     out.x = out.x * (bounds[:, 1] - bounds[:, 0]) + bounds[:, 0]
