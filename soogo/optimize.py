@@ -69,6 +69,7 @@ from .model import MedianLpfFilter, RbfModel, GaussianProcess, CubicRadialBasisF
 from .sampling import NormalSampler, Sampler, SamplingStrategy
 from .optimize_result import OptimizeResult
 from .termination import UnsuccessfulImprovement, RobustCondition, IterateNTimes
+from .nomad import NomadProblem
 
 
 def surrogate_optimization(
@@ -1398,6 +1399,9 @@ def shebo(
         fsample=np.zeros(maxeval),
     )
 
+    # Create Nomad wrapper
+    nomadFunction = NomadProblem(rescaledFunc, out)
+
     # Default acquisition function
     if acquisitionFunc is None:
         acquisitionFunc = AlternatedAcquisition([
@@ -1405,39 +1409,6 @@ def shebo(
             TransitionSearch(rtol=0.001, termination=IterateNTimes(9)),
             MaximizeDistance(rtol=0.001, termination=IterateNTimes(1))
         ])
-
-    # Nomad wrapper for the objective function
-    def nomadFunction(x):
-        """Wrapper for the objective function to be used with NOMAD."""
-        nonlocal out, rescaledFunc, evalSurrogate, objSurrogate
-
-        point = np.array([x.get_coord(i) for i in range(x.size())]).reshape(1, -1)
-
-        # f, successful, newBest = evaluatePoint(point)
-        f = evaluate_and_log_point(rescaledFunc, point, out)
-
-        # Calculate minimum distance of point to all other points
-        tree = KDTree(evalSurrogate.X)
-        dist = tree.query(point)[0]
-
-        # Update evalSurrogate if new point is far enough
-        if dist >= 1e-7:
-            evalSurrogate.update(
-                point,
-                np.logical_not(np.isnan(f)).astype(float)
-            )
-
-        if not np.isnan(f):
-            # Set NOMAD objective function value
-            x.setBBO(str(f).encode("UTF-8"))
-
-            # Update objSurrogate if new point is far enough
-            if dist >= 1e-7:
-                objSurrogate.update(point, f)
-
-            return 1
-        else:
-            return 0
 
     # Generate initial points using Latin Hypercube sampling
     sampler = Sampler(nStart)
@@ -1464,7 +1435,6 @@ def shebo(
         if out.nfev >= maxeval:
             break
 
-        # evaluatePoint(x)
         _ = evaluate_and_log_point(rescaledFunc, x, out)
 
         if disp:
@@ -1479,8 +1449,7 @@ def shebo(
         np.logical_not(np.isnan(out.fsample[0 : out.nfev])).astype(float)
     )
 
-    # Check if rank of Pe >= dim + 1 - needed for making the surrogate model
-    # If not, keep sampling until we have enough points
+    # Check if initial design sufficient to initialize objective surrogate
     if not objSurrogate.check_initial_design(np.array(out.sample[:out.nfev - 1][~np.isnan(out.fsample[:out.nfev - 1])])):
         maximizeDistance = MaximizeDistance(rtol=0.001)
         if disp:
@@ -1490,7 +1459,6 @@ def shebo(
             ## Generate new point
             xNew = maximizeDistance.optimize(evalSurrogate, [[0, 1] for _ in range(dim)], 1)
 
-            # y, successful, newBest = evaluatePoint(xNew)
             f = evaluate_and_log_point(rescaledFunc, xNew, out)
 
             if disp:
@@ -1539,7 +1507,6 @@ def shebo(
         )
 
         # Evaluate new point
-        # y, successful, newBest = evaluatePoint(xNew)
         f = evaluate_and_log_point(rescaledFunc, xNew, out)
 
         if disp:
@@ -1563,8 +1530,9 @@ def shebo(
         if np.array_equiv(xNew, out.x):
             if disp:
                 print("New best point found, running NOMAD...")
-            # nomadFunction handles updating the surrogate models and the output
-            # as points are evaluated
+
+            nomadFunction.reset()
+
             PyNomad.optimize(
                 fBB=nomadFunction,
                 pX0=xNew.flatten(),
@@ -1577,8 +1545,22 @@ def shebo(
                     "QUAD_MODEL_SEARCH 0",
                 ]
             )
+
+            # Get the points sampled by NOMAD
+            nomadSample = nomadFunction.get_x_history()
+            nomadFSample = nomadFunction.get_f_history()
+
+            for i in range(len(nomadSample)):
+                point = nomadSample[i].reshape(1, -1)
+                # Check distance to all previously sampled points
+                if cdist(point, evalSurrogate.X).min() >= 1e-7:
+                    fval = nomadFSample[i]
+                    # Update surrogates
+                    evalSurrogate.update(point, np.logical_not(np.isnan(fval)).astype(float))
+                    if not np.isnan(fval):
+                        objSurrogate.update(point, fval)
             if disp:
-                print("NOMAD optimization completed.")
+                print(f"NOMAD optimization completed. NOMAD used {len(nomadSample)} evaluations.")
                 print("fEvals: %d" % out.nfev)
                 print("Best value: %f" % out.fx)
 
