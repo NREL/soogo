@@ -64,7 +64,7 @@ from .acquisition import (
     TransitionSearch,
     AlternatedAcquisition,
 )
-from .utils import find_pareto_front
+from .utils import find_pareto_front, evaluate_and_log_point
 from .model import MedianLpfFilter, RbfModel, GaussianProcess, CubicRadialBasisFunction, LinearRadialBasisFunction
 from .sampling import NormalSampler, Sampler, SamplingStrategy
 from .optimize_result import OptimizeResult
@@ -1376,6 +1376,13 @@ def shebo(
     nStart = 4 * (dim + 1)
     bounds = np.asarray(bounds)
 
+    # Define function wrapper to rescale variables
+    # This is needed as SHEBO internally rescales all variables to [0, 1]
+    def rescaledFunc(x):
+        nonlocal bounds
+        rescaledX = x * (bounds[:, 1] - bounds[:, 0]) + bounds[:, 0]
+        return fun(rescaledX)
+
     # Initialize the surrogates
     objSurrogate = RbfModel(CubicRadialBasisFunction())
     objSurrogate.reserve(objSurrogate.ntrain + maxeval, dim)
@@ -1399,55 +1406,15 @@ def shebo(
             MaximizeDistance(rtol=0.001, termination=IterateNTimes(1))
         ])
 
-    # Helper evaluate function to reduce code duplication
-    def evaluatePoint(x):
-        """Evaluate a point and update the output."""
-        nonlocal out
-
-        x = x.reshape(-1, )
-
-        successful = False
-        newBest = False
-
-        # Add point to all sampled points
-        out.sample[out.nfev, :] = x
-
-        rescaledX = x * (bounds[:, 1] - bounds[:, 0]) + bounds[:, 0]
-
-        # Attempt to evaluate the point
-        try:
-            y = np.asarray(fun(rescaledX))
-
-            # Validate the output
-            if (not (np.isnan(y) or np.isinf(y))):
-                successful = True
-                # If valid, add to successful points
-                out.fsample[out.nfev] = y
-
-                if y < out.fx:
-                    newBest = True
-                    out.x = x
-                    out.fx = y
-            else:
-                # invalid output
-                out.fsample[out.nfev] = np.nan
-
-        except Exception:
-            y = np.nan
-            out.fsample[out.nfev] = y
-
-        out.nfev += 1
-
-        return y, successful, newBest
-
     # Nomad wrapper for the objective function
     def nomadFunction(x):
         """Wrapper for the objective function to be used with NOMAD."""
-        nonlocal out, fun, evalSurrogate, objSurrogate
+        nonlocal out, rescaledFunc, evalSurrogate, objSurrogate
 
         point = np.array([x.get_coord(i) for i in range(x.size())]).reshape(1, -1)
 
-        f, successful, newBest = evaluatePoint(point)
+        # f, successful, newBest = evaluatePoint(point)
+        f = evaluate_and_log_point(rescaledFunc, point, out)
 
         # Calculate minimum distance of point to all other points
         tree = KDTree(evalSurrogate.X)
@@ -1460,7 +1427,7 @@ def shebo(
                 np.logical_not(np.isnan(f)).astype(float)
             )
 
-        if successful:
+        if not np.isnan(f):
             # Set NOMAD objective function value
             x.setBBO(str(f).encode("UTF-8"))
 
@@ -1497,7 +1464,8 @@ def shebo(
         if out.nfev >= maxeval:
             break
 
-        evaluatePoint(x)
+        # evaluatePoint(x)
+        _ = evaluate_and_log_point(rescaledFunc, x, out)
 
         if disp:
             print("fEvals: %d" % out.nfev)
@@ -1522,7 +1490,8 @@ def shebo(
             ## Generate new point
             xNew = maximizeDistance.optimize(evalSurrogate, [[0, 1] for _ in range(dim)], 1)
 
-            y, successful, newBest = evaluatePoint(xNew)
+            # y, successful, newBest = evaluatePoint(xNew)
+            f = evaluate_and_log_point(rescaledFunc, xNew, out)
 
             if disp:
                 print("fEvals: %d" % out.nfev)
@@ -1531,7 +1500,7 @@ def shebo(
             # Update the surrogate model with the new point
             evalSurrogate.update(
                 np.array(xNew),
-                np.logical_not(np.isnan(y)).astype(float)
+                np.logical_not(np.isnan(f)).astype(float)
             )
 
     # If we have run out of evaluations, we cannot continue
@@ -1570,7 +1539,8 @@ def shebo(
         )
 
         # Evaluate new point
-        y, successful, newBest = evaluatePoint(xNew)
+        # y, successful, newBest = evaluatePoint(xNew)
+        f = evaluate_and_log_point(rescaledFunc, xNew, out)
 
         if disp:
             print("fEvals: %d" % out.nfev)
@@ -1579,18 +1549,18 @@ def shebo(
         # Update evaluability surrogate model
         evalSurrogate.update(
             np.array(xNew),
-            np.logical_not(np.isnan(y)).astype(float)
+            np.logical_not(np.isnan(f)).astype(float)
         )
 
         # If successful, update the obj surrogate
-        if successful:
+        if not np.isnan(f):
             objSurrogate.update(
                 np.array(xNew),
-                np.array(y)
+                np.array(f)
             )
 
         # If the new point was better than current best, run NOMAD
-        if newBest:
+        if np.array_equiv(xNew, out.x):
             if disp:
                 print("New best point found, running NOMAD...")
             # nomadFunction handles updating the surrogate models and the output
