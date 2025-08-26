@@ -46,7 +46,6 @@ except ImportError:
 # Scipy imports
 from scipy.optimize import minimize, differential_evolution
 from scipy.spatial.distance import cdist, pdist, squareform
-from scipy.spatial import KDTree
 
 # Local imports
 from .model.base import Surrogate
@@ -1335,6 +1334,8 @@ def shebo(
     bounds,
     maxeval: int,
     *,
+    objSurrogate: Optional[Surrogate] = None,
+    evalSurrogate: Optional[Surrogate] = None,
     acquisitionFunc: Optional[AcquisitionFunction] = None,
     disp: bool = False,
     callback: Optional[Callable[[OptimizeResult], None]] = None,
@@ -1346,6 +1347,14 @@ def shebo(
     :param bounds: List with the limits [x_min,x_max] of each direction x in the
         search space.
     :param maxeval: Maximum number of function evaluations.
+    :param objSurrogate: Surrogate model for the objective function. If None is
+        provided, a :class:`RbfModel` model with Cubic Radial Basis Function is
+        used. On exit, if provided, the surrogate model will contain the points
+        used during the optimization process.
+    :param evalSurrogate: Surrogate model for the evaluation function. If None
+        is provided, a :class:`RbfModel` model with Linear Radial Basis Function
+        is used. On exit, if provided, the surrogate model will contain the
+        points used during the optimization process.
     :param acquisitionFunc: Acquisition function to be used in the optimization
         loop. If None is provided, the acquisition cycle described in
         _[#] is used. Each call, the acquisition function is provided with the
@@ -1380,15 +1389,8 @@ def shebo(
     # Define function wrapper to rescale variables
     # This is needed as SHEBO internally rescales all variables to [0, 1]
     def rescaledFunc(x):
-        nonlocal bounds
         rescaledX = x * (bounds[:, 1] - bounds[:, 0]) + bounds[:, 0]
         return fun(rescaledX)
-
-    # Initialize the surrogates
-    objSurrogate = RbfModel(CubicRadialBasisFunction())
-    objSurrogate.reserve(objSurrogate.ntrain + maxeval, dim)
-    evalSurrogate = RbfModel(LinearRadialBasisFunction())
-    evalSurrogate.reserve(evalSurrogate.ntrain + maxeval, dim)
 
     # Initialize output
     out = OptimizeResult(
@@ -1402,6 +1404,20 @@ def shebo(
     # Create Nomad wrapper
     nomadFunction = NomadProblem(rescaledFunc, out)
 
+    # Initialize or use provided surrogates
+    if objSurrogate is None:
+        objSurrogate = RbfModel(CubicRadialBasisFunction())
+    if evalSurrogate is None:
+        evalSurrogate = RbfModel(LinearRadialBasisFunction())
+
+    # Reserve space for the surrogates
+    objSurrogate.reserve(objSurrogate.ntrain + maxeval, dim)
+    evalSurrogate.reserve(evalSurrogate.ntrain + maxeval, dim)
+
+    # Check if surrogates already trained
+    objTrained = objSurrogate.ntrain > 0
+    evalTrained = evalSurrogate.ntrain > 0
+
     # Default acquisition function
     if acquisitionFunc is None:
         acquisitionFunc = AlternatedAcquisition([
@@ -1410,66 +1426,86 @@ def shebo(
             MaximizeDistance(rtol=0.001, termination=IterateNTimes(1))
         ])
 
-    # Generate initial points using Latin Hypercube sampling
-    sampler = Sampler(nStart)
-    x0 = sampler.get_slhd_sample([[0, 1] for _ in range(dim)])
+    if objTrained and evalTrained:
+        # Both surrogates are pre-trained, skip initial sampling
+        if disp:
+            print("Both surrogates pre-trained. Skipping initial sampling.")
+        out.fx = np.min(objSurrogate.Y)
+        out.x = objSurrogate.X[np.argmin(objSurrogate.Y)]
 
-    # Check that all points are far enough apart
-    # Compute all pairwise distances
-    distances = squareform(pdist(x0))
-    keptIndices = [0]
+    elif objTrained and not evalTrained:
+        # Only obj surrogate trained - initialize eval surrogate
+        if disp:
+            print("Initializing evaluation surrogate from objective surrogate.")
 
-    for i in range(1, len(x0)):
-        # Check if this point is far enough from all previously kept points
-        if all(distances[i, kept_idx] >= 0.001 for kept_idx in keptIndices):
-            keptIndices.append(i)
+        evalSurrogate.update(objSurrogate.X, np.ones(len(objSurrogate.X)))
+        out.fx = np.min(objSurrogate.Y)
+        out.x = objSurrogate.X[np.argmin(objSurrogate.Y)]
 
-    keptIndices = np.array(keptIndices)
-    x0 = x0[keptIndices]
+    else:
+        # If surrogates are not trained, generate initial sample
+        if disp:
+            print("Performing initial sampling...")
 
-    if disp:
-        print("Evaluating initial points...")
+        # Generate initial points using Latin Hypercube sampling
+        sampler = Sampler(nStart)
+        x0 = sampler.get_slhd_sample([[0, 1] for _ in range(dim)])
 
-    # Evaluate the initial points
-    for x in x0:
-        if out.nfev >= maxeval:
-            break
+        # Check that all points are far enough apart
+        distances = squareform(pdist(x0))
+        keptIndices = [0]
 
-        _ = evaluate_and_log_point(rescaledFunc, x, out)
+        for i in range(1, len(x0)):
+            # Check if this point is far enough from all previously kept points
+            if all(distances[i, kept_idx] >= 0.001 for kept_idx in keptIndices):
+                keptIndices.append(i)
+
+        keptIndices = np.array(keptIndices)
+        x0 = x0[keptIndices]
 
         if disp:
-            print("fEvals: %d" % out.nfev)
-            print("Best value: %f" % out.fx)
+            print("Evaluating initial points...")
 
-    # Build the evaluability surrogate model
-    # Points values are 1 if the point was successfully evaluated,
-    # 0 otherwise
-    evalSurrogate.update(
-        np.array(out.sample[0:out.nfev, :]),
-        np.logical_not(np.isnan(out.fsample[0 : out.nfev])).astype(float)
-    )
+        # Evaluate the initial points
+        for x in x0:
+            if out.nfev >= maxeval:
+                break
 
-    # Check if initial design sufficient to initialize objective surrogate
-    if not objSurrogate.check_initial_design(np.array(out.sample[:out.nfev - 1][~np.isnan(out.fsample[:out.nfev - 1])])):
-        maximizeDistance = MaximizeDistance(rtol=0.001)
-        if disp:
-            print("Sampling additional points to initialize the surrogate model...")
-
-        while (not objSurrogate.check_initial_design(np.array(out.sample[:out.nfev - 1][~np.isnan(out.fsample[:out.nfev - 1])]))) and (out.nfev < maxeval):
-            ## Generate new point
-            xNew = maximizeDistance.optimize(evalSurrogate, [[0, 1] for _ in range(dim)], 1)
-
-            f = evaluate_and_log_point(rescaledFunc, xNew, out)
+            _ = evaluate_and_log_point(rescaledFunc, x, out)
 
             if disp:
                 print("fEvals: %d" % out.nfev)
                 print("Best value: %f" % out.fx)
 
-            # Update the surrogate model with the new point
-            evalSurrogate.update(
-                np.array(xNew),
-                np.logical_not(np.isnan(f)).astype(float)
-            )
+        # Build the evaluability surrogate model
+        # Points values are 1 if the point was successfully evaluated,
+        # 0 otherwise
+        evalSurrogate.update(
+            np.array(out.sample[0:out.nfev, :]),
+            np.logical_not(np.isnan(out.fsample[0 : out.nfev])).astype(float)
+        )
+
+        # Check if initial design sufficient to initialize objective surrogate
+        if not objSurrogate.check_initial_design(np.array(out.sample[:out.nfev][~np.isnan(out.fsample[:out.nfev])])):
+            maximizeDistance = MaximizeDistance(rtol=0.001)
+            if disp:
+                print("Sampling additional points to initialize the surrogate model...")
+
+            while (not objSurrogate.check_initial_design(np.array(out.sample[:out.nfev][~np.isnan(out.fsample[:out.nfev])]))) and (out.nfev < maxeval):
+                ## Generate new point
+                xNew = maximizeDistance.optimize(evalSurrogate, [[0, 1] for _ in range(dim)], 1)
+
+                f = evaluate_and_log_point(rescaledFunc, xNew, out)
+
+                if disp:
+                    print("fEvals: %d" % out.nfev)
+                    print("Best value: %f" % out.fx)
+
+                # Update the surrogate model with the new point
+                evalSurrogate.update(
+                    np.array(xNew),
+                    np.logical_not(np.isnan(f)).astype(float)
+                )
 
     # If we have run out of evaluations, we cannot continue
     if out.nfev >= maxeval:
@@ -1478,12 +1514,12 @@ def shebo(
 
     # Generate the surrogate model for the objective function
     objSurrogate.update(
-        np.array(out.sample[:out.nfev - 1][~np.isnan(out.fsample[:out.nfev - 1])]),
-        np.array(out.fsample[:out.nfev - 1][~np.isnan(out.fsample[:out.nfev - 1])])
+        np.array(out.sample[:out.nfev][~np.isnan(out.fsample[:out.nfev])]),
+        np.array(out.fsample[:out.nfev][~np.isnan(out.fsample[:out.nfev])])
     )
 
     if disp:
-        print("Initial surrogate model built with %d points." % sum(~np.isnan(out.fsample[:out.nfev - 1])))
+        print("Objective surrogate model initialized with %d points." % objSurrogate.ntrain)
         print("Starting optimization search...")
 
     if callback is not None:
@@ -1492,7 +1528,7 @@ def shebo(
 
     while out.nfev < maxeval:
         # Calculate the threshold for evaluability
-        threshold = np.log(out.nfev - nStart + 1) / np.log(maxeval - nStart)
+        threshold = np.log(max(1, out.nfev - nStart + 1)) / np.log(maxeval - nStart)
 
         # Generate new point
         xNew = acquisitionFunc.optimize(
