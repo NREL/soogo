@@ -112,9 +112,11 @@ def evaluate_and_log_point(fun: callable, x: np.ndarray, out: "OptimizeResult"):
 
     return results[0] if len(results) == 1 else np.array(results)
 
+
 def uncertainty_score(candidates, points, fvals, k=3):
     """
-    Calculate the uncertainty score as defined in _[#].
+    Calculate the uncertainty (distance and fitness value criterion)
+    score as defined in _[#].
 
     :param candidates: The candidate points to find the scores for.
     :param points: The set of already evaluated points.
@@ -126,7 +128,10 @@ def uncertainty_score(candidates, points, fvals, k=3):
 
     References
     ----------
-    .. [#] Fast Surrogate-Assisted Particle Swarm Optimization
+    .. [#] Li, F., Shen, W., Cai, X., Gao, L., & Gary Wang, G. 2020; A fast
+    surrogate-assisted particle swarm optimization algorithm for computationally
+    expensive problems. Applied Soft Computing, 92, 106303.
+    https://doi.org/10.1016/j.asoc.2020.106303
     """
     candidates = np.asarray(candidates)
     points = np.asarray(points)
