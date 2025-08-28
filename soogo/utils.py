@@ -23,6 +23,7 @@ __credits__ = ["Weslley S. Pereira"]
 __deprecated__ = False
 
 from typing import TYPE_CHECKING
+from scipy.spatial.distance import cdist
 import numpy as np
 if TYPE_CHECKING:
     from .optimize_result import OptimizeResult
@@ -110,3 +111,58 @@ def evaluate_and_log_point(fun: callable, x: np.ndarray, out: "OptimizeResult"):
             out.fx = y
 
     return results[0] if len(results) == 1 else np.array(results)
+
+def uncertainty_score(candidates, points, fvals, k=3):
+    """
+    Calculate the uncertainty score as defined in _[#].
+
+    :param candidates: The candidate points to find the scores for.
+    :param points: The set of already evaluated points.
+    :param fvals: The set of corresponding function values.
+    :param k: The number of nearest neighbors to consider in
+        the uncertainty calculation. Default is 3.
+
+    :return: The uncertainty score for each candidate point.
+
+    References
+    ----------
+    .. [#] Fast Surrogate-Assisted Particle Swarm Optimization
+    """
+    candidates = np.asarray(candidates)
+    points = np.asarray(points)
+    fvals = np.asarray(fvals)
+
+    # Compute all distances
+    dists = cdist(candidates, points)
+
+    # For each candidate, get indices of k nearest points
+    nearestIndices = np.argsort(dists, axis=1)[:, :k]
+
+    # Extract distances and function values for k nearest points
+    nCandidates = candidates.shape[0]
+    distances = np.zeros((nCandidates, k))
+    functionValues = np.zeros((nCandidates, k))
+
+    for i in range(nCandidates):
+        indices = nearestIndices[i]
+        distances[i] = dists[i, indices]
+        functionValues[i] = fvals[indices]
+
+    # Calculate the mean dist and std of k nearest
+    distMean = np.mean(distances, axis=1)
+    sigma = np.std(functionValues, axis=1)
+
+    # Normalize
+    distMean /= np.sum(distMean)
+    sigma /= np.sum(sigma)
+
+    # Calculate scaled dist to nearest neighbor
+    nearestScaled = 5 * distances[:, 0] / np.sum(distances[:, 0])
+
+    # Calculate Sigmoid function value
+    sigmoid = 1 / (1 + np.exp(-nearestScaled)) - 0.5
+
+    # Calculate the final scores
+    scores = sigmoid * (distMean + sigma)
+
+    return scores
