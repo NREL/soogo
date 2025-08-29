@@ -60,9 +60,208 @@ from .model.base import Surrogate
 from .sampling import NormalSampler, Sampler, Mitchel91Sampler
 from .model import LinearRadialBasisFunction, RbfModel, GaussianProcess
 from .problem import PymooProblem, ListDuplicateElimination
-from .termination import TerminationCondition, UnsuccessfulImprovement, IterateNTimes
+from .termination import TerminationCondition, UnsuccessfulImprovement
 from .utils import find_pareto_front
 from .optimize_result import OptimizeResult
+
+
+def weighted_score(
+    sx,
+    dx,
+    weight: float,
+    sx_min: float = 0.0,
+    sx_max: float = 1.0,
+    dx_max: float = 1.0,
+) -> float:
+    r"""Computes the weighted score from the predicted value of the surrogate
+        model at a point and minimum distance from the point to the set of
+        previously selected evaluation points.
+
+        The score is
+
+        .. math::
+
+            w \frac{s(x)-s_{min}}{s_{max}-s_{min}} +
+            (1-w) \frac{d_{max}-d(x,X)}{d_{max}},
+
+        where:
+
+        - :math:`w` is a weight.
+        - :math:`s(x)` is the value for the surrogate model on x.
+        - :math:`d(x,X)` is the minimum distance between x and the previously
+            selected evaluation points.
+        - :math:`s_{min}` is the minimum value of the surrogate model.
+        - :math:`s_{max}` is the maximum value of the surrogate model.
+        - :math:`d_{max}` is the maximum distance between a candidate point and
+            the set X of previously selected evaluation points.
+
+        In case :math:`s_{max} = s_{min}`, the score is computed as
+
+        .. math::
+
+            \frac{d_{max}-d(x,X)}{d_{max}}.
+
+        :param sx: Function value(s) :math:`s(x)`.
+        :param dx: Distance(s) between candidate(s) and the set X.
+        :param weight: Weight :math:`w`.
+        :param sx_min: Minimum value of the surrogate model.
+        :param sx_max: Maximum value of the surrogate model.
+        :param dx_max: Maximum distance between a candidate point and the set X.
+        """
+    if sx_max == sx_min:
+        return (dx_max - dx) / dx_max
+    else:
+        return (
+            weight * ((sx - sx_min) / (sx_max - sx_min))
+            + (1 - weight) * (dx_max - dx) / dx_max
+        )
+
+
+def argmin_weighted_score(
+    scaledvalue: np.ndarray,
+    dist: np.ndarray,
+    weight: float,
+    tol: float,
+) -> int:
+    """Gets the index of the candidate point that minimizes the weighted score.
+
+    The score is :math:`w f_s(x) + (1-w) (-d_s(x))`, where
+
+    - :math:`w` is a weight.
+    - :math:`f_s(x)` is the estimated value for the objective function on x,
+        scaled to [0,1].
+    - :math:`d_s(x)` is the minimum distance between x and the previously
+        selected evaluation points, scaled to [-1,0].
+
+    Returns -1 if there is no feasible point.
+
+    :param scaledvalue: Function values :math:`f_s(x)` scaled to [0, 1].
+    :param dist: Minimum distance between a candidate point and previously
+        evaluated sampled points.
+    :param weight: Weight :math:`w`.
+    :param tol: Tolerance value for excluding candidates that are too close to
+        current sample points.
+    """
+    # Scale distance values to [0,1]
+    maxdist = np.max(dist)
+    mindist = np.min(dist)
+    if maxdist == mindist:
+        scaleddist = np.ones(dist.size)
+    else:
+        scaleddist = (dist - mindist) / (maxdist - mindist)
+
+    # Compute weighted score for all candidates
+    score = weighted_score(scaledvalue, scaleddist, weight)
+
+    # Assign bad values to points that are too close to already
+    # evaluated/chosen points
+    score[dist < tol] = np.inf
+
+    # Return index with the best (smallest) score
+    iBest = np.argmin(score)
+    if score[iBest] == np.inf:
+        print(
+            "Warning: all candidates are too close to already evaluated points. Choose a better tolerance."
+        )
+        return -1
+
+    return int(iBest)
+
+
+def select_weighted_candidates(
+    x: np.ndarray,
+    distx: np.ndarray,
+    fx: np.ndarray,
+    n: int,
+    tol: float,
+    weightpattern: list,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Iteratively select n points from a pool of candidates
+    using the weighted score criterion.
+
+    The score on the iteration `i > 1` uses the distances to candidates
+    selected in the iterations `0` to `i-1`.
+
+    :param x: Matrix with candidate points.
+    :param distx: Matrix with the distances between the candidate points and
+        the m number of rows of x.
+    :param fx: Vector with the estimated values for the objective function
+        on the candidate points.
+    :param n: Number of points to be selected for the next costly
+        evaluation.
+    :param tol: Tolerance value for excluding candidates that are too close to
+        current sample points.
+    :return:
+
+        * n-by-dim matrix with the selected points.
+
+        * n-by-(n+m) matrix with the distances between the n selected points
+            and the (n+m) sampled points (m is the number of points that have
+            been sampled so far).
+    """
+    # Compute neighbor distances
+    dist = np.min(distx, axis=1)
+
+    m = distx.shape[1]
+    dim = x.shape[1]
+
+    xselected = np.zeros((n, dim))
+    distselected = np.zeros((n, m + n))
+
+    # Scale function values to [0,1]
+    if fx.ndim == 1:
+        minval = np.min(fx)
+        maxval = np.max(fx)
+        if minval == maxval:
+            scaledvalue = np.ones(fx.size)
+        else:
+            scaledvalue = (fx - minval) / (maxval - minval)
+    elif fx.ndim == 2:
+        minval = np.min(fx, axis=0)
+        maxval = np.max(fx, axis=0)
+        scaledvalue = np.average(
+            np.where(
+                maxval - minval > 0, (fx - minval) / (maxval - minval), 1
+            ),
+            axis=1,
+        )
+
+    selindex = argmin_weighted_score(
+        scaledvalue, dist, weightpattern[0], tol
+    )
+    if selindex >= 0:
+        xselected[0, :] = x[selindex, :]
+        distselected[0, 0:m] = distx[selindex, :]
+    else:
+        return np.empty((0, dim)), np.empty((0, m))
+
+    for ii in range(1, n):
+        # compute distance of all candidate points to the previously selected
+        # candidate point
+        newDist = cdist(xselected[ii - 1, :].reshape(1, -1), x)[0]
+        dist = np.minimum(dist, newDist)
+
+        selindex = argmin_weighted_score(
+            scaledvalue,
+            dist,
+            weightpattern[ii % len(weightpattern)],
+            tol,
+        )
+        if selindex >= 0:
+            xselected[ii, :] = x[selindex, :]
+        else:
+            return xselected[0:ii], distselected[0:ii, 0 : m + ii]
+
+        distselected[ii, 0:m] = distx[selindex, :]
+        for j in range(ii - 1):
+            distselected[ii, m + j] = np.linalg.norm(
+                xselected[ii, :] - xselected[j, :]
+            )
+            distselected[j, m + ii] = distselected[ii, m + j]
+        distselected[ii, m + ii - 1] = newDist[selindex]
+        distselected[ii - 1, m + ii] = distselected[ii, m + ii - 1]
+
+    return xselected, distselected
 
 
 class AcquisitionFunction(ABC):
@@ -270,201 +469,6 @@ class WeightedAcquisition(AcquisitionFunction):
             # Best point found so far
             self.best_known_x = None
 
-    @staticmethod
-    def score(
-        sx,
-        dx,
-        weight: float,
-        sx_min: float = 0.0,
-        sx_max: float = 1.0,
-        dx_max: float = 1.0,
-    ) -> float:
-        r"""Computes the score.
-
-        The score is
-
-        .. math::
-
-            w \frac{s(x)-s_{min}}{s_{max}-s_{min}} +
-            (1-w) \frac{d_{max}-d(x,X)}{d_{max}},
-
-        where:
-
-        - :math:`w` is a weight.
-        - :math:`s(x)` is the value for the surrogate model on x.
-        - :math:`d(x,X)` is the minimum distance between x and the previously
-            selected evaluation points.
-        - :math:`s_{min}` is the minimum value of the surrogate model.
-        - :math:`s_{max}` is the maximum value of the surrogate model.
-        - :math:`d_{max}` is the maximum distance between a candidate point and
-            the set X of previously selected evaluation points.
-
-        In case :math:`s_{max} = s_{min}`, the score is computed as
-
-        .. math::
-
-            \frac{d_{max}-d(x,X)}{d_{max}}.
-
-        :param sx: Function value(s) :math:`s(x)`.
-        :param dx: Distance(s) between candidate(s) and the set X.
-        :param weight: Weight :math:`w`.
-        :param sx_min: Minimum value of the surrogate model.
-        :param sx_max: Maximum value of the surrogate model.
-        :param dx_max: Maximum distance between a candidate point and the set X.
-        """
-        if sx_max == sx_min:
-            return (dx_max - dx) / dx_max
-        else:
-            return (
-                weight * ((sx - sx_min) / (sx_max - sx_min))
-                + (1 - weight) * (dx_max - dx) / dx_max
-            )
-
-    @staticmethod
-    def argminscore(
-        scaledvalue: np.ndarray,
-        dist: np.ndarray,
-        weight: float,
-        tol: float,
-    ) -> int:
-        """Gets the index of the candidate point that minimizes the score.
-
-        The score is :math:`w f_s(x) + (1-w) (-d_s(x))`, where
-
-        - :math:`w` is a weight.
-        - :math:`f_s(x)` is the estimated value for the objective function on x,
-          scaled to [0,1].
-        - :math:`d_s(x)` is the minimum distance between x and the previously
-          selected evaluation points, scaled to [-1,0].
-
-        Returns -1 if there is no feasible point.
-
-        :param scaledvalue: Function values :math:`f_s(x)` scaled to [0, 1].
-        :param dist: Minimum distance between a candidate point and previously
-            evaluated sampled points.
-        :param weight: Weight :math:`w`.
-        :param tol: Tolerance value for excluding candidates that are too close to
-            current sample points.
-        """
-        # Scale distance values to [0,1]
-        maxdist = np.max(dist)
-        mindist = np.min(dist)
-        if maxdist == mindist:
-            scaleddist = np.ones(dist.size)
-        else:
-            scaleddist = (dist - mindist) / (maxdist - mindist)
-
-        # Compute weighted score for all candidates
-        score = WeightedAcquisition.score(scaledvalue, scaleddist, weight)
-
-        # Assign bad values to points that are too close to already
-        # evaluated/chosen points
-        score[dist < tol] = np.inf
-
-        # Return index with the best (smallest) score
-        iBest = np.argmin(score)
-        if score[iBest] == np.inf:
-            print(
-                "Warning: all candidates are too close to already evaluated points. Choose a better tolerance."
-            )
-            return -1
-
-        return int(iBest)
-
-    def minimize_weightedavg_fx_distx(
-        self,
-        x: np.ndarray,
-        distx: np.ndarray,
-        fx: np.ndarray,
-        n: int,
-        tol: float,
-    ) -> tuple[np.ndarray, np.ndarray]:
-        """Select n points from a pool of candidates using :meth:`argminscore()`
-        iteratively.
-
-        The score on the iteration `i > 1` uses the distances to cadidates
-        selected in the iterations `0` to `i-1`.
-
-        :param x: Matrix with candidate points.
-        :param distx: Matrix with the distances between the candidate points and
-            the m number of rows of x.
-        :param fx: Vector with the estimated values for the objective function
-            on the candidate points.
-        :param n: Number of points to be selected for the next costly
-            evaluation.
-        :param tol: Tolerance value for excluding candidates that are too close to
-            current sample points.
-        :return:
-
-            * n-by-dim matrix with the selected points.
-
-            * n-by-(n+m) matrix with the distances between the n selected points
-              and the (n+m) sampled points (m is the number of points that have
-              been sampled so far).
-        """
-        # Compute neighbor distances
-        dist = np.min(distx, axis=1)
-
-        m = distx.shape[1]
-        dim = x.shape[1]
-
-        xselected = np.zeros((n, dim))
-        distselected = np.zeros((n, m + n))
-
-        # Scale function values to [0,1]
-        if fx.ndim == 1:
-            minval = np.min(fx)
-            maxval = np.max(fx)
-            if minval == maxval:
-                scaledvalue = np.ones(fx.size)
-            else:
-                scaledvalue = (fx - minval) / (maxval - minval)
-        elif fx.ndim == 2:
-            minval = np.min(fx, axis=0)
-            maxval = np.max(fx, axis=0)
-            scaledvalue = np.average(
-                np.where(
-                    maxval - minval > 0, (fx - minval) / (maxval - minval), 1
-                ),
-                axis=1,
-            )
-
-        selindex = self.argminscore(
-            scaledvalue, dist, self.weightpattern[0], tol
-        )
-        if selindex >= 0:
-            xselected[0, :] = x[selindex, :]
-            distselected[0, 0:m] = distx[selindex, :]
-        else:
-            return np.empty((0, dim)), np.empty((0, m))
-
-        for ii in range(1, n):
-            # compute distance of all candidate points to the previously selected
-            # candidate point
-            newDist = cdist(xselected[ii - 1, :].reshape(1, -1), x)[0]
-            dist = np.minimum(dist, newDist)
-
-            selindex = self.argminscore(
-                scaledvalue,
-                dist,
-                self.weightpattern[ii % len(self.weightpattern)],
-                tol,
-            )
-            if selindex >= 0:
-                xselected[ii, :] = x[selindex, :]
-            else:
-                return xselected[0:ii], distselected[0:ii, 0 : m + ii]
-
-            distselected[ii, 0:m] = distx[selindex, :]
-            for j in range(ii - 1):
-                distselected[ii, m + j] = np.linalg.norm(
-                    xselected[ii, :] - xselected[j, :]
-                )
-                distselected[j, m + ii] = distselected[ii, m + j]
-            distselected[ii, m + ii - 1] = newDist[selindex]
-            distselected[ii - 1, m + ii] = distselected[ii, m + ii - 1]
-
-        return xselected, distselected
 
     def tol(self, bounds) -> float:
         """Compute tolerance used to eliminate points that are too close to
@@ -550,8 +554,8 @@ class WeightedAcquisition(AcquisitionFunction):
         fx = surrogateModel(x)
 
         # Select best candidates
-        xselected, _ = self.minimize_weightedavg_fx_distx(
-            x, cdist(x, surrogateModel.X), fx, n, self.tol(bounds)
+        xselected, _ = select_weighted_candidates(
+            x, cdist(x, surrogateModel.X), fx, n, self.tol(bounds), self.weightpattern
         )
         n = xselected.shape[0]
 
@@ -2082,8 +2086,7 @@ class TransitionSearch(AcquisitionFunction):
         Select the best candidate points based on the predicted function
         value and distance to previously sampled points. The candidates are
         scored using a weighted score that combines the predicted function
-        value and the distance to previously sampled points. Uses iterative
-        selection for multiple points.
+        value and the distance to previously sampled points.
 
         :param surrogateModel: Surrogate model for the objective function.
         :param candidates: Array of candidate points.
@@ -2099,9 +2102,7 @@ class TransitionSearch(AcquisitionFunction):
             evaluability probability below the threshold are discarded.
         :return: The n best candidate points.
         """
-        # Calculate tolerance using the tol function
-        atol = self.tol(bounds)
-        ## Check evaluability of candidates
+        # Filter candidates based on evaluability
         if evaluabilitySurrogate is not None:
             evaluability = evaluabilitySurrogate(candidates)
             # Keep candidates above the evaluability threshold
@@ -2112,67 +2113,22 @@ class TransitionSearch(AcquisitionFunction):
                 # candidates with positive evaluability
                 candidates = candidates[evaluability > 0]
 
-        ## Rank candidates based on their predicted function value and
-        # distance to previously sampled points
         # Get the predicted function values for the candidates
         predictedValues = surrogateModel(candidates)
 
-        # Scale the predicted values to [0, 1]
-        # Maps highest value to 1 and lowest to 0
-        # Smaller predicted values are better
-        if predictedValues.max() == predictedValues.min():
-            valueScore = np.ones_like(predictedValues)
-        else:
-            valueScore = (predictedValues - predictedValues.min()) / (
-                predictedValues.max() - predictedValues.min()
-            )
         # Compute distances to previously evaluated points
         if evaluabilitySurrogate is not None:
-            tree = KDTree(evaluabilitySurrogate.X)
+            distx = cdist(candidates, evaluabilitySurrogate.X)
         else:
-            tree = KDTree(surrogateModel.X)
+            distx = cdist(candidates, surrogateModel.X)
 
-        distances, _ = tree.query(candidates, k=1)
+        # Select points with weighted sum
+        weightpattern = [scoreWeight]
+        xselected, _ = select_weighted_candidates(
+            candidates, distx, predictedValues, n, self.tol(bounds), weightpattern
+        )
 
-        scorer = WeightedAcquisition(None)
-
-        # Initialize arrays to store selected points
-        dim = candidates.shape[1]
-        selectedPoints = np.zeros((n, dim))
-        nSelected = 0
-
-        # Copy distances array for iterative updates
-        currentDistances = distances.copy()
-
-        # Iteratively select n points
-        for i in range(n):
-            best_idx = scorer.argminscore(
-                valueScore, currentDistances, weight=scoreWeight, tol=atol
-            )
-
-            if best_idx == -1:
-                break
-
-            selectedPoints[i] = candidates[best_idx]
-            nSelected += 1
-
-            # If more points needed, update distances to include distance to
-            # newly selected point
-            if i < n - 1:
-                newDistances = cdist(
-                    candidates[best_idx].reshape(1, -1), candidates
-                )[0]
-                currentDistances = np.minimum(
-                    currentDistances, newDistances
-                )
-
-        # Return only the successfully selected points
-        if nSelected == 0:
-            return np.empty((0, dim))
-        elif nSelected == 1:
-            return selectedPoints
-        else:
-            return selectedPoints[:nSelected]
+        return xselected
 
     def optimize(
         self,
