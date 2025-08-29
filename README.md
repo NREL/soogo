@@ -20,6 +20,8 @@ Surrogate-based 0-th Order Global Optimization for black-box problems.
 | `socemo()`                 | Surrogate-based optimization of computationally expensive multiobjective problems (SOCEMO) [(Müller; 2017a)][Muller2017a].                                                                                                                                                | `multi-objective`, `mixed-integer`, `RBF`      |
 | `gosac()`                  | Global optimization with surrogate approximation of constraints (GOSAC) [(Müller; 2017b)][Muller2017b].                                                                                                                                                                   | `mixed-integer`, `black-box-constraint`, `RBF` |
 | `bayesian_optimization()`  | Bayesian optimization with dispersion-enhanced expected improvement acquisition [(Müller; 2024)][Muller2024].                                                                                                                                                             | `GP`, `batch`                                  |
+| `fsapso()`  | Fast Surrogate Assisted Particle Swarm Optimization [(Li et al.; 2020)][Li2020].                                                                                                                                                             | `RBF`, `PSO`                                  |
+
 
 <!--- Table below --->
 
@@ -43,6 +45,7 @@ Surrogate-based 0-th Order Global Optimization for black-box problems.
 [TolSho2007]: https://doi.org/10.1029/2005WR004723
 [Gut2001]: https://doi.org/10.1023/A:1011255519438
 [RinTim1987]: https://doi.org/10.1007/BF02592071
+[Li2020]: https://doi.org/10.1016/j.asoc.2020.106303
 
 ## Installation
 
