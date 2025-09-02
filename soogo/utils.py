@@ -89,28 +89,30 @@ def evaluate_and_log_point(fun: callable, x: np.ndarray, out: "OptimizeResult"):
              array for multiple points.
     """
     x = np.atleast_2d(x)
-    results = []
 
-    for point in x:
-        try:
-            y = fun(point)
-            if hasattr(y, '__len__'):
-                y = y[0]
-            if np.isnan(y) or np.isinf(y):
-                y = np.nan
-        except Exception:
+    try:
+        results = fun(x)
+        results = np.atleast_1d(results)
+    except Exception:
+        results = np.full(x.shape[0], np.nan)
+
+    # Process each result individually
+    for i, y in enumerate(results):
+        if hasattr(y, '__len__') and len(y) > 0:
+            y = y[0]
+        if np.isnan(y) or np.isinf(y):
             y = np.nan
+        results[i] = y
 
-        out.sample[out.nfev, :] = point
+        out.sample[out.nfev, :] = x[i]
         out.fsample[out.nfev] = y
         out.nfev += 1
-        results.append(y)
 
         if not np.isnan(y) and (out.fx is None or y < out.fx):
-            out.x = point
+            out.x = x[i]
             out.fx = y
 
-    return results[0] if len(results) == 1 else np.array(results)
+    return results[0] if len(results) == 1 else results
 
 
 def uncertainty_score(candidates, points, fvals, k=3):
