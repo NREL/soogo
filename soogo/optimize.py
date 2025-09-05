@@ -1380,7 +1380,6 @@ def fsapso(
     ub = bounds[:, 1]
     vMax = 0.1 * (ub - lb)
     nSwarm = 20
-    nInitial = min(max(dim, 20), maxeval)
 
     tol = np.min([np.sqrt(0.001**2 * dim), 5e-5 * dim * np.min(ub - lb)])
 
@@ -1396,6 +1395,9 @@ def fsapso(
 
     # Reserve space in the surrogate model
     surrogateModel.reserve(maxeval + surrogateModel.ntrain, dim)
+
+    # Set initial sampling design amount
+    nInitial = min(max(dim, 20, batchSize, 2 * surrogateModel.min_design_space_size(dim)), maxeval)
 
     # Initialize output
     out = OptimizeResult(
@@ -1484,7 +1486,7 @@ def fsapso(
     # Main FSAPSO loop
     prevGlobalBest = out.fx
 
-    while out.nfev + batchSize < maxeval:# and pso.has_next():
+    while out.nfev <= maxeval and pso.has_next():
         out.nit += 1
 
         # Update w value
@@ -1620,6 +1622,7 @@ def fsapso(
         if callback is not None:
             callback(out)
 
+        batchSize = min(batchSize, maxeval - out.nfev)
 
     # Remove empty if PSO terminates before maxevals
     out.sample = out.sample[: out.nfev]
