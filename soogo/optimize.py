@@ -1356,7 +1356,7 @@ def fsapso(
         If >= 3, evaluates all three standard FSAPSO points (surrogate minimum,
         swarm best, and most uncertain) and batchSize - 3 additional points
         are evaluated together in a single batch evaluation. The additional
-        points are generated with Mitchell91 sampling.
+        points are generated with mitchel91 sampling.
     :param callback: If provided, the callback function will be called after
         each iteration with the current optimization result. The default is
         None.
@@ -1526,33 +1526,13 @@ def fsapso(
                 batchCandidates.append(xMostUncertain)
                 batchCandidateInfo.append(('most_uncertain', mostUncertainIdx))
 
-        # If batchSize > 3, fill remaining points using Mitchell91 sampling
+        # If batchSize > 3, fill remaining points using mitchel91 sampling
         if batchSize > 3:
 
-            existingPoints = np.vstack([out.sample[:out.nfev], np.array(batchCandidates)])
-            # Generate candidate points
-            nCandidates = batchSize * 10
-            sampler = Mitchel91Sampler(nCandidates)
-            candidates = sampler.get_mitchel91_sample(bounds.tolist(), current_sample=existingPoints)
-
-            # Iteratively select furthest points from existing batch and sampled
-            # points
-            for _ in range(batchSize - len(batchCandidates)):
-                if len(candidates) == 0:
-                    break
-
-                # Find furthest candidate from all existing points
-                distances = cdist(candidates, existingPoints)
-                minDistances = np.min(distances, axis=1)
-                furthestIdx = np.argmax(minDistances)
-
-                # Add to batch
-                batchCandidates.append(candidates[furthestIdx])
-                batchCandidateInfo.append('mitchell91_fill')
-
-                # Update existing points and remove selected candidate
-                existingPoints = np.vstack([existingPoints, candidates[furthestIdx].reshape(1, -1)])
-                candidates = np.delete(candidates, furthestIdx, axis=0)
+            sampler = Mitchel91Sampler(batchSize - len(batchCandidates))
+            mitchel91_samples = sampler.get_mitchel91_sample(bounds.tolist())
+            batchCandidates.extend(mitchel91_samples)
+            batchCandidateInfo.extend(['mitchel91_fill'] * len(mitchel91_samples))
 
         # Evaluate the batch
         improvedThisIter = False
