@@ -1486,7 +1486,7 @@ def fsapso(
     # Main FSAPSO loop
     prevGlobalBest = out.fx
 
-    while out.nfev <= maxeval and pso.has_next():
+    while out.nfev < maxeval:
         out.nit += 1
 
         # Update w value
@@ -1509,19 +1509,20 @@ def fsapso(
             batchCandidateInfo.append('surrogate_min')
 
         # Add swarm best to batch
-        fSurr = swarm.get("F")
-        bestParticleIdx = np.argmin(fSurr)
-        xBestParticle = swarm.get("X")[bestParticleIdx]
-        if np.min(cdist(xBestParticle.reshape(1, -1), out.sample[:out.nfev])) > tol:
-            batchCandidates.append(xBestParticle)
-            batchCandidateInfo.append(('swarm_best', bestParticleIdx))
+        if batchSize > 1:
+            fSurr = swarm.get("F")
+            bestParticleIdx = np.argmin(fSurr)
+            xBestParticle = swarm.get("X")[bestParticleIdx]
+            if np.min(cdist(xBestParticle.reshape(1, -1), np.concatenate([out.sample[:out.nfev], batchCandidates]))) > tol:
+                batchCandidates.append(xBestParticle)
+                batchCandidateInfo.append(('swarm_best', bestParticleIdx))
 
         # If batchSize >= 3, add most uncertain point to batch
         if batchSize >= 3:
             scores = uncertainty_score(swarm.get("X"), surrogateModel.X, surrogateModel.Y)
             mostUncertainIdx = np.argmax(scores)
             xMostUncertain = swarm.get("X")[mostUncertainIdx]
-            if np.min(cdist(xMostUncertain.reshape(1, -1), out.sample[:out.nfev])) > tol:
+            if np.min(cdist(xMostUncertain.reshape(1, -1), np.concatenate([out.sample[:out.nfev], batchCandidates]))) > tol:
                 batchCandidates.append(xMostUncertain)
                 batchCandidateInfo.append(('most_uncertain', mostUncertainIdx))
 
