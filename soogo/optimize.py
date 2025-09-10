@@ -1342,6 +1342,18 @@ def fsapso(
     surrogate-assisted particle swarm optimization (FSAPSO) algorithm
     presented in _[#].
 
+    This algorithm provides the batchSize parameter to control the number of
+    points evaluated in each iteration. When batchSize < 3, the algorithm
+    matches the implementation in the original FSAPSO paper. When batchSize > 3,
+    it evaluates all three standard FSAPSO points (surrogate minimum,
+    swarm best, and most uncertain) and batchSize - 3 additional points. The
+    additional points are generated with mitchel91 sampling to fill the space.
+
+    This is the simplest extension of FSAPSO to a batched algorithm. Using a
+    more complex sampling strategy for the additional points could potentially
+    improve performance, but this would also increase the complexity of the
+    implementation.
+
     :param fun: The objective function to be minimized.
     :param bounds: List with the limits [x_min,x_max] of each direction x in the
         search space.
