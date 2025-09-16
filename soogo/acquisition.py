@@ -2239,9 +2239,8 @@ class MaximizeDistance(AcquisitionFunction):
         else:
             currentPoints = points.copy()
 
+        tree = KDTree(currentPoints)
         for i in range(n):
-            tree = KDTree(currentPoints)
-
             problem = PymooProblem(
                 lambda x: -tree.query(x)[0],
                 bounds,
@@ -2251,7 +2250,7 @@ class MaximizeDistance(AcquisitionFunction):
             res = pymoo_minimize(
                 problem,
                 optimizer,
-                seed=surrogateModel.ntrain + 1,
+                seed=surrogateModel.ntrain + i + 1,
                 verbose=False
             )
             if res.X is not None:
@@ -2262,6 +2261,9 @@ class MaximizeDistance(AcquisitionFunction):
                 if distanceToExisting >= atol:
                     selectedPoints.append(newPoint)
                     currentPoints = np.vstack([currentPoints, newPoint])
+
+                    # Update the KDTree with the new point
+                    tree = KDTree(currentPoints)
 
         return (
             np.array(selectedPoints)
