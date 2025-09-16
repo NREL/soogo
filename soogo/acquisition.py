@@ -21,6 +21,7 @@ __authors__ = [
     "Christine A. Shoemaker",
     "Haoyu Jia",
     "Weslley S. Pereira",
+    "Byron Selvage",
 ]
 __contact__ = "weslley.dasilvapereira@nrel.gov"
 __maintainer__ = "Weslley S. Pereira"
@@ -30,6 +31,7 @@ __credits__ = [
     "Christine A. Shoemaker",
     "Haoyu Jia",
     "Weslley S. Pereira",
+    "Byron Selvage",
 ]
 __deprecated__ = False
 
