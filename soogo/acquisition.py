@@ -2051,8 +2051,8 @@ class MaximizeDistance(AcquisitionFunction):
         https://doi.org/10.1287/ijoc.2018.0864
     """
 
-    def __init__(self, rtol: float = 1e-3, **kwargs) -> None:
-        super().__init__(rtol=rtol, **kwargs)
+    def __init__(self, **kwargs) -> None:
+        super().__init__(**kwargs)
 
     def optimize(
         self,
