@@ -21,6 +21,7 @@ __authors__ = [
     "Christine A. Shoemaker",
     "Haoyu Jia",
     "Weslley S. Pereira",
+    "Byron Selvage",
 ]
 __contact__ = "weslley.dasilvapereira@nrel.gov"
 __maintainer__ = "Weslley S. Pereira"
@@ -30,6 +31,7 @@ __credits__ = [
     "Christine A. Shoemaker",
     "Haoyu Jia",
     "Weslley S. Pereira",
+    "Byron Selvage",
 ]
 __deprecated__ = False
 
@@ -1479,19 +1481,10 @@ class EndPointsParetoFront(AcquisitionFunction):
         # consider the whole variable domain and sample at the point that
         # maximizes the minimum distance of sample points
         if endpoints.size == 0:
-            minimumPointProblem = PymooProblem(
-                lambda x: -tree.query(x)[0], bounds, iindex
-            )
-            res = pymoo_minimize(
-                minimumPointProblem,
-                optimizer,
-                verbose=False,
-                seed=surrogateModel.ntrain + 1,
-            )
-            assert res.X is not None
-            endpoints = np.empty((1, dim))
-            for j in range(dim):
-                endpoints[0, j] = res.X[j]
+            maximizeDistance = MaximizeDistance(rtol=self.rtol)
+            endpoints = maximizeDistance.optimize(surrogateModel, bounds, n=1)
+
+            assert len(endpoints) == 1
 
         # Return a maximum of n points
         return endpoints[:n, :]
@@ -1765,17 +1758,11 @@ class GosacSample(AcquisitionFunction):
                 isGoodCandidate = False
 
         if not isGoodCandidate:
-            minimumPointProblem = PymooProblem(
-                lambda x: -tree.query(x)[0], bounds, iindex
-            )
-            res = pymoo_minimize(
-                minimumPointProblem,
-                optimizer,
-                seed=surrogateModel.ntrain + 1,
-                verbose=False,
-            )
-            assert res.X is not None
-            xnew = np.asarray([[res.X[i] for i in range(dim)]])
+            maximizeDistance = MaximizeDistance(rtol=self.rtol)
+
+            xnew = maximizeDistance.optimize(surrogateModel, bounds, n=1)
+
+            assert len(xnew) == 1
 
         return xnew
 
@@ -2046,3 +2033,73 @@ class MaximizeEI(AcquisitionFunction):
 
 #             self.idx += 1 % len(self.acquisitionf_array)
 #             self.acquisitionf_array[self.idx].reset()
+
+
+class MaximizeDistance(AcquisitionFunction):
+    """
+    Maximizing distance acquisition function as described in [#]_.
+
+    This acquisition function is used to find new sample points that maximize
+    the minimum distance to previously sampled points.
+
+    :param rtol: Minimum distance between a candidate point and the
+        previously selected points relative to the domain size. Default is 1e-3.
+
+    References
+    ----------
+    .. [#] Juliane Müller and Marcus Day. Surrogate Optimization of
+        Computationally Expensive Black-Box Problems with Hidden Constraints.
+        INFORMS Journal on Computing, 31(4):689-702, 2019.
+        https://doi.org/10.1287/ijoc.2018.0864
+    """
+
+    def __init__(self, **kwargs) -> None:
+        super().__init__(**kwargs)
+
+    def optimize(
+        self,
+        surrogateModel: Surrogate,
+        bounds,
+        n: int = 1,
+        **kwargs,
+    ) -> np.ndarray:
+        iindex = surrogateModel.iindex
+        optimizer = self.optimizer if len(iindex) == 0 else self.mi_optimizer
+
+        # Calculate tolerance using the tol function
+        atol = self.tol(bounds)
+
+        selectedPoints = []
+        currentPoints = surrogateModel.X.copy()
+
+        tree = KDTree(currentPoints)
+        for i in range(n):
+            problem = PymooProblem(
+                lambda x: -tree.query(x)[0],
+                bounds,
+                iindex,
+            )
+
+            res = pymoo_minimize(
+                problem,
+                optimizer,
+                seed=surrogateModel.ntrain + i + 1,
+                verbose=False,
+            )
+            if res.X is not None:
+                new_point = np.array([res.X[j] for j in range(len(bounds))])
+
+                # Check if the new point is far enough from existing points
+                distance_to_existing = tree.query(new_point.reshape(1, -1))[0]
+                if distance_to_existing >= atol:
+                    selectedPoints.append(new_point)
+                    currentPoints = np.vstack([currentPoints, new_point])
+
+                    # Update the KDTree with the new point
+                    tree = KDTree(currentPoints)
+
+        return (
+            np.array(selectedPoints)
+            if selectedPoints
+            else np.empty((0, len(bounds)))
+        )
