@@ -1486,11 +1486,9 @@ class EndPointsParetoFront(AcquisitionFunction):
         # maximizes the minimum distance of sample points
         if endpoints.size == 0:
             maximizeDistance = MaximizeDistance(rtol=self.rtol)
-            endpoints = maximizeDistance.optimize(
-                surrogateModel,
-                bounds,
-                n=1
-            )
+            endpoints = maximizeDistance.optimize(surrogateModel, bounds, n=1)
+
+            assert len(endpoints) == 1
 
         # Return a maximum of n points
         return endpoints[:n, :]
@@ -1779,11 +1777,9 @@ class GosacSample(AcquisitionFunction):
         if not isGoodCandidate:
             maximizeDistance = MaximizeDistance(rtol=self.rtol)
 
-            xnew = maximizeDistance.optimize(
-                surrogateModel,
-                bounds,
-                n=1
-            )
+            xnew = maximizeDistance.optimize(surrogateModel, bounds, n=1)
+
+            assert len(xnew) == 1
 
         return xnew
 
@@ -2251,16 +2247,16 @@ class MaximizeDistance(AcquisitionFunction):
                 problem,
                 optimizer,
                 seed=surrogateModel.ntrain + i + 1,
-                verbose=False
+                verbose=False,
             )
             if res.X is not None:
-                newPoint = np.array([res.X[j] for j in range(len(bounds))])
+                new_point = np.array([res.X[j] for j in range(len(bounds))])
 
                 # Check if the new point is far enough from existing points
-                distanceToExisting = tree.query(newPoint.reshape(1, -1))[0]
-                if distanceToExisting >= atol:
-                    selectedPoints.append(newPoint)
-                    currentPoints = np.vstack([currentPoints, newPoint])
+                distance_to_existing = tree.query(new_point.reshape(1, -1))[0]
+                if distance_to_existing >= atol:
+                    selectedPoints.append(new_point)
+                    currentPoints = np.vstack([currentPoints, new_point])
 
                     # Update the KDTree with the new point
                     tree = KDTree(currentPoints)
