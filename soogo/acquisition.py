@@ -21,6 +21,7 @@ __authors__ = [
     "Christine A. Shoemaker",
     "Haoyu Jia",
     "Weslley S. Pereira",
+    "Byron Selvage",
 ]
 __contact__ = "weslley.dasilvapereira@nrel.gov"
 __maintainer__ = "Weslley S. Pereira"
@@ -30,6 +31,7 @@ __credits__ = [
     "Christine A. Shoemaker",
     "Haoyu Jia",
     "Weslley S. Pereira",
+    "Byron Selvage",
 ]
 __deprecated__ = False
 
@@ -1480,11 +1482,9 @@ class EndPointsParetoFront(AcquisitionFunction):
         # maximizes the minimum distance of sample points
         if endpoints.size == 0:
             maximizeDistance = MaximizeDistance(rtol=self.rtol)
-            endpoints = maximizeDistance.optimize(
-                surrogateModel,
-                bounds,
-                n=1
-            )
+            endpoints = maximizeDistance.optimize(surrogateModel, bounds, n=1)
+
+            assert len(endpoints) == 1
 
         # Return a maximum of n points
         return endpoints[:n, :]
@@ -1774,11 +1774,9 @@ class GosacSample(AcquisitionFunction):
         if not isGoodCandidate:
             maximizeDistance = MaximizeDistance(rtol=self.rtol)
 
-            xnew = maximizeDistance.optimize(
-                surrogateModel,
-                bounds,
-                n=1
-            )
+            xnew = maximizeDistance.optimize(surrogateModel, bounds, n=1)
+
+            assert len(xnew) == 1
 
         return xnew
 
