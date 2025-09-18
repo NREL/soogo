@@ -38,7 +38,7 @@ __deprecated__ = False
 import numpy as np
 from math import log
 from abc import ABC, abstractmethod
-from typing import Optional
+from typing import Optional, Sequence
 
 # Scipy imports
 from scipy.spatial.distance import cdist
@@ -65,6 +65,205 @@ from .problem import PymooProblem, ListDuplicateElimination
 from .termination import TerminationCondition, UnsuccessfulImprovement
 from .utils import find_pareto_front
 from .optimize_result import OptimizeResult
+
+
+def weighted_score(
+    sx,
+    dx,
+    weight: float,
+    sx_min: float = 0.0,
+    sx_max: float = 1.0,
+    dx_max: float = 1.0,
+) -> float:
+    r"""Computes the weighted score from the predicted value of the surrogate
+        model at a point and minimum distance from the point to the set of
+        previously selected evaluation points.
+
+        The score is
+
+        .. math::
+
+            w \frac{s(x)-s_{min}}{s_{max}-s_{min}} +
+            (1-w) \frac{d_{max}-d(x,X)}{d_{max}},
+
+        where:
+
+        - :math:`w` is a weight.
+        - :math:`s(x)` is the value for the surrogate model on x.
+        - :math:`d(x,X)` is the minimum distance between x and the previously
+            selected evaluation points.
+        - :math:`s_{min}` is the minimum value of the surrogate model.
+        - :math:`s_{max}` is the maximum value of the surrogate model.
+        - :math:`d_{max}` is the maximum distance between a candidate point and
+            the set X of previously selected evaluation points.
+
+        In case :math:`s_{max} = s_{min}`, the score is computed as
+
+        .. math::
+
+            \frac{d_{max}-d(x,X)}{d_{max}}.
+
+        :param sx: Function value(s) :math:`s(x)`.
+        :param dx: Distance(s) between candidate(s) and the set X.
+        :param weight: Weight :math:`w`.
+        :param sx_min: Minimum value of the surrogate model.
+        :param sx_max: Maximum value of the surrogate model.
+        :param dx_max: Maximum distance between a candidate point and the set X.
+        """
+    if sx_max == sx_min:
+        return (dx_max - dx) / dx_max
+    else:
+        return (
+            weight * ((sx - sx_min) / (sx_max - sx_min))
+            + (1 - weight) * (dx_max - dx) / dx_max
+        )
+
+
+def argmin_weighted_score(
+    scaledvalue: np.ndarray,
+    dist: np.ndarray,
+    weight: float,
+    tol: float,
+) -> int:
+    """Gets the index of the candidate point that minimizes the weighted score.
+
+    The score is :math:`w f_s(x) + (1-w) (-d_s(x))`, where
+
+    - :math:`w` is a weight.
+    - :math:`f_s(x)` is the estimated value for the objective function on x,
+        scaled to [0,1].
+    - :math:`d_s(x)` is the minimum distance between x and the previously
+        selected evaluation points, scaled to [-1,0].
+
+    Returns -1 if there is no feasible point.
+
+    :param scaledvalue: Function values :math:`f_s(x)` scaled to [0, 1].
+    :param dist: Minimum distance between a candidate point and previously
+        evaluated sampled points.
+    :param weight: Weight :math:`w`.
+    :param tol: Tolerance value for excluding candidates that are too close to
+        current sample points.
+    """
+    # Scale distance values to [0,1]
+    maxdist = np.max(dist)
+    mindist = np.min(dist)
+    if maxdist == mindist:
+        scaleddist = np.ones(dist.size)
+    else:
+        scaleddist = (dist - mindist) / (maxdist - mindist)
+
+    # Compute weighted score for all candidates
+    score = weighted_score(scaledvalue, scaleddist, weight)
+
+    # Assign bad values to points that are too close to already
+    # evaluated/chosen points
+    score[dist < tol] = np.inf
+
+    # Return index with the best (smallest) score
+    iBest = np.argmin(score)
+    if score[iBest] == np.inf:
+        print(
+            "Warning: all candidates are too close to already evaluated points. Choose a better tolerance."
+        )
+        return -1
+
+    return int(iBest)
+
+
+def select_weighted_candidates(
+    x: np.ndarray,
+    distx: np.ndarray,
+    fx: np.ndarray,
+    n: int,
+    tol: float,
+    weightpattern: list,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Iteratively select n points from a pool of candidates
+    using the weighted score criterion.
+
+    The score on the iteration `i > 1` uses the distances to candidates
+    selected in the iterations `0` to `i-1`.
+
+    :param x: Matrix with candidate points.
+    :param distx: Matrix with the distances between the candidate points and
+        the m number of rows of x.
+    :param fx: Vector with the estimated values for the objective function
+        on the candidate points.
+    :param n: Number of points to be selected for the next costly
+        evaluation.
+    :param tol: Tolerance value for excluding candidates that are too close to
+        current sample points.
+    :return:
+
+        * n-by-dim matrix with the selected points.
+
+        * n-by-(n+m) matrix with the distances between the n selected points
+            and the (n+m) sampled points (m is the number of points that have
+            been sampled so far).
+    """
+    # Compute neighbor distances
+    dist = np.min(distx, axis=1)
+
+    m = distx.shape[1]
+    dim = x.shape[1]
+
+    xselected = np.zeros((n, dim))
+    distselected = np.zeros((n, m + n))
+
+    # Scale function values to [0,1]
+    if fx.ndim == 1:
+        minval = np.min(fx)
+        maxval = np.max(fx)
+        if minval == maxval:
+            scaledvalue = np.ones(fx.size)
+        else:
+            scaledvalue = (fx - minval) / (maxval - minval)
+    elif fx.ndim == 2:
+        minval = np.min(fx, axis=0)
+        maxval = np.max(fx, axis=0)
+        scaledvalue = np.average(
+            np.where(
+                maxval - minval > 0, (fx - minval) / (maxval - minval), 1
+            ),
+            axis=1,
+        )
+
+    selindex = argmin_weighted_score(
+        scaledvalue, dist, weightpattern[0], tol
+    )
+    if selindex >= 0:
+        xselected[0, :] = x[selindex, :]
+        distselected[0, 0:m] = distx[selindex, :]
+    else:
+        return np.empty((0, dim)), np.empty((0, m))
+
+    for ii in range(1, n):
+        # compute distance of all candidate points to the previously selected
+        # candidate point
+        newDist = cdist(xselected[ii - 1, :].reshape(1, -1), x)[0]
+        dist = np.minimum(dist, newDist)
+
+        selindex = argmin_weighted_score(
+            scaledvalue,
+            dist,
+            weightpattern[ii % len(weightpattern)],
+            tol,
+        )
+        if selindex >= 0:
+            xselected[ii, :] = x[selindex, :]
+        else:
+            return xselected[0:ii], distselected[0:ii, 0 : m + ii]
+
+        distselected[ii, 0:m] = distx[selindex, :]
+        for j in range(ii - 1):
+            distselected[ii, m + j] = np.linalg.norm(
+                xselected[ii, :] - xselected[j, :]
+            )
+            distselected[j, m + ii] = distselected[ii, m + j]
+        distselected[ii, m + ii - 1] = newDist[selindex]
+        distselected[ii - 1, m + ii] = distselected[ii, m + ii - 1]
+
+    return xselected, distselected
 
 
 class AcquisitionFunction(ABC):
@@ -272,201 +471,6 @@ class WeightedAcquisition(AcquisitionFunction):
             # Best point found so far
             self.best_known_x = None
 
-    @staticmethod
-    def score(
-        sx,
-        dx,
-        weight: float,
-        sx_min: float = 0.0,
-        sx_max: float = 1.0,
-        dx_max: float = 1.0,
-    ) -> float:
-        r"""Computes the score.
-
-        The score is
-
-        .. math::
-
-            w \frac{s(x)-s_{min}}{s_{max}-s_{min}} +
-            (1-w) \frac{d_{max}-d(x,X)}{d_{max}},
-
-        where:
-
-        - :math:`w` is a weight.
-        - :math:`s(x)` is the value for the surrogate model on x.
-        - :math:`d(x,X)` is the minimum distance between x and the previously
-            selected evaluation points.
-        - :math:`s_{min}` is the minimum value of the surrogate model.
-        - :math:`s_{max}` is the maximum value of the surrogate model.
-        - :math:`d_{max}` is the maximum distance between a candidate point and
-            the set X of previously selected evaluation points.
-
-        In case :math:`s_{max} = s_{min}`, the score is computed as
-
-        .. math::
-
-            \frac{d_{max}-d(x,X)}{d_{max}}.
-
-        :param sx: Function value(s) :math:`s(x)`.
-        :param dx: Distance(s) between candidate(s) and the set X.
-        :param weight: Weight :math:`w`.
-        :param sx_min: Minimum value of the surrogate model.
-        :param sx_max: Maximum value of the surrogate model.
-        :param dx_max: Maximum distance between a candidate point and the set X.
-        """
-        if sx_max == sx_min:
-            return (dx_max - dx) / dx_max
-        else:
-            return (
-                weight * ((sx - sx_min) / (sx_max - sx_min))
-                + (1 - weight) * (dx_max - dx) / dx_max
-            )
-
-    @staticmethod
-    def argminscore(
-        scaledvalue: np.ndarray,
-        dist: np.ndarray,
-        weight: float,
-        tol: float,
-    ) -> int:
-        """Gets the index of the candidate point that minimizes the score.
-
-        The score is :math:`w f_s(x) + (1-w) (-d_s(x))`, where
-
-        - :math:`w` is a weight.
-        - :math:`f_s(x)` is the estimated value for the objective function on x,
-          scaled to [0,1].
-        - :math:`d_s(x)` is the minimum distance between x and the previously
-          selected evaluation points, scaled to [-1,0].
-
-        Returns -1 if there is no feasible point.
-
-        :param scaledvalue: Function values :math:`f_s(x)` scaled to [0, 1].
-        :param dist: Minimum distance between a candidate point and previously
-            evaluated sampled points.
-        :param weight: Weight :math:`w`.
-        :param tol: Tolerance value for excluding candidates that are too close to
-            current sample points.
-        """
-        # Scale distance values to [0,1]
-        maxdist = np.max(dist)
-        mindist = np.min(dist)
-        if maxdist == mindist:
-            scaleddist = np.ones(dist.size)
-        else:
-            scaleddist = (dist - mindist) / (maxdist - mindist)
-
-        # Compute weighted score for all candidates
-        score = WeightedAcquisition.score(scaledvalue, scaleddist, weight)
-
-        # Assign bad values to points that are too close to already
-        # evaluated/chosen points
-        score[dist < tol] = np.inf
-
-        # Return index with the best (smallest) score
-        iBest = np.argmin(score)
-        if score[iBest] == np.inf:
-            print(
-                "Warning: all candidates are too close to already evaluated points. Choose a better tolerance."
-            )
-            return -1
-
-        return int(iBest)
-
-    def minimize_weightedavg_fx_distx(
-        self,
-        x: np.ndarray,
-        distx: np.ndarray,
-        fx: np.ndarray,
-        n: int,
-        tol: float,
-    ) -> tuple[np.ndarray, np.ndarray]:
-        """Select n points from a pool of candidates using :meth:`argminscore()`
-        iteratively.
-
-        The score on the iteration `i > 1` uses the distances to cadidates
-        selected in the iterations `0` to `i-1`.
-
-        :param x: Matrix with candidate points.
-        :param distx: Matrix with the distances between the candidate points and
-            the m number of rows of x.
-        :param fx: Vector with the estimated values for the objective function
-            on the candidate points.
-        :param n: Number of points to be selected for the next costly
-            evaluation.
-        :param tol: Tolerance value for excluding candidates that are too close to
-            current sample points.
-        :return:
-
-            * n-by-dim matrix with the selected points.
-
-            * n-by-(n+m) matrix with the distances between the n selected points
-              and the (n+m) sampled points (m is the number of points that have
-              been sampled so far).
-        """
-        # Compute neighbor distances
-        dist = np.min(distx, axis=1)
-
-        m = distx.shape[1]
-        dim = x.shape[1]
-
-        xselected = np.zeros((n, dim))
-        distselected = np.zeros((n, m + n))
-
-        # Scale function values to [0,1]
-        if fx.ndim == 1:
-            minval = np.min(fx)
-            maxval = np.max(fx)
-            if minval == maxval:
-                scaledvalue = np.ones(fx.size)
-            else:
-                scaledvalue = (fx - minval) / (maxval - minval)
-        elif fx.ndim == 2:
-            minval = np.min(fx, axis=0)
-            maxval = np.max(fx, axis=0)
-            scaledvalue = np.average(
-                np.where(
-                    maxval - minval > 0, (fx - minval) / (maxval - minval), 1
-                ),
-                axis=1,
-            )
-
-        selindex = self.argminscore(
-            scaledvalue, dist, self.weightpattern[0], tol
-        )
-        if selindex >= 0:
-            xselected[0, :] = x[selindex, :]
-            distselected[0, 0:m] = distx[selindex, :]
-        else:
-            return np.empty((0, dim)), np.empty((0, m))
-
-        for ii in range(1, n):
-            # compute distance of all candidate points to the previously selected
-            # candidate point
-            newDist = cdist(xselected[ii - 1, :].reshape(1, -1), x)[0]
-            dist = np.minimum(dist, newDist)
-
-            selindex = self.argminscore(
-                scaledvalue,
-                dist,
-                self.weightpattern[ii % len(self.weightpattern)],
-                tol,
-            )
-            if selindex >= 0:
-                xselected[ii, :] = x[selindex, :]
-            else:
-                return xselected[0:ii], distselected[0:ii, 0 : m + ii]
-
-            distselected[ii, 0:m] = distx[selindex, :]
-            for j in range(ii - 1):
-                distselected[ii, m + j] = np.linalg.norm(
-                    xselected[ii, :] - xselected[j, :]
-                )
-                distselected[j, m + ii] = distselected[ii, m + j]
-            distselected[ii, m + ii - 1] = newDist[selindex]
-            distselected[ii - 1, m + ii] = distselected[ii, m + ii - 1]
-
-        return xselected, distselected
 
     def tol(self, bounds) -> float:
         """Compute tolerance used to eliminate points that are too close to
@@ -552,8 +556,8 @@ class WeightedAcquisition(AcquisitionFunction):
         fx = surrogateModel(x)
 
         # Select best candidates
-        xselected, _ = self.minimize_weightedavg_fx_distx(
-            x, cdist(x, surrogateModel.X), fx, n, self.tol(bounds)
+        xselected, _ = select_weighted_candidates(
+            x, cdist(x, surrogateModel.X), fx, n, self.tol(bounds), self.weightpattern
         )
         n = xselected.shape[0]
 
@@ -1705,14 +1709,15 @@ class GosacSample(AcquisitionFunction):
     """
 
     def __init__(self, fun, **kwargs) -> None:
-        self.fun = fun
         super().__init__(**kwargs)
+        self.fun = fun
 
     def optimize(
         self,
         surrogateModel: Surrogate,
         bounds,
         n: int = 1,
+        constraintTransform: callable = None,
         **kwargs,
     ) -> np.ndarray:
         """Acquire 1 point.
@@ -1721,6 +1726,10 @@ class GosacSample(AcquisitionFunction):
         :param sequence bounds: List with the limits [x_min,x_max] of each
             direction x in the space.
         :param n: Unused.
+        :param constraintTransform: Function to transform the constraints.
+            If not provided, use the identity function. The optimizer, pymoo,
+            expects that negative and zero values are feasible, and positive
+            values are infeasible.
         :return: 1-by-dim matrix with the selected points.
         """
         dim = len(bounds)
@@ -1731,12 +1740,20 @@ class GosacSample(AcquisitionFunction):
 
         assert n == 1
 
+        if constraintTransform is None:
+            def constraintTransform(x):
+                return x
+
+        def transformedConstraint(x):
+            surrogateOutput = surrogateModel(x)
+            return constraintTransform(surrogateOutput)
+
         # Create KDTree with previously evaluated points
         tree = KDTree(surrogateModel.X)
         atol = self.tol(bounds)
 
         cheapProblem = PymooProblem(
-            self.fun, bounds, iindex, gfunc=surrogateModel, n_ieq_constr=gdim
+            self.fun, bounds, iindex, gfunc=transformedConstraint, n_ieq_constr=gdim
         )
         res = pymoo_minimize(
             cheapProblem,
@@ -1816,6 +1833,7 @@ class MaximizeEI(AcquisitionFunction):
         n: int = 1,
         *,
         ybest=None,
+        **kwargs,
     ) -> np.ndarray:
         """Acquire n points.
 
@@ -1971,68 +1989,201 @@ class MaximizeEI(AcquisitionFunction):
         return x[iBest, :]
 
 
-# class AlternatedAcquisition(AcquisitionFunction):
-#     def __init__(
-#         self,
-#         acquisitionf_array: Sequence[AcquisitionFunction],
-#         acquisitionf_min_feval: Sequence[int] = [],
-#         **kwargs,
-#     ) -> None:
-#         super().__init__(**kwargs)
-#         self.acquisitionf_array = acquisitionf_array
-#         self.idx = 0
+class TransitionSearch(AcquisitionFunction):
+    """
+    Transition search acquisition function as described in [#]_.
 
-#         if len(acquisitionf_min_feval) == 0:
-#             self.acquisition_feval = [0] * len(acquisitionf_array)
-#         self.acquisition_feval = acquisitionf_min_feval
-#         assert len(self.acquisition_feval) == len(self.acquisitionf_array)
+    This acquisition function is used to find new sample points by perturbing
+    the current best sample point and uniformly selecting points from the
+    domain. The scoreWeight parameter can be used to control the transition
+    from local to global search. A scoreWeight close to 1.0 will favor
+    the predicted function value (local search), while a scoreWeight close to
+    0.0 will favor the distance to previously sampled points (global search).
 
-#         self.history = deque(maxlen=(len(acquisitionf_array) + 1))
+    The evaluability of candidate points is predicted using the candidate
+    surrogate model. If the evaluability probaility of a candidate point
+    is below a threshold, the point is discarded. If no candidate points
+    remain after this filtering, all candidate points are considered
+    evaluable.
 
-#     def optimize(
-#         self,
-#         surrogateModel: RbfModel,
-#         bounds,
-#         n: int = 1,
-#         **kwargs,
-#     ) -> np.ndarray:
-#         return self.acquisitionf_array[self.idx].optimize(
-#             surrogateModel, bounds, n, **kwargs
-#         )
+    The candidate points are scored using a weighted value of their predicted
+    function value and the distance to previously sampled points. The candidate
+    with the best total score is selected as the new sample point.
 
-#     def update(self, out: OptimizeResult, model: Surrogate) -> None:
-#         self.acquisitionf_array[self.idx].update(out, model)
+    References
+    ----------
+    .. [#] Juliane Müller and Marcus Day. Surrogate Optimization of
+        Computationally Expensive Black-Box Problems with Hidden Constraints.
+        INFORMS Journal on Computing, 31(4):689-702, 2019.
+        https://doi.org/10.1287/ijoc.2018.0864
+    """
 
-#         # Alternate if the current acquisition function has converged
-#         if self.acquisitionf_array[self.idx].has_converged():
-#             # Check for quick convergence
-#             self.acquisition_feval[self.idx] -=
-#             if len(self.acquisition_feval) > 0:
-#                 self.history.append(self.acquisitionf_array[self.idx].nfeval)
+    def __init__(self, **kwargs) -> None:
+        super().__init__(**kwargs)
 
-#             self.idx += 1 % len(self.acquisitionf_array)
-#             self.acquisitionf_array[self.idx].reset()
+    def generate_candidates(
+        self,
+        surrogateModel: Surrogate,
+        bounds,
+        nCand: int,
+        xbest: np.ndarray = None,
+    ) -> np.ndarray:
+        """
+        Generate candidate points by perturbing the current best point and
+        uniformly sampling from the bounds. A total of 2* nCand candidate
+        points are generated, where the first nCand points are perturbations of
+        the current best point and the second nCand points are uniformly sampled
+        from the bounds.
 
-#     def reset(self) -> None:
-#         for acquisitionf in self.acquisitionf_array:
-#             acquisitionf.reset()
-#         self.idx = 0
-#         self.history.clear()
+        :param surrogateModel: Surrogate model for the objective function.
+        :param bounds: List with the limits [x_min, x_max] of each direction.
+        :param nCand: Number of candidate points to be generated.
+        :param xbest: Current best point. If None, use the best point from the
+            surrogate model.
+        :return: Array of candidate points.
+        """
+        dim = len(bounds)
+        bounds = np.asarray(bounds)
 
+        if xbest is None:
+            best_idx = np.argmin(surrogateModel.Y)
+            xbest = surrogateModel.X[best_idx]
 
-# class CPTV(AlternatedAcquisition):
-#     def __init__(self, *args, **kwargs) -> None:
-#         super().__init__(*args, **kwargs)
+        ## Create nCand points by perturbing the current best point
+        # Set perturbation probability
+        if dim <= 10:
+            perturbProbability = 1.0
+        else:
+            perturbProbability = np.random.uniform(0, 1)
 
-#     def update(self, out: OptimizeResult, model: Surrogate) -> None:
-#         self.acquisitionf_array[self.idx].update(out, model)
+        # Generate perturbation candidates
+        perturbationSampler = NormalSampler(n=nCand, sigma=0.02)
+        perturbationCandidates = perturbationSampler.get_dds_sample(
+            bounds, mu=xbest, probability=perturbProbability
+        )
 
-#         # Alternate
-#         if self.acquisitionf_array[self.idx].has_converged():
-#             # Check for quick convergence
+        ## Generate nCand points uniformly from the bounds
+        uniformSampler = Sampler(nCand)
+        uniformCandidates = uniformSampler.get_uniform_sample(bounds)
 
-#             self.idx += 1 % len(self.acquisitionf_array)
-#             self.acquisitionf_array[self.idx].reset()
+        # Combine perturbation and uniform candidates
+        candidates = np.vstack((perturbationCandidates, uniformCandidates))
+        return candidates
+
+    def select_candidates(
+        self,
+        surrogateModel: Surrogate,
+        candidates: np.ndarray,
+        bounds,
+        n: int = 1,
+        scoreWeight: float = 0.5,
+        evaluabilityThreshold: float = 0.25,
+        evaluabilitySurrogate: Surrogate = None,
+    ) -> np.ndarray:
+        """
+        Select the best candidate points based on the predicted function
+        value and distance to previously sampled points. The candidates are
+        scored using a weighted score that combines the predicted function
+        value and the distance to previously sampled points.
+
+        :param surrogateModel: Surrogate model for the objective function.
+        :param candidates: Array of candidate points.
+        :param bounds: List with the limits [x_min, x_max] of each direction.
+        :param n: Number of best candidates to return.
+        :param scoreWeight: Weight for the predicted function value and distance
+            scores in the total score.
+        :param evaluabilityThreshold: Threshold for the evaluability
+            probability. Candidates with evaluability probability below this
+            threshold are discarded.
+        :param evaluabilitySurrogate: Surrogate model for the evaluability
+            probability of the candidate points. If provided, candidates with
+            evaluability probability below the threshold are discarded.
+        :return: The n best candidate points.
+        """
+        # Filter candidates based on evaluability
+        if evaluabilitySurrogate is not None:
+            evaluability = evaluabilitySurrogate(candidates)
+            # Keep candidates above the evaluability threshold
+            if len(candidates[evaluability > evaluabilityThreshold]) > 0:
+                candidates = candidates[evaluability > evaluabilityThreshold]
+            else:
+                # If no candidates are above the evaluability threshold, keep
+                # candidates with positive evaluability
+                candidates = candidates[evaluability > 0]
+
+        # Get the predicted function values for the candidates
+        predictedValues = surrogateModel(candidates)
+
+        # Compute distances to previously evaluated points
+        if evaluabilitySurrogate is not None:
+            distx = cdist(candidates, evaluabilitySurrogate.X)
+        else:
+            distx = cdist(candidates, surrogateModel.X)
+
+        # Select points with weighted sum
+        weightpattern = [scoreWeight]
+        xselected, _ = select_weighted_candidates(
+            candidates, distx, predictedValues, n, self.tol(bounds), weightpattern
+        )
+
+        return xselected
+
+    def optimize(
+        self,
+        surrogateModel: Surrogate,
+        bounds,
+        n: int = 1,
+        *,
+        evaluabilitySurrogate: Surrogate = None,
+        evaluabilityThreshold: float = 0.25,
+        scoreWeight: float = 0.5,
+        **kwargs,
+    ) -> np.ndarray:
+        """
+        This acquisition function generates candidate points by perturbing the
+        current best point and uniformly sampling from the bounds. It then
+        selects the best candidate point based on a weighted score that combines
+        the predicted function value and the distance to previously sampled
+        points.
+
+        :param surrogateModel: Surrogate model for the objective function.
+        :param bounds: List with the limits [x_min, x_max] of each direction.
+        :param n: Number of points to be acquired.
+        :param evaluabilitySurrogate: Surrogate model for the evaluability
+            probability of the candidate points. If provided, candidates with
+            evaluability probability below the threshold are discarded.
+        :param evaluabilityThreshold: Threshold for the evaluability probability.
+        :param scoreWeight: Weight for the predicted function value and distance
+            scores in the total score. The total score is computed as:
+            `scoreWeight * valueScore + (1 - scoreWeight) * distanceScore`.
+        """
+        # Set Ncand = 500*dim
+        dim = len(bounds)
+        nCand = 500 * dim
+
+        bounds = np.asarray(bounds)
+
+        # Get current best point
+        best_idx = np.argmin(surrogateModel.Y)
+        xbest = surrogateModel.X[best_idx]
+
+        # Generate candidate points
+        candidates = self.generate_candidates(
+            surrogateModel, bounds, nCand, xbest=xbest
+        )
+
+        # Select n best candidates
+        bestCandidates = self.select_candidates(
+            surrogateModel,
+            candidates,
+            bounds,
+            n=n,
+            scoreWeight=scoreWeight,
+            evaluabilityThreshold=evaluabilityThreshold,
+            evaluabilitySurrogate=evaluabilitySurrogate,
+        )
+
+        return bestCandidates
 
 
 class MaximizeDistance(AcquisitionFunction):
@@ -2041,9 +2192,6 @@ class MaximizeDistance(AcquisitionFunction):
 
     This acquisition function is used to find new sample points that maximize
     the minimum distance to previously sampled points.
-
-    :param rtol: Minimum distance between a candidate point and the
-        previously selected points relative to the domain size. Default is 1e-3.
 
     References
     ----------
@@ -2061,8 +2209,20 @@ class MaximizeDistance(AcquisitionFunction):
         surrogateModel: Surrogate,
         bounds,
         n: int = 1,
+        points: Optional[np.ndarray] = None,
         **kwargs,
     ) -> np.ndarray:
+        """
+        Acquire n points that maximize the minimum distance to previously
+        sampled points.
+
+        :param surrogateModel: The surrogate model.
+        :param sequence bounds: List with the limits [x_min,x_max] of each
+            direction x in the space.
+        :param n: Number of points to be acquired.
+        :param points: Points to consider for distance maximization. If None,
+            use all previously sampled points in the surrogate model.
+        """
         iindex = surrogateModel.iindex
         optimizer = self.optimizer if len(iindex) == 0 else self.mi_optimizer
 
@@ -2070,7 +2230,10 @@ class MaximizeDistance(AcquisitionFunction):
         atol = self.tol(bounds)
 
         selectedPoints = []
-        currentPoints = surrogateModel.X.copy()
+        if points is None:
+            currentPoints = surrogateModel.X.copy()
+        else:
+            currentPoints = points.copy()
 
         tree = KDTree(currentPoints)
         for i in range(n):
@@ -2103,3 +2266,47 @@ class MaximizeDistance(AcquisitionFunction):
             if selectedPoints
             else np.empty((0, len(bounds)))
         )
+
+
+class AlternatedAcquisition(AcquisitionFunction):
+    """
+    Alternated acquisition function that cycles through a list of acquisition
+    functions.
+
+    The current acquisition function moves to the next in the list when the
+    current one's termination criterion is met. To progress through the
+    acquisition functions, the `update` method must be called after each
+    optimization step. This provides the function with the current optimization
+    state, allowing it to determine if the termination condition has been
+    satisfied.
+
+    :param acquisitionFuncArray: List of acquisition functions to be used in
+        sequence.
+    """
+    def __init__(
+        self,
+        acquisitionFuncArray: Sequence[AcquisitionFunction],
+        **kwargs,
+    ) -> None:
+        super().__init__(**kwargs)
+        self.acquisitionFuncArray = acquisitionFuncArray
+        self.idx = 0
+
+    def optimize(
+        self,
+        surrogateModel: RbfModel,
+        bounds,
+        n: int = 1,
+        **kwargs,
+    ) -> np.ndarray:
+        return self.acquisitionFuncArray[self.idx].optimize(
+            surrogateModel, bounds, n, **kwargs
+        )
+
+    def update(self, out: OptimizeResult, model: Surrogate) -> None:
+        self.acquisitionFuncArray[self.idx].update(out, model)
+
+        # Alternate if the current acquisition function's termination is met
+        if self.acquisitionFuncArray[self.idx].has_converged():
+            self.idx = (self.idx + 1) % len(self.acquisitionFuncArray)
+            self.acquisitionFuncArray[self.idx].termination.reset()

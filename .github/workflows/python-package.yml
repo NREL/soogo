@@ -49,5 +49,5 @@ jobs:
         if: ${{ matrix.os == 'ubuntu-latest' }}
         run: |
           sudo apt-get update
-          python -m pip install pytest
+          python -m pip install pytest PyNomadBBO
           pytest

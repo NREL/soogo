@@ -32,6 +32,7 @@ from soogo import (
     surrogate_optimization,
     cptv,
     cptvl,
+    shebo
 )
 from soogo.sampling import Sampler
 from soogo.acquisition import MaximizeEI
@@ -46,6 +47,7 @@ from soogo.acquisition import MaximizeEI
         cptv,
         cptvl,
         bayesian_optimization,
+        shebo,
     ],
 )
 def test_callback(minimize):
@@ -84,6 +86,7 @@ def test_callback(minimize):
         cptv,
         cptvl,
         bayesian_optimization,
+        shebo,
     ],
 )
 def test_multiple_calls(minimize):
