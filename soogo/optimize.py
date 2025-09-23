@@ -1393,9 +1393,9 @@ def fsapso(
         x=np.empty(dim),
         fx=np.inf,
         nit=0,
-        nfev=0,
-        sample=np.zeros((maxeval, dim)),
-        fsample=np.zeros(maxeval),
+        nfev=surrogateModel.ntrain,
+        sample=np.zeros((maxeval + surrogateModel.ntrain, dim)),
+        fsample=np.zeros(maxeval + surrogateModel.ntrain),
     )
 
     if disp:
@@ -1403,6 +1403,7 @@ def fsapso(
 
     # Initialize surrogate model
     if surrogateModel.ntrain == 0:
+        nInitial = 0
         sampler = Sampler(nInitial)
         xInit = sampler.get_slhd_sample(bounds.tolist())
 
@@ -1427,6 +1428,10 @@ def fsapso(
         # Initialize best point in output
         out.x = surrogateModel.X[np.argmin(surrogateModel.Y)]
         out.fx = np.min(surrogateModel.Y)
+
+        out.sample[0 : surrogateModel.ntrain] = surrogateModel.X
+        out.fsample[0 : surrogateModel.ntrain] = surrogateModel.Y
+        nInitial = surrogateModel.ntrain
 
         if disp:
             print(f"Using pre-trained surrogate with {surrogateModel.ntrain} points")
@@ -1476,7 +1481,7 @@ def fsapso(
     # Main FSAPSO loop
     prevGlobalBest = out.fx
 
-    while out.nfev < maxeval and pso.has_next():
+    while out.nfev < maxeval + nInitial: # and pso.has_next():
         improvedThisIter = False
 
         # Get minimum of surrogate
@@ -1545,26 +1550,28 @@ def fsapso(
         if not improvedThisIter and out.nfev < maxeval:
             scores = uncertainty_score(swarm.get("X"), surrogateModel.X, surrogateModel.Y)
             xMostUncertain = swarm.get("X")[np.argmax(scores)]
-            fMostUncertain = evaluate_and_log_point(fun, xMostUncertain, out)
 
-            if disp:
-                print("fEvals: %d" % out.nfev)
-                print("Best value: %f" % out.fx)
+            if np.min(cdist(xMostUncertain.reshape(1, -1), out.sample[: out.nfev])) > tol:
+                fMostUncertain = evaluate_and_log_point(fun, xMostUncertain, out)
 
-            # Update surrogate
-            surrogateModel.update(xMostUncertain.reshape(1, -1), fMostUncertain)
+                if disp:
+                    print("fEvals: %d" % out.nfev)
+                    print("Best value: %f" % out.fx)
 
-            # Update particle's fitness
-            fFinal = swarm.get("F")
-            fFinal[np.argmax(scores)] = fMostUncertain
-            swarm.set("F", fFinal)
+                # Update surrogate
+                surrogateModel.update(xMostUncertain.reshape(1, -1), fMostUncertain)
 
-            # Check if this improved global best
-            if fMostUncertain < prevGlobalBest:
-                prevGlobalBest = fMostUncertain
+                # Update particle's fitness
+                fFinal = swarm.get("F")
+                fFinal[np.argmax(scores)] = fMostUncertain
+                swarm.set("F", fFinal)
 
-                # Update PSO's global best
-                pso.opt = Population.create(Individual(X=xMostUncertain, F=np.array([fMostUncertain])))
+                # Check if this improved global best
+                if fMostUncertain < prevGlobalBest:
+                    prevGlobalBest = fMostUncertain
+
+                    # Update PSO's global best
+                    pso.opt = Population.create(Individual(X=xMostUncertain, F=np.array([fMostUncertain])))
 
         # Tell PSO the results
         pso.tell(infills=swarm)
@@ -1669,9 +1676,9 @@ def fake_fsapso(
         x=np.empty(dim),
         fx=np.inf,
         nit=0,
-        nfev=0,
-        sample=np.zeros((maxeval, dim)),
-        fsample=np.zeros(maxeval),
+        nfev=surrogateModel.ntrain,
+        sample=np.zeros((maxeval + surrogateModel.ntrain, dim)),
+        fsample=np.zeros(maxeval + surrogateModel.ntrain),
     )
 
     if disp:
@@ -1679,6 +1686,7 @@ def fake_fsapso(
 
     # Initialize surrogate model
     if surrogateModel.ntrain == 0:
+        nInitial = 0
 
         sampler = Sampler(nInitial)
         xInit = sampler.get_slhd_sample(bounds.tolist())
@@ -1702,6 +1710,10 @@ def fake_fsapso(
         # Initialize best point in output
         out.x = surrogateModel.X[np.argmin(surrogateModel.Y)]
         out.fx = np.min(surrogateModel.Y)
+
+        out.sample[0 : surrogateModel.ntrain] = surrogateModel.X
+        out.fsample[0 : surrogateModel.ntrain] = surrogateModel.Y
+        nInitial = surrogateModel.ntrain
 
         if disp:
             print(f"Using pre-trained surrogate with {surrogateModel.ntrain} points")
@@ -1751,7 +1763,7 @@ def fake_fsapso(
     # Main FSAPSO loop
     prevGlobalBest = out.fx
 
-    while out.nfev < maxeval:
+    while out.nfev < maxeval + nInitial:
         out.nit += 1
 
         # Update w value
@@ -1869,6 +1881,146 @@ def fake_fsapso(
             callback(out)
 
         batchSize = min(batchSize, maxeval - out.nfev)
+
+    # Remove empty if PSO terminates before maxevals
+    out.sample = out.sample[: out.nfev]
+    out.fsample = out.fsample[: out.nfev]
+
+    return out
+
+
+def surrogate_pso(
+    fun,
+    bounds,
+    maxeval: int,
+    *,
+    surrogateModel: Optional[Surrogate] = None,
+    batchSize: int = 20,
+    callback: Optional[Callable[[OptimizeResult], None]] = None,
+    disp: bool = False,
+) -> OptimizeResult:
+    """
+    Surrogate-assisted PSO: evaluates all swarm members with true objective,
+    adds surrogate min as extra batch point.
+    """
+
+    bounds = np.array(bounds)
+    dim = len(bounds)
+    lb = bounds[:, 0]
+    ub = bounds[:, 1]
+    nSwarm = batchSize - 1
+    tol = np.min([np.sqrt(0.001**2 * dim), 5e-5 * dim * np.min(ub - lb)])
+
+    # Surrogate model
+    if surrogateModel is None:
+        surrogateModel = RbfModel()
+    surrogateModel.reserve(maxeval + surrogateModel.ntrain, dim)
+
+    # Output
+    out = OptimizeResult(
+        x=np.empty(dim),
+        fx=np.inf,
+        nit=0,
+        nfev=surrogateModel.ntrain,
+        sample=np.zeros((maxeval + surrogateModel.ntrain, dim)),
+        fsample=np.zeros(maxeval + surrogateModel.ntrain),
+    )
+
+    if disp:
+        print("Starting surrogate PSO optimization...")
+
+    # Initial sampling
+    nInitial = min(max(dim, batchSize, 2 * surrogateModel.min_design_space_size(dim)), maxeval)
+    if surrogateModel.ntrain == 0:
+        nInitial = 0
+        sampler = Sampler(nInitial)
+        xInit = sampler.get_slhd_sample(bounds.tolist())
+        if disp:
+            print(f"Evaluating {len(xInit)} initial points...")
+        _ = evaluate_and_log_point(fun, xInit, out)
+        surrogateModel.update(out.sample[:out.nfev], out.fsample[:out.nfev])
+        if disp:
+            print(f"Initial surrogate built with {out.nfev} points.")
+    else:
+        out.x = surrogateModel.X[np.argmin(surrogateModel.Y)]
+        out.fx = np.min(surrogateModel.Y)
+
+        out.sample[0 : surrogateModel.ntrain] = surrogateModel.X
+        out.fsample[0 : surrogateModel.ntrain] = surrogateModel.Y
+        nInitial = surrogateModel.ntrain
+
+    # Swarm initialization
+    bestIndices = np.argsort(surrogateModel.Y)[:nSwarm]
+    swarmInitX = surrogateModel.X[bestIndices]
+    if surrogateModel.ntrain < nSwarm:
+        swarmSampler = Sampler(nSwarm - surrogateModel.ntrain)
+        swarmInitX = swarmSampler.get_slhd_sample(bounds.tolist())
+        swarmInitX = np.vstack((swarmInitX, surrogateModel.X))
+
+    # PSO setup
+    surrogateProblem = PymooProblem(
+        objfunc=lambda x: surrogateModel(x).reshape(-1, 1),
+        bounds=bounds
+    )
+    pso = PSO(pop_size=nSwarm, w=0.792, c1=1.491, c2=1.491, adaptive=False, max_velocity_rate=0.1 * (ub - lb))
+    pso.setup(surrogateProblem)
+
+    # Set initial swarm positions
+    initialPop = Population()
+    for x in swarmInitX:
+        ind = Individual(X=x)
+        initialPop = Population.merge(initialPop, Population([ind]))
+    pso.evaluator.eval(surrogateProblem, initialPop)
+    pso.pop = initialPop
+
+    surrogateMinimizer = MinimizeSurrogate(nCand=1000)
+
+    if disp:
+        print("Starting main surrogate PSO loop...")
+
+    # Main loop
+    while out.nfev < maxeval + nInitial and pso.has_next():
+        allBatch = []
+        out.nit += 1
+
+        # Update w value
+        pso.w = 0.792 - (0.792 - 0.2) * out.nfev / maxeval
+
+        # Update swarm
+        swarm = pso.ask()
+        swarmX = swarm.get("X")
+        for x in swarmX:
+            if out.nfev < maxeval and np.min(cdist(x.reshape(1, -1), out.sample[:out.nfev])) > tol:
+                allBatch.append(x)
+
+        # Get surrogate minimum
+        xSurMin = surrogateMinimizer.optimize(surrogateModel, bounds, n=1)[0]
+        if out.nfev < maxeval and np.min(cdist(xSurMin.reshape(1, -1), out.sample[:out.nfev])) > tol:
+            allBatch.append(xSurMin)
+
+        # Evaluate allBatch
+        if allBatch:
+            allBatchArr = np.array(allBatch)
+            # Ensure we do not exceed maxeval
+            if out.nfev + len(allBatch) > maxeval:
+                allBatchArr = allBatchArr[: maxeval - out.nfev]
+            fBatch = evaluate_and_log_point(fun, allBatchArr, out)
+
+            # Update the surrogate
+            surrogateModel.update(allBatchArr, fBatch)
+
+        # Tell PSO the results
+        pso.evaluator.eval(surrogateProblem, swarm)
+        pso.tell(infills=swarm)
+
+        if disp:
+            print(f"fEvals: {out.nfev}")
+            print(f"Iterations: {out.nit}")
+            print(f"Best value: {out.fx}")
+
+        # Callback
+        if callback is not None:
+            callback(out)
 
     # Remove empty if PSO terminates before maxevals
     out.sample = out.sample[: out.nfev]
