@@ -1813,7 +1813,7 @@ def fake_fsapso(
 
         # Evaluate the batch
         improvedThisIter = False
-        if batchCandidates and out.nfev < maxeval:
+        if batchCandidates and out.nfev < maxeval + nInitial:
             batchX = np.array(batchCandidates)
             batchF = evaluate_and_log_point(fun, batchX, out)
 
@@ -1848,7 +1848,7 @@ def fake_fsapso(
 
         # If batchSize < 3 and swarm best was not improved, find and evaluate
         # most uncertain point
-        if batchSize < 3 and not improvedThisIter and out.nfev < maxeval:
+        if batchSize < 3 and not improvedThisIter and out.nfev < maxeval + nInitial:
             scores = uncertainty_score(swarm.get("X"), surrogateModel.X, surrogateModel.Y)
             mostUncertainIdx = np.argmax(scores)
             xMostUncertain = swarm.get("X")[mostUncertainIdx]
@@ -1880,7 +1880,7 @@ def fake_fsapso(
         if callback is not None:
             callback(out)
 
-        batchSize = min(batchSize, maxeval - out.nfev)
+        batchSize = min(batchSize, maxeval + nInitial - out.nfev)
 
     # Remove empty if PSO terminates before maxevals
     out.sample = out.sample[: out.nfev]
@@ -1984,26 +1984,27 @@ def surrogate_pso(
         out.nit += 1
 
         # Update w value
-        pso.w = 0.792 - (0.792 - 0.2) * out.nfev / maxeval
+        # pso.w = 0.792 - (0.792 - 0.2) * out.nfev / maxeval
+        pso.w = np.random.uniform(0, 1)
 
         # Update swarm
         swarm = pso.ask()
         swarmX = swarm.get("X")
         for x in swarmX:
-            if out.nfev < maxeval and np.min(cdist(x.reshape(1, -1), out.sample[:out.nfev])) > tol:
+            if out.nfev < maxeval + nInitial and np.min(cdist(x.reshape(1, -1), out.sample[:out.nfev])) > tol:
                 allBatch.append(x)
 
         # Get surrogate minimum
         xSurMin = surrogateMinimizer.optimize(surrogateModel, bounds, n=1)[0]
-        if out.nfev < maxeval and np.min(cdist(xSurMin.reshape(1, -1), out.sample[:out.nfev])) > tol:
+        if out.nfev < maxeval + nInitial and np.min(cdist(xSurMin.reshape(1, -1), out.sample[:out.nfev])) > tol:
             allBatch.append(xSurMin)
 
         # Evaluate allBatch
         if allBatch:
             allBatchArr = np.array(allBatch)
             # Ensure we do not exceed maxeval
-            if out.nfev + len(allBatch) > maxeval:
-                allBatchArr = allBatchArr[: maxeval - out.nfev]
+            if out.nfev + len(allBatch) > maxeval + nInitial:
+                allBatchArr = allBatchArr[: maxeval + nInitial - out.nfev]
             fBatch = evaluate_and_log_point(fun, allBatchArr, out)
 
             # Update the surrogate
