@@ -1711,7 +1711,7 @@ def fsapso(
     ub = bounds[:, 1]
     vMax = 0.1 * (ub - lb)
     nSwarm = 20
-    nInitial = min(max(dim, 20), maxeval)
+    nInitialPts = min(max(dim, 20), maxeval)
     tol = np.min([np.sqrt(0.001**2 * dim), 5e-5 * dim * np.min(ub - lb)])
 
     # Initialize acquisition function(s)
@@ -1740,7 +1740,7 @@ def fsapso(
     # Initialize surrogate model
     if surrogateModel.ntrain == 0:
         nInitial = 0
-        sampler = Sampler(nInitial)
+        sampler = Sampler(nInitialPts)
         xInit = sampler.get_slhd_sample(bounds.tolist())
 
         if disp:
