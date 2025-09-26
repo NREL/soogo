@@ -17,14 +17,14 @@
 
 __authors__ = [
     "Weslley S. Pereira",
-    "Byron Selvage"
+    "Byron Selvage",
 ]
 __contact__ = "weslley.dasilvapereira@nrel.gov"
 __maintainer__ = "Weslley S. Pereira"
 __email__ = "weslley.dasilvapereira@nrel.gov"
 __credits__ = [
     "Weslley S. Pereira",
-    "Byron Selvage"
+    "Byron Selvage",
 ]
 __deprecated__ = False
 

@@ -19,6 +19,10 @@ __authors__ = [
     "Weslley S. Pereira",
     "Byron Selvage",
 ]
+__authors__ = [
+    "Weslley S. Pereira",
+    "Byron Selvage",
+]
 __contact__ = "weslley.dasilvapereira@nrel.gov"
 __maintainer__ = "Weslley S. Pereira"
 __email__ = "weslley.dasilvapereira@nrel.gov"
@@ -83,7 +87,7 @@ def evaluate_and_log_point(fun: callable, x: np.ndarray, out: "OptimizeResult"):
     Evaluate a point or array of points and log the results. If the function
     errors or the result is invalid (NaN or Inf), the output is logged as NaN.
     If the function value is less than the current best, the current best (
-    out.x & out.fx) is updated. Each point is evaluated individually. This
+    out.x & out.fx) is updated. Provided points are evaluated as a batch. This
     function only supports single-objective functions.
 
     :param fun: The function to evaluate.
