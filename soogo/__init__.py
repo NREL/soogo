@@ -42,7 +42,6 @@ __all__ = [
     "socemo",
     "gosac",
     "bayesian_optimization",
-    "fsapso",
     "OptimizeResult",
     "RbfModel",
     "MedianLpfFilter",
