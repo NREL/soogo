@@ -25,6 +25,7 @@ from .optimize import (
     socemo,
     gosac,
     bayesian_optimization,
+    shebo,
     fsapso,
 )
 from .optimize_result import OptimizeResult
@@ -46,4 +47,6 @@ __all__ = [
     "RbfModel",
     "MedianLpfFilter",
     "GaussianProcess",
+    "shebo",
+    "fsapso",
 ]

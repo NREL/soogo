@@ -20,8 +20,9 @@ Surrogate-based 0-th Order Global Optimization for black-box problems.
 | `socemo()`                 | Surrogate-based optimization of computationally expensive multiobjective problems (SOCEMO) [(Müller; 2017a)][Muller2017a].                                                                                                                                                | `multi-objective`, `mixed-integer`, `RBF`      |
 | `gosac()`                  | Global optimization with surrogate approximation of constraints (GOSAC) [(Müller; 2017b)][Muller2017b].                                                                                                                                                                   | `mixed-integer`, `black-box-constraint`, `RBF` |
 | `bayesian_optimization()`  | Bayesian optimization with dispersion-enhanced expected improvement acquisition [(Müller; 2024)][Muller2024].                                                                                                                                                             | `GP`, `batch`                                  |
-| `fsapso()`  | Fast Surrogate Assisted Particle Swarm Optimization [(Li et al.; 2020)][Li2020].                                                                                                                                                             | `RBF`, `PSO`                                  |
 
+| `shebo()`                  | Surrogate optimization of problems with hidden constraints and expensive black-box objectives (SHEBO) [(Müller & Day; 2019)][Muller2019].                                                                                                                                                             | `hidden-constraint`, `expensive-objective`, `RBF`                                  |
+| `fsapso()`  | Fast Surrogate Assisted Particle Swarm Optimization [(Li et al.; 2020)][Li2020].                                                                                                                                                             | `RBF`, `PSO`                                  |
 
 <!--- Table below --->
 
@@ -34,6 +35,8 @@ Surrogate-based 0-th Order Global Optimization for black-box problems.
 | `ParetoFront`            | Sample at the Pareto front of the multi-objective surrogate model to fill gaps in the surface [(Müller; 2017a)][Muller2017a].                                                                                                                                                                             |
 | `MinimizeMOSurrogate`    | Obtain pareto-optimal sample points for the multi-objective surrogate model [(Müller; 2017a)][Muller2017a].                                                                                                                                                                                               |
 | `GosacSample`            | Minimize a function with surrogate constraints to obtain a single new sample point [(Müller; 2017b)][Muller2017b].                                                                                                                                                                                        |
+| `TransitionSearch`       | Weighted acquisition function that balances local and global search using a weighted score. Filters candidate points using evaluability surrogate. [(Müller & Day; 2019)][Muller2019].                                                                                                                                                                                        |
+| `MaximizeDistance`       | Maximizes the minimum distance to the set of current points. Used in `shebo()` and as a fallback in `EndPointsParetoFront` and `GosacSample` [(Müller & Day; 2019)][Muller2019].                                                                                                                                                                                        |
 
 [BjoHol2000]: https://doi.org/10.1023/A:1011584207202
 [Muller2016]: https://doi.org/10.1007/s11081-015-9281-2
@@ -46,6 +49,7 @@ Surrogate-based 0-th Order Global Optimization for black-box problems.
 [Gut2001]: https://doi.org/10.1023/A:1011255519438
 [RinTim1987]: https://doi.org/10.1007/BF02592071
 [Li2020]: https://doi.org/10.1016/j.asoc.2020.106303
+[Muller2019]: https://doi.org/10.1287/ijoc.2018.0864
 
 ## Installation
 

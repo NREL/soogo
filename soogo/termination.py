@@ -168,3 +168,24 @@ class RobustCondition(TerminationCondition):
     def reset(self, **kwargs) -> None:
         self.history.clear()
         self.termination.reset(**kwargs)
+
+
+class IterateNTimes(TerminationCondition):
+    """
+    Termination condition that is met after a specified number of
+    iterations.
+
+    :param nTimes: Number of iterations after which the condition is met.
+    """
+    def __init__(self, nTimes: int = 1) -> None:
+        self.nTimes = nTimes
+        self.iterationCount = 0
+
+    def is_met(self) -> bool:
+        return self.iterationCount >= self.nTimes
+
+    def update(self, *args, **kwargs) -> None:
+        self.iterationCount += 1
+
+    def reset(self, **kwargs) -> None:
+        self.iterationCount = 0

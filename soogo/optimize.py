@@ -38,11 +38,13 @@ __deprecated__ = False
 from typing import Callable, Optional
 import numpy as np
 import time
+import PyNomad
 from copy import deepcopy
 
 # Scipy imports
 from scipy.optimize import minimize, differential_evolution
-from scipy.spatial.distance import cdist
+from scipy.spatial.distance import cdist, pdist, squareform
+from scipy.spatial import KDTree
 
 # PyMoo imports
 from pymoo.core.individual import Individual
@@ -62,13 +64,17 @@ from .acquisition import (
     TargetValueAcquisition,
     AcquisitionFunction,
     MinimizeSurrogate,
+    MaximizeDistance,
+    TransitionSearch,
+    AlternatedAcquisition,
 )
 from .utils import find_pareto_front, evaluate_and_log_point, uncertainty_score
-from .model import MedianLpfFilter, RbfModel, GaussianProcess
+from .model import MedianLpfFilter, RbfModel, GaussianProcess, CubicRadialBasisFunction, LinearRadialBasisFunction
 from .sampling import NormalSampler, Sampler, SamplingStrategy, Mitchel91Sampler
 from .optimize_result import OptimizeResult
-from .termination import UnsuccessfulImprovement, RobustCondition
+from .termination import UnsuccessfulImprovement, RobustCondition, IterateNTimes
 from .problem import PymooProblem
+
 
 
 def surrogate_optimization(
@@ -1326,6 +1332,330 @@ def bayesian_optimization(
         if disp:
             print("Time to update surrogate model: %f s" % (tf - t0))
 
+    return out
+
+
+def shebo(
+    fun,
+    bounds,
+    maxeval: int,
+    *,
+    acquisitionFunc: Optional[AcquisitionFunction] = None,
+    validationFunc: Optional[Callable[[float], bool]] = None,
+    disp: bool = False,
+    callback: Optional[Callable[[OptimizeResult], None]] = None,
+) -> OptimizeResult:
+    """
+    Minimize a function using the SHEBO algorithm from [#]_.
+
+    :param fun: The objective function to be minimized.
+    :param bounds: List with the limits [x_min,x_max] of each direction x in the
+        search space.
+    :param maxeval: Maximum number of function evaluations.
+    :param acquisitionFunc: Acquisition function to be used in the optimization
+        loop. If None is provided, the acquisition cycle described in
+        _[#] is used. Each call, the acquisition function is provided with the
+        surrogate objective model, bounds, and number of points to sample as
+        positional arguments and the keyword arguments points,
+        evaluabilitySurrogate, evaluabilityThreshold, and scoreWeight.
+    :validationFunc: Function to validate the output of the objective function.
+        If None is provided, a default validation function is used that checks
+        if the output is not NaN or Inf. A validation function should return
+        True if the output is valid, and False otherwise.
+    :param disp: If True, print information about the optimization process. The
+        default is False.
+    :param callback: If provided, the callback function will be called after
+        each iteration with the current optimization result. The default is
+        None.
+    :return: The optimization result.
+
+    References
+    ----------
+    .. [#] Juliane Müller and Marcus Day. Surrogate Optimization of
+        Computationally Expensive Black-Box Problems with Hidden Constraints.
+        INFORMS Journal on Computing, 31(4):689-702, 2019.
+        https://doi.org/10.1287/ijoc.2018.0864
+    """
+    # Initialize parameters
+    weightPattern = [1, 0.95, 0.85, 0.75, 0.5, 0.35, 0.25, 0.1, 0.0]
+    dim = len(bounds)
+    nStart = 4 * (dim + 1)
+    bounds = np.asarray(bounds)
+
+    # Initialize the surrogates
+    objSurrogate = RbfModel(CubicRadialBasisFunction())
+    objSurrogate.reserve(objSurrogate.ntrain + maxeval, dim)
+    evalSurrogate = RbfModel(LinearRadialBasisFunction())
+    evalSurrogate.reserve(evalSurrogate.ntrain + maxeval, dim)
+
+    # Initialize output
+    out = OptimizeResult(
+        x=np.empty((0, dim)),
+        fx=np.inf,
+        nfev=0,
+        sample=np.zeros((maxeval, dim)),
+        fsample=np.zeros(maxeval),
+    )
+
+    # Initialize lists to store successful samples and their function values
+    sampleE = []
+    fValE = []
+
+    # Default acquisition function
+    if acquisitionFunc is None:
+        acquisitionFunc = AlternatedAcquisition([
+            GosacSample(objSurrogate, rtol=0.001, termination=IterateNTimes(1)),
+            TransitionSearch(rtol=0.001, termination=IterateNTimes(9)),
+            MaximizeDistance(rtol=0.001, termination=IterateNTimes(1))
+        ])
+
+    # Default validation function
+    if validationFunc is None:
+        def validationFunc(y):
+            return not (np.isnan(y) or np.isinf(y))
+
+    # Helper evaluate function to reduce code duplication
+    def evaluatePoint(x):
+        """Evaluate a point and update the output."""
+        nonlocal out, sampleE, fValE
+
+        x = x.reshape(-1, )
+
+        successful = False
+        newBest = False
+
+        # Add point to all sampled points
+        out.sample[out.nfev, :] = x
+
+        rescaledX = x * (bounds[:, 1] - bounds[:, 0]) + bounds[:, 0]
+
+        # Attempt to evaluate the point
+        try:
+            y = np.asarray(fun(rescaledX))
+
+            # Validate the output
+            if validationFunc(y):
+                successful = True
+                # If valid, add to successful points
+                sampleE.append(x)
+                fValE.append(y)
+                out.fsample[out.nfev] = y
+
+                if y < out.fx:
+                    newBest = True
+                    out.x = x
+                    out.fx = y
+            else:
+                # invalid output
+                out.fsample[out.nfev] = np.nan
+
+        except Exception:
+            y = np.nan
+            out.fsample[out.nfev] = y
+
+        out.nfev += 1
+
+        return y, successful, newBest
+
+    # Nomad wrapper for the objective function
+    def nomadFunction(x):
+        """Wrapper for the objective function to be used with NOMAD."""
+        nonlocal out, sampleE, fValE, fun, evalSurrogate, objSurrogate
+
+        point = np.array([x.get_coord(i) for i in range(x.size())]).reshape(1, -1)
+
+        f, successful, newBest = evaluatePoint(point)
+
+        # Calculate minimum distance of point to all other points
+        tree = KDTree(evalSurrogate.X)
+        dist = tree.query(point)[0]
+
+        # Update evalSurrogate if new point is far enough
+        if dist >= 1e-7:
+            evalSurrogate.update(
+                point,
+                np.logical_not(np.isnan(f)).astype(float)
+            )
+
+        if successful:
+            # Set NOMAD objective function value
+            x.setBBO(str(f).encode("UTF-8"))
+
+            # Update objSurrogate if new point is far enough
+            if dist >= 1e-7:
+                objSurrogate.update(point, f)
+
+            return 1
+        else:
+            return 0
+
+    # Generate initial points using Latin Hypercube sampling
+    sampler = Sampler(nStart)
+    x0 = sampler.get_slhd_sample([[0, 1] for _ in range(dim)])
+
+    # Check that all points are far enough apart
+    # Compute all pairwise distances
+    distances = squareform(pdist(x0))
+    keptIndices = [0]
+
+    for i in range(1, len(x0)):
+        # Check if this point is far enough from all previously kept points
+        if all(distances[i, kept_idx] >= 0.001 for kept_idx in keptIndices):
+            keptIndices.append(i)
+
+    keptIndices = np.array(keptIndices)
+    x0 = x0[keptIndices]
+
+    if disp:
+        print("Evaluating initial points...")
+
+    # Evaluate the initial points
+    for x in x0:
+        if out.nfev >= maxeval:
+            break
+
+        evaluatePoint(x)
+
+        if disp:
+            print("fEvals: %d" % out.nfev)
+            print("Best value: %f" % out.fx)
+
+    # Build the evaluability surrogate model
+    # Points values are 1 if the point was successfully evaluated,
+    # 0 otherwise
+    evalSurrogate.update(
+        np.array(out.sample[0:out.nfev, :]),
+        np.logical_not(np.isnan(out.fsample[0 : out.nfev])).astype(float)
+    )
+
+    # Construct Pe matrix - successful points are rows, additional column of
+    # ones is added to the end
+    if len(sampleE) != 0:
+        Pe = np.vstack(sampleE)
+        Pe = np.concatenate((Pe, np.ones((Pe.shape[0], 1))), axis=1)
+        rank = np.linalg.matrix_rank(Pe)
+    else:
+        Pe = np.empty((0, dim + 1))
+        rank = 0
+
+    # Check if rank of Pe >= dim + 1 - needed for making the surrogate model
+    # If not, keep sampling until we have enough points
+    if rank < dim + 1:
+        maximizeDistance = MaximizeDistance(rtol=0.001)
+        if disp:
+            print("Sampling additional points to initialize the surrogate model...")
+
+    while (rank < dim + 1) and (out.nfev < maxeval):
+        ## Generate new point
+        xNew = maximizeDistance.optimize(evalSurrogate, [[0, 1] for _ in range(dim)], 1)
+
+        y, successful, newBest = evaluatePoint(xNew)
+
+        if disp:
+            print("fEvals: %d" % out.nfev)
+            print("Best value: %f" % out.fx)
+
+        if successful:
+            # Update the Pe matrix with the new point
+            Pe = np.vstack((Pe, np.hstack((xNew.copy().flatten(), 1))))
+            rank = np.linalg.matrix_rank(Pe)
+
+        # Update the surrogate model with the new point
+        evalSurrogate.update(
+            np.array(xNew),
+            np.logical_not(np.isnan(y)).astype(float)
+        )
+
+    # If we have run out of evaluations, we cannot continue
+    if out.nfev >= maxeval:
+        print("Maximum number of evaluations reached before enough points were sampled to initialize the surrogate model.")
+        return out
+
+    # Generate the surrogate model for the objective function
+    objSurrogate.update(
+        np.array(sampleE),
+        np.array(fValE)
+    )
+
+    if disp:
+        print("Initial surrogate model built with %d points." % len(sampleE))
+        print("Starting optimization search...")
+
+    if callback is not None:
+            # Call the callback function with the current optimization result
+            callback(out)
+
+    while out.nfev < maxeval:
+        # Calculate the threshold for evaluability
+        threshold = np.log(out.nfev - nStart + 1) / np.log(maxeval - nStart)
+
+        # Generate new point
+        xNew = acquisitionFunc.optimize(
+            objSurrogate,
+            [[0, 1] for _ in range(dim)],
+            n=1,
+            points=evalSurrogate.X,
+            constraintTransform=lambda x: -x + threshold, # Pymoo expects g(x) <= 0
+            evaluabilitySurrogate=evalSurrogate,
+            evaluabilityThreshold=threshold,
+            scoreWeight=weightPattern[acquisitionFunc.acquisitionFuncArray[acquisitionFunc.idx].termination.iterationCount]
+        )
+
+        # Evaluate new point
+        y, successful, newBest = evaluatePoint(xNew)
+
+        if disp:
+            print("fEvals: %d" % out.nfev)
+            print("Best value: %f" % out.fx)
+
+        # Update evaluability surrogate model
+        evalSurrogate.update(
+            np.array(xNew),
+            np.logical_not(np.isnan(y)).astype(float)
+        )
+
+        # If successful, update the obj surrogate
+        if successful:
+            objSurrogate.update(
+                np.array(xNew),
+                np.array(y)
+            )
+
+        # If the new point was better than current best, run NOMAD
+        if newBest:
+            if disp:
+                print("New best point found, running NOMAD...")
+            # nomadFunction handles updating the surrogate models and the output
+            # as points are evaluated
+            PyNomad.optimize(
+                fBB=nomadFunction,
+                pX0=xNew.flatten(),
+                pLB=np.array([0 for _ in range(dim)]),
+                pUB=np.array([1 for _ in range(dim)]),
+                params=[
+                    "BB_OUTPUT_TYPE OBJ",
+                    f"MAX_BB_EVAL {min(4 * dim, maxeval - out.nfev)}",
+                    "DISPLAY_DEGREE 0",
+                    "QUAD_MODEL_SEARCH 0",
+                ]
+            )
+            if disp:
+                print("NOMAD optimization completed.")
+                print("fEvals: %d" % out.nfev)
+                print("Best value: %f" % out.fx)
+
+        if callback is not None:
+            # Call the callback function with the current optimization result
+            callback(out)
+
+        # Update the acquisition function
+        acquisitionFunc.update(out, objSurrogate)
+
+    # Rescale the x and sample arrays to the original bounds
+    out.x = out.x * (bounds[:, 1] - bounds[:, 0]) + bounds[:, 0]
+    out.sample = out.sample * (bounds[:, 1] - bounds[:, 0]) + bounds[:, 0]
+
+    # Return OptimizeResult
     return out
 
 
