@@ -12,7 +12,6 @@ from soogo import (
     cptvl,
     gosac,
     bayesian_optimization,
-    shebo,
     fsapso,
 )
 
@@ -127,12 +126,7 @@ def test_unconstrained_algorithms(
         )
 
 
-slow_algorithms = [
-    surrogate_optimization,
-    bayesian_optimization,
-    shebo,
-    fsapso,
-]
+slow_algorithms = [surrogate_optimization, bayesian_optimization, fsapso]
 
 
 @pytest.mark.parametrize("alg", slow_algorithms)
