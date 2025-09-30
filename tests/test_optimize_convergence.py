@@ -1,4 +1,5 @@
 """Test the optimization algorithms converge."""
+
 import pygoblet
 import numpy as np
 import pytest
@@ -15,46 +16,64 @@ from soogo import (
     fsapso,
 )
 
+
 class ShiftedProblem:
     """
     Shifts the input and bounds of a pyGOBLET problem by a random vector.
     """
+
     def __init__(self, base_class, dim):
         self.base = base_class(dim)
         lb, ub = np.array(self.base.bounds()).T
         rng = np.random.default_rng(12345)
         self.shift = rng.uniform(lb, ub)
         self._orig_bounds = (lb, ub)
+
     def evaluate(self, x):
         return self.base.evaluate(np.asarray(x) - self.shift)
+
     def min(self):
         return self.base.min()
+
     def bounds(self):
         lb, ub = self._orig_bounds
         return np.stack([lb + self.shift, ub + self.shift], axis=1)
+
     def constraint1(self, x):
         return self.base.constraint1(np.asarray(x) - self.shift)
+
 
 def make_soogo_objective(prob_instance):
     """
     Wraps a pyGOBLET problem instance's evaluate method to support batch input
     for use with soogo algorithms.
     """
-    return lambda X: np.array([prob_instance.evaluate(x) for x in np.atleast_2d(X)])
+    return lambda X: np.array(
+        [prob_instance.evaluate(x) for x in np.atleast_2d(X)]
+    )
+
 
 def make_soogo_constraint(prob_instance):
     """
     Wraps a pyGOBLET problem instance's constraint method to support batch input
     for use with soogo algorithms.
     """
-    return lambda X: np.array([-prob_instance.constraint1(x) for x in np.atleast_2d(X)])
+    return lambda X: np.array(
+        [-prob_instance.constraint1(x) for x in np.atleast_2d(X)]
+    )
+
 
 unconstrained_algorithms = [multistart_msrs, dycors, cptv, cptvl]
 unconstrained_problems = [
-    pygoblet.standard.Trid,                                        # Bowl-shaped, range ~(-7, 350)
-    lambda dim: ShiftedProblem(pygoblet.standard.Zakharov, dim),   # Plate-shaped, shifted, range ~(0, 58500)
-    lambda dim: ShiftedProblem(pygoblet.standard.Griewank, dim),   # Dispersed local minima, shifted, range ~(0, 250)
+    pygoblet.standard.Trid,  # Bowl-shaped, range ~(-7, 350)
+    lambda dim: ShiftedProblem(
+        pygoblet.standard.Zakharov, dim
+    ),  # Plate-shaped, shifted, range ~(0, 58500)
+    lambda dim: ShiftedProblem(
+        pygoblet.standard.Griewank, dim
+    ),  # Dispersed local minima, shifted, range ~(0, 250)
 ]
+
 
 @pytest.mark.parametrize("alg", unconstrained_algorithms)
 def test_unconstrained_algorithms(
@@ -94,8 +113,12 @@ def test_unconstrained_algorithms(
         for run in range(n_runs):
             np.random.seed(run + 42)
             out = alg(soogo_objective, prob_instance.bounds(), maxevals)
+            if out.fx is None:
+                raise ValueError("Algorithm did not return a function value.")
             run_vals.append(out.fx)
-            print(f"Testing {alg.__name__} on {type(prob_instance).__name__}, run {run+1}: fx = {out.fx}, best known = {min_value}")
+            print(
+                f"Testing {alg.__name__} on {type(prob_instance).__name__}, run {run + 1}: fx = {out.fx}, best known = {min_value}"
+            )
         run_vals = np.array(run_vals)
         n_success = np.sum(np.abs(run_vals - min_value) < tol)
         success_rate = n_success / n_runs
@@ -103,7 +126,15 @@ def test_unconstrained_algorithms(
             f"{alg.__name__} failed on {type(prob_instance).__name__}: success rate {success_rate:.2f} < {min_success_rate}"
         )
 
-slow_algorithms = [surrogate_optimization, bayesian_optimization, shebo, fsapso]
+
+slow_algorithms = [
+    surrogate_optimization,
+    bayesian_optimization,
+    shebo,
+    fsapso,
+]
+
+
 @pytest.mark.parametrize("alg", slow_algorithms)
 def test_unconstrained_quick(alg):
     """
@@ -112,9 +143,14 @@ def test_unconstrained_quick(alg):
     algorithms that take too long to run with the default
     test_unconstrained_algorithms settings.
     """
-    test_unconstrained_algorithms(alg, dim=2, n_runs=2, maxevals=125, tol=1, min_success_rate=0.5)
+    test_unconstrained_algorithms(
+        alg, dim=2, n_runs=2, maxevals=125, tol=1, min_success_rate=0.5
+    )
+
 
 constrained_algorithms = [gosac]
+
+
 @pytest.mark.parametrize("alg", constrained_algorithms)
 def test_constrained_algorithms(
     alg,
@@ -123,9 +159,9 @@ def test_constrained_algorithms(
     maxevals=100,
     tol=1,
     min_success_rate=0.5,
-    problems = [
+    problems=[
         pygoblet.standard.RosenbrockConstrained,
-    ]
+    ],
 ):
     """
     A test for constrained single-objective algorithms from soogo.
@@ -154,10 +190,19 @@ def test_constrained_algorithms(
         soogo_constraint = make_soogo_constraint(prob_instance)
         for run in range(n_runs):
             np.random.seed(run + 142)
-            out = alg(soogo_objective, soogo_constraint, prob_instance.bounds(), maxevals)
-            assert -prob_instance.constraint1(out.x) <= 0, "Returned solution does not satisfy constraint"
+            out = alg(
+                soogo_objective,
+                soogo_constraint,
+                prob_instance.bounds(),
+                maxevals,
+            )
+            assert -prob_instance.constraint1(out.x) <= 0, (
+                "Returned solution does not satisfy constraint"
+            )
             run_vals.append(out.fx[0])
-            print(f"Testing {alg.__name__} on {problem.__name__}, run {run+1}: fx = {out.fx}, best known = {min_value}")
+            print(
+                f"Testing {alg.__name__} on {problem.__name__}, run {run + 1}: fx = {out.fx}, best known = {min_value}"
+            )
         run_vals = np.array(run_vals)
         n_success = np.sum(np.abs(run_vals - min_value) < tol)
         success_rate = n_success / n_runs

@@ -33,9 +33,15 @@ import pytest
 from typing import Union, Tuple, Optional
 
 from soogo.model.base import Surrogate
-from soogo.acquisition import AcquisitionFunction, TransitionSearch, MaximizeDistance, AlternatedAcquisition
+from soogo.acquisition import (
+    AcquisitionFunction,
+    TransitionSearch,
+    MaximizeDistance,
+    AlternatedAcquisition,
+)
 from soogo.termination import IterateNTimes
 from soogo.optimize_result import OptimizeResult
+
 
 class MockSurrogateModel(Surrogate):
     """
@@ -43,7 +49,10 @@ class MockSurrogateModel(Surrogate):
     When called, this model returns the sum of the coordinates of the
     input points.
     """
-    def __init__(self, X_train: np.ndarray, Y_train: np.ndarray, iindex: np.ndarray = ()):
+
+    def __init__(
+        self, X_train: np.ndarray, Y_train: np.ndarray, iindex: np.ndarray = ()
+    ):
         self._X = X_train.copy()
         self._Y = Y_train.copy()
         self._iindex = iindex
@@ -82,11 +91,14 @@ class MockSurrogateModel(Surrogate):
     def check_initial_design(self, sample: np.ndarray) -> bool:
         pass
 
-    def eval_kernel(self, x: np.ndarray, y: Optional[np.ndarray] = None) -> np.ndarray:
+    def eval_kernel(
+        self, x: np.ndarray, y: Optional[np.ndarray] = None
+    ) -> np.ndarray:
         pass
 
     def reset_data(self) -> None:
         pass
+
 
 class MockEvaluabilitySurrogate(Surrogate):
     """
@@ -94,6 +106,7 @@ class MockEvaluabilitySurrogate(Surrogate):
     When called, this model returns a 0.1 for the first point and
     1.0 for all others.
     """
+
     def __init__(self, X_train: np.ndarray, Y_train: np.ndarray):
         self._X = X_train.copy()
         self._Y = Y_train.copy()
@@ -134,11 +147,14 @@ class MockEvaluabilitySurrogate(Surrogate):
     def check_initial_design(self, sample: np.ndarray) -> bool:
         pass
 
-    def eval_kernel(self, x: np.ndarray, y: Optional[np.ndarray] = None) -> np.ndarray:
+    def eval_kernel(
+        self, x: np.ndarray, y: Optional[np.ndarray] = None
+    ) -> np.ndarray:
         pass
 
     def reset_data(self) -> None:
         pass
+
 
 class TestTransitionSearch:
     """Test suite for the TransitionSearch acquisition function."""
@@ -162,9 +178,12 @@ class TestTransitionSearch:
                 cycle_search = TransitionSearch()
 
                 result = cycle_search.optimize(
-                    mock_surrogate, bounds, n=n, scoreWeight=0.5)
+                    mock_surrogate, bounds, n=n, scoreWeight=0.5
+                )
                 assert result.shape == (n, dim)
-                assert np.all(result >= bounds[:, 0]) and np.all(result <= bounds[:, 1])
+                assert np.all(result >= bounds[:, 0]) and np.all(
+                    result <= bounds[:, 1]
+                )
 
     def test_generate_candidates(self):
         """
@@ -181,7 +200,9 @@ class TestTransitionSearch:
         cycle_search = TransitionSearch()
 
         for n in nCand:
-            candidates = cycle_search.generate_candidates(mock_surrogate, bounds, nCand=n)
+            candidates = cycle_search.generate_candidates(
+                mock_surrogate, bounds, nCand=n
+            )
 
             # Should generate 2 * nCand candidates (perturbations + uniform)
             expected_count = 2 * n
@@ -194,11 +215,13 @@ class TestTransitionSearch:
     def test_select_candidates(self):
         """
         Test that the select_candidates() method:
+
         - Chooses the candidate further from evaluated points when function
-            values are the same.
+          values are the same.
         - Chooses the candidate with lower function value when distances are
-            the same.
+          the same.
         - Removes candidates that are below the evaluability threshold.
+
         """
         X_train = np.array([[5, 5]])
         Y_train = np.array([0.0])
@@ -211,12 +234,26 @@ class TestTransitionSearch:
         # Both tests would return [0.0, 0.0] if the evaluability filter fails
         # Test case 1: Same function values, different distances
         candidates = np.array([[0.0, 0.0], [9.0, 1.0], [4.0, 6.0]])
-        point = cycle_search.select_candidates(mock_surrogate, candidates, bounds, n=1, scoreWeight=0.5, evaluabilitySurrogate=mock_evaluability)
+        point = cycle_search.select_candidates(
+            mock_surrogate,
+            candidates,
+            bounds,
+            n=1,
+            scoreWeight=0.5,
+            evaluabilitySurrogate=mock_evaluability,
+        )
         assert np.allclose(point, np.array([[9.0, 1.0]]))
 
         # Test case 2: Same distances, different function values
         candidates = np.array([[0.0, 0.0], [3.0, 5.0], [7.0, 5.0]])
-        point = cycle_search.select_candidates(mock_surrogate, candidates, bounds, n=1, scoreWeight=0.5, evaluabilitySurrogate=mock_evaluability)
+        point = cycle_search.select_candidates(
+            mock_surrogate,
+            candidates,
+            bounds,
+            n=1,
+            scoreWeight=0.5,
+            evaluabilitySurrogate=mock_evaluability,
+        )
         assert np.allclose(point, np.array([[3.0, 5.0]]))
 
         # Test case 3: Weighted sum
@@ -225,8 +262,16 @@ class TestTransitionSearch:
         mock_surrogate = MockSurrogateModel(X_train, Y_train)
         mock_evaluability = MockEvaluabilitySurrogate(X_train, Y_train)
         candidates = np.array([[0.0, 0.0], [2.0, 6.0], [7.0, 0.5]])
-        point = cycle_search.select_candidates(mock_surrogate, candidates, bounds, n=1, scoreWeight=0.75, evaluabilitySurrogate=mock_evaluability)
+        point = cycle_search.select_candidates(
+            mock_surrogate,
+            candidates,
+            bounds,
+            n=1,
+            scoreWeight=0.75,
+            evaluabilitySurrogate=mock_evaluability,
+        )
         assert np.allclose(point, np.array([[7.0, 0.5]]))
+
 
 class TestMaximizeDistance:
     """Test suite for the MaximizeDistance acquisition function."""
@@ -250,12 +295,12 @@ class TestMaximizeDistance:
                 maximize_distance = MaximizeDistance()
 
                 result = maximize_distance.optimize(
-                    mock_surrogate,
-                    bounds,
-                    n=n
+                    mock_surrogate, bounds, n=n
                 )
                 assert result.shape == (n, dim)
-                assert np.all(result >= bounds[:, 0]) and np.all(result <= bounds[:, 1])
+                assert np.all(result >= bounds[:, 0]) and np.all(
+                    result <= bounds[:, 1]
+                )
 
     def test_optimize_maximizes_min_distance(self):
         """
@@ -271,7 +316,9 @@ class TestMaximizeDistance:
         Y_train = np.array([0.0])
         mock_surrogate = MockSurrogateModel(X_train, Y_train)
         points = maximize_distance.optimize(mock_surrogate, bounds, n=4)
-        expected_points = np.array([[10.0, 10.0], [10.0, 0.0], [0.0, 10.0], [5.0, 5.0]])
+        expected_points = np.array(
+            [[10.0, 10.0], [10.0, 0.0], [0.0, 10.0], [5.0, 5.0]]
+        )
 
         # Check that each point is different
         assert len(np.unique(points, axis=0)) == 4
@@ -281,7 +328,9 @@ class TestMaximizeDistance:
             assert np.any(np.all(np.isclose(expected_points, point), axis=1))
 
         # Test 2: Multiple existing points spread out
-        x_train = np.array([[5.0, 6.0], [2.0, 3.0], [8.0, 1.0], [1.0, 9.0], [7.0, 8.5]])
+        x_train = np.array(
+            [[5.0, 6.0], [2.0, 3.0], [8.0, 1.0], [1.0, 9.0], [7.0, 8.5]]
+        )
         y_train = np.array([0.0, 1.0, 2.0, 3.0, 4.0])
         mock_surrogate = MockSurrogateModel(x_train, y_train)
         point = maximize_distance.optimize(mock_surrogate, bounds, n=1)
@@ -311,12 +360,15 @@ class TestMaximizeDistance:
         assert np.all(result <= np.array([bounds[:, 1]]))
 
         # Check that integer dimension values are actually integers
-        integer_dim_values = result[:, 1]  # Second dimension is integer (index 1)
+        integer_dim_values = result[
+            :, 1
+        ]  # Second dimension is integer (index 1)
         assert np.all(integer_dim_values == np.round(integer_dim_values))
 
         # Check that points are different from the training points
         for point in result:
             assert not np.any(np.all(np.isclose(point, X_train), axis=1))
+
 
 class TestAlternatedAcquisition:
     """Test suite for the AlternatedAcquisition class."""
@@ -326,27 +378,39 @@ class TestAlternatedAcquisition:
         Test that the AlternatedAcquisition class correctly alternates
         between acquisition functions.
         """
+
         # Create mock acquisition functions
         class MockAcquisitionFunction(AcquisitionFunction):
             def __init__(self, n: int):
                 self.termination = IterateNTimes(n)
 
-            def optimize(self, model: Surrogate, bounds: np.ndarray, n: int = 1) -> np.ndarray:
+            def optimize(
+                self, model: Surrogate, bounds: np.ndarray, n: int = 1
+            ) -> np.ndarray:
                 return np.array([[0.5, 0.5]])
 
         # Create a list of mock acquisition functions
-        acquisition_funcs = [MockAcquisitionFunction(1), MockAcquisitionFunction(2), MockAcquisitionFunction(1)]
+        acquisition_funcs = [
+            MockAcquisitionFunction(1),
+            MockAcquisitionFunction(2),
+            MockAcquisitionFunction(1),
+        ]
 
         # Initialize the AlternatedAcquisition with the mock functions
         alternated_acq = AlternatedAcquisition(acquisition_funcs)
 
         # Simulate an optimization result
-        out = OptimizeResult(nfev=1, fx=np.array([0.1]), fsample=np.array([[0.1]]), nobj=1)
+        out = OptimizeResult(
+            nfev=1, fx=np.array([0.1]), fsample=np.array([[0.1]]), nobj=1
+        )
 
         for i in range(12):
             # Check that it alternates in the pattern: 1st, 2nd, 2nd, 3rd
             expected_pattern = [0, 1, 1, 2]
-            assert alternated_acq.idx == expected_pattern[i % len(expected_pattern)]
+            assert (
+                alternated_acq.idx
+                == expected_pattern[i % len(expected_pattern)]
+            )
 
             # Update the alternated acquisition with the mock result
             alternated_acq.update(out, None)
@@ -369,7 +433,9 @@ class TestAlternatedAcquisition:
         alternated_acq = AlternatedAcquisition(acquisition_funcs)
 
         # Mock optimization result
-        out = OptimizeResult(nfev=1, fx=np.array([0.1]), fsample=np.array([[0.1]]), nobj=1)
+        out = OptimizeResult(
+            nfev=1, fx=np.array([0.1]), fsample=np.array([[0.1]]), nobj=1
+        )
 
         for dim in dims:
             for n in n_points:
@@ -379,9 +445,12 @@ class TestAlternatedAcquisition:
                 mock_surrogate = MockSurrogateModel(X_train, Y_train)
 
                 result = alternated_acq.optimize(
-                    mock_surrogate, bounds, n=n, scoreWeight=0.5)
+                    mock_surrogate, bounds, n=n, scoreWeight=0.5
+                )
                 assert result.shape == (n, dim)
-                assert np.all(result >= bounds[:, 0]) and np.all(result <= bounds[:, 1])
+                assert np.all(result >= bounds[:, 0]) and np.all(
+                    result <= bounds[:, 1]
+                )
 
                 alternated_acq.update(out, mock_surrogate)
 
