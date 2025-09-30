@@ -122,7 +122,7 @@ class GaussianProcess(Surrogate):
             return res
         else:
             assert i >= 0
-            if isinstance(res, tuple):
+            if return_std or return_cov:
                 if return_std:
                     if return_cov:
                         return res[0][:, i], res[1][:, i], res[2][:, :, i]
