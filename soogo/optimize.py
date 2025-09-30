@@ -40,6 +40,7 @@ import warnings
 from copy import deepcopy
 from typing import Callable, Optional
 import numpy as np
+
 try:
     import PyNomad
 except ImportError:
@@ -71,11 +72,21 @@ from .acquisition import (
     TransitionSearch,
     AlternatedAcquisition,
 )
-from .utils import find_pareto_front, evaluate_and_log_point, uncertainty_score
-from .model import MedianLpfFilter, RbfModel, GaussianProcess, CubicRadialBasisFunction, LinearRadialBasisFunction
+from .utils import find_pareto_front, uncertainty_score
+from .model import (
+    MedianLpfFilter,
+    RbfModel,
+    GaussianProcess,
+    CubicRadialBasisFunction,
+    LinearRadialBasisFunction,
+)
 from .sampling import NormalSampler, Sampler, SamplingStrategy
-from .optimize_result import OptimizeResult
-from .termination import UnsuccessfulImprovement, RobustCondition, IterateNTimes
+from .optimize_result import OptimizeResult, evaluate_and_log_point
+from .termination import (
+    UnsuccessfulImprovement,
+    RobustCondition,
+    IterateNTimes,
+)
 from .problem import PymooProblem
 from .nomad import NomadProblem
 
@@ -1386,7 +1397,9 @@ def shebo(
     """
     # Check that required PyNomad package is available
     if PyNomad is None:
-        warnings.warn("PyNomad package is required but not installed. Install the PyNomad package and try again.")
+        warnings.warn(
+            "PyNomad package is required but not installed. Install the PyNomad package and try again."
+        )
         return
 
     # Initialize parameters
@@ -1429,11 +1442,15 @@ def shebo(
 
     # Default acquisition function
     if acquisitionFunc is None:
-        acquisitionFunc = AlternatedAcquisition([
-            GosacSample(objSurrogate, rtol=0.001, termination=IterateNTimes(1)),
-            TransitionSearch(rtol=0.001, termination=IterateNTimes(9)),
-            MaximizeDistance(rtol=0.001, termination=IterateNTimes(1))
-        ])
+        acquisitionFunc = AlternatedAcquisition(
+            [
+                GosacSample(
+                    objSurrogate, rtol=0.001, termination=IterateNTimes(1)
+                ),
+                TransitionSearch(rtol=0.001, termination=IterateNTimes(9)),
+                MaximizeDistance(rtol=0.001, termination=IterateNTimes(1)),
+            ]
+        )
 
     if objTrained and evalTrained:
         # Both surrogates are pre-trained, skip initial sampling
@@ -1445,7 +1462,9 @@ def shebo(
     elif objTrained and not evalTrained:
         # Only obj surrogate trained - initialize eval surrogate
         if disp:
-            print("Initializing evaluation surrogate from objective surrogate.")
+            print(
+                "Initializing evaluation surrogate from objective surrogate."
+            )
 
         evalSurrogate.update(objSurrogate.X, np.ones(len(objSurrogate.X)))
         out.fx = np.min(objSurrogate.Y)
@@ -1454,7 +1473,9 @@ def shebo(
     elif not objTrained and evalTrained:
         # Only eval surrogate trained - initialize obj surrogate
         if disp:
-            print("Initializing objective surrogate from evaluation surrogate.")
+            print(
+                "Initializing objective surrogate from evaluation surrogate."
+            )
 
         # Extract all points in evalSurrogate with a value of 1
         evalPoints = evalSurrogate.X[evalSurrogate.Y == 1]
@@ -1471,14 +1492,30 @@ def shebo(
                 print("Best value: %f" % out.fx)
 
         # Check if more points are needed for the objective surrogate
-        if not objSurrogate.check_initial_design(np.array(out.sample[:out.nfev][~np.isnan(out.fsample[:out.nfev])])):
+        if not objSurrogate.check_initial_design(
+            np.array(
+                out.sample[: out.nfev][~np.isnan(out.fsample[: out.nfev])]
+            )
+        ):
             maximizeDistance = MaximizeDistance(rtol=0.001)
             if disp:
-                print("Sampling additional points to initialize the surrogate model...")
+                print(
+                    "Sampling additional points to initialize the surrogate model..."
+                )
 
-            while (not objSurrogate.check_initial_design(np.array(out.sample[:out.nfev][~np.isnan(out.fsample[:out.nfev])]))) and (out.nfev < maxeval):
+            while (
+                not objSurrogate.check_initial_design(
+                    np.array(
+                        out.sample[: out.nfev][
+                            ~np.isnan(out.fsample[: out.nfev])
+                        ]
+                    )
+                )
+            ) and (out.nfev < maxeval):
                 ## Generate new point
-                xNew = maximizeDistance.optimize(evalSurrogate, [[0, 1] for _ in range(dim)], 1)
+                xNew = maximizeDistance.optimize(
+                    evalSurrogate, [[0, 1] for _ in range(dim)], 1
+                )
 
                 f = evaluate_and_log_point(rescaledFunc, xNew, out)
 
@@ -1488,8 +1525,7 @@ def shebo(
 
                 # Update the surrogate model with the new point
                 evalSurrogate.update(
-                    np.array(xNew),
-                    np.logical_not(np.isnan(f)).astype(float)
+                    np.array(xNew), np.logical_not(np.isnan(f)).astype(float)
                 )
 
     else:
@@ -1507,7 +1543,9 @@ def shebo(
 
         for i in range(1, len(x0)):
             # Check if this point is far enough from all previously kept points
-            if all(distances[i, kept_idx] >= 0.001 for kept_idx in keptIndices):
+            if all(
+                distances[i, kept_idx] >= 0.001 for kept_idx in keptIndices
+            ):
                 keptIndices.append(i)
 
         x0 = x0[np.array(keptIndices)]
@@ -1528,19 +1566,35 @@ def shebo(
 
         # Build the evaluability surrogate model
         evalSurrogate.update(
-            np.array(out.sample[0:out.nfev, :]),
-            np.logical_not(np.isnan(out.fsample[0 : out.nfev])).astype(float)
+            np.array(out.sample[0 : out.nfev, :]),
+            np.logical_not(np.isnan(out.fsample[0 : out.nfev])).astype(float),
         )
 
         # Check if initial design sufficient to initialize objective surrogate
-        if not objSurrogate.check_initial_design(np.array(out.sample[:out.nfev][~np.isnan(out.fsample[:out.nfev])])):
+        if not objSurrogate.check_initial_design(
+            np.array(
+                out.sample[: out.nfev][~np.isnan(out.fsample[: out.nfev])]
+            )
+        ):
             maximizeDistance = MaximizeDistance(rtol=0.001)
             if disp:
-                print("Sampling additional points to initialize the surrogate model...")
+                print(
+                    "Sampling additional points to initialize the surrogate model..."
+                )
 
-            while (not objSurrogate.check_initial_design(np.array(out.sample[:out.nfev][~np.isnan(out.fsample[:out.nfev])]))) and (out.nfev < maxeval):
+            while (
+                not objSurrogate.check_initial_design(
+                    np.array(
+                        out.sample[: out.nfev][
+                            ~np.isnan(out.fsample[: out.nfev])
+                        ]
+                    )
+                )
+            ) and (out.nfev < maxeval):
                 ## Generate new point
-                xNew = maximizeDistance.optimize(evalSurrogate, [[0, 1] for _ in range(dim)], 1)
+                xNew = maximizeDistance.optimize(
+                    evalSurrogate, [[0, 1] for _ in range(dim)], 1
+                )
 
                 f = evaluate_and_log_point(rescaledFunc, xNew, out)
 
@@ -1550,33 +1604,39 @@ def shebo(
 
                 # Update the surrogate model with the new point
                 evalSurrogate.update(
-                    np.array(xNew),
-                    np.logical_not(np.isnan(f)).astype(float)
+                    np.array(xNew), np.logical_not(np.isnan(f)).astype(float)
                 )
 
     # If we have run out of evaluations, we cannot continue
     if out.nfev >= maxeval:
-        print("Maximum number of evaluations reached before enough points were sampled to initialize the surrogate model.")
+        print(
+            "Maximum number of evaluations reached before enough points were sampled to initialize the surrogate model."
+        )
         return out
 
     # Generate the surrogate model for the objective function
     objSurrogate.update(
-        np.array(out.sample[:out.nfev][~np.isnan(out.fsample[:out.nfev])]),
-        np.array(out.fsample[:out.nfev][~np.isnan(out.fsample[:out.nfev])])
+        np.array(out.sample[: out.nfev][~np.isnan(out.fsample[: out.nfev])]),
+        np.array(out.fsample[: out.nfev][~np.isnan(out.fsample[: out.nfev])]),
     )
 
     if disp:
-        print("Objective surrogate model initialized with %d points." % objSurrogate.ntrain)
+        print(
+            "Objective surrogate model initialized with %d points."
+            % objSurrogate.ntrain
+        )
         print("Starting optimization search...")
 
     # Call the callback function with the current optimization result
     if callback is not None:
-            callback(out)
+        callback(out)
 
     # Main optimization loop
     while out.nfev < maxeval:
         # Calculate the threshold for evaluability
-        threshold = np.log(max(1, out.nfev - nStart + 1)) / np.log(maxeval - nStart)
+        threshold = np.log(max(1, out.nfev - nStart + 1)) / np.log(
+            maxeval - nStart
+        )
 
         # Generate new point
         xNew = acquisitionFunc.optimize(
@@ -1584,10 +1644,15 @@ def shebo(
             [[0, 1] for _ in range(dim)],
             n=1,
             points=evalSurrogate.X,
-            constraintTransform=lambda x: -x + threshold, # Pymoo expects g(x) <= 0
+            constraintTransform=lambda x: -x
+            + threshold,  # Pymoo expects g(x) <= 0
             evaluabilitySurrogate=evalSurrogate,
             evaluabilityThreshold=threshold,
-            scoreWeight=weightPattern[acquisitionFunc.acquisitionFuncArray[acquisitionFunc.idx].termination.iterationCount]
+            scoreWeight=weightPattern[
+                acquisitionFunc.acquisitionFuncArray[
+                    acquisitionFunc.idx
+                ].termination.iterationCount
+            ],
         )
 
         # Evaluate new point
@@ -1599,16 +1664,12 @@ def shebo(
 
         # Update evaluability surrogate model
         evalSurrogate.update(
-            np.array(xNew),
-            np.logical_not(np.isnan(f)).astype(float)
+            np.array(xNew), np.logical_not(np.isnan(f)).astype(float)
         )
 
         # If successful, update the obj surrogate
         if not np.isnan(f):
-            objSurrogate.update(
-                np.array(xNew),
-                np.array(f)
-            )
+            objSurrogate.update(np.array(xNew), np.array(f))
 
         # If the new point was better than current best, run NOMAD
         if np.array_equiv(xNew, out.x):
@@ -1627,7 +1688,7 @@ def shebo(
                     f"MAX_BB_EVAL {min(4 * dim, maxeval - out.nfev)}",
                     "DISPLAY_DEGREE 0",
                     "QUAD_MODEL_SEARCH 0",
-                ]
+                ],
             )
 
             # Get the points sampled by NOMAD
@@ -1640,11 +1701,15 @@ def shebo(
                 if cdist(point, evalSurrogate.X).min() >= 1e-7:
                     fval = nomadFSample[i]
                     # Update surrogates
-                    evalSurrogate.update(point, np.logical_not(np.isnan(fval)).astype(float))
+                    evalSurrogate.update(
+                        point, np.logical_not(np.isnan(fval)).astype(float)
+                    )
                     if not np.isnan(fval):
                         objSurrogate.update(point, fval)
             if disp:
-                print(f"NOMAD optimization completed. NOMAD used {len(nomadSample)} evaluations.")
+                print(
+                    f"NOMAD optimization completed. NOMAD used {len(nomadSample)} evaluations."
+                )
                 print("fEvals: %d" % out.nfev)
                 print("Best value: %f" % out.fx)
 
@@ -1699,9 +1764,9 @@ def fsapso(
     References
     ----------
     .. [#] Li, F., Shen, W., Cai, X., Gao, L., & Gary Wang, G. 2020; A fast
-    surrogate-assisted particle swarm optimization algorithm for computationally
-    expensive problems. Applied Soft Computing, 92, 106303.
-    https://doi.org/10.1016/j.asoc.2020.106303
+        surrogate-assisted particle swarm optimization algorithm for computationally
+        expensive problems. Applied Soft Computing, 92, 106303.
+        https://doi.org/10.1016/j.asoc.2020.106303
     """
     # Initialize parameters
     bounds = np.array(bounds)
@@ -1755,7 +1820,9 @@ def fsapso(
                 print("Best value: %f" % out.fx)
 
         # Build surrogate model
-        surrogateModel.update(out.sample[0 : out.nfev], out.fsample[0 : out.nfev])
+        surrogateModel.update(
+            out.sample[0 : out.nfev], out.fsample[0 : out.nfev]
+        )
 
         if disp:
             print(f"Built surrogate model with {surrogateModel.ntrain} points")
@@ -1770,7 +1837,9 @@ def fsapso(
         nInitial = surrogateModel.ntrain
 
         if disp:
-            print(f"Using pre-trained surrogate with {surrogateModel.ntrain} points")
+            print(
+                f"Using pre-trained surrogate with {surrogateModel.ntrain} points"
+            )
 
     # Select initial swarm
     if surrogateModel.ntrain >= nSwarm:
@@ -1784,19 +1853,26 @@ def fsapso(
     else:
         # If not enough training data, use random sampling
         if disp:
-            print("Not enough training data for initial swarm. Using random sampling to increase population.")
+            print(
+                "Not enough training data for initial swarm. Using random sampling to increase population."
+            )
 
         swarmSampler = Sampler(nSwarm - surrogateModel.ntrain)
         swarmInitX = swarmSampler.get_slhd_sample(bounds.tolist())
         swarmInitX = np.vstack((swarmInitX, surrogateModel.X))
 
     surrogateProblem = PymooProblem(
-        objfunc=lambda x: surrogateModel(x).reshape(-1, 1),
-        bounds=bounds
+        objfunc=lambda x: surrogateModel(x).reshape(-1, 1), bounds=bounds
     )
 
     # Initialize PSO algorithm
-    pso = PSO(pop_size=nSwarm, c1=1.491, c2=1.491, max_velocity_rate=vMax, adaptive=False)
+    pso = PSO(
+        pop_size=nSwarm,
+        c1=1.491,
+        c2=1.491,
+        max_velocity_rate=vMax,
+        adaptive=False,
+    )
     pso.setup(surrogateProblem)
 
     # Set initial swarm positions
@@ -1817,7 +1893,7 @@ def fsapso(
     # Main FSAPSO loop
     prevGlobalBest = out.fx
 
-    while out.nfev < maxeval + nInitial: # and pso.has_next():
+    while out.nfev < maxeval + nInitial:  # and pso.has_next():
         improvedThisIter = False
 
         # Get minimum of surrogate
@@ -1841,7 +1917,9 @@ def fsapso(
                 prevGlobalBest = fMin
 
                 # Update PSO's global best
-                pso.opt = Population.create(Individual(X=xMin, F=np.array([fMin])))
+                pso.opt = Population.create(
+                    Individual(X=xMin, F=np.array([fMin]))
+                )
 
         # Update w value
         pso.w = 0.792 - (0.792 - 0.2) * out.nfev / maxeval
@@ -1859,7 +1937,12 @@ def fsapso(
             xBestParticle = swarm.get("X")[bestParticleIdx]
 
             # Evaluate best particle
-            if np.min(cdist(xBestParticle.reshape(1, -1), out.sample[: out.nfev])) > tol:
+            if (
+                np.min(
+                    cdist(xBestParticle.reshape(1, -1), out.sample[: out.nfev])
+                )
+                > tol
+            ):
                 fBestParticle = evaluate_and_log_point(fun, xBestParticle, out)
 
                 if disp:
@@ -1867,7 +1950,9 @@ def fsapso(
                     print("Best value: %f" % out.fx)
 
                 # Update surrogate with true evaluation
-                surrogateModel.update(xBestParticle.reshape(1, -1), fBestParticle)
+                surrogateModel.update(
+                    xBestParticle.reshape(1, -1), fBestParticle
+                )
 
                 # Update the particle's value in the swarm for PSO
                 fUpdated = fSurr.copy()
@@ -1880,22 +1965,39 @@ def fsapso(
                     prevGlobalBest = fBestParticle
 
                     # Update PSO's global best
-                    pso.opt = Population.create(Individual(X=xBestParticle, F=np.array([fBestParticle])))
+                    pso.opt = Population.create(
+                        Individual(
+                            X=xBestParticle, F=np.array([fBestParticle])
+                        )
+                    )
 
         # If no improvement, evaluate particle with greatest uncertainty
         if not improvedThisIter and out.nfev < maxeval:
-            scores = uncertainty_score(swarm.get("X"), surrogateModel.X, surrogateModel.Y)
+            scores = uncertainty_score(
+                swarm.get("X"), surrogateModel.X, surrogateModel.Y
+            )
             xMostUncertain = swarm.get("X")[np.argmax(scores)]
 
-            if np.min(cdist(xMostUncertain.reshape(1, -1), out.sample[: out.nfev])) > tol:
-                fMostUncertain = evaluate_and_log_point(fun, xMostUncertain, out)
+            if (
+                np.min(
+                    cdist(
+                        xMostUncertain.reshape(1, -1), out.sample[: out.nfev]
+                    )
+                )
+                > tol
+            ):
+                fMostUncertain = evaluate_and_log_point(
+                    fun, xMostUncertain, out
+                )
 
                 if disp:
                     print("fEvals: %d" % out.nfev)
                     print("Best value: %f" % out.fx)
 
                 # Update surrogate
-                surrogateModel.update(xMostUncertain.reshape(1, -1), fMostUncertain)
+                surrogateModel.update(
+                    xMostUncertain.reshape(1, -1), fMostUncertain
+                )
 
                 # Update particle's fitness
                 fFinal = swarm.get("F")
@@ -1907,7 +2009,11 @@ def fsapso(
                     prevGlobalBest = fMostUncertain
 
                     # Update PSO's global best
-                    pso.opt = Population.create(Individual(X=xMostUncertain, F=np.array([fMostUncertain])))
+                    pso.opt = Population.create(
+                        Individual(
+                            X=xMostUncertain, F=np.array([fMostUncertain])
+                        )
+                    )
 
         # Tell PSO the results
         pso.tell(infills=swarm)

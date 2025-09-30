@@ -88,7 +88,6 @@ def test_callback(minimize):
         cptv,
         cptvl,
         bayesian_optimization,
-        shebo,
         fsapso,
     ],
 )

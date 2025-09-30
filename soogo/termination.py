@@ -121,7 +121,9 @@ class UnsuccessfulImprovement(TerminationCondition):
 
         # Get the new best value from the optimization result
         new_best_value = (
-            out.fx[0].item() if isinstance(out.fx, np.ndarray) else out.fx
+            out.fx.flatten()[0].item()
+            if isinstance(out.fx, np.ndarray)
+            else out.fx
         )
         assert isinstance(new_best_value, float), (
             "Expected out.fx to be a float, but got a different type."
@@ -183,6 +185,7 @@ class IterateNTimes(TerminationCondition):
 
     :param nTimes: Number of iterations after which the condition is met.
     """
+
     def __init__(self, nTimes: int = 1) -> None:
         self.nTimes = nTimes
         self.iterationCount = 0
