@@ -1,5 +1,5 @@
 """Test the optimization algorithms converge."""
-import pygold
+import pygoblet
 import numpy as np
 import pytest
 
@@ -11,11 +11,13 @@ from soogo import (
     cptvl,
     gosac,
     bayesian_optimization,
+    shebo,
+    fsapso,
 )
 
 class ShiftedProblem:
     """
-    Shifts the input and bounds of a pyGOLD problem by a random vector.
+    Shifts the input and bounds of a pyGOBLET problem by a random vector.
     """
     def __init__(self, base_class, dim):
         self.base = base_class(dim)
@@ -35,23 +37,23 @@ class ShiftedProblem:
 
 def make_soogo_objective(prob_instance):
     """
-    Wraps a pyGOLD problem instance's evaluate method to support batch input
+    Wraps a pyGOBLET problem instance's evaluate method to support batch input
     for use with soogo algorithms.
     """
     return lambda X: np.array([prob_instance.evaluate(x) for x in np.atleast_2d(X)])
 
 def make_soogo_constraint(prob_instance):
     """
-    Wraps a pyGOLD problem instance's constraint method to support batch input
+    Wraps a pyGOBLET problem instance's constraint method to support batch input
     for use with soogo algorithms.
     """
     return lambda X: np.array([-prob_instance.constraint1(x) for x in np.atleast_2d(X)])
 
 unconstrained_algorithms = [multistart_msrs, dycors, cptv, cptvl]
 unconstrained_problems = [
-    pygold.standard.Trid,                                        # Bowl-shaped, range ~(-7, 350)
-    lambda dim: ShiftedProblem(pygold.standard.Zakharov, dim),   # Plate-shaped, shifted, range ~(0, 58500)
-    lambda dim: ShiftedProblem(pygold.standard.Griewank, dim),   # Dispersed local minima, shifted, range ~(0, 250)
+    pygoblet.standard.Trid,                                        # Bowl-shaped, range ~(-7, 350)
+    lambda dim: ShiftedProblem(pygoblet.standard.Zakharov, dim),   # Plate-shaped, shifted, range ~(0, 58500)
+    lambda dim: ShiftedProblem(pygoblet.standard.Griewank, dim),   # Dispersed local minima, shifted, range ~(0, 250)
 ]
 
 @pytest.mark.parametrize("alg", unconstrained_algorithms)
@@ -66,7 +68,7 @@ def test_unconstrained_algorithms(
 ):
     """
     Test unconstrained single-objective algorithms from soogo on a set of
-    standard optimization problems from the pyGOLD library. Ensures that
+    standard optimization problems from the pyGOBLET library. Ensures that
     an algorithm succeeds at solving each problem at least at a specified
     success rate.
 
@@ -81,7 +83,7 @@ def test_unconstrained_algorithms(
     :param min_success_rate: Minimum required success rate (fraction of runs
         that must be successful) for the algorithm to pass the test
         (default is 0.6).
-    :param problems: List of pyGOLD problem classes to test (default includes
+    :param problems: List of pyGOBLET problem classes to test (default includes
         Trid, Zakharov, and Griewank).
     """
     for problem in problems:
@@ -101,7 +103,7 @@ def test_unconstrained_algorithms(
             f"{alg.__name__} failed on {type(prob_instance).__name__}: success rate {success_rate:.2f} < {min_success_rate}"
         )
 
-slow_algorithms = [surrogate_optimization, bayesian_optimization]
+slow_algorithms = [surrogate_optimization, bayesian_optimization, shebo, fsapso]
 @pytest.mark.parametrize("alg", slow_algorithms)
 def test_unconstrained_quick(alg):
     """
@@ -122,7 +124,7 @@ def test_constrained_algorithms(
     tol=1,
     min_success_rate=0.5,
     problems = [
-        pygold.standard.RosenbrockConstrained,
+        pygoblet.standard.RosenbrockConstrained,
     ]
 ):
     """
@@ -141,7 +143,7 @@ def test_constrained_algorithms(
     :param min_success_rate: Minimum required success rate (fraction of runs
         that must be successful) for the algorithm to pass the test
         (default is 0.5).
-    :param problems: List of pyGOLD problem classes to test (default is
+    :param problems: List of pyGOBLET problem classes to test (default is
         RosenbrockConstrained).
     """
     for problem in problems:

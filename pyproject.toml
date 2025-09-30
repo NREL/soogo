@@ -35,7 +35,8 @@ test = [
     "pytest",
     "jupyter",
     "ipykernel",
-    "pygold",
+    "pygoblet",
+    "PyNomadBBO",
 ]
 lint = [
     "ruff",
