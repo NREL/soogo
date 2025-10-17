@@ -37,17 +37,18 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -e .
+          python -m pip install uv
+          uv venv --python ${{ matrix.python-version }}
+          uv pip install -e .
       - name: Lint with ruff
         run: |
-          python -m pip install flake8 jupyter
+          uv pip install flake8 jupyter
           # stop the build if there are Python syntax errors or undefined names
-          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          uv run flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude .venv,build,__pycache__
           # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+          uv run flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics --exclude .venv,__pycache__
       - name: Test with pytest
         if: ${{ matrix.os == 'ubuntu-latest' }}
         run: |
-          sudo apt-get update
-          python -m pip install pytest PyNomadBBO pygoblet
-          pytest
+          uv pip install pytest PyNomadBBO pygoblet jupyter ipykernel
+          uv run python -m pytest
