@@ -76,40 +76,40 @@ def weighted_score(
     dx_max: float = 1.0,
 ) -> float:
     r"""Computes the weighted score from the predicted value of the surrogate
-        model at a point and minimum distance from the point to the set of
-        previously selected evaluation points.
+    model at a point and minimum distance from the point to the set of
+    previously selected evaluation points.
 
-        The score is
+    The score is
 
-        .. math::
+    .. math::
 
-            w \frac{s(x)-s_{min}}{s_{max}-s_{min}} +
-            (1-w) \frac{d_{max}-d(x,X)}{d_{max}},
+        w \frac{s(x)-s_{min}}{s_{max}-s_{min}} +
+        (1-w) \frac{d_{max}-d(x,X)}{d_{max}},
 
-        where:
+    where:
 
-        - :math:`w` is a weight.
-        - :math:`s(x)` is the value for the surrogate model on x.
-        - :math:`d(x,X)` is the minimum distance between x and the previously
-            selected evaluation points.
-        - :math:`s_{min}` is the minimum value of the surrogate model.
-        - :math:`s_{max}` is the maximum value of the surrogate model.
-        - :math:`d_{max}` is the maximum distance between a candidate point and
-            the set X of previously selected evaluation points.
+    - :math:`w` is a weight.
+    - :math:`s(x)` is the value for the surrogate model on x.
+    - :math:`d(x,X)` is the minimum distance between x and the previously
+        selected evaluation points.
+    - :math:`s_{min}` is the minimum value of the surrogate model.
+    - :math:`s_{max}` is the maximum value of the surrogate model.
+    - :math:`d_{max}` is the maximum distance between a candidate point and
+        the set X of previously selected evaluation points.
 
-        In case :math:`s_{max} = s_{min}`, the score is computed as
+    In case :math:`s_{max} = s_{min}`, the score is computed as
 
-        .. math::
+    .. math::
 
-            \frac{d_{max}-d(x,X)}{d_{max}}.
+        \frac{d_{max}-d(x,X)}{d_{max}}.
 
-        :param sx: Function value(s) :math:`s(x)`.
-        :param dx: Distance(s) between candidate(s) and the set X.
-        :param weight: Weight :math:`w`.
-        :param sx_min: Minimum value of the surrogate model.
-        :param sx_max: Maximum value of the surrogate model.
-        :param dx_max: Maximum distance between a candidate point and the set X.
-        """
+    :param sx: Function value(s) :math:`s(x)`.
+    :param dx: Distance(s) between candidate(s) and the set X.
+    :param weight: Weight :math:`w`.
+    :param sx_min: Minimum value of the surrogate model.
+    :param sx_max: Maximum value of the surrogate model.
+    :param dx_max: Maximum distance between a candidate point and the set X.
+    """
     if sx_max == sx_min:
         return (dx_max - dx) / dx_max
     else:
@@ -228,9 +228,7 @@ def select_weighted_candidates(
             axis=1,
         )
 
-    selindex = argmin_weighted_score(
-        scaledvalue, dist, weightpattern[0], tol
-    )
+    selindex = argmin_weighted_score(scaledvalue, dist, weightpattern[0], tol)
     if selindex >= 0:
         xselected[0, :] = x[selindex, :]
         distselected[0, 0:m] = distx[selindex, :]
@@ -471,7 +469,6 @@ class WeightedAcquisition(AcquisitionFunction):
             # Best point found so far
             self.best_known_x = None
 
-
     def tol(self, bounds) -> float:
         """Compute tolerance used to eliminate points that are too close to
         previously selected ones.
@@ -557,7 +554,12 @@ class WeightedAcquisition(AcquisitionFunction):
 
         # Select best candidates
         xselected, _ = select_weighted_candidates(
-            x, cdist(x, surrogateModel.X), fx, n, self.tol(bounds), self.weightpattern
+            x,
+            cdist(x, surrogateModel.X),
+            fx,
+            n,
+            self.tol(bounds),
+            self.weightpattern,
         )
         n = xselected.shape[0]
 
@@ -1741,6 +1743,7 @@ class GosacSample(AcquisitionFunction):
         assert n == 1
 
         if constraintTransform is None:
+
             def constraintTransform(x):
                 return x
 
@@ -1753,7 +1756,11 @@ class GosacSample(AcquisitionFunction):
         atol = self.tol(bounds)
 
         cheapProblem = PymooProblem(
-            self.fun, bounds, iindex, gfunc=transformedConstraint, n_ieq_constr=gdim
+            self.fun,
+            bounds,
+            iindex,
+            gfunc=transformedConstraint,
+            n_ieq_constr=gdim,
         )
         res = pymoo_minimize(
             cheapProblem,
@@ -2123,7 +2130,12 @@ class TransitionSearch(AcquisitionFunction):
         # Select points with weighted sum
         weightpattern = [scoreWeight]
         xselected, _ = select_weighted_candidates(
-            candidates, distx, predictedValues, n, self.tol(bounds), weightpattern
+            candidates,
+            distx,
+            predictedValues,
+            n,
+            self.tol(bounds),
+            weightpattern,
         )
 
         return xselected
@@ -2283,6 +2295,7 @@ class AlternatedAcquisition(AcquisitionFunction):
     :param acquisitionFuncArray: List of acquisition functions to be used in
         sequence.
     """
+
     def __init__(
         self,
         acquisitionFuncArray: Sequence[AcquisitionFunction],
