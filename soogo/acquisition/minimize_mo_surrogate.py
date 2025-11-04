@@ -8,12 +8,12 @@ from pymoo.core.mixed import MixedVariableGA, MixedVariableMating
 from pymoo.operators.survival.rank_and_crowding import RankAndCrowding
 from pymoo.optimize import minimize as pymoo_minimize
 
-from soogo.acquisition.base import AcquisitionFunction
+from soogo.acquisition.base import Acquisition
 from soogo.model.base import Surrogate
 from soogo.problem import PymooProblem, ListDuplicateElimination
 
 
-class MinimizeMOSurrogate(AcquisitionFunction):
+class MinimizeMOSurrogate(Acquisition):
     """Obtain pareto-optimal sample points for the multi-objective surrogate
     model.
 

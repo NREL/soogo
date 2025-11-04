@@ -6,13 +6,13 @@ from scipy.spatial.distance import cdist
 
 from pymoo.optimize import minimize as pymoo_minimize
 
-from soogo.acquisition.base import AcquisitionFunction
+from soogo.acquisition.base import Acquisition
 from soogo.acquisition.maximize_distance import MaximizeDistance
 from soogo.model.base import Surrogate
 from soogo.problem import PymooProblem
 
 
-class EndPointsParetoFront(AcquisitionFunction):
+class EndPointsParetoFront(Acquisition):
     """Obtain endpoints of the Pareto front as described in [#]_.
 
     For each component i in the target space, this algorithm solves a cheap

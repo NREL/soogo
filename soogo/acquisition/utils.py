@@ -37,6 +37,9 @@ __deprecated__ = False
 
 import numpy as np
 from scipy.spatial.distance import cdist
+from scipy.spatial import KDTree
+import networkx as nx
+from networkx.algorithms.approximation import maximum_independent_set
 
 
 def weighted_score(
@@ -235,3 +238,34 @@ def select_weighted_candidates(
         distselected[ii - 1, m + ii] = distselected[ii, m + ii - 1]
 
     return xselected, distselected
+
+
+class FarEnoughSampleFilter:
+    def __init__(self, X, tol):
+        self.tree = KDTree(X)
+        self.tol = tol
+
+    def is_far_enough(self, x):
+        dist, _ = self.tree.query(x.reshape(1, -1))
+        return dist[0] >= self.tol
+
+    def __call__(self, Xc):
+        # Discard points that are too close to X
+        mask0 = np.array([self.is_far_enough(x) for x in Xc])
+        Xc0 = Xc[mask0]
+
+        # Find the maximum independent set among the remaining points
+        dist = cdist(Xc0, Xc0)
+        np.fill_diagonal(dist, np.inf)
+        g = nx.Graph()
+        g.add_edges_from(
+            [
+                (i, j)
+                for i in range(len(Xc0))
+                for j in range(i + 1, len(Xc0))
+                if dist[i, j] < self.tol
+            ]
+        )
+
+        idx = maximum_independent_set(g)
+        return Xc0[list(idx)]

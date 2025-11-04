@@ -46,7 +46,7 @@ from soogo import sampling, OptimizeResult
 from soogo.acquisition import (
     WeightedAcquisition,
     TargetValueAcquisition,
-    AcquisitionFunction,
+    Acquisition,
     MinimizeSurrogate,
 )
 from soogo.model.rbf_kernel import RadialBasisFunction
@@ -62,7 +62,7 @@ from data import Data
 
 def read_and_run(
     data_file: str,
-    acquisitionFunc: Optional[AcquisitionFunction] = None,
+    acquisitionFunc: Optional[Acquisition] = None,
     maxeval: int = 0,
     Ntrials: int = 0,
     batchSize: int = 0,
@@ -77,7 +77,7 @@ def read_and_run(
     ----------
     data_file : str
         Path for the data file.
-    acquisitionFunc : soogo.acquisition.AcquisitionFunction, optional
+    acquisitionFunc : soogo.acquisition.Acquisition, optional
         Sampler to be used. Default: None, i.e., defined by the optimizer.
     maxeval : int, optional
         Maximum number of allowed function evaluations per trial.

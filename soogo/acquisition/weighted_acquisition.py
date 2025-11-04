@@ -4,7 +4,7 @@ import numpy as np
 from math import log
 from scipy.spatial.distance import cdist
 
-from soogo.acquisition.base import AcquisitionFunction
+from soogo.acquisition.base import Acquisition
 from soogo.acquisition.utils import select_weighted_candidates
 from soogo.model.base import Surrogate
 from soogo.optimize_result import OptimizeResult
@@ -13,7 +13,7 @@ from soogo.termination import UnsuccessfulImprovement
 from soogo.utils import find_pareto_front
 
 
-class WeightedAcquisition(AcquisitionFunction):
+class WeightedAcquisition(Acquisition):
     """Select candidates based on the minimization of an weighted average score.
 
     The weighted average is :math:`w f_s(x) + (1-w) (-d_s(x))`, where

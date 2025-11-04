@@ -3,13 +3,13 @@
 import numpy as np
 from typing import Sequence
 
-from soogo.acquisition.base import AcquisitionFunction
+from soogo.acquisition.base import Acquisition
 from soogo.model import RbfModel
 from soogo.model.base import Surrogate
 from soogo.optimize_result import OptimizeResult
 
 
-class AlternatedAcquisition(AcquisitionFunction):
+class AlternatedAcquisition(Acquisition):
     """
     Alternated acquisition function that cycles through a list of acquisition
     functions.
@@ -27,7 +27,7 @@ class AlternatedAcquisition(AcquisitionFunction):
 
     def __init__(
         self,
-        acquisitionFuncArray: Sequence[AcquisitionFunction],
+        acquisitionFuncArray: Sequence[Acquisition],
         **kwargs,
     ) -> None:
         super().__init__(**kwargs)

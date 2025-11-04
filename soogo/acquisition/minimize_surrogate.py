@@ -7,12 +7,12 @@ from scipy.spatial.distance import cdist
 from scipy.special import gamma
 from scipy.optimize import minimize
 
-from soogo.acquisition.base import AcquisitionFunction
+from soogo.acquisition.base import Acquisition
 from soogo.model.base import Surrogate
 from soogo.sampling import Sampler, Mitchel91Sampler
 
 
-class MinimizeSurrogate(AcquisitionFunction):
+class MinimizeSurrogate(Acquisition):
     """Obtain sample points that are local minima of the surrogate model.
 
     This implementation is based on the one of MISO-MS used in the paper [#]_.

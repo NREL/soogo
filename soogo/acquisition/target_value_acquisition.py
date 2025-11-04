@@ -7,13 +7,13 @@ from scipy.spatial.distance import cdist
 from pymoo.optimize import minimize as pymoo_minimize
 from pymoo.termination.default import DefaultSingleObjectiveTermination
 
-from soogo.acquisition.base import AcquisitionFunction
+from soogo.acquisition.base import Acquisition
 from soogo.model import RbfModel
 from soogo.problem import PymooProblem
 from soogo.sampling import Mitchel91Sampler
 
 
-class TargetValueAcquisition(AcquisitionFunction):
+class TargetValueAcquisition(Acquisition):
     """Target value acquisition function for the RBF model based on [#]_, [#]_,
     and [#]_.
 

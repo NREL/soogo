@@ -6,12 +6,12 @@ from scipy.spatial import KDTree
 
 from pymoo.optimize import minimize as pymoo_minimize
 
-from soogo.acquisition.base import AcquisitionFunction
+from soogo.acquisition.base import Acquisition
 from soogo.model.base import Surrogate
 from soogo.problem import PymooProblem
 
 
-class MaximizeDistance(AcquisitionFunction):
+class MaximizeDistance(Acquisition):
     """
     Maximizing distance acquisition function as described in [#]_.
 

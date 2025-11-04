@@ -3,14 +3,14 @@
 import numpy as np
 from scipy.spatial.distance import cdist
 
-from soogo.acquisition.base import AcquisitionFunction
+from soogo.acquisition.base import Acquisition
 from soogo.acquisition.weighted_acquisition import WeightedAcquisition
 from soogo.model.base import Surrogate
 from soogo.sampling import NormalSampler
 from soogo.utils import find_pareto_front
 
 
-class CoordinatePerturbationOverNondominated(AcquisitionFunction):
+class CoordinatePerturbationOverNondominated(Acquisition):
     """Coordinate perturbation acquisition function over the nondominated set.
 
     This acquisition method was proposed in [#]_. It perturbs locally each of

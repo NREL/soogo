@@ -4,12 +4,12 @@ import numpy as np
 from scipy.optimize import differential_evolution
 from scipy.linalg import cholesky, solve_triangular
 
-from soogo.acquisition.base import AcquisitionFunction
+from soogo.acquisition.base import Acquisition
 from soogo.model import GaussianProcess
 from soogo.sampling import Sampler, Mitchel91Sampler
 
 
-class MaximizeEI(AcquisitionFunction):
+class MaximizeEI(Acquisition):
     """Acquisition by maximization of the expected improvement of a Gaussian
     Process.
 

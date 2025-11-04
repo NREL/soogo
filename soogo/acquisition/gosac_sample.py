@@ -5,13 +5,13 @@ from scipy.spatial import KDTree
 
 from pymoo.optimize import minimize as pymoo_minimize
 
-from soogo.acquisition.base import AcquisitionFunction
+from soogo.acquisition.base import Acquisition
 from soogo.acquisition.maximize_distance import MaximizeDistance
 from soogo.model.base import Surrogate
 from soogo.problem import PymooProblem
 
 
-class GosacSample(AcquisitionFunction):
+class GosacSample(Acquisition):
     """GOSAC acquisition function as described in [#]_.
 
     Minimize the objective function with surrogate constraints. If a feasible

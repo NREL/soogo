@@ -37,7 +37,7 @@ from ..termination import TerminationCondition
 from ..optimize_result import OptimizeResult
 
 
-class AcquisitionFunction(ABC):
+class Acquisition(ABC):
     """Base class for acquisition functions.
 
     This an abstract class. Subclasses must implement the method

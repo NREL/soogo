@@ -11,14 +11,14 @@ from pymoo.core.initialization import Initialization
 from pymoo.optimize import minimize as pymoo_minimize
 from pymoo.core.population import Population
 
-from soogo.acquisition.base import AcquisitionFunction
+from soogo.acquisition.base import Acquisition
 from soogo.model import LinearRadialBasisFunction, RbfModel
 from soogo.model.base import Surrogate
 from soogo.problem import PymooProblem, ListDuplicateElimination
 from soogo.utils import find_pareto_front
 
 
-class ParetoFront(AcquisitionFunction):
+class ParetoFront(Acquisition):
     """Obtain sample points that fill gaps in the Pareto front from [#]_.
 
     The algorithm proceeds as follows to find each new point:

@@ -34,7 +34,7 @@ from typing import Union, Tuple, Optional
 
 from soogo.model.base import Surrogate
 from soogo.acquisition import (
-    AcquisitionFunction,
+    Acquisition,
     TransitionSearch,
     MaximizeDistance,
     AlternatedAcquisition,
@@ -380,7 +380,7 @@ class TestAlternatedAcquisition:
         """
 
         # Create mock acquisition functions
-        class MockAcquisitionFunction(AcquisitionFunction):
+        class MockAcquisition(Acquisition):
             def __init__(self, n: int):
                 self.termination = IterateNTimes(n)
 
@@ -391,9 +391,9 @@ class TestAlternatedAcquisition:
 
         # Create a list of mock acquisition functions
         acquisition_funcs = [
-            MockAcquisitionFunction(1),
-            MockAcquisitionFunction(2),
-            MockAcquisitionFunction(1),
+            MockAcquisition(1),
+            MockAcquisition(2),
+            MockAcquisition(1),
         ]
 
         # Initialize the AlternatedAcquisition with the mock functions

@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from .base import AcquisitionFunction
+from .base import Acquisition
 from .utils import (
     weighted_score,
     argmin_weighted_score,
@@ -37,7 +37,7 @@ from .maximize_distance import MaximizeDistance
 from .alternated_acquisition import AlternatedAcquisition
 
 __all__ = [
-    "AcquisitionFunction",
+    "Acquisition",
     "weighted_score",
     "argmin_weighted_score",
     "select_weighted_candidates",
