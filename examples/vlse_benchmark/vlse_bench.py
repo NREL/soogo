@@ -174,7 +174,12 @@ algorithms["CPTVl"] = {
 algorithms["MLSL"] = {
     "model": rbf.RbfModel(filter=rbf.MedianLpfFilter()),
     "optimizer": optimize.surrogate_optimization,
-    "acquisition": acquisition.MinimizeSurrogate(1, 0.005 * np.sqrt(2.0)),
+    "acquisition": acquisition.MultipleAcquisition(
+        (
+            acquisition.MinimizeSurrogate(1, 0.005 * np.sqrt(2)),
+            acquisition.MaximizeDistance(rtol=0.005 * np.sqrt(2)),
+        )
+    ),
 }
 algorithms["GP"] = {
     "model": gp.GaussianProcess(normalize_y=True),

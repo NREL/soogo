@@ -48,6 +48,8 @@ from soogo.acquisition import (
     TargetValueAcquisition,
     Acquisition,
     MinimizeSurrogate,
+    MultipleAcquisition,
+    MaximizeDistance,
 )
 from soogo.model.rbf_kernel import RadialBasisFunction
 from soogo.model import (
@@ -377,7 +379,12 @@ def main(config: int) -> list[OptimizeResult]:
     elif config == 5:
         optres = read_and_run(
             data_file="datainput_BraninWithInteger",
-            acquisitionFunc=TargetValueAcquisition(),
+            acquisitionFunc=MultipleAcquisition(
+                (
+                    TargetValueAcquisition(),
+                    MaximizeDistance(),
+                )
+            ),
             maxeval=100,
             Ntrials=3,
             batchSize=1,
@@ -408,7 +415,12 @@ def main(config: int) -> list[OptimizeResult]:
     elif config == 8:
         optres = read_and_run(
             data_file="datainput_BraninWithInteger",
-            acquisitionFunc=MinimizeSurrogate(100, 0.005 * sqrt(2)),
+            acquisitionFunc=MultipleAcquisition(
+                (
+                    MinimizeSurrogate(100, 0.005 * sqrt(2)),
+                    MaximizeDistance(rtol=0.005 * sqrt(2)),
+                )
+            ),
             maxeval=100,
             Ntrials=3,
             batchSize=10,

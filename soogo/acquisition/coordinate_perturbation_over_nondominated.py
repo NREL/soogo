@@ -58,7 +58,6 @@ class CoordinatePerturbationOverNondominated(Acquisition):
         """
         dim = len(bounds)
         atol = self.acquisitionFunc.tol(bounds)
-        assert isinstance(self.acquisitionFunc.sampler, NormalSampler)
 
         # Find a collection of points that are close to the Pareto front
         bestCandidates = np.empty((0, dim))

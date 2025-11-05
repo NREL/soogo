@@ -1,16 +1,14 @@
 """Target value acquisition function for RBF surrogate optimization."""
 
 import numpy as np
-from scipy.spatial import KDTree
-from scipy.spatial.distance import cdist
 
 from pymoo.optimize import minimize as pymoo_minimize
 from pymoo.termination.default import DefaultSingleObjectiveTermination
 
-from soogo.acquisition.base import Acquisition
-from soogo.model import RbfModel
-from soogo.problem import PymooProblem
-from soogo.sampling import Mitchel91Sampler
+from .base import Acquisition
+from ..model import RbfModel
+from ..problem import PymooProblem
+from .utils import FarEnoughSampleFilter
 
 
 class TargetValueAcquisition(Acquisition):
@@ -67,17 +65,21 @@ class TargetValueAcquisition(Acquisition):
     """
 
     def __init__(self, cycleLength: int = 6, **kwargs) -> None:
+        # Initialize cycle counter and cycle length
         self._cycle = 0
         self.cycleLength = cycleLength
 
+        super().__init__(**kwargs)
+
         # Use termination criteria based on the relative tolerance. This is used
         # to reduce the time spent in the optimization process.
-        super().__init__(**kwargs)
-        termination = DefaultSingleObjectiveTermination(
+        default_termination = DefaultSingleObjectiveTermination(
             xtol=self.rtol, period=3
         )
-        self.optimizer.termination = termination
-        self.mi_optimizer.termination = termination
+        if "optimizer" not in kwargs:
+            self.optimizer.termination = default_termination
+        if "mi_optimizer" not in kwargs:
+            self.mi_optimizer.termination = default_termination
 
     @staticmethod
     def bumpiness_measure(
@@ -103,12 +105,12 @@ class TargetValueAcquisition(Acquisition):
         :param x: Possible point to be added to the surrogate model.
         :param target: Target value.
         :param target_range: Known range in the target space. Used to scale
-            the function values to avoid overflow.
+            the function values and avoid overflow.
         """
         absmu = surrogate.mu_measure(x)
         assert all(
             absmu > 0
-        )  # if absmu == 0, the linear system in the surrogate model singular
+        )  # if absmu == 0, the linear system in the surrogate model is singular
 
         # predict RBF value of x
         yhat = surrogate(x)
@@ -116,18 +118,7 @@ class TargetValueAcquisition(Acquisition):
         # Compute the distance between the predicted value and the target
         dist = np.absolute(yhat - target) / target_range
 
-        # Use sqrt(gy) as the bumpiness measure to avoid overflow due to
-        # squaring big values. We do not make the function continuSee
-        # Gutmann (2001). Underflow may happen when candidates are close to the
-        # desired target value.
-        #
-        # Gutmann (2001):
-        # return -1 / ((absmu * dist) * dist)
-        #
-        # Björkman, M., Holmström (2000):
-        # return np.log((absmu * dist) * dist)
-        #
-        # Here:
+        # Compute bumpiness measure
         return np.where(absmu < np.inf, (absmu * dist) * dist, np.inf)
 
     def optimize(
@@ -154,10 +145,6 @@ class TargetValueAcquisition(Acquisition):
 
         iindex = surrogateModel.iindex
         optimizer = self.optimizer if len(iindex) == 0 else self.mi_optimizer
-
-        # Create a KDTree with the current training points
-        tree = KDTree(surrogateModel.X)
-        atol = self.tol(bounds)
 
         # Compute fbounds of the surrogate. Use the filter as suggested by
         # Björkman and Holmström (2000)
@@ -292,19 +279,6 @@ class TargetValueAcquisition(Acquisition):
                     assert res.X is not None
                     xselected = np.asarray([res.X[i] for i in range(dim)])
 
-            # Replace points that are too close to current sample
-            current_sample = np.concatenate((surrogateModel.X, x[0:i]), axis=0)
-            while np.any(tree.query(xselected)[0] < atol) or (
-                i > 0 and cdist(xselected.reshape(1, -1), x[0:i]).min() < atol
-            ):
-                # the selected point is too close to already evaluated point
-                # randomly select point from variable domain
-                xselected = Mitchel91Sampler(1).get_mitchel91_sample(
-                    bounds,
-                    iindex=iindex,
-                    current_sample=current_sample,
-                )
-
             x[i, :] = xselected
 
-        return x
+        return FarEnoughSampleFilter(surrogateModel.X, self.tol(bounds))(x)

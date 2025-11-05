@@ -77,7 +77,9 @@ class MaximizeEI(Acquisition):
         :param ybest: Best point so far. If not provided, find the minimum value
             for the surrogate. Use it as a possible candidate.
         """
+        # TODO: Extend this method to work with mixed-integer problems
         assert len(surrogateModel.iindex) == 0
+
         if n == 0:
             return np.empty((0, len(bounds)))
 

@@ -2,13 +2,13 @@
 
 import numpy as np
 from typing import Optional
-from scipy.spatial import KDTree
 
 from pymoo.optimize import minimize as pymoo_minimize
 
 from soogo.acquisition.base import Acquisition
 from soogo.model.base import Surrogate
 from soogo.problem import PymooProblem
+from .utils import FarEnoughSampleFilter
 
 
 class MaximizeDistance(Acquisition):
@@ -38,7 +38,7 @@ class MaximizeDistance(Acquisition):
         **kwargs,
     ) -> np.ndarray:
         """
-        Acquire n points that maximize the minimum distance to previously
+        Acquire 1 point that maximize the minimum distance to previously
         sampled points.
 
         :param surrogateModel: The surrogate model.
@@ -51,43 +51,25 @@ class MaximizeDistance(Acquisition):
         iindex = surrogateModel.iindex
         optimizer = self.optimizer if len(iindex) == 0 else self.mi_optimizer
 
-        # Calculate tolerance using the tol function
-        atol = self.tol(bounds)
-
-        selectedPoints = []
         if points is None:
             currentPoints = surrogateModel.X.copy()
         else:
             currentPoints = points.copy()
 
-        tree = KDTree(currentPoints)
-        for i in range(n):
-            problem = PymooProblem(
-                lambda x: -tree.query(x)[0],
-                bounds,
-                iindex,
-            )
+        filter = FarEnoughSampleFilter(currentPoints, self.tol(bounds))
 
-            res = pymoo_minimize(
-                problem,
-                optimizer,
-                seed=surrogateModel.ntrain + i + 1,
-                verbose=False,
-            )
-            if res.X is not None:
-                new_point = np.array([res.X[j] for j in range(len(bounds))])
-
-                # Check if the new point is far enough from existing points
-                distance_to_existing = tree.query(new_point.reshape(1, -1))[0]
-                if distance_to_existing >= atol:
-                    selectedPoints.append(new_point)
-                    currentPoints = np.vstack([currentPoints, new_point])
-
-                    # Update the KDTree with the new point
-                    tree = KDTree(currentPoints)
-
-        return (
-            np.array(selectedPoints)
-            if selectedPoints
-            else np.empty((0, len(bounds)))
+        problem = PymooProblem(
+            lambda x: -filter.tree.query(x)[0],
+            bounds,
+            iindex,
         )
+        res = pymoo_minimize(
+            problem,
+            optimizer,
+            seed=surrogateModel.ntrain + 1,
+            verbose=False,
+        )
+        if res.X is not None:
+            return filter(np.array([[res.X[j] for j in range(len(bounds))]]))
+        else:
+            return np.empty((0, len(bounds)))

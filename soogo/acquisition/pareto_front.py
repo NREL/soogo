@@ -16,6 +16,7 @@ from soogo.model import LinearRadialBasisFunction, RbfModel
 from soogo.model.base import Surrogate
 from soogo.problem import PymooProblem, ListDuplicateElimination
 from soogo.utils import find_pareto_front
+from .utils import FarEnoughSampleFilter
 
 
 class ParetoFront(Acquisition):
@@ -81,10 +82,10 @@ class ParetoFront(Acquisition):
         :return: The target value :math:`\\tau`.
         """
         objdim = paretoFront.shape[1]
-        assert objdim > 1
+        if objdim <= 1:
+            return paretoFront[0]
 
         # Discard duplicated points in the Pareto front
-        # TODO: Use a more efficient method to discard duplicates
         paretoFront = np.unique(paretoFront, axis=0)
 
         # Create a surrogate model for the Pareto front in the objective space
@@ -159,6 +160,8 @@ class ParetoFront(Acquisition):
         if len(paretoFront) <= 1:
             return np.empty((0, dim))
 
+        filter = FarEnoughSampleFilter(surrogateModel.X, self.tol(bounds))
+
         xselected = np.empty((0, dim))
         for i in range(n):
             # Find a target value tau in the Pareto front
@@ -204,6 +207,9 @@ class ParetoFront(Acquisition):
                 # Save X into an array
                 newX = np.array([[x[i] for i in range(dim)] for x in res.X])
 
+                # Eliminate points that are too close to previously sampled points
+                newX = filter(newX)
+
                 # Transform the values of the optimization into a matrix
                 sx = surrogateModel(newX)
 
@@ -225,4 +231,4 @@ class ParetoFront(Acquisition):
                         (xselected, newX[nondominated_idx][idx : idx + 1])
                     )
 
-        return xselected
+        return filter(xselected)

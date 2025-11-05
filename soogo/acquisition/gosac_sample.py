@@ -1,14 +1,13 @@
 """GOSAC acquisition function for constrained optimization."""
 
 import numpy as np
-from scipy.spatial import KDTree
 
 from pymoo.optimize import minimize as pymoo_minimize
 
 from soogo.acquisition.base import Acquisition
-from soogo.acquisition.maximize_distance import MaximizeDistance
 from soogo.model.base import Surrogate
 from soogo.problem import PymooProblem
+from .utils import FarEnoughSampleFilter
 
 
 class GosacSample(Acquisition):
@@ -65,8 +64,6 @@ class GosacSample(Acquisition):
         iindex = surrogateModel.iindex
         optimizer = self.optimizer if len(iindex) == 0 else self.mi_optimizer
 
-        assert n == 1
-
         if constraintTransform is None:
 
             def constraintTransform(x):
@@ -75,10 +72,6 @@ class GosacSample(Acquisition):
         def transformedConstraint(x):
             surrogateOutput = surrogateModel(x)
             return constraintTransform(surrogateOutput)
-
-        # Create KDTree with previously evaluated points
-        tree = KDTree(surrogateModel.X)
-        atol = self.tol(bounds)
 
         cheapProblem = PymooProblem(
             self.fun,
@@ -93,24 +86,10 @@ class GosacSample(Acquisition):
             seed=surrogateModel.ntrain,
             verbose=False,
         )
-
-        # If either no feasible solution was found or the solution found is too
-        # close to already sampled points, we then
-        # consider the whole variable domain and sample at the point that
-        # maximizes the minimum distance of sample points.
-        isGoodCandidate = True
-        if res.X is None:
-            isGoodCandidate = False
-        else:
+        if res.X is not None:
             xnew = np.asarray([[res.X[i] for i in range(dim)]])
-            if tree.query(xnew)[0] < atol:
-                isGoodCandidate = False
-
-        if not isGoodCandidate:
-            maximizeDistance = MaximizeDistance(rtol=self.rtol)
-
-            xnew = maximizeDistance.optimize(surrogateModel, bounds, n=1)
-
-            assert len(xnew) == 1
-
-        return xnew
+            return FarEnoughSampleFilter(surrogateModel.X, self.tol(bounds))(
+                xnew
+            )
+        else:
+            return np.empty((0, dim))

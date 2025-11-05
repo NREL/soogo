@@ -71,6 +71,7 @@ from .acquisition import (
     MaximizeDistance,
     TransitionSearch,
     AlternatedAcquisition,
+    MultipleAcquisition,
 )
 from .utils import find_pareto_front, uncertainty_score
 from .model import (
@@ -180,7 +181,9 @@ def surrogate_optimization(
         return_surrogate = False
         surrogateModel = RbfModel(filter=MedianLpfFilter())
     if acquisitionFunc is None:
-        acquisitionFunc = TargetValueAcquisition()
+        acquisitionFunc = MultipleAcquisition(
+            (TargetValueAcquisition(), MaximizeDistance())
+        )
 
     # Reserve space for the surrogate model to avoid repeated allocations
     surrogateModel.reserve(surrogateModel.ntrain + maxeval, dim)
@@ -540,9 +543,14 @@ def cptv(
             ),
         )
 
-    tv_acquisition = TargetValueAcquisition(
-        cycleLength=10,
-        rtol=acquisitionFunc.rtol,
+    tv_acquisition = MultipleAcquisition(
+        (
+            TargetValueAcquisition(
+                cycleLength=10,
+                rtol=acquisitionFunc.rtol,
+            ),
+            MaximizeDistance(rtol=acquisitionFunc.rtol),
+        ),
         termination=RobustCondition(
             UnsuccessfulImprovement(improvementTol), 12
         ),
@@ -800,6 +808,7 @@ def socemo(
     step2acquisition = CoordinatePerturbationOverNondominated(acquisitionFunc)
     step3acquisition = EndPointsParetoFront(rtol=acquisitionFunc.rtol)
     step5acquisition = MinimizeMOSurrogate(rtol=acquisitionFunc.rtol)
+    maximizeDistance = MaximizeDistance(rtol=acquisitionFunc.rtol)
 
     # do until max number of f-evals reached or local min found
     xselected = np.array(out.sample[0 : out.nfev, :], copy=True)
@@ -865,10 +874,19 @@ def socemo(
         #
         # 3. Minimum point sampling to examine the endpoints of the Pareto front
         #
+        # Should all points be discarded, which may happen if the minima of
+        # the surrogate surfaces do not change between iterations, we
+        # consider the whole variable domain and sample at the point that
+        # maximizes the minimum distance of sample points
+        #
         t0 = time.time()
         bestCandidates = step3acquisition.optimize(
             surrogateModel, bounds, n=nMax
         )
+        if len(bestCandidates) == 0:
+            bestCandidates = maximizeDistance.optimize(
+                surrogateModel, bounds, n=1
+            )
         xselected = np.concatenate((xselected, bestCandidates), axis=0)
         tf = time.time()
         if disp:
@@ -1044,6 +1062,9 @@ def gosac(
     rtol = 1e-3
     acquisition1 = MinimizeMOSurrogate(rtol=rtol)
     acquisition2 = GosacSample(fun, rtol=rtol)
+    maximizeDistance = MaximizeDistance(
+        rtol=rtol
+    )  # fallback if no point is found in step 2
 
     xselected = np.array(out.sample[0 : out.nfev, :], copy=True)
     ySelected = np.array(out.fsample[0 : out.nfev, 1:], copy=True)
@@ -1155,6 +1176,8 @@ def gosac(
         # Solve cheap problem with multiple constraints
         t0 = time.time()
         xselected = acquisition2.optimize(surrogateModel, bounds)
+        if len(xselected) == 0:
+            xselected = maximizeDistance.optimize(surrogateModel, bounds, n=1)
         tf = time.time()
         if disp:
             print(
@@ -1780,7 +1803,12 @@ def fsapso(
     tol = np.min([np.sqrt(0.001**2 * dim), 5e-5 * dim * np.min(ub - lb)])
 
     # Initialize acquisition function(s)
-    surrogateMinimizer = MinimizeSurrogate(nCand=1000)
+    surrogateMinimizer = MultipleAcquisition(
+        (
+            MinimizeSurrogate(1000, rtol=1e-3),
+            MaximizeDistance(rtol=1e-3),
+        )
+    )
 
     # Initialize surrogate
     if surrogateModel is None:

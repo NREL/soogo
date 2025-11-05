@@ -35,6 +35,7 @@ from .maximize_ei import MaximizeEI
 from .transition_search import TransitionSearch
 from .maximize_distance import MaximizeDistance
 from .alternated_acquisition import AlternatedAcquisition
+from .multiple_acquisition import MultipleAcquisition
 
 __all__ = [
     "Acquisition",
@@ -53,4 +54,5 @@ __all__ = [
     "TransitionSearch",
     "MaximizeDistance",
     "AlternatedAcquisition",
+    "MultipleAcquisition",
 ]

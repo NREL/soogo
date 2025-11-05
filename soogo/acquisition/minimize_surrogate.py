@@ -9,7 +9,8 @@ from scipy.optimize import minimize
 
 from soogo.acquisition.base import Acquisition
 from soogo.model.base import Surrogate
-from soogo.sampling import Sampler, Mitchel91Sampler
+from soogo.sampling import Sampler
+from .utils import FarEnoughSampleFilter
 
 
 class MinimizeSurrogate(Acquisition):
@@ -91,8 +92,7 @@ class MinimizeSurrogate(Acquisition):
         selected = np.empty((n, dim))
 
         # Create a KDTree with the training data points
-        tree = KDTree(surrogateModel.X)
-        atol = self.tol(bounds)
+        filter = FarEnoughSampleFilter(surrogateModel.X, self.tol(bounds))
 
         iter = 0
         k = 0
@@ -183,18 +183,13 @@ class MinimizeSurrogate(Acquisition):
                 remevals -= res.nfev
                 xi[cindex] = res.x
 
-                if tree.n == 0 or tree.query(xi)[0] >= atol:
+                if len(filter(xi.reshape(1, -1))) > 0:
                     selected[k, :] = xi
                     k += 1
                     if k == n:
                         break
                     else:
-                        tree = KDTree(
-                            np.concatenate(
-                                (surrogateModel.X, selected[0:k, :]),
-                                axis=0,
-                            )
-                        )
+                        filter.tree = KDTree(np.vstack([filter.tree.data, xi]))
 
                 if remevals <= 0:
                     break
@@ -212,20 +207,22 @@ class MinimizeSurrogate(Acquisition):
 
             iter += 1
 
-        if k > 0:
-            return selected[0:k, :]
-        else:
-            # No new points found by the differential evolution method
-            singleCandSampler = Mitchel91Sampler(1)
-            selected = singleCandSampler.get_mitchel91_sample(
-                bounds,
-                iindex=surrogateModel.iindex,
-                current_sample=surrogateModel.X,
-            )
-            while tree.query(selected)[0] < atol:
-                selected = singleCandSampler.get_mitchel91_sample(
-                    bounds,
-                    iindex=surrogateModel.iindex,
-                    current_sample=surrogateModel.X,
-                )
-            return selected.reshape(1, -1)
+        return selected[0:k, :]
+
+        # if k > 0:
+        #     return selected[0:k, :]
+        # else:
+        #     # No new points found by the differential evolution method
+        #     singleCandSampler = Mitchel91Sampler(1)
+        #     selected = singleCandSampler.get_mitchel91_sample(
+        #         bounds,
+        #         iindex=surrogateModel.iindex,
+        #         current_sample=surrogateModel.X,
+        #     )
+        #     while tree.query(selected)[0] < atol:
+        #         selected = singleCandSampler.get_mitchel91_sample(
+        #             bounds,
+        #             iindex=surrogateModel.iindex,
+        #             current_sample=surrogateModel.X,
+        #         )
+        #     return selected.reshape(1, -1)

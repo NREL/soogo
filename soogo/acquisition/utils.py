@@ -251,13 +251,14 @@ class FarEnoughSampleFilter:
 
     def __call__(self, Xc):
         # Discard points that are too close to X
-        mask0 = np.array([self.is_far_enough(x) for x in Xc])
+        mask0 = np.array([self.is_far_enough(x) for x in Xc], dtype=bool)
         Xc0 = Xc[mask0]
 
         # Find the maximum independent set among the remaining points
         dist = cdist(Xc0, Xc0)
         np.fill_diagonal(dist, np.inf)
         g = nx.Graph()
+        g.add_nodes_from(range(len(Xc0)))
         g.add_edges_from(
             [
                 (i, j)
