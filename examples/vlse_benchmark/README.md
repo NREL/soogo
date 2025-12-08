@@ -1,6 +1,6 @@
 # VLSE benchmark
 
-This example shows how to run the VLSE benchmark, that is based on optimization problems from the [Virtual Library of Simulation Experiments](https://www.sfu.ca/~ssurjano/optimization.html). The goal is to test each implementation for single-objective optimization in terms of accuracy. We use two metrics both based on the number of function evaluations $\ell_{\gamma,a}$ that an algorithm $a$ needs to solve a problem $\gamma$. Look at [vlse_bench.ipynb](vlse_bench.ipynb) for some results on experiments performed on Kestrel HPC machine at NREL.
+This example shows how to run the VLSE benchmark, that is based on optimization problems from the [Virtual Library of Simulation Experiments](https://www.sfu.ca/~ssurjano/optimization.html). The goal is to test each implementation for single-objective optimization in terms of accuracy. We use two metrics both based on the number of function evaluations $\ell_{\gamma,a}$ that an algorithm $a$ needs to solve a problem $\gamma$. Look at [vlse_bench.ipynb](vlse_bench.ipynb) for some results on experiments performed on Kestrel HPC machine at NLR.
 
 The directory is organized as follows:
 
