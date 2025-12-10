@@ -20,6 +20,7 @@ dependencies = [
     "pymoo",
     "scikit-learn",
     "autograd",
+    "networkx",
 ]
 
 [project.urls]

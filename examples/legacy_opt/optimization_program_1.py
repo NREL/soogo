@@ -46,8 +46,10 @@ from soogo import sampling, OptimizeResult
 from soogo.acquisition import (
     WeightedAcquisition,
     TargetValueAcquisition,
-    AcquisitionFunction,
+    Acquisition,
     MinimizeSurrogate,
+    MultipleAcquisition,
+    MaximizeDistance,
 )
 from soogo.model.rbf_kernel import RadialBasisFunction
 from soogo.model import (
@@ -62,7 +64,7 @@ from data import Data
 
 def read_and_run(
     data_file: str,
-    acquisitionFunc: Optional[AcquisitionFunction] = None,
+    acquisitionFunc: Optional[Acquisition] = None,
     maxeval: int = 0,
     Ntrials: int = 0,
     batchSize: int = 0,
@@ -77,7 +79,7 @@ def read_and_run(
     ----------
     data_file : str
         Path for the data file.
-    acquisitionFunc : soogo.acquisition.AcquisitionFunction, optional
+    acquisitionFunc : soogo.acquisition.Acquisition, optional
         Sampler to be used. Default: None, i.e., defined by the optimizer.
     maxeval : int, optional
         Maximum number of allowed function evaluations per trial.
@@ -377,7 +379,12 @@ def main(config: int) -> list[OptimizeResult]:
     elif config == 5:
         optres = read_and_run(
             data_file="datainput_BraninWithInteger",
-            acquisitionFunc=TargetValueAcquisition(),
+            acquisitionFunc=MultipleAcquisition(
+                (
+                    TargetValueAcquisition(),
+                    MaximizeDistance(),
+                )
+            ),
             maxeval=100,
             Ntrials=3,
             batchSize=1,
@@ -408,7 +415,12 @@ def main(config: int) -> list[OptimizeResult]:
     elif config == 8:
         optres = read_and_run(
             data_file="datainput_BraninWithInteger",
-            acquisitionFunc=MinimizeSurrogate(100, 0.005 * sqrt(2)),
+            acquisitionFunc=MultipleAcquisition(
+                (
+                    MinimizeSurrogate(100, 0.005 * sqrt(2)),
+                    MaximizeDistance(rtol=0.005 * sqrt(2)),
+                )
+            ),
             maxeval=100,
             Ntrials=3,
             batchSize=10,
