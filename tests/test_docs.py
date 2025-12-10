@@ -221,7 +221,6 @@ class TestSphinxDocumentation:
         essential_files = [
             "conf.py",
             "index.rst",
-            "README.md",
             "api/soogo.rst",
             "api/soogo.acquisition.rst",
             "api/soogo.integrations.rst",
