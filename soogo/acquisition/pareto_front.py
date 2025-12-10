@@ -11,11 +11,11 @@ from pymoo.core.initialization import Initialization
 from pymoo.optimize import minimize as pymoo_minimize
 from pymoo.core.population import Population
 
-from soogo.acquisition.base import Acquisition
-from soogo.model import LinearRadialBasisFunction, RbfModel
-from soogo.model.base import Surrogate
-from soogo.problem import PymooProblem, ListDuplicateElimination
-from soogo.utils import find_pareto_front
+from .base import Acquisition
+from ..model import LinearRadialBasisFunction, RbfModel
+from ..model.base import Surrogate
+from ..problem import PymooProblem, ListDuplicateElimination
+from ..utils import find_pareto_front
 from .utils import FarEnoughSampleFilter
 
 

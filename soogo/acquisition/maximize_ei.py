@@ -4,9 +4,9 @@ import numpy as np
 from scipy.optimize import differential_evolution
 from scipy.linalg import cholesky, solve_triangular
 
-from soogo.acquisition.base import Acquisition
-from soogo.model import GaussianProcess
-from soogo.sampling import Sampler, Mitchel91Sampler
+from .base import Acquisition
+from ..model import GaussianProcess
+from ..sampling import Sampler, Mitchel91Sampler
 
 
 class MaximizeEI(Acquisition):

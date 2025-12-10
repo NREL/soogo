@@ -3,10 +3,10 @@
 import numpy as np
 from typing import Sequence
 
-from soogo.acquisition.base import Acquisition
-from soogo.model import RbfModel
-from soogo.model.base import Surrogate
-from soogo.optimize_result import OptimizeResult
+from .base import Acquisition
+from ..model import RbfModel
+from ..model.base import Surrogate
+from ..optimize_result import OptimizeResult
 
 
 class AlternatedAcquisition(Acquisition):

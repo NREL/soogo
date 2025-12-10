@@ -7,9 +7,9 @@ from scipy.spatial.distance import cdist
 from scipy.special import gamma
 from scipy.optimize import minimize
 
-from soogo.acquisition.base import Acquisition
-from soogo.model.base import Surrogate
-from soogo.sampling import Sampler
+from .base import Acquisition
+from ..model.base import Surrogate
+from ..sampling import Sampler
 from .utils import FarEnoughSampleFilter
 
 

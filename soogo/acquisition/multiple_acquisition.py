@@ -3,8 +3,8 @@
 import numpy as np
 from typing import Sequence
 
-from soogo.acquisition.base import Acquisition
-from soogo.model import RbfModel
+from .base import Acquisition
+from ..model import RbfModel
 from .utils import FarEnoughSampleFilter
 
 
