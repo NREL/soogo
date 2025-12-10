@@ -32,7 +32,7 @@ import numpy as np
 import pytest
 from typing import Union, Tuple, Optional
 
-from soogo.model.base import Surrogate
+from soogo.model import Surrogate
 from soogo.acquisition import (
     Acquisition,
     TransitionSearch,
@@ -40,7 +40,7 @@ from soogo.acquisition import (
     AlternatedAcquisition,
 )
 from soogo.termination import IterateNTimes
-from soogo.optimize_result import OptimizeResult
+from soogo import OptimizeResult
 
 
 class MockSurrogateModel(Surrogate):

@@ -4,13 +4,13 @@ import numpy as np
 from math import log
 from scipy.spatial.distance import cdist
 
-from soogo.acquisition.base import Acquisition
-from soogo.acquisition.utils import select_weighted_candidates
-from soogo.model.base import Surrogate
-from soogo.optimize_result import OptimizeResult
-from soogo.sampling import NormalSampler
-from soogo.termination import UnsuccessfulImprovement
-from soogo.utils import find_pareto_front
+from .base import Acquisition
+from .utils import select_weighted_candidates
+from ..model import Surrogate
+from ..optimize.result import OptimizeResult
+from ..sampling import NormalSampler
+from ..termination import UnsuccessfulImprovement
+from ..utils import find_pareto_front
 
 
 class WeightedAcquisition(Acquisition):

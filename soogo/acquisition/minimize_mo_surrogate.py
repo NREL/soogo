@@ -8,9 +8,9 @@ from pymoo.core.mixed import MixedVariableGA, MixedVariableMating
 from pymoo.operators.survival.rank_and_crowding import RankAndCrowding
 from pymoo.optimize import minimize as pymoo_minimize
 
-from soogo.acquisition.base import Acquisition
-from soogo.model.base import Surrogate
-from soogo.problem import PymooProblem, ListDuplicateElimination
+from .base import Acquisition
+from ..model import Surrogate
+from ..integrations.pymoo import PymooProblem, ListDuplicateElimination
 
 
 class MinimizeMOSurrogate(Acquisition):

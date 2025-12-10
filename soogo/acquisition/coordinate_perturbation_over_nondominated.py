@@ -3,11 +3,11 @@
 import numpy as np
 from scipy.spatial.distance import cdist
 
-from soogo.acquisition.base import Acquisition
-from soogo.acquisition.weighted_acquisition import WeightedAcquisition
-from soogo.model.base import Surrogate
-from soogo.sampling import NormalSampler
-from soogo.utils import find_pareto_front
+from .base import Acquisition
+from .weighted_acquisition import WeightedAcquisition
+from ..model import Surrogate
+from ..sampling import NormalSampler
+from ..utils import find_pareto_front
 
 
 class CoordinatePerturbationOverNondominated(Acquisition):

@@ -3,10 +3,10 @@
 import numpy as np
 from scipy.spatial.distance import cdist
 
-from soogo.acquisition.base import Acquisition
-from soogo.acquisition.utils import select_weighted_candidates
-from soogo.model.base import Surrogate
-from soogo.sampling import NormalSampler, Sampler
+from .base import Acquisition
+from .utils import select_weighted_candidates
+from ..model import Surrogate
+from ..sampling import NormalSampler, Sampler
 
 
 class TransitionSearch(Acquisition):

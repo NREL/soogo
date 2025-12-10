@@ -38,8 +38,8 @@ from collections import deque
 from typing import Optional
 import numpy as np
 
-from .optimize_result import OptimizeResult
-from .model.base import Surrogate
+from .optimize.result import OptimizeResult
+from .model import Surrogate
 
 
 class TerminationCondition(ABC):

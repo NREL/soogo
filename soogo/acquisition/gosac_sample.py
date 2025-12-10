@@ -4,9 +4,9 @@ import numpy as np
 
 from pymoo.optimize import minimize as pymoo_minimize
 
-from soogo.acquisition.base import Acquisition
-from soogo.model.base import Surrogate
-from soogo.problem import PymooProblem
+from .base import Acquisition
+from ..model import Surrogate
+from ..integrations.pymoo import PymooProblem
 from .utils import FarEnoughSampleFilter
 
 

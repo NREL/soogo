@@ -1,4 +1,6 @@
 sphinx
 sphinx-rtd-theme
 sphinx-autodoc-typehints
+myst-parser
+sphinx-multiversion
 pytest

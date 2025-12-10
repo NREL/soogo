@@ -32,9 +32,6 @@ __credits__ = [
 ]
 __deprecated__ = False
 
-from scipy.spatial.distance import cdist
-import numpy as np
-
 
 def find_pareto_front(fx, iStart: int = 0) -> list:
     """Find the Pareto front given a set of points in the target space.
@@ -77,63 +74,3 @@ def gp_expected_improvement(delta, sigma):
     from scipy.stats import norm
 
     return delta * norm.cdf(delta / sigma) + sigma * norm.pdf(delta / sigma)
-
-
-def uncertainty_score(candidates, points, fvals, k=3):
-    """
-    Calculate the uncertainty (distance and fitness value criterion)
-    score as defined in _[#].
-
-    :param candidates: The candidate points to find the scores for.
-    :param points: The set of already evaluated points.
-    :param fvals: The set of corresponding function values.
-    :param k: The number of nearest neighbors to consider in
-        the uncertainty calculation. Default is 3.
-
-    :return: The uncertainty score for each candidate point.
-
-    References
-    ----------
-    .. [#] Li, F., Shen, W., Cai, X., Gao, L., & Gary Wang, G. 2020; A fast
-        surrogate-assisted particle swarm optimization algorithm for computationally
-        expensive problems. Applied Soft Computing, 92, 106303.
-        https://doi.org/10.1016/j.asoc.2020.106303
-    """
-    candidates = np.asarray(candidates)
-    points = np.asarray(points)
-    fvals = np.asarray(fvals)
-
-    # Compute all distances
-    dists = cdist(candidates, points)
-
-    # For each candidate, get indices of k nearest points
-    nearestIndices = np.argsort(dists, axis=1)[:, :k]
-
-    # Extract distances and function values for k nearest points
-    nCandidates = candidates.shape[0]
-    distances = np.zeros((nCandidates, k))
-    functionValues = np.zeros((nCandidates, k))
-
-    for i in range(nCandidates):
-        indices = nearestIndices[i]
-        distances[i] = dists[i, indices]
-        functionValues[i] = fvals[indices]
-
-    # Calculate the mean dist and std of k nearest
-    distMean = np.mean(distances, axis=1)
-    sigma = np.std(functionValues, axis=1)
-
-    # Normalize
-    distMean /= np.sum(distMean)
-    sigma /= np.sum(sigma)
-
-    # Calculate scaled dist to nearest neighbor
-    nearestScaled = 5 * distances[:, 0] / np.sum(distances[:, 0])
-
-    # Calculate Sigmoid function value
-    sigmoid = 1 / (1 + np.exp(-nearestScaled)) - 0.5
-
-    # Calculate the final scores
-    scores = sigmoid * (distMean + sigma)
-
-    return scores

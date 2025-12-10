@@ -1,35 +1,10 @@
-"""OptimizeResult class for Soogo package."""
-
-# Copyright (c) 2025 Alliance for Sustainable Energy, LLC
-
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-__authors__ = ["Weslley S. Pereira"]
-__contact__ = "weslley.dasilvapereira@nrel.gov"
-__maintainer__ = "Weslley S. Pereira"
-__email__ = "weslley.dasilvapereira@nrel.gov"
-__credits__ = ["Weslley S. Pereira"]
-__deprecated__ = False
-
 from dataclasses import dataclass
 from typing import Optional, Union
 import numpy as np
-from collections.abc import Callable
 
-from .sampling import Sampler
-from .model.base import Surrogate
-from .utils import find_pareto_front
+from ..sampling import Sampler
+from ..model import Surrogate
+from ..utils import find_pareto_front
 
 
 @dataclass
@@ -171,46 +146,3 @@ class OptimizeResult:
             iPareto = find_pareto_front(combined_y[:, 0 : self.nobj])
             self.x = combined_x[iPareto].copy()
             self.fx = combined_y[iPareto].copy()
-
-
-def evaluate_and_log_point(fun: Callable, x: np.ndarray, out: OptimizeResult):
-    """
-    Evaluate a point or array of points and log the results. If the function
-    errors or the result is invalid (NaN or Inf), the output is logged as NaN.
-    If the function value is less than the current best, the current best (
-    out.x, out.fx) is updated. Provided points are evaluated as a batch. This
-    function only supports single-objective functions.
-
-    :param fun: The function to evaluate.
-    :param x: The point(s) to evaluate. Can be a 1D array (single point) or
-              2D array (multiple points).
-    :param out: The output object to log the results.
-
-    :return: The function value(s) or NaN. Returns a scalar for single point,
-             array for multiple points.
-    """
-    x = np.atleast_2d(x)
-
-    try:
-        results = fun(x)
-        results = np.atleast_1d(results)
-    except Exception:
-        results = np.full(x.shape[0], np.nan)
-
-    # Process each result individually
-    for i, y in enumerate(results):
-        if hasattr(y, "__len__") and len(y) > 0:
-            y = y[0]
-        if np.isnan(y) or np.isinf(y):
-            y = np.nan
-        results[i] = y
-
-        out.sample[out.nfev, :] = x[i]
-        out.fsample[out.nfev] = y
-        out.nfev += 1
-
-        if not np.isnan(y) and (out.fx is None or y < out.fx):
-            out.x = x[i]
-            out.fx = y
-
-    return results[0] if len(results) == 1 else results
