@@ -32,7 +32,7 @@ from collections.abc import Callable
 
 import numpy as np
 
-from .utils import OptimizeResult, evaluate_and_log_point
+from ..optimize.utils import OptimizeResult, evaluate_and_log_point
 
 
 class NomadProblem:

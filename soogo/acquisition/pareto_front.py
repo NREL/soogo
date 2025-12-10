@@ -12,9 +12,8 @@ from pymoo.optimize import minimize as pymoo_minimize
 from pymoo.core.population import Population
 
 from .base import Acquisition
-from ..model import LinearRadialBasisFunction, RbfModel
-from ..model.base import Surrogate
-from ..problem import PymooProblem, ListDuplicateElimination
+from ..model import LinearRadialBasisFunction, RbfModel, Surrogate
+from ..integrations.pymoo import PymooProblem, ListDuplicateElimination
 from ..utils import find_pareto_front
 from .utils import FarEnoughSampleFilter
 

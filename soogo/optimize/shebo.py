@@ -31,12 +31,12 @@ from ..model import (
     CubicRadialBasisFunction,
     LinearRadialBasisFunction,
     RbfModel,
+    Surrogate,
 )
-from ..model.base import Surrogate
 from .utils import OptimizeResult, evaluate_and_log_point
 from ..sampling import Sampler
 from ..termination import IterateNTimes
-from .nomad import NomadProblem
+from ..integrations.nomad import NomadProblem
 
 try:
     import PyNomad
@@ -339,8 +339,7 @@ def shebo(
             [[0, 1] for _ in range(dim)],
             n=1,
             points=evalSurrogate.X,
-            constraintTransform=lambda x: -x
-            + threshold,  # Pymoo expects g(x) <= 0
+            constraintTransform=lambda x: -x + threshold,
             evaluabilitySurrogate=evalSurrogate,
             evaluabilityThreshold=threshold,
             scoreWeight=weightPattern[

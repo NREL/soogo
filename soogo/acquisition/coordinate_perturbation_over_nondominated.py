@@ -5,7 +5,7 @@ from scipy.spatial.distance import cdist
 
 from .base import Acquisition
 from .weighted_acquisition import WeightedAcquisition
-from ..model.base import Surrogate
+from ..model import Surrogate
 from ..sampling import NormalSampler
 from ..utils import find_pareto_front
 

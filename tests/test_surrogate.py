@@ -2,7 +2,7 @@
 
 import numpy as np
 import pytest
-from soogo.model.base import Surrogate
+from soogo.model import Surrogate
 from soogo.model.rbf import RbfModel
 from soogo.model.gp import GaussianProcess
 

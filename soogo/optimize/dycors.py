@@ -20,8 +20,8 @@ from typing import Callable, Optional
 
 from ..acquisition import WeightedAcquisition
 from ..model import MedianLpfFilter, RbfModel
-from ..model.base import Surrogate
-from ..utils import OptimizeResult
+from ..model import Surrogate
+from .utils import OptimizeResult
 from ..sampling import NormalSampler, SamplingStrategy
 from .surrogate_optimization import surrogate_optimization
 

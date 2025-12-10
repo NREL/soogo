@@ -29,9 +29,8 @@ from ..acquisition import (
     ParetoFront,
     WeightedAcquisition,
 )
-from ..model import RbfModel
-from ..model.base import Surrogate
-from ..utils import OptimizeResult
+from ..model import RbfModel, Surrogate
+from .utils import OptimizeResult
 from ..sampling import NormalSampler, Sampler
 from ..utils import find_pareto_front
 

@@ -8,7 +8,7 @@ from scipy.special import gamma
 from scipy.optimize import minimize
 
 from .base import Acquisition
-from ..model.base import Surrogate
+from ..model import Surrogate
 from ..sampling import Sampler
 from .utils import FarEnoughSampleFilter
 

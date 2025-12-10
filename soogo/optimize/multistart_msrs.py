@@ -22,8 +22,8 @@ from typing import Callable, Optional
 import numpy as np
 
 from ..acquisition import WeightedAcquisition
-from ..model.base import Surrogate
-from ..utils import OptimizeResult
+from ..model import Surrogate
+from .utils import OptimizeResult
 from ..sampling import NormalSampler, SamplingStrategy
 from ..termination import RobustCondition, UnsuccessfulImprovement
 from .surrogate_optimization import surrogate_optimization

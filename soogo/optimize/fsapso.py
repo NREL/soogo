@@ -28,12 +28,10 @@ from ..acquisition import (
     MinimizeSurrogate,
     MultipleAcquisition,
 )
-from ..model import RbfModel
-from ..model.base import Surrogate
-from .utils import OptimizeResult, evaluate_and_log_point
-from ..problem import PymooProblem
+from ..model import RbfModel, Surrogate
+from .utils import OptimizeResult, evaluate_and_log_point, uncertainty_score
+from ..integrations.pymoo import PymooProblem
 from ..sampling import Sampler
-from ..utils import uncertainty_score
 
 
 def fsapso(

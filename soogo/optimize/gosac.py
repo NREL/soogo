@@ -21,9 +21,8 @@ from typing import Callable, Optional
 import numpy as np
 
 from ..acquisition import GosacSample, MaximizeDistance, MinimizeMOSurrogate
-from ..model import RbfModel
-from ..model.base import Surrogate
-from ..utils import OptimizeResult
+from ..model import RbfModel, Surrogate
+from .utils import OptimizeResult
 
 
 def gosac(

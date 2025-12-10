@@ -83,9 +83,9 @@ class GaussianProcess(Surrogate):
 
         self.model = GaussianProcessRegressor(**kwargs)
 
-    # TODO: Implement reserve method
+    # TODO: Make this method more useful
     def reserve(self, n: int, dim: int, ntarget: int = 1) -> None:
-        pass
+        return
 
     def __call__(
         self,

@@ -4,9 +4,8 @@ import numpy as np
 from typing import Sequence
 
 from .base import Acquisition
-from ..model import RbfModel
-from ..model.base import Surrogate
-from ..utils import OptimizeResult
+from ..model import RbfModel, Surrogate
+from ..optimize.result import OptimizeResult
 
 
 class AlternatedAcquisition(Acquisition):

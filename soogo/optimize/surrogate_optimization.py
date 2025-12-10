@@ -28,7 +28,7 @@ from ..acquisition import (
     TargetValueAcquisition,
 )
 from ..model import MedianLpfFilter, RbfModel, Surrogate
-from ..utils import OptimizeResult
+from .utils import OptimizeResult
 
 
 def surrogate_optimization(

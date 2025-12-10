@@ -23,6 +23,8 @@ from .socemo import socemo
 from .gosac import gosac
 from .shebo import shebo
 from .fsapso import fsapso
+from .bayesian_optimization import bayesian_optimization
+from .result import OptimizeResult
 
 __all__ = [
     "surrogate_optimization",
@@ -34,4 +36,6 @@ __all__ = [
     "gosac",
     "shebo",
     "fsapso",
+    "bayesian_optimization",
+    "OptimizeResult",
 ]

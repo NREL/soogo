@@ -5,7 +5,7 @@ from scipy.spatial.distance import cdist
 
 from .base import Acquisition
 from .utils import select_weighted_candidates
-from ..model.base import Surrogate
+from ..model import Surrogate
 from ..sampling import NormalSampler, Sampler
 
 

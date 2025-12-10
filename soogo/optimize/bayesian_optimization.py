@@ -19,8 +19,8 @@ from typing import Optional
 
 from ..acquisition import MaximizeEI
 from ..model import GaussianProcess
-from ..model.base import Surrogate
-from ..utils import OptimizeResult
+from ..model import Surrogate
+from .utils import OptimizeResult
 from .surrogate_optimization import surrogate_optimization
 
 

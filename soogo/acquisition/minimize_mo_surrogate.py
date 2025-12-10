@@ -9,8 +9,8 @@ from pymoo.operators.survival.rank_and_crowding import RankAndCrowding
 from pymoo.optimize import minimize as pymoo_minimize
 
 from .base import Acquisition
-from ..model.base import Surrogate
-from ..problem import PymooProblem, ListDuplicateElimination
+from ..model import Surrogate
+from ..integrations.pymoo import PymooProblem, ListDuplicateElimination
 
 
 class MinimizeMOSurrogate(Acquisition):

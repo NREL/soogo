@@ -6,8 +6,8 @@ from typing import Optional
 from pymoo.optimize import minimize as pymoo_minimize
 
 from .base import Acquisition
-from ..model.base import Surrogate
-from ..problem import PymooProblem
+from ..model import Surrogate
+from ..integrations.pymoo import PymooProblem
 from .utils import FarEnoughSampleFilter
 
 

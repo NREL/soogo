@@ -27,8 +27,8 @@ from .optimize import (
     bayesian_optimization,
     shebo,
     fsapso,
+    OptimizeResult,
 )
-from .utils import OptimizeResult
 
 # Surrogate models
 from .model import RbfModel, MedianLpfFilter, GaussianProcess

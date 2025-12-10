@@ -7,7 +7,7 @@ from pymoo.termination.default import DefaultSingleObjectiveTermination
 
 from .base import Acquisition
 from ..model import RbfModel
-from ..problem import PymooProblem
+from ..integrations.pymoo import PymooProblem
 from .utils import FarEnoughSampleFilter
 
 

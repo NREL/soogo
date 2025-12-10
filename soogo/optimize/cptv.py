@@ -15,7 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import time
 from typing import Callable, Optional
 
 import numpy as np
@@ -28,8 +27,7 @@ from ..acquisition import (
     WeightedAcquisition,
 )
 from ..model import MedianLpfFilter, RbfModel
-from ..model.base import Surrogate
-from ..utils import OptimizeResult
+from .utils import OptimizeResult
 from ..sampling import NormalSampler, SamplingStrategy
 from ..termination import RobustCondition, UnsuccessfulImprovement
 from .surrogate_optimization import surrogate_optimization
