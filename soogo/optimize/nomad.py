@@ -28,10 +28,11 @@ __credits__ = [
 ]
 __deprecated__ = False
 
-from .optimize_result import OptimizeResult, evaluate_and_log_point
+from collections.abc import Callable
 
 import numpy as np
-from collections.abc import Callable
+
+from .utils import OptimizeResult, evaluate_and_log_point
 
 
 class NomadProblem:

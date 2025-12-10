@@ -201,7 +201,6 @@ class TestSphinxDocumentation:
             "soogo.rst",
             "acquisition.rst",
             "optimize.rst",
-            "optimize_result.rst",
             "utils.rst",
             "termination.rst",
             "model.rst",
@@ -235,7 +234,6 @@ class TestSphinxDocumentation:
             import soogo  # noqa: F401
             import soogo.acquisition  # noqa: F401
             import soogo.optimize  # noqa: F401
-            import soogo.optimize_result  # noqa: F401
             import soogo.utils  # noqa: F401
             import soogo.termination  # noqa: F401
             import soogo.model  # noqa: F401
@@ -247,7 +245,7 @@ class TestSphinxDocumentation:
             # Test that key classes can be imported
             from soogo.model import RbfModel
             from soogo.acquisition import WeightedAcquisition
-            from soogo.optimize_result import OptimizeResult
+            from soogo.utils import OptimizeResult
 
             # Basic smoke test - instantiate some classes
             rbf_model = RbfModel()

@@ -7,7 +7,7 @@ from scipy.spatial.distance import cdist
 from .base import Acquisition
 from .utils import select_weighted_candidates
 from ..model.base import Surrogate
-from ..optimize_result import OptimizeResult
+from ..utils import OptimizeResult
 from ..sampling import NormalSampler
 from ..termination import UnsuccessfulImprovement
 from ..utils import find_pareto_front

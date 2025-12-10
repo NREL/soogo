@@ -17,7 +17,6 @@ Submodules
 
    acquisition
    optimize
-   optimize_result
    problem
    sampling
    termination

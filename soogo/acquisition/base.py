@@ -34,7 +34,7 @@ from pymoo.core.mixed import MixedVariableGA, MixedVariableMating
 from ..model import Surrogate
 from ..problem import ListDuplicateElimination
 from ..termination import TerminationCondition
-from ..optimize_result import OptimizeResult
+from ..utils import OptimizeResult
 
 
 class Acquisition(ABC):

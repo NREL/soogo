@@ -38,7 +38,7 @@ from collections import deque
 from typing import Optional
 import numpy as np
 
-from .optimize_result import OptimizeResult
+from .utils import OptimizeResult
 from .model.base import Surrogate
 
 

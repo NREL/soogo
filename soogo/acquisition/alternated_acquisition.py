@@ -6,7 +6,7 @@ from typing import Sequence
 from .base import Acquisition
 from ..model import RbfModel
 from ..model.base import Surrogate
-from ..optimize_result import OptimizeResult
+from ..utils import OptimizeResult
 
 
 class AlternatedAcquisition(Acquisition):

@@ -1,4 +1,4 @@
-"""soogo (Surrogate-based 0-th Order Global Optimization)"""
+"""Optimization algorithms for soogo."""
 
 # Copyright (c) 2025 Alliance for Sustainable Energy, LLC
 
@@ -15,23 +15,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-# Optimization algorithms
-from .optimize import (
-    surrogate_optimization,
-    multistart_msrs,
-    dycors,
-    cptv,
-    cptvl,
-    socemo,
-    gosac,
-    bayesian_optimization,
-    shebo,
-    fsapso,
-)
-from .utils import OptimizeResult
-
-# Surrogate models
-from .model import RbfModel, MedianLpfFilter, GaussianProcess
+from .surrogate_optimization import surrogate_optimization
+from .multistart_msrs import multistart_msrs
+from .dycors import dycors
+from .cptv import cptv, cptvl
+from .socemo import socemo
+from .gosac import gosac
+from .shebo import shebo
+from .fsapso import fsapso
 
 __all__ = [
     "surrogate_optimization",
@@ -41,11 +32,6 @@ __all__ = [
     "cptvl",
     "socemo",
     "gosac",
-    "bayesian_optimization",
-    "OptimizeResult",
-    "RbfModel",
-    "MedianLpfFilter",
-    "GaussianProcess",
     "shebo",
     "fsapso",
 ]

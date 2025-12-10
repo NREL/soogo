@@ -40,7 +40,7 @@ from soogo.acquisition import (
     AlternatedAcquisition,
 )
 from soogo.termination import IterateNTimes
-from soogo.optimize_result import OptimizeResult
+from soogo.utils import OptimizeResult
 
 
 class MockSurrogateModel(Surrogate):
