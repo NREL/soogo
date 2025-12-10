@@ -54,7 +54,7 @@ def evaluate_and_log_point(fun: Callable, x: np.ndarray, out: OptimizeResult):
 def uncertainty_score(candidates, points, fvals, k=3):
     """
     Calculate the uncertainty (distance and fitness value criterion)
-    score as defined in _[#].
+    score as defined in [#]_.
 
     :param candidates: The candidate points to find the scores for.
     :param points: The set of already evaluated points.

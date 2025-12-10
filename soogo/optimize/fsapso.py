@@ -46,7 +46,7 @@ def fsapso(
     """
     Minimize a scalar function of one or more variables using the fast
     surrogate-assisted particle swarm optimization (FSAPSO) algorithm
-    presented in _[#].
+    presented in [#]_.
 
     :param fun: The objective function to be minimized.
     :param bounds: List with the limits [x_min,x_max] of each direction x in the

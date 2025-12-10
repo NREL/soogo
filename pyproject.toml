@@ -1,6 +1,6 @@
 [project]
 name = "soogo"
-version = "1.2.2"
+dynamic = ["version"]
 description = "Surrogate-based 0-th Order Global Optimization for black-box problems"
 authors = [
     {name = "Weslley da Silva Pereira", email = "weslley.dasilvapereira@nrel.gov"},
@@ -42,11 +42,6 @@ test = [
 lint = [
     "ruff",
 ]
-doc = [
-    "sphinx",
-    "sphinx-rtd-theme",
-    "sphinx-autodoc-typehints",
-]
 example = [
     "jupyter",
     "matplotlib",
@@ -55,6 +50,10 @@ example = [
 
 [tool.pdm]
 distribution = true
+
+[tool.pdm.version]
+source = "scm"
+tag_filter = "v[0-9]*"
 
 [tool.pdm.build]
 includes = ["soogo"]

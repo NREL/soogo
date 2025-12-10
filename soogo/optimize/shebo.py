@@ -71,8 +71,9 @@ def shebo(
         is used. On exit, if provided, the surrogate model will contain the
         points used during the optimization process.
     :param acquisitionFunc: Acquisition function to be used in the optimization
-        loop. If None is provided, the acquisition cycle described in
-        _[#] is used. Each call, the acquisition function is provided with the
+        loop. If None is provided, the acquisition cycle described by
+        Müller and Day (2019) is used. Each call, the acquisition function is
+        provided with the
         surrogate objective model, bounds, and number of points to sample as
         positional arguments and the keyword arguments points,
         evaluabilitySurrogate, evaluabilityThreshold, and scoreWeight.
