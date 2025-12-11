@@ -1,0 +1,1251 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API Documentation &mdash; soogo (Surrogate-based 0-th Order Global Optimization)  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="soogo.acquisition package" href="soogo.acquisition.html" />
+    <link rel="prev" title="Contributing guidelines" href="../CONTRIBUTING.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            soogo (Surrogate-based 0-th Order Global Optimization)
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../README.html">soogo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html">Contributing guidelines</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="soogo.acquisition.html">soogo.acquisition package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="soogo.integrations.html">soogo.integrations package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="soogo.model.html">soogo.model package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="soogo.optimize.html">soogo.optimize package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-soogo.sampling">soogo.sampling module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#soogo.sampling.Mitchel91Sampler"><code class="docutils literal notranslate"><span class="pre">Mitchel91Sampler</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#soogo.sampling.Mitchel91Sampler.maxCand"><code class="docutils literal notranslate"><span class="pre">Mitchel91Sampler.maxCand</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#soogo.sampling.Mitchel91Sampler.scale"><code class="docutils literal notranslate"><span class="pre">Mitchel91Sampler.scale</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#soogo.sampling.Mitchel91Sampler.get_mitchel91_sample"><code class="docutils literal notranslate"><span class="pre">Mitchel91Sampler.get_mitchel91_sample()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#soogo.sampling.Mitchel91Sampler.get_sample"><code class="docutils literal notranslate"><span class="pre">Mitchel91Sampler.get_sample()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#soogo.sampling.NormalSampler"><code class="docutils literal notranslate"><span class="pre">NormalSampler</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#soogo.sampling.NormalSampler.sigma"><code class="docutils literal notranslate"><span class="pre">NormalSampler.sigma</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#soogo.sampling.NormalSampler.get_dds_sample"><code class="docutils literal notranslate"><span class="pre">NormalSampler.get_dds_sample()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#soogo.sampling.NormalSampler.get_normal_sample"><code class="docutils literal notranslate"><span class="pre">NormalSampler.get_normal_sample()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#soogo.sampling.NormalSampler.get_sample"><code class="docutils literal notranslate"><span class="pre">NormalSampler.get_sample()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#soogo.sampling.Sampler"><code class="docutils literal notranslate"><span class="pre">Sampler</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#soogo.sampling.Sampler.n"><code class="docutils literal notranslate"><span class="pre">Sampler.n</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#soogo.sampling.Sampler.strategy"><code class="docutils literal notranslate"><span class="pre">Sampler.strategy</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#soogo.sampling.Sampler.get_sample"><code class="docutils literal notranslate"><span class="pre">Sampler.get_sample()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#soogo.sampling.Sampler.get_slhd_sample"><code class="docutils literal notranslate"><span class="pre">Sampler.get_slhd_sample()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#soogo.sampling.Sampler.get_uniform_sample"><code class="docutils literal notranslate"><span class="pre">Sampler.get_uniform_sample()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#soogo.sampling.SamplingStrategy"><code class="docutils literal notranslate"><span class="pre">SamplingStrategy</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#soogo.sampling.SamplingStrategy.DDS"><code class="docutils literal notranslate"><span class="pre">SamplingStrategy.DDS</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#soogo.sampling.SamplingStrategy.DDS_UNIFORM"><code class="docutils literal notranslate"><span class="pre">SamplingStrategy.DDS_UNIFORM</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#soogo.sampling.SamplingStrategy.MITCHEL91"><code class="docutils literal notranslate"><span class="pre">SamplingStrategy.MITCHEL91</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#soogo.sampling.SamplingStrategy.NORMAL"><code class="docutils literal notranslate"><span class="pre">SamplingStrategy.NORMAL</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#soogo.sampling.SamplingStrategy.SLHD"><code class="docutils literal notranslate"><span class="pre">SamplingStrategy.SLHD</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#soogo.sampling.SamplingStrategy.UNIFORM"><code class="docutils literal notranslate"><span class="pre">SamplingStrategy.UNIFORM</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-soogo.termination">soogo.termination module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#soogo.termination.IterateNTimes"><code class="docutils literal notranslate"><span class="pre">IterateNTimes</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#soogo.termination.IterateNTimes.is_met"><code class="docutils literal notranslate"><span class="pre">IterateNTimes.is_met()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#soogo.termination.IterateNTimes.reset"><code class="docutils literal notranslate"><span class="pre">IterateNTimes.reset()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#soogo.termination.IterateNTimes.update"><code class="docutils literal notranslate"><span class="pre">IterateNTimes.update()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#soogo.termination.RobustCondition"><code class="docutils literal notranslate"><span class="pre">RobustCondition</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#soogo.termination.RobustCondition.is_met"><code class="docutils literal notranslate"><span class="pre">RobustCondition.is_met()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#soogo.termination.RobustCondition.reset"><code class="docutils literal notranslate"><span class="pre">RobustCondition.reset()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#soogo.termination.RobustCondition.update"><code class="docutils literal notranslate"><span class="pre">RobustCondition.update()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#soogo.termination.TerminationCondition"><code class="docutils literal notranslate"><span class="pre">TerminationCondition</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#soogo.termination.TerminationCondition.is_met"><code class="docutils literal notranslate"><span class="pre">TerminationCondition.is_met()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#soogo.termination.TerminationCondition.reset"><code class="docutils literal notranslate"><span class="pre">TerminationCondition.reset()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#soogo.termination.TerminationCondition.update"><code class="docutils literal notranslate"><span class="pre">TerminationCondition.update()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#soogo.termination.UnsuccessfulImprovement"><code class="docutils literal notranslate"><span class="pre">UnsuccessfulImprovement</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#soogo.termination.UnsuccessfulImprovement.threshold"><code class="docutils literal notranslate"><span class="pre">UnsuccessfulImprovement.threshold</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#soogo.termination.UnsuccessfulImprovement.value_range"><code class="docutils literal notranslate"><span class="pre">UnsuccessfulImprovement.value_range</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#soogo.termination.UnsuccessfulImprovement.lowest_value"><code class="docutils literal notranslate"><span class="pre">UnsuccessfulImprovement.lowest_value</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#soogo.termination.UnsuccessfulImprovement.is_met"><code class="docutils literal notranslate"><span class="pre">UnsuccessfulImprovement.is_met()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#soogo.termination.UnsuccessfulImprovement.reset"><code class="docutils literal notranslate"><span class="pre">UnsuccessfulImprovement.reset()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#soogo.termination.UnsuccessfulImprovement.update"><code class="docutils literal notranslate"><span class="pre">UnsuccessfulImprovement.update()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-soogo.utils">soogo.utils module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#soogo.utils.find_pareto_front"><code class="docutils literal notranslate"><span class="pre">find_pareto_front()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#soogo.utils.gp_expected_improvement"><code class="docutils literal notranslate"><span class="pre">gp_expected_improvement()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tests.html">Tests documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">soogo (Surrogate-based 0-th Order Global Optimization)</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">API Documentation</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/NREL/soogo/blob/main/docs/api/soogo.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="api-documentation">
+<h1>API Documentation<a class="headerlink" href="#api-documentation" title="Link to this heading"></a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="soogo.acquisition.html">soogo.acquisition package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="soogo.acquisition.html#module-soogo.acquisition.alternated_acquisition">soogo.acquisition.alternated_acquisition module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.alternated_acquisition.AlternatedAcquisition"><code class="docutils literal notranslate"><span class="pre">AlternatedAcquisition</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.alternated_acquisition.AlternatedAcquisition.optimize"><code class="docutils literal notranslate"><span class="pre">AlternatedAcquisition.optimize()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.alternated_acquisition.AlternatedAcquisition.update"><code class="docutils literal notranslate"><span class="pre">AlternatedAcquisition.update()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="soogo.acquisition.html#module-soogo.acquisition.base">soogo.acquisition.base module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.base.Acquisition"><code class="docutils literal notranslate"><span class="pre">Acquisition</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.base.Acquisition.optimizer"><code class="docutils literal notranslate"><span class="pre">Acquisition.optimizer</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.base.Acquisition.mi_optimizer"><code class="docutils literal notranslate"><span class="pre">Acquisition.mi_optimizer</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.base.Acquisition.rtol"><code class="docutils literal notranslate"><span class="pre">Acquisition.rtol</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.base.Acquisition.has_converged"><code class="docutils literal notranslate"><span class="pre">Acquisition.has_converged()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.base.Acquisition.optimize"><code class="docutils literal notranslate"><span class="pre">Acquisition.optimize()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.base.Acquisition.tol"><code class="docutils literal notranslate"><span class="pre">Acquisition.tol()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.base.Acquisition.update"><code class="docutils literal notranslate"><span class="pre">Acquisition.update()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="soogo.acquisition.html#module-soogo.acquisition.coordinate_perturbation_over_nondominated">soogo.acquisition.coordinate_perturbation_over_nondominated module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.coordinate_perturbation_over_nondominated.CoordinatePerturbationOverNondominated"><code class="docutils literal notranslate"><span class="pre">CoordinatePerturbationOverNondominated</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.coordinate_perturbation_over_nondominated.CoordinatePerturbationOverNondominated.acquisitionFunc"><code class="docutils literal notranslate"><span class="pre">CoordinatePerturbationOverNondominated.acquisitionFunc</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.coordinate_perturbation_over_nondominated.CoordinatePerturbationOverNondominated.optimize"><code class="docutils literal notranslate"><span class="pre">CoordinatePerturbationOverNondominated.optimize()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="soogo.acquisition.html#module-soogo.acquisition.endpoints_pareto_front">soogo.acquisition.endpoints_pareto_front module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.endpoints_pareto_front.EndPointsParetoFront"><code class="docutils literal notranslate"><span class="pre">EndPointsParetoFront</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.endpoints_pareto_front.EndPointsParetoFront.optimize"><code class="docutils literal notranslate"><span class="pre">EndPointsParetoFront.optimize()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="soogo.acquisition.html#module-soogo.acquisition.gosac_sample">soogo.acquisition.gosac_sample module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.gosac_sample.GosacSample"><code class="docutils literal notranslate"><span class="pre">GosacSample</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.gosac_sample.GosacSample.fun"><code class="docutils literal notranslate"><span class="pre">GosacSample.fun</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.gosac_sample.GosacSample.optimize"><code class="docutils literal notranslate"><span class="pre">GosacSample.optimize()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="soogo.acquisition.html#module-soogo.acquisition.maximize_distance">soogo.acquisition.maximize_distance module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.maximize_distance.MaximizeDistance"><code class="docutils literal notranslate"><span class="pre">MaximizeDistance</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.maximize_distance.MaximizeDistance.optimize"><code class="docutils literal notranslate"><span class="pre">MaximizeDistance.optimize()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="soogo.acquisition.html#module-soogo.acquisition.maximize_ei">soogo.acquisition.maximize_ei module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.maximize_ei.MaximizeEI"><code class="docutils literal notranslate"><span class="pre">MaximizeEI</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.maximize_ei.MaximizeEI.sampler"><code class="docutils literal notranslate"><span class="pre">MaximizeEI.sampler</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.maximize_ei.MaximizeEI.avoid_clusters"><code class="docutils literal notranslate"><span class="pre">MaximizeEI.avoid_clusters</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.maximize_ei.MaximizeEI.optimize"><code class="docutils literal notranslate"><span class="pre">MaximizeEI.optimize()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="soogo.acquisition.html#module-soogo.acquisition.minimize_mo_surrogate">soogo.acquisition.minimize_mo_surrogate module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.minimize_mo_surrogate.MinimizeMOSurrogate"><code class="docutils literal notranslate"><span class="pre">MinimizeMOSurrogate</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.minimize_mo_surrogate.MinimizeMOSurrogate.optimize"><code class="docutils literal notranslate"><span class="pre">MinimizeMOSurrogate.optimize()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="soogo.acquisition.html#module-soogo.acquisition.minimize_surrogate">soogo.acquisition.minimize_surrogate module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.minimize_surrogate.MinimizeSurrogate"><code class="docutils literal notranslate"><span class="pre">MinimizeSurrogate</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.minimize_surrogate.MinimizeSurrogate.sampler"><code class="docutils literal notranslate"><span class="pre">MinimizeSurrogate.sampler</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.minimize_surrogate.MinimizeSurrogate.optimize"><code class="docutils literal notranslate"><span class="pre">MinimizeSurrogate.optimize()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="soogo.acquisition.html#module-soogo.acquisition.multiple_acquisition">soogo.acquisition.multiple_acquisition module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.multiple_acquisition.MultipleAcquisition"><code class="docutils literal notranslate"><span class="pre">MultipleAcquisition</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.multiple_acquisition.MultipleAcquisition.optimize"><code class="docutils literal notranslate"><span class="pre">MultipleAcquisition.optimize()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="soogo.acquisition.html#module-soogo.acquisition.pareto_front">soogo.acquisition.pareto_front module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.pareto_front.ParetoFront"><code class="docutils literal notranslate"><span class="pre">ParetoFront</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.pareto_front.ParetoFront.oldTV"><code class="docutils literal notranslate"><span class="pre">ParetoFront.oldTV</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.pareto_front.ParetoFront.optimize"><code class="docutils literal notranslate"><span class="pre">ParetoFront.optimize()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.pareto_front.ParetoFront.pareto_front_target"><code class="docutils literal notranslate"><span class="pre">ParetoFront.pareto_front_target()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="soogo.acquisition.html#module-soogo.acquisition.target_value_acquisition">soogo.acquisition.target_value_acquisition module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.target_value_acquisition.TargetValueAcquisition"><code class="docutils literal notranslate"><span class="pre">TargetValueAcquisition</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.target_value_acquisition.TargetValueAcquisition.cycleLength"><code class="docutils literal notranslate"><span class="pre">TargetValueAcquisition.cycleLength</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.target_value_acquisition.TargetValueAcquisition._cycle"><code class="docutils literal notranslate"><span class="pre">TargetValueAcquisition._cycle</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.target_value_acquisition.TargetValueAcquisition.bumpiness_measure"><code class="docutils literal notranslate"><span class="pre">TargetValueAcquisition.bumpiness_measure()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.target_value_acquisition.TargetValueAcquisition.optimize"><code class="docutils literal notranslate"><span class="pre">TargetValueAcquisition.optimize()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="soogo.acquisition.html#module-soogo.acquisition.transition_search">soogo.acquisition.transition_search module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.transition_search.TransitionSearch"><code class="docutils literal notranslate"><span class="pre">TransitionSearch</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.transition_search.TransitionSearch.generate_candidates"><code class="docutils literal notranslate"><span class="pre">TransitionSearch.generate_candidates()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.transition_search.TransitionSearch.optimize"><code class="docutils literal notranslate"><span class="pre">TransitionSearch.optimize()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.transition_search.TransitionSearch.select_candidates"><code class="docutils literal notranslate"><span class="pre">TransitionSearch.select_candidates()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="soogo.acquisition.html#module-soogo.acquisition.utils">soogo.acquisition.utils module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.utils.FarEnoughSampleFilter"><code class="docutils literal notranslate"><span class="pre">FarEnoughSampleFilter</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.utils.FarEnoughSampleFilter.__call__"><code class="docutils literal notranslate"><span class="pre">FarEnoughSampleFilter.__call__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.utils.FarEnoughSampleFilter.is_far_enough"><code class="docutils literal notranslate"><span class="pre">FarEnoughSampleFilter.is_far_enough()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.utils.argmin_weighted_score"><code class="docutils literal notranslate"><span class="pre">argmin_weighted_score()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.utils.select_weighted_candidates"><code class="docutils literal notranslate"><span class="pre">select_weighted_candidates()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.utils.weighted_score"><code class="docutils literal notranslate"><span class="pre">weighted_score()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="soogo.acquisition.html#module-soogo.acquisition.weighted_acquisition">soogo.acquisition.weighted_acquisition module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.weighted_acquisition.WeightedAcquisition"><code class="docutils literal notranslate"><span class="pre">WeightedAcquisition</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.weighted_acquisition.WeightedAcquisition.neval"><code class="docutils literal notranslate"><span class="pre">WeightedAcquisition.neval</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.weighted_acquisition.WeightedAcquisition.sampler"><code class="docutils literal notranslate"><span class="pre">WeightedAcquisition.sampler</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.weighted_acquisition.WeightedAcquisition.weightpattern"><code class="docutils literal notranslate"><span class="pre">WeightedAcquisition.weightpattern</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.weighted_acquisition.WeightedAcquisition.maxeval"><code class="docutils literal notranslate"><span class="pre">WeightedAcquisition.maxeval</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.weighted_acquisition.WeightedAcquisition.optimize"><code class="docutils literal notranslate"><span class="pre">WeightedAcquisition.optimize()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.weighted_acquisition.WeightedAcquisition.tol"><code class="docutils literal notranslate"><span class="pre">WeightedAcquisition.tol()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.weighted_acquisition.WeightedAcquisition.update"><code class="docutils literal notranslate"><span class="pre">WeightedAcquisition.update()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="soogo.integrations.html">soogo.integrations package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="soogo.integrations.html#module-soogo.integrations.nomad">soogo.integrations.nomad module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="soogo.integrations.html#soogo.integrations.nomad.NomadProblem"><code class="docutils literal notranslate"><span class="pre">NomadProblem</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="soogo.integrations.html#soogo.integrations.nomad.NomadProblem.__call__"><code class="docutils literal notranslate"><span class="pre">NomadProblem.__call__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.integrations.html#soogo.integrations.nomad.NomadProblem.get_f_history"><code class="docutils literal notranslate"><span class="pre">NomadProblem.get_f_history()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.integrations.html#soogo.integrations.nomad.NomadProblem.get_x_history"><code class="docutils literal notranslate"><span class="pre">NomadProblem.get_x_history()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.integrations.html#soogo.integrations.nomad.NomadProblem.reset"><code class="docutils literal notranslate"><span class="pre">NomadProblem.reset()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="soogo.integrations.html#module-soogo.integrations.pymoo">soogo.integrations.pymoo module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="soogo.integrations.html#soogo.integrations.pymoo.ListDuplicateElimination"><code class="docutils literal notranslate"><span class="pre">ListDuplicateElimination</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="soogo.integrations.html#soogo.integrations.pymoo.ListDuplicateElimination.calc_dist"><code class="docutils literal notranslate"><span class="pre">ListDuplicateElimination.calc_dist()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="soogo.integrations.html#soogo.integrations.pymoo.PymooProblem"><code class="docutils literal notranslate"><span class="pre">PymooProblem</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="soogo.integrations.html#soogo.integrations.pymoo.PymooProblem.objfunc"><code class="docutils literal notranslate"><span class="pre">PymooProblem.objfunc</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.integrations.html#soogo.integrations.pymoo.PymooProblem.gfunc"><code class="docutils literal notranslate"><span class="pre">PymooProblem.gfunc</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.integrations.html#soogo.integrations.pymoo.PymooProblem.is_mixed_integer"><code class="docutils literal notranslate"><span class="pre">PymooProblem.is_mixed_integer</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="soogo.model.html">soogo.model package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="soogo.model.html#module-soogo.model.base">soogo.model.base module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="soogo.model.html#soogo.model.base.Surrogate"><code class="docutils literal notranslate"><span class="pre">Surrogate</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.base.Surrogate.X"><code class="docutils literal notranslate"><span class="pre">Surrogate.X</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.base.Surrogate.Y"><code class="docutils literal notranslate"><span class="pre">Surrogate.Y</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.base.Surrogate.__call__"><code class="docutils literal notranslate"><span class="pre">Surrogate.__call__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.base.Surrogate.check_initial_design"><code class="docutils literal notranslate"><span class="pre">Surrogate.check_initial_design()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.base.Surrogate.dim"><code class="docutils literal notranslate"><span class="pre">Surrogate.dim</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.base.Surrogate.eval_kernel"><code class="docutils literal notranslate"><span class="pre">Surrogate.eval_kernel()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.base.Surrogate.iindex"><code class="docutils literal notranslate"><span class="pre">Surrogate.iindex</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.base.Surrogate.min_design_space_size"><code class="docutils literal notranslate"><span class="pre">Surrogate.min_design_space_size()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.base.Surrogate.ntarget"><code class="docutils literal notranslate"><span class="pre">Surrogate.ntarget</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.base.Surrogate.ntrain"><code class="docutils literal notranslate"><span class="pre">Surrogate.ntrain</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.base.Surrogate.reserve"><code class="docutils literal notranslate"><span class="pre">Surrogate.reserve()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.base.Surrogate.reset_data"><code class="docutils literal notranslate"><span class="pre">Surrogate.reset_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.base.Surrogate.update"><code class="docutils literal notranslate"><span class="pre">Surrogate.update()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="soogo.model.html#module-soogo.model.gp">soogo.model.gp module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="soogo.model.html#soogo.model.gp.GaussianProcess"><code class="docutils literal notranslate"><span class="pre">GaussianProcess</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.gp.GaussianProcess.scaler"><code class="docutils literal notranslate"><span class="pre">GaussianProcess.scaler</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.gp.GaussianProcess.model"><code class="docutils literal notranslate"><span class="pre">GaussianProcess.model</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.gp.GaussianProcess.X"><code class="docutils literal notranslate"><span class="pre">GaussianProcess.X</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.gp.GaussianProcess.Y"><code class="docutils literal notranslate"><span class="pre">GaussianProcess.Y</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.gp.GaussianProcess.__call__"><code class="docutils literal notranslate"><span class="pre">GaussianProcess.__call__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.gp.GaussianProcess.check_initial_design"><code class="docutils literal notranslate"><span class="pre">GaussianProcess.check_initial_design()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.gp.GaussianProcess.eval_kernel"><code class="docutils literal notranslate"><span class="pre">GaussianProcess.eval_kernel()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.gp.GaussianProcess.expected_improvement"><code class="docutils literal notranslate"><span class="pre">GaussianProcess.expected_improvement()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.gp.GaussianProcess.iindex"><code class="docutils literal notranslate"><span class="pre">GaussianProcess.iindex</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.gp.GaussianProcess.min_design_space_size"><code class="docutils literal notranslate"><span class="pre">GaussianProcess.min_design_space_size()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.gp.GaussianProcess.reserve"><code class="docutils literal notranslate"><span class="pre">GaussianProcess.reserve()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.gp.GaussianProcess.reset_data"><code class="docutils literal notranslate"><span class="pre">GaussianProcess.reset_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.gp.GaussianProcess.update"><code class="docutils literal notranslate"><span class="pre">GaussianProcess.update()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="soogo.model.html#module-soogo.model.rbf">soogo.model.rbf module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="soogo.model.html#soogo.model.rbf.MedianLpfFilter"><code class="docutils literal notranslate"><span class="pre">MedianLpfFilter</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.rbf.MedianLpfFilter.__call__"><code class="docutils literal notranslate"><span class="pre">MedianLpfFilter.__call__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="soogo.model.html#soogo.model.rbf.RbfFilter"><code class="docutils literal notranslate"><span class="pre">RbfFilter</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.rbf.RbfFilter.__call__"><code class="docutils literal notranslate"><span class="pre">RbfFilter.__call__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="soogo.model.html#soogo.model.rbf.RbfModel"><code class="docutils literal notranslate"><span class="pre">RbfModel</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.rbf.RbfModel.kernel"><code class="docutils literal notranslate"><span class="pre">RbfModel.kernel</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.rbf.RbfModel.filter"><code class="docutils literal notranslate"><span class="pre">RbfModel.filter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.rbf.RbfModel.X"><code class="docutils literal notranslate"><span class="pre">RbfModel.X</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.rbf.RbfModel.Y"><code class="docutils literal notranslate"><span class="pre">RbfModel.Y</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.rbf.RbfModel.__call__"><code class="docutils literal notranslate"><span class="pre">RbfModel.__call__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.rbf.RbfModel.check_initial_design"><code class="docutils literal notranslate"><span class="pre">RbfModel.check_initial_design()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.rbf.RbfModel.eval_kernel"><code class="docutils literal notranslate"><span class="pre">RbfModel.eval_kernel()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.rbf.RbfModel.hessp"><code class="docutils literal notranslate"><span class="pre">RbfModel.hessp()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.rbf.RbfModel.iindex"><code class="docutils literal notranslate"><span class="pre">RbfModel.iindex</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.rbf.RbfModel.jac"><code class="docutils literal notranslate"><span class="pre">RbfModel.jac()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.rbf.RbfModel.min_design_space_size"><code class="docutils literal notranslate"><span class="pre">RbfModel.min_design_space_size()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.rbf.RbfModel.mu_measure"><code class="docutils literal notranslate"><span class="pre">RbfModel.mu_measure()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.rbf.RbfModel.polynomial_tail"><code class="docutils literal notranslate"><span class="pre">RbfModel.polynomial_tail()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.rbf.RbfModel.polynomial_tail_size"><code class="docutils literal notranslate"><span class="pre">RbfModel.polynomial_tail_size()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.rbf.RbfModel.prepare_mu_measure"><code class="docutils literal notranslate"><span class="pre">RbfModel.prepare_mu_measure()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.rbf.RbfModel.reserve"><code class="docutils literal notranslate"><span class="pre">RbfModel.reserve()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.rbf.RbfModel.reset_data"><code class="docutils literal notranslate"><span class="pre">RbfModel.reset_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.rbf.RbfModel.update"><code class="docutils literal notranslate"><span class="pre">RbfModel.update()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="soogo.model.html#module-soogo.model.rbf_kernel">soogo.model.rbf_kernel module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="soogo.model.html#soogo.model.rbf_kernel.CubicRadialBasisFunction"><code class="docutils literal notranslate"><span class="pre">CubicRadialBasisFunction</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.rbf_kernel.CubicRadialBasisFunction.__call__"><code class="docutils literal notranslate"><span class="pre">CubicRadialBasisFunction.__call__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.rbf_kernel.CubicRadialBasisFunction.grad_over_r"><code class="docutils literal notranslate"><span class="pre">CubicRadialBasisFunction.grad_over_r()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.rbf_kernel.CubicRadialBasisFunction.polynomial_tail_order"><code class="docutils literal notranslate"><span class="pre">CubicRadialBasisFunction.polynomial_tail_order()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="soogo.model.html#soogo.model.rbf_kernel.LinearRadialBasisFunction"><code class="docutils literal notranslate"><span class="pre">LinearRadialBasisFunction</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.rbf_kernel.LinearRadialBasisFunction.__call__"><code class="docutils literal notranslate"><span class="pre">LinearRadialBasisFunction.__call__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.rbf_kernel.LinearRadialBasisFunction.polynomial_tail_order"><code class="docutils literal notranslate"><span class="pre">LinearRadialBasisFunction.polynomial_tail_order()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="soogo.model.html#soogo.model.rbf_kernel.RadialBasisFunction"><code class="docutils literal notranslate"><span class="pre">RadialBasisFunction</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.rbf_kernel.RadialBasisFunction.__call__"><code class="docutils literal notranslate"><span class="pre">RadialBasisFunction.__call__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.rbf_kernel.RadialBasisFunction.grad"><code class="docutils literal notranslate"><span class="pre">RadialBasisFunction.grad()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.rbf_kernel.RadialBasisFunction.grad_over_r"><code class="docutils literal notranslate"><span class="pre">RadialBasisFunction.grad_over_r()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.rbf_kernel.RadialBasisFunction.hess"><code class="docutils literal notranslate"><span class="pre">RadialBasisFunction.hess()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.rbf_kernel.RadialBasisFunction.polynomial_tail_order"><code class="docutils literal notranslate"><span class="pre">RadialBasisFunction.polynomial_tail_order()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="soogo.model.html#soogo.model.rbf_kernel.ThinPlateRadialBasisFunction"><code class="docutils literal notranslate"><span class="pre">ThinPlateRadialBasisFunction</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.rbf_kernel.ThinPlateRadialBasisFunction.__call__"><code class="docutils literal notranslate"><span class="pre">ThinPlateRadialBasisFunction.__call__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.rbf_kernel.ThinPlateRadialBasisFunction.grad_over_r"><code class="docutils literal notranslate"><span class="pre">ThinPlateRadialBasisFunction.grad_over_r()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.model.html#soogo.model.rbf_kernel.ThinPlateRadialBasisFunction.polynomial_tail_order"><code class="docutils literal notranslate"><span class="pre">ThinPlateRadialBasisFunction.polynomial_tail_order()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="soogo.optimize.html">soogo.optimize package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="soogo.optimize.html#module-soogo.optimize.bayesian_optimization">soogo.optimize.bayesian_optimization module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="soogo.optimize.html#soogo.optimize.bayesian_optimization.bayesian_optimization"><code class="docutils literal notranslate"><span class="pre">bayesian_optimization()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="soogo.optimize.html#module-soogo.optimize.cptv">soogo.optimize.cptv module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="soogo.optimize.html#soogo.optimize.cptv.cptv"><code class="docutils literal notranslate"><span class="pre">cptv()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="soogo.optimize.html#soogo.optimize.cptv.cptvl"><code class="docutils literal notranslate"><span class="pre">cptvl()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="soogo.optimize.html#module-soogo.optimize.dycors">soogo.optimize.dycors module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="soogo.optimize.html#soogo.optimize.dycors.dycors"><code class="docutils literal notranslate"><span class="pre">dycors()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="soogo.optimize.html#module-soogo.optimize.fsapso">soogo.optimize.fsapso module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="soogo.optimize.html#soogo.optimize.fsapso.fsapso"><code class="docutils literal notranslate"><span class="pre">fsapso()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="soogo.optimize.html#module-soogo.optimize.gosac">soogo.optimize.gosac module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="soogo.optimize.html#soogo.optimize.gosac.gosac"><code class="docutils literal notranslate"><span class="pre">gosac()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="soogo.optimize.html#module-soogo.optimize.multistart_msrs">soogo.optimize.multistart_msrs module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="soogo.optimize.html#soogo.optimize.multistart_msrs.multistart_msrs"><code class="docutils literal notranslate"><span class="pre">multistart_msrs()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="soogo.optimize.html#module-soogo.optimize.result">soogo.optimize.result module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="soogo.optimize.html#soogo.optimize.result.OptimizeResult"><code class="docutils literal notranslate"><span class="pre">OptimizeResult</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="soogo.optimize.html#soogo.optimize.result.OptimizeResult.fsample"><code class="docutils literal notranslate"><span class="pre">OptimizeResult.fsample</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.optimize.html#soogo.optimize.result.OptimizeResult.fx"><code class="docutils literal notranslate"><span class="pre">OptimizeResult.fx</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.optimize.html#soogo.optimize.result.OptimizeResult.init"><code class="docutils literal notranslate"><span class="pre">OptimizeResult.init()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.optimize.html#soogo.optimize.result.OptimizeResult.init_best_values"><code class="docutils literal notranslate"><span class="pre">OptimizeResult.init_best_values()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.optimize.html#soogo.optimize.result.OptimizeResult.nfev"><code class="docutils literal notranslate"><span class="pre">OptimizeResult.nfev</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.optimize.html#soogo.optimize.result.OptimizeResult.nit"><code class="docutils literal notranslate"><span class="pre">OptimizeResult.nit</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.optimize.html#soogo.optimize.result.OptimizeResult.nobj"><code class="docutils literal notranslate"><span class="pre">OptimizeResult.nobj</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.optimize.html#soogo.optimize.result.OptimizeResult.sample"><code class="docutils literal notranslate"><span class="pre">OptimizeResult.sample</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="soogo.optimize.html#soogo.optimize.result.OptimizeResult.x"><code class="docutils literal notranslate"><span class="pre">OptimizeResult.x</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="soogo.optimize.html#module-soogo.optimize.shebo">soogo.optimize.shebo module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="soogo.optimize.html#soogo.optimize.shebo.shebo"><code class="docutils literal notranslate"><span class="pre">shebo()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="soogo.optimize.html#module-soogo.optimize.socemo">soogo.optimize.socemo module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="soogo.optimize.html#soogo.optimize.socemo.socemo"><code class="docutils literal notranslate"><span class="pre">socemo()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="soogo.optimize.html#module-soogo.optimize.surrogate_optimization">soogo.optimize.surrogate_optimization module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="soogo.optimize.html#soogo.optimize.surrogate_optimization.surrogate_optimization"><code class="docutils literal notranslate"><span class="pre">surrogate_optimization()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="soogo.optimize.html#module-soogo.optimize.utils">soogo.optimize.utils module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="soogo.optimize.html#soogo.optimize.utils.evaluate_and_log_point"><code class="docutils literal notranslate"><span class="pre">evaluate_and_log_point()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="soogo.optimize.html#soogo.optimize.utils.uncertainty_score"><code class="docutils literal notranslate"><span class="pre">uncertainty_score()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="module-soogo.sampling">
+<span id="soogo-sampling-module"></span><h2>soogo.sampling module<a class="headerlink" href="#module-soogo.sampling" title="Link to this heading"></a></h2>
+<p>Sampling strategies for the optimization algorithms.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="soogo.sampling.Mitchel91Sampler">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">soogo.sampling.</span></span><span class="sig-name descname"><span class="pre">Mitchel91Sampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strategy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#soogo.sampling.SamplingStrategy" title="soogo.sampling.SamplingStrategy"><span class="pre">SamplingStrategy</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">SamplingStrategy.MITCHEL91</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxCand</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#soogo.sampling.Mitchel91Sampler" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#soogo.sampling.Sampler" title="soogo.sampling.Sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></a></p>
+<p>Sampler based from <a class="footnote-reference brackets" href="#id2" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> that fills gaps in the search space.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>maxCand</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – The maximum number of random candidates from which each
+sample points is selected. If None it receives the value <cite>10*n</cite> instead.
+Stored in <a class="reference internal" href="#soogo.sampling.Mitchel91Sampler.maxCand" title="soogo.sampling.Mitchel91Sampler.maxCand"><code class="xref py py-attr docutils literal notranslate"><span class="pre">maxCand</span></code></a>. (default: <code class="docutils literal notranslate"><span class="pre">10000</span></code>)</p></li>
+<li><p><strong>scale</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – A scaling factor proportional to the number of candidates used
+to select each sample point. Stored in <a class="reference internal" href="#soogo.sampling.Mitchel91Sampler.scale" title="soogo.sampling.Mitchel91Sampler.scale"><code class="xref py py-attr docutils literal notranslate"><span class="pre">scale</span></code></a>. (default: <code class="docutils literal notranslate"><span class="pre">10</span></code>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="soogo.sampling.Mitchel91Sampler.maxCand">
+<span class="sig-name descname"><span class="pre">maxCand</span></span><a class="headerlink" href="#soogo.sampling.Mitchel91Sampler.maxCand" title="Link to this definition"></a></dt>
+<dd><p>The maximum number of random candidates from which each
+sample points is selected. Used by <a class="reference internal" href="#soogo.sampling.Mitchel91Sampler.get_mitchel91_sample" title="soogo.sampling.Mitchel91Sampler.get_mitchel91_sample"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_mitchel91_sample()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="soogo.sampling.Mitchel91Sampler.scale">
+<span class="sig-name descname"><span class="pre">scale</span></span><a class="headerlink" href="#soogo.sampling.Mitchel91Sampler.scale" title="Link to this definition"></a></dt>
+<dd><p>Scaling factor that controls the number of candidates in the pool used
+to select a sample point. The pool has size
+<cite>scale * [# current points]</cite>. Used by <a class="reference internal" href="#soogo.sampling.Mitchel91Sampler.get_mitchel91_sample" title="soogo.sampling.Mitchel91Sampler.get_mitchel91_sample"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_mitchel91_sample()</span></code></a>.</p>
+</dd></dl>
+
+<section id="references">
+<h3>References<a class="headerlink" href="#references" title="Link to this heading"></a></h3>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id2" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>Mitchell, D. P. (1991). Spectrally optimal sampling for distribution
+ray tracing. Computer Graphics, 25, 157–164.</p>
+</aside>
+</aside>
+<dl class="py method">
+<dt class="sig sig-object py" id="soogo.sampling.Mitchel91Sampler.get_mitchel91_sample">
+<span class="sig-name descname"><span class="pre">get_mitchel91_sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">iindex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_sample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#soogo.sampling.Mitchel91Sampler.get_mitchel91_sample" title="Link to this definition"></a></dt>
+<dd><p>Generate a sample that aims to fill gaps in the search space.</p>
+<p>This algorithm generates a sample that fills gaps in the search space.
+In each iteration, it generates a pool of candidates, and selects the
+point that is farthest from current sample points to integrate the new
+sample. This algorithm was proposed by Mitchel (1991).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bounds</strong> (<em>sequence</em>) – List with the limits [x_min,x_max] of each
+direction x in the space.</p></li>
+<li><p><strong>iindex</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>]</span>) – Indices of the input space that are integer. (default: <code class="docutils literal notranslate"><span class="pre">()</span></code>)</p></li>
+<li><p><strong>current_sample</strong> – Sample points already drawn. (default: <code class="docutils literal notranslate"><span class="pre">()</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Matrix with a sample point per line.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="soogo.sampling.Mitchel91Sampler.get_sample">
+<span class="sig-name descname"><span class="pre">get_sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">iindex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#soogo.sampling.Mitchel91Sampler.get_sample" title="Link to this definition"></a></dt>
+<dd><p>Generates a sample.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bounds</strong> (<em>sequence</em>) – List with the limits [x_min,x_max] of each
+direction x in the space.</p></li>
+<li><p><strong>iindex</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>]</span>) – Indices of the input space that are integer. (default: <code class="docutils literal notranslate"><span class="pre">()</span></code>)</p></li>
+<li><p><strong>current_sample</strong> – Sample points already drawn. Used by
+<a class="reference internal" href="#soogo.sampling.SamplingStrategy.MITCHEL91" title="soogo.sampling.SamplingStrategy.MITCHEL91"><code class="xref py py-attr docutils literal notranslate"><span class="pre">SamplingStrategy.MITCHEL91</span></code></a>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Matrix with a sample point per line.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="soogo.sampling.NormalSampler">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">soogo.sampling.</span></span><span class="sig-name descname"><span class="pre">NormalSampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">strategy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#soogo.sampling.SamplingStrategy" title="soogo.sampling.SamplingStrategy"><span class="pre">SamplingStrategy</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">SamplingStrategy.NORMAL</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#soogo.sampling.NormalSampler" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#soogo.sampling.Sampler" title="soogo.sampling.Sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></a></p>
+<p>Sampler that generates sample points from a truncated normal
+distribution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sigma</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – Standard deviation of the truncated normal distribution,
+relative to a unitary interval. Stored in <a class="reference internal" href="#soogo.sampling.NormalSampler.sigma" title="soogo.sampling.NormalSampler.sigma"><code class="xref py py-attr docutils literal notranslate"><span class="pre">sigma</span></code></a>.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="soogo.sampling.NormalSampler.sigma">
+<span class="sig-name descname"><span class="pre">sigma</span></span><a class="headerlink" href="#soogo.sampling.NormalSampler.sigma" title="Link to this definition"></a></dt>
+<dd><p>Standard deviation of the truncated normal distribution, relative to a
+unitary interval. Used by <a class="reference internal" href="#soogo.sampling.NormalSampler.get_normal_sample" title="soogo.sampling.NormalSampler.get_normal_sample"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_normal_sample()</span></code></a> and
+<a class="reference internal" href="#soogo.sampling.NormalSampler.get_dds_sample" title="soogo.sampling.NormalSampler.get_dds_sample"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_dds_sample()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="soogo.sampling.NormalSampler.get_dds_sample">
+<span class="sig-name descname"><span class="pre">get_dds_sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">probability</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">iindex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#soogo.sampling.NormalSampler.get_dds_sample" title="Link to this definition"></a></dt>
+<dd><p>Generate a sample based on the Dynamically Dimensioned Search (DDS)
+algorithm described in <a class="footnote-reference brackets" href="#id5" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>.</p>
+<p>This algorithm generated a sample by perturbing a subset of the
+coordinates of <cite>mu</cite>. The set of coordinates perturbed varies for each
+sample point and is determined probabilistically. When a perturbation
+occurs, it is guided by a normal distribution with mean zero and
+standard deviation <a class="reference internal" href="#soogo.sampling.NormalSampler.sigma" title="soogo.sampling.NormalSampler.sigma"><code class="xref py py-attr docutils literal notranslate"><span class="pre">sigma</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bounds</strong> (<em>sequence</em>) – List with the limits [x_min,x_max] of each
+direction x in the space.</p></li>
+<li><p><strong>mu</strong> – Point around which the sample will be generated.</p></li>
+<li><p><strong>probability</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – Perturbation probability.</p></li>
+<li><p><strong>iindex</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>]</span>) – Indices of the input space that are integer. (default: <code class="docutils literal notranslate"><span class="pre">()</span></code>)</p></li>
+<li><p><strong>coord</strong> – Coordinates of the input space that will vary.  If (), all
+coordinates will vary. (default: <code class="docutils literal notranslate"><span class="pre">()</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Matrix with a sample point per line.</p>
+</dd>
+</dl>
+<section id="id4">
+<h3>References<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id5" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">2</a><span class="fn-bracket">]</span></span>
+<p>Tolson, B. A., and C. A. Shoemaker (2007), Dynamically
+dimensioned search algorithm for computationally efficient watershed
+model calibration, Water Resour. Res., 43, W01413,
+<a class="reference external" href="https://doi.org/10.1029/2005WR004723">https://doi.org/10.1029/2005WR004723</a>.</p>
+</aside>
+</aside>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="soogo.sampling.NormalSampler.get_normal_sample">
+<span class="sig-name descname"><span class="pre">get_normal_sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">iindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#soogo.sampling.NormalSampler.get_normal_sample" title="Link to this definition"></a></dt>
+<dd><p>Generate a sample from a truncated normal distribution around a given
+point mu.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bounds</strong> (<em>sequence</em>) – List with the limits [x_min,x_max] of each
+direction x in the space.</p></li>
+<li><p><strong>mu</strong> – Point around which the sample will be generated.</p></li>
+<li><p><strong>iindex</strong> – Indices of the input space that are integer. (default: <code class="docutils literal notranslate"><span class="pre">()</span></code>)</p></li>
+<li><p><strong>coord</strong> (<em>sequence</em>) – Coordinates of the input space that will vary. If (), all
+coordinates will vary.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Matrix with a sample point per line.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="soogo.sampling.NormalSampler.get_sample">
+<span class="sig-name descname"><span class="pre">get_sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">iindex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#soogo.sampling.NormalSampler.get_sample" title="Link to this definition"></a></dt>
+<dd><p>Generate a sample.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bounds</strong> (<em>sequence</em>) – List with the limits [x_min,x_max] of each
+direction x in the space.</p></li>
+<li><p><strong>iindex</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>]</span>) – Indices of the input space that are integer. (default: <code class="docutils literal notranslate"><span class="pre">()</span></code>)</p></li>
+<li><p><strong>mu</strong> – <p>Point around which the sample will be generated. Used by:</p>
+<ul>
+<li><p><a class="reference internal" href="#soogo.sampling.SamplingStrategy.NORMAL" title="soogo.sampling.SamplingStrategy.NORMAL"><code class="xref py py-attr docutils literal notranslate"><span class="pre">SamplingStrategy.NORMAL</span></code></a></p></li>
+<li><p><a class="reference internal" href="#soogo.sampling.SamplingStrategy.DDS" title="soogo.sampling.SamplingStrategy.DDS"><code class="xref py py-attr docutils literal notranslate"><span class="pre">SamplingStrategy.DDS</span></code></a></p></li>
+<li><p><a class="reference internal" href="#soogo.sampling.SamplingStrategy.DDS_UNIFORM" title="soogo.sampling.SamplingStrategy.DDS_UNIFORM"><code class="xref py py-attr docutils literal notranslate"><span class="pre">SamplingStrategy.DDS_UNIFORM</span></code></a></p></li>
+</ul>
+</p></li>
+<li><p><strong>coord</strong> – <p>Coordinates of the input space that will vary.  If (), all
+coordinates will vary. Used by:</p>
+<ul>
+<li><p><a class="reference internal" href="#soogo.sampling.SamplingStrategy.NORMAL" title="soogo.sampling.SamplingStrategy.NORMAL"><code class="xref py py-attr docutils literal notranslate"><span class="pre">SamplingStrategy.NORMAL</span></code></a></p></li>
+<li><p><a class="reference internal" href="#soogo.sampling.SamplingStrategy.DDS" title="soogo.sampling.SamplingStrategy.DDS"><code class="xref py py-attr docutils literal notranslate"><span class="pre">SamplingStrategy.DDS</span></code></a></p></li>
+<li><p><a class="reference internal" href="#soogo.sampling.SamplingStrategy.DDS_UNIFORM" title="soogo.sampling.SamplingStrategy.DDS_UNIFORM"><code class="xref py py-attr docutils literal notranslate"><span class="pre">SamplingStrategy.DDS_UNIFORM</span></code></a></p></li>
+</ul>
+</p></li>
+<li><p><strong>probability</strong> – <p>Perturbation probability. Used by:</p>
+<ul>
+<li><p><a class="reference internal" href="#soogo.sampling.SamplingStrategy.DDS" title="soogo.sampling.SamplingStrategy.DDS"><code class="xref py py-attr docutils literal notranslate"><span class="pre">SamplingStrategy.DDS</span></code></a></p></li>
+<li><p><a class="reference internal" href="#soogo.sampling.SamplingStrategy.DDS_UNIFORM" title="soogo.sampling.SamplingStrategy.DDS_UNIFORM"><code class="xref py py-attr docutils literal notranslate"><span class="pre">SamplingStrategy.DDS_UNIFORM</span></code></a></p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Matrix with a sample point per line.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="soogo.sampling.Sampler">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">soogo.sampling.</span></span><span class="sig-name descname"><span class="pre">Sampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strategy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#soogo.sampling.SamplingStrategy" title="soogo.sampling.SamplingStrategy"><span class="pre">SamplingStrategy</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">SamplingStrategy.UNIFORM</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#soogo.sampling.Sampler" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Abstract base class for samplers.</p>
+<p>The main goal of a sampler is to draw samples from a d-dimensional box.
+For that, one should use <a class="reference internal" href="#soogo.sampling.Sampler.get_sample" title="soogo.sampling.Sampler.get_sample"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_sample()</span></code></a> or the specific
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">get_[strategy]_sample()</span></code>. The former uses the information in
+<a class="reference internal" href="#soogo.sampling.Sampler.strategy" title="soogo.sampling.Sampler.strategy"><code class="xref py py-attr docutils literal notranslate"><span class="pre">strategy</span></code></a> to decide which specific sampler to use.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Number of sample points. Stored in <a class="reference internal" href="#soogo.sampling.Sampler.n" title="soogo.sampling.Sampler.n"><code class="xref py py-attr docutils literal notranslate"><span class="pre">n</span></code></a>.</p></li>
+<li><p><strong>strategy</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#soogo.sampling.SamplingStrategy" title="soogo.sampling.SamplingStrategy"><code class="xref py py-class docutils literal notranslate"><span class="pre">SamplingStrategy</span></code></a></span>) – Sampling strategy. Stored in <a class="reference internal" href="#soogo.sampling.Sampler.strategy" title="soogo.sampling.Sampler.strategy"><code class="xref py py-attr docutils literal notranslate"><span class="pre">strategy</span></code></a>. (default: <code class="docutils literal notranslate"><span class="pre">&lt;SamplingStrategy.UNIFORM:</span> <span class="pre">3&gt;</span></code>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="soogo.sampling.Sampler.n">
+<span class="sig-name descname"><span class="pre">n</span></span><a class="headerlink" href="#soogo.sampling.Sampler.n" title="Link to this definition"></a></dt>
+<dd><p>Number of sample points returned by <code class="xref py py-meth docutils literal notranslate"><span class="pre">get_[strategy]_sample()</span></code>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="soogo.sampling.Sampler.strategy">
+<span class="sig-name descname"><span class="pre">strategy</span></span><a class="headerlink" href="#soogo.sampling.Sampler.strategy" title="Link to this definition"></a></dt>
+<dd><p>Sampling strategy that will be used by <a class="reference internal" href="#soogo.sampling.Sampler.get_sample" title="soogo.sampling.Sampler.get_sample"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_sample()</span></code></a> and
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">get_[strategy]_sample()</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="soogo.sampling.Sampler.get_sample">
+<span class="sig-name descname"><span class="pre">get_sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">iindex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#soogo.sampling.Sampler.get_sample" title="Link to this definition"></a></dt>
+<dd><p>Generate a sample based on <a class="reference internal" href="#soogo.sampling.Sampler.strategy" title="soogo.sampling.Sampler.strategy"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.strategy</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bounds</strong> (<em>sequence</em>) – List with the limits [x_min,x_max] of each
+direction x in the space.</p></li>
+<li><p><strong>iindex</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>]</span>) – Indices of the input space that are integer. (default: <code class="docutils literal notranslate"><span class="pre">()</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Matrix with a sample point per line.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="soogo.sampling.Sampler.get_slhd_sample">
+<span class="sig-name descname"><span class="pre">get_slhd_sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">iindex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#soogo.sampling.Sampler.get_slhd_sample" title="Link to this definition"></a></dt>
+<dd><p>Creates a Symmetric Latin Hypercube Design.</p>
+<p>Note that, for integer variables, it may not be possible to generate
+a SLHD. In this case, the algorithm will do its best to try not to
+repeat values in the integer variables.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bounds</strong> (<em>sequence</em>) – List with the limits [x_min,x_max] of each
+direction x in the space.</p></li>
+<li><p><strong>iindex</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>]</span>) – Indices of the input space that are integer. (default: <code class="docutils literal notranslate"><span class="pre">()</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Matrix with a sample point per line.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="soogo.sampling.Sampler.get_uniform_sample">
+<span class="sig-name descname"><span class="pre">get_uniform_sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">iindex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#soogo.sampling.Sampler.get_uniform_sample" title="Link to this definition"></a></dt>
+<dd><p>Generate a sample from a uniform distribution inside the bounds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bounds</strong> (<em>sequence</em>) – List with the limits [x_min,x_max] of each
+direction x in the space.</p></li>
+<li><p><strong>iindex</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>]</span>) – Indices of the input space that are integer. (default: <code class="docutils literal notranslate"><span class="pre">()</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Matrix with a sample point per line.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="soogo.sampling.SamplingStrategy">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">soogo.sampling.</span></span><span class="sig-name descname"><span class="pre">SamplingStrategy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.sampling.SamplingStrategy" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Sampling strategy tags to be used by <code class="xref py py-meth docutils literal notranslate"><span class="pre">get_sample()</span></code> methods that
+override <a class="reference internal" href="#soogo.sampling.Sampler.get_sample" title="soogo.sampling.Sampler.get_sample"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Sampler.get_sample()</span></code></a>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="soogo.sampling.SamplingStrategy.DDS">
+<span class="sig-name descname"><span class="pre">DDS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#soogo.sampling.SamplingStrategy.DDS" title="Link to this definition"></a></dt>
+<dd><p>DDS sampling. Used in the DYCORS algorithm</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="soogo.sampling.SamplingStrategy.DDS_UNIFORM">
+<span class="sig-name descname"><span class="pre">DDS_UNIFORM</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#soogo.sampling.SamplingStrategy.DDS_UNIFORM" title="Link to this definition"></a></dt>
+<dd><p>Sample half via DDS, then half via uniform distribution</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="soogo.sampling.SamplingStrategy.MITCHEL91">
+<span class="sig-name descname"><span class="pre">MITCHEL91</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">6</span></em><a class="headerlink" href="#soogo.sampling.SamplingStrategy.MITCHEL91" title="Link to this definition"></a></dt>
+<dd><p>Cover empty regions in the search space</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="soogo.sampling.SamplingStrategy.NORMAL">
+<span class="sig-name descname"><span class="pre">NORMAL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#soogo.sampling.SamplingStrategy.NORMAL" title="Link to this definition"></a></dt>
+<dd><p>Normal distribution</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="soogo.sampling.SamplingStrategy.SLHD">
+<span class="sig-name descname"><span class="pre">SLHD</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></em><a class="headerlink" href="#soogo.sampling.SamplingStrategy.SLHD" title="Link to this definition"></a></dt>
+<dd><p>Symmetric Latin Hypercube Design</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="soogo.sampling.SamplingStrategy.UNIFORM">
+<span class="sig-name descname"><span class="pre">UNIFORM</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#soogo.sampling.SamplingStrategy.UNIFORM" title="Link to this definition"></a></dt>
+<dd><p>Uniform distribution</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-soogo.termination">
+<span id="soogo-termination-module"></span><h2>soogo.termination module<a class="headerlink" href="#module-soogo.termination" title="Link to this heading"></a></h2>
+<p>Condition module for optimization termination criteria.</p>
+<p>This module defines various conditions that can be used to determine when
+an optimization process should terminate. It includes conditions based on
+successful improvements, robustness of conditions, and more.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="soogo.termination.IterateNTimes">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">soogo.termination.</span></span><span class="sig-name descname"><span class="pre">IterateNTimes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nTimes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#soogo.termination.IterateNTimes" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#soogo.termination.TerminationCondition" title="soogo.termination.TerminationCondition"><code class="xref py py-class docutils literal notranslate"><span class="pre">TerminationCondition</span></code></a></p>
+<p>Termination condition that is met after a specified number of
+iterations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nTimes</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Number of iterations after which the condition is met. (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="soogo.termination.IterateNTimes.is_met">
+<span class="sig-name descname"><span class="pre">is_met</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#soogo.termination.IterateNTimes.is_met" title="Link to this definition"></a></dt>
+<dd><p>Check if the condition is met.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="soogo.termination.IterateNTimes.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#soogo.termination.IterateNTimes.reset" title="Link to this definition"></a></dt>
+<dd><p>Reset the internal state of the condition.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="soogo.termination.IterateNTimes.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#soogo.termination.IterateNTimes.update" title="Link to this definition"></a></dt>
+<dd><p>Update the condition based on the optimization result and model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>out</strong> – The optimization result containing the current state.</p></li>
+<li><p><strong>model</strong> – The surrogate model used in the optimization, if any.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if the condition is met, False otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="soogo.termination.RobustCondition">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">soogo.termination.</span></span><span class="sig-name descname"><span class="pre">RobustCondition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">termination</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#soogo.termination.TerminationCondition" title="soogo.termination.TerminationCondition"><span class="pre">TerminationCondition</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">period</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#soogo.termination.RobustCondition" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#soogo.termination.TerminationCondition" title="soogo.termination.TerminationCondition"><code class="xref py py-class docutils literal notranslate"><span class="pre">TerminationCondition</span></code></a></p>
+<p>Termination criterion that makes another termination criterion robust.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="soogo.termination.RobustCondition.is_met">
+<span class="sig-name descname"><span class="pre">is_met</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#soogo.termination.RobustCondition.is_met" title="Link to this definition"></a></dt>
+<dd><p>Check if the condition is met.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="soogo.termination.RobustCondition.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#soogo.termination.RobustCondition.reset" title="Link to this definition"></a></dt>
+<dd><p>Reset the internal state of the condition.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="soogo.termination.RobustCondition.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="soogo.optimize.html#soogo.optimize.result.OptimizeResult" title="soogo.optimize.result.OptimizeResult"><span class="pre">OptimizeResult</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="soogo.model.html#soogo.model.base.Surrogate" title="soogo.model.base.Surrogate"><span class="pre">Surrogate</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#soogo.termination.RobustCondition.update" title="Link to this definition"></a></dt>
+<dd><p>Update the condition based on the optimization result and model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>out</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="soogo.optimize.html#soogo.optimize.result.OptimizeResult" title="soogo.optimize.result.OptimizeResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">OptimizeResult</span></code></a></span>) – The optimization result containing the current state.</p></li>
+<li><p><strong>model</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="soogo.model.html#soogo.model.base.Surrogate" title="soogo.model.base.Surrogate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Surrogate</span></code></a> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – The surrogate model used in the optimization, if any. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if the condition is met, False otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="soogo.termination.TerminationCondition">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">soogo.termination.</span></span><span class="sig-name descname"><span class="pre">TerminationCondition</span></span><a class="headerlink" href="#soogo.termination.TerminationCondition" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<p>Base class for termination conditions.</p>
+<p>This class defines the interface for conditions that can be used to
+determine when an optimization process should terminate.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>out</strong> – The optimization result containing the current state.</p></li>
+<li><p><strong>model</strong> – The surrogate model used in the optimization, if any.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the condition is met, False otherwise.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="soogo.termination.TerminationCondition.is_met">
+<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_met</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#soogo.termination.TerminationCondition.is_met" title="Link to this definition"></a></dt>
+<dd><p>Check if the condition is met.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="soogo.termination.TerminationCondition.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#soogo.termination.TerminationCondition.reset" title="Link to this definition"></a></dt>
+<dd><p>Reset the internal state of the condition.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="soogo.termination.TerminationCondition.update">
+<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="soogo.optimize.html#soogo.optimize.result.OptimizeResult" title="soogo.optimize.result.OptimizeResult"><span class="pre">OptimizeResult</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="soogo.model.html#soogo.model.base.Surrogate" title="soogo.model.base.Surrogate"><span class="pre">Surrogate</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#soogo.termination.TerminationCondition.update" title="Link to this definition"></a></dt>
+<dd><p>Update the condition based on the optimization result and model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>out</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="soogo.optimize.html#soogo.optimize.result.OptimizeResult" title="soogo.optimize.result.OptimizeResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">OptimizeResult</span></code></a></span>) – The optimization result containing the current state.</p></li>
+<li><p><strong>model</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="soogo.model.html#soogo.model.base.Surrogate" title="soogo.model.base.Surrogate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Surrogate</span></code></a> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – The surrogate model used in the optimization, if any. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if the condition is met, False otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="soogo.termination.UnsuccessfulImprovement">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">soogo.termination.</span></span><span class="sig-name descname"><span class="pre">UnsuccessfulImprovement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#soogo.termination.UnsuccessfulImprovement" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#soogo.termination.TerminationCondition" title="soogo.termination.TerminationCondition"><code class="xref py py-class docutils literal notranslate"><span class="pre">TerminationCondition</span></code></a></p>
+<p>Condition that checks for unsuccessful improvements.</p>
+<p>The condition is met when the relative improvement in the best objective
+function value is less than a specified threshold.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>threshold</strong> – The relative improvement threshold to determine
+when the condition is met. (default: <code class="docutils literal notranslate"><span class="pre">0.001</span></code>)</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="soogo.termination.UnsuccessfulImprovement.threshold">
+<span class="sig-name descname"><span class="pre">threshold</span></span><a class="headerlink" href="#soogo.termination.UnsuccessfulImprovement.threshold" title="Link to this definition"></a></dt>
+<dd><p>The relative improvement threshold for the condition.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="soogo.termination.UnsuccessfulImprovement.value_range">
+<span class="sig-name descname"><span class="pre">value_range</span></span><a class="headerlink" href="#soogo.termination.UnsuccessfulImprovement.value_range" title="Link to this definition"></a></dt>
+<dd><p>The range of objective function values known so far, used to
+normalize the improvement check.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="soogo.termination.UnsuccessfulImprovement.lowest_value">
+<span class="sig-name descname"><span class="pre">lowest_value</span></span><a class="headerlink" href="#soogo.termination.UnsuccessfulImprovement.lowest_value" title="Link to this definition"></a></dt>
+<dd><p>The lowest objective function value found so far in the optimization.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="soogo.termination.UnsuccessfulImprovement.is_met">
+<span class="sig-name descname"><span class="pre">is_met</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#soogo.termination.UnsuccessfulImprovement.is_met" title="Link to this definition"></a></dt>
+<dd><p>Check if the condition is met.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="soogo.termination.UnsuccessfulImprovement.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keep_data_knowledge</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#soogo.termination.UnsuccessfulImprovement.reset" title="Link to this definition"></a></dt>
+<dd><p>Reset the internal state of the condition.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="soogo.termination.UnsuccessfulImprovement.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="soogo.optimize.html#soogo.optimize.result.OptimizeResult" title="soogo.optimize.result.OptimizeResult"><span class="pre">OptimizeResult</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="soogo.model.html#soogo.model.base.Surrogate" title="soogo.model.base.Surrogate"><span class="pre">Surrogate</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#soogo.termination.UnsuccessfulImprovement.update" title="Link to this definition"></a></dt>
+<dd><p>Update the condition based on the optimization result and model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>out</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="soogo.optimize.html#soogo.optimize.result.OptimizeResult" title="soogo.optimize.result.OptimizeResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">OptimizeResult</span></code></a></span>) – The optimization result containing the current state.</p></li>
+<li><p><strong>model</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="soogo.model.html#soogo.model.base.Surrogate" title="soogo.model.base.Surrogate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Surrogate</span></code></a> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – The surrogate model used in the optimization, if any. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if the condition is met, False otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-soogo.utils">
+<span id="soogo-utils-module"></span><h2>soogo.utils module<a class="headerlink" href="#module-soogo.utils" title="Link to this heading"></a></h2>
+<p>Utility functions for Soogo.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="soogo.utils.find_pareto_front">
+<span class="sig-prename descclassname"><span class="pre">soogo.utils.</span></span><span class="sig-name descname"><span class="pre">find_pareto_front</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iStart</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#soogo.utils.find_pareto_front" title="Link to this definition"></a></dt>
+<dd><p>Find the Pareto front given a set of points in the target space.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fx</strong> – List with n points in the m-dimensional target space.</p></li>
+<li><p><strong>iStart</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Points from 0 to iStart - 1 are already known to be in the
+Pareto front. (default: <code class="docutils literal notranslate"><span class="pre">0</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Indices of the points in the Pareto front.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="soogo.utils.gp_expected_improvement">
+<span class="sig-prename descclassname"><span class="pre">soogo.utils.</span></span><span class="sig-name descname"><span class="pre">gp_expected_improvement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.utils.gp_expected_improvement" title="Link to this definition"></a></dt>
+<dd><p>Expected Improvement function for a distribution from <a class="footnote-reference brackets" href="#id8" id="id6" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>delta</strong> – Difference <span class="math notranslate nohighlight">\(f^*_n - \mu_n(x)\)</span>, where <span class="math notranslate nohighlight">\(f^*_n\)</span> is
+the current best function value and <span class="math notranslate nohighlight">\(\mu_n(x)\)</span> is the expected
+value for <span class="math notranslate nohighlight">\(f(x)\)</span>.</p></li>
+<li><p><strong>sigma</strong> – The standard deviation <span class="math notranslate nohighlight">\(\sigma_n(x)\)</span>.</p></li>
+</ul>
+</dd>
+</dl>
+<section id="id7">
+<h3>References<a class="headerlink" href="#id7" title="Link to this heading"></a></h3>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id8" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id6">3</a><span class="fn-bracket">]</span></span>
+<p>Donald R. Jones, Matthias Schonlau, and William J. Welch. Efficient
+global optimization of expensive black-box functions. Journal of Global
+Optimization, 13(4):455–492, 1998.</p>
+</aside>
+</aside>
+</section>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../CONTRIBUTING.html" class="btn btn-neutral float-left" title="Contributing guidelines" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="soogo.acquisition.html" class="btn btn-neutral float-right" title="soogo.acquisition package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Alliance for Sustainable Energy, LLC.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Other Versions</span>
+    
+      v: v2.0.0
+    
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    <dl>
+      <dt>Tags</dt>
+      
+        <dd><a href="../../v0.1.0/index.html">v0.1.0</a></dd>
+      
+        <dd><a href="../../v0.2.0/index.html">v0.2.0</a></dd>
+      
+        <dd><a href="../../v0.3.0/index.html">v0.3.0</a></dd>
+      
+        <dd><a href="../../v0.3.1/index.html">v0.3.1</a></dd>
+      
+        <dd><a href="../../v0.3.2/index.html">v0.3.2</a></dd>
+      
+        <dd><a href="../../v0.4.0/index.html">v0.4.0</a></dd>
+      
+        <dd><a href="../../v0.4.1/index.html">v0.4.1</a></dd>
+      
+        <dd><a href="../../v0.4.2/index.html">v0.4.2</a></dd>
+      
+        <dd><a href="../../v0.5.0/index.html">v0.5.0</a></dd>
+      
+        <dd><a href="../../v0.5.1/index.html">v0.5.1</a></dd>
+      
+        <dd><a href="../../v0.5.2/index.html">v0.5.2</a></dd>
+      
+        <dd><a href="../../v1.0.0/index.html">v1.0.0</a></dd>
+      
+        <dd><a href="../../v1.0.1/index.html">v1.0.1</a></dd>
+      
+        <dd><a href="../../v1.1.0/index.html">v1.1.0</a></dd>
+      
+        <dd><a href="../../v1.2.0/index.html">v1.2.0</a></dd>
+      
+        <dd><a href="../../v1.2.1/index.html">v1.2.1</a></dd>
+      
+        <dd><a href="../../v1.2.2/index.html">v1.2.2</a></dd>
+      
+        <dd><a href="soogo.html">v2.0.0</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Branches</dt>
+      
+        <dd><em>No active branches</em></dd>
+      
+    </dl>
+  </div>
+</div>
+
+<script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
