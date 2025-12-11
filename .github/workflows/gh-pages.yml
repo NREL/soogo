@@ -3,20 +3,30 @@ name: Deploy Sphinx documentation to Pages
 on:
   push:
     branches: [main] # branch to trigger deployment
-    paths:
-      - ".github/workflows/gh-pages.yml"
-      - "soogo/**"
-      - "tests/**"
+    tags: ["v*.*.*"]
 
 jobs:
   pages:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     permissions:
-      pages: write
-      id-token: write
+      contents: write
     steps:
-      - id: deployment
-        uses: sphinx-notes/pages@v3
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetch all history for all branches and tags
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - run: |
+          pip install --upgrade pip
+          pip install -r docs/requirements.txt
+          pip install -e .
+      - run: sphinx-multiversion docs docs/_build/html
+      - name: Create root redirect
+        run: |
+          echo '<html><head><meta http-equiv="refresh" content="0; url=main/index.html" /></head><body>Redirecting to <a href="main/index.html">main/index.html</a>...</body></html>' > docs/_build/html/index.html
+      - uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs/_build/html
+          keep_files: true
