@@ -1,0 +1,413 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>blackboxoptim package &mdash; soogo (Surrogate-based 0-th Order Global Optimization) 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=8d563738"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="blackboxoptim.acquisition module" href="acquisition.html" />
+    <link rel="prev" title="Welcome to Black-box Opt’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            soogo (Surrogate-based 0-th Order Global Optimization)
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">blackboxoptim package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="acquisition.html">blackboxoptim.acquisition module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gp.html">blackboxoptim.gp module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="optimize.html">blackboxoptim.optimize module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="problem.html">blackboxoptim.problem module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rbf.html">blackboxoptim.rbf module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sampling.html">blackboxoptim.sampling module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-blackboxoptim">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tests.html">tests package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">soogo (Surrogate-based 0-th Order Global Optimization)</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">blackboxoptim package</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/NREL/soogo/blob/main/docs/blackboxoptim.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="blackboxoptim-package">
+<h1>blackboxoptim package<a class="headerlink" href="#blackboxoptim-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="acquisition.html">blackboxoptim.acquisition module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.AcquisitionFunction"><code class="docutils literal notranslate"><span class="pre">AcquisitionFunction</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.AcquisitionFunction.acquire"><code class="docutils literal notranslate"><span class="pre">AcquisitionFunction.acquire()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.CoordinatePerturbationOverNondominated"><code class="docutils literal notranslate"><span class="pre">CoordinatePerturbationOverNondominated</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.CoordinatePerturbationOverNondominated.acquisitionFunc"><code class="docutils literal notranslate"><span class="pre">CoordinatePerturbationOverNondominated.acquisitionFunc</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.CoordinatePerturbationOverNondominated.acquire"><code class="docutils literal notranslate"><span class="pre">CoordinatePerturbationOverNondominated.acquire()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.EndPointsParetoFront"><code class="docutils literal notranslate"><span class="pre">EndPointsParetoFront</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.EndPointsParetoFront.optimizer"><code class="docutils literal notranslate"><span class="pre">EndPointsParetoFront.optimizer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.EndPointsParetoFront.rtol"><code class="docutils literal notranslate"><span class="pre">EndPointsParetoFront.rtol</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.EndPointsParetoFront.acquire"><code class="docutils literal notranslate"><span class="pre">EndPointsParetoFront.acquire()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.GosacSample"><code class="docutils literal notranslate"><span class="pre">GosacSample</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.GosacSample.fun"><code class="docutils literal notranslate"><span class="pre">GosacSample.fun</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.GosacSample.optimizer"><code class="docutils literal notranslate"><span class="pre">GosacSample.optimizer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.GosacSample.rtol"><code class="docutils literal notranslate"><span class="pre">GosacSample.rtol</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.GosacSample.acquire"><code class="docutils literal notranslate"><span class="pre">GosacSample.acquire()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.MaximizeEI"><code class="docutils literal notranslate"><span class="pre">MaximizeEI</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.MaximizeEI.sampler"><code class="docutils literal notranslate"><span class="pre">MaximizeEI.sampler</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.MaximizeEI.avoid_clusters"><code class="docutils literal notranslate"><span class="pre">MaximizeEI.avoid_clusters</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.MaximizeEI.acquire"><code class="docutils literal notranslate"><span class="pre">MaximizeEI.acquire()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.MinimizeMOSurrogate"><code class="docutils literal notranslate"><span class="pre">MinimizeMOSurrogate</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.MinimizeMOSurrogate.mooptimizer"><code class="docutils literal notranslate"><span class="pre">MinimizeMOSurrogate.mooptimizer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.MinimizeMOSurrogate.rtol"><code class="docutils literal notranslate"><span class="pre">MinimizeMOSurrogate.rtol</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.MinimizeMOSurrogate.acquire"><code class="docutils literal notranslate"><span class="pre">MinimizeMOSurrogate.acquire()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.MinimizeSurrogate"><code class="docutils literal notranslate"><span class="pre">MinimizeSurrogate</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.MinimizeSurrogate.sampler"><code class="docutils literal notranslate"><span class="pre">MinimizeSurrogate.sampler</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.MinimizeSurrogate.rtol"><code class="docutils literal notranslate"><span class="pre">MinimizeSurrogate.rtol</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.MinimizeSurrogate.acquire"><code class="docutils literal notranslate"><span class="pre">MinimizeSurrogate.acquire()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.ParetoFront"><code class="docutils literal notranslate"><span class="pre">ParetoFront</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.ParetoFront.mooptimizer"><code class="docutils literal notranslate"><span class="pre">ParetoFront.mooptimizer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.ParetoFront.oldTV"><code class="docutils literal notranslate"><span class="pre">ParetoFront.oldTV</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.ParetoFront.acquire"><code class="docutils literal notranslate"><span class="pre">ParetoFront.acquire()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.ParetoFront.pareto_front_target"><code class="docutils literal notranslate"><span class="pre">ParetoFront.pareto_front_target()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.TargetValueAcquisition"><code class="docutils literal notranslate"><span class="pre">TargetValueAcquisition</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.TargetValueAcquisition.optimizer"><code class="docutils literal notranslate"><span class="pre">TargetValueAcquisition.optimizer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.TargetValueAcquisition.rtol"><code class="docutils literal notranslate"><span class="pre">TargetValueAcquisition.rtol</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.TargetValueAcquisition.cycleLength"><code class="docutils literal notranslate"><span class="pre">TargetValueAcquisition.cycleLength</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.TargetValueAcquisition._cycle"><code class="docutils literal notranslate"><span class="pre">TargetValueAcquisition._cycle</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.TargetValueAcquisition.acquire"><code class="docutils literal notranslate"><span class="pre">TargetValueAcquisition.acquire()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.TargetValueAcquisition.bumpiness_measure"><code class="docutils literal notranslate"><span class="pre">TargetValueAcquisition.bumpiness_measure()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.TargetValueAcquisition.mu_measure"><code class="docutils literal notranslate"><span class="pre">TargetValueAcquisition.mu_measure()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.WeightedAcquisition"><code class="docutils literal notranslate"><span class="pre">WeightedAcquisition</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.WeightedAcquisition._neval"><code class="docutils literal notranslate"><span class="pre">WeightedAcquisition._neval</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.WeightedAcquisition.sampler"><code class="docutils literal notranslate"><span class="pre">WeightedAcquisition.sampler</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.WeightedAcquisition.weightpattern"><code class="docutils literal notranslate"><span class="pre">WeightedAcquisition.weightpattern</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.WeightedAcquisition.rtol"><code class="docutils literal notranslate"><span class="pre">WeightedAcquisition.rtol</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.WeightedAcquisition.maxeval"><code class="docutils literal notranslate"><span class="pre">WeightedAcquisition.maxeval</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.WeightedAcquisition.acquire"><code class="docutils literal notranslate"><span class="pre">WeightedAcquisition.acquire()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.WeightedAcquisition.argminscore"><code class="docutils literal notranslate"><span class="pre">WeightedAcquisition.argminscore()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.WeightedAcquisition.minimize_weightedavg_fx_distx"><code class="docutils literal notranslate"><span class="pre">WeightedAcquisition.minimize_weightedavg_fx_distx()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.WeightedAcquisition.tol"><code class="docutils literal notranslate"><span class="pre">WeightedAcquisition.tol()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.expected_improvement"><code class="docutils literal notranslate"><span class="pre">expected_improvement()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="acquisition.html#blackboxoptim.acquisition.find_pareto_front"><code class="docutils literal notranslate"><span class="pre">find_pareto_front()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="gp.html">blackboxoptim.gp module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gp.html#blackboxoptim.gp.GaussianProcess"><code class="docutils literal notranslate"><span class="pre">GaussianProcess</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="gp.html#blackboxoptim.gp.GaussianProcess.maxiterLBFGS"><code class="docutils literal notranslate"><span class="pre">GaussianProcess.maxiterLBFGS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gp.html#blackboxoptim.gp.GaussianProcess.scaler"><code class="docutils literal notranslate"><span class="pre">GaussianProcess.scaler</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gp.html#blackboxoptim.gp.GaussianProcess.__call__"><code class="docutils literal notranslate"><span class="pre">GaussianProcess.__call__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gp.html#blackboxoptim.gp.GaussianProcess.check_initial_design"><code class="docutils literal notranslate"><span class="pre">GaussianProcess.check_initial_design()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gp.html#blackboxoptim.gp.GaussianProcess.eval_kernel"><code class="docutils literal notranslate"><span class="pre">GaussianProcess.eval_kernel()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gp.html#blackboxoptim.gp.GaussianProcess.get_iindex"><code class="docutils literal notranslate"><span class="pre">GaussianProcess.get_iindex()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gp.html#blackboxoptim.gp.GaussianProcess.min_design_space_size"><code class="docutils literal notranslate"><span class="pre">GaussianProcess.min_design_space_size()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gp.html#blackboxoptim.gp.GaussianProcess.ntrain"><code class="docutils literal notranslate"><span class="pre">GaussianProcess.ntrain()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gp.html#blackboxoptim.gp.GaussianProcess.update"><code class="docutils literal notranslate"><span class="pre">GaussianProcess.update()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gp.html#blackboxoptim.gp.GaussianProcess.xtrain"><code class="docutils literal notranslate"><span class="pre">GaussianProcess.xtrain()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gp.html#blackboxoptim.gp.GaussianProcess.ytrain"><code class="docutils literal notranslate"><span class="pre">GaussianProcess.ytrain()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="optimize.html">blackboxoptim.optimize module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="optimize.html#blackboxoptim.optimize.OptimizeResult"><code class="docutils literal notranslate"><span class="pre">OptimizeResult</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="optimize.html#blackboxoptim.optimize.OptimizeResult.fsample"><code class="docutils literal notranslate"><span class="pre">OptimizeResult.fsample</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="optimize.html#blackboxoptim.optimize.OptimizeResult.fx"><code class="docutils literal notranslate"><span class="pre">OptimizeResult.fx</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="optimize.html#blackboxoptim.optimize.OptimizeResult.init"><code class="docutils literal notranslate"><span class="pre">OptimizeResult.init()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="optimize.html#blackboxoptim.optimize.OptimizeResult.init_best_values"><code class="docutils literal notranslate"><span class="pre">OptimizeResult.init_best_values()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="optimize.html#blackboxoptim.optimize.OptimizeResult.nfev"><code class="docutils literal notranslate"><span class="pre">OptimizeResult.nfev</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="optimize.html#blackboxoptim.optimize.OptimizeResult.nit"><code class="docutils literal notranslate"><span class="pre">OptimizeResult.nit</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="optimize.html#blackboxoptim.optimize.OptimizeResult.sample"><code class="docutils literal notranslate"><span class="pre">OptimizeResult.sample</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="optimize.html#blackboxoptim.optimize.OptimizeResult.x"><code class="docutils literal notranslate"><span class="pre">OptimizeResult.x</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="optimize.html#blackboxoptim.optimize.bayesian_optimization"><code class="docutils literal notranslate"><span class="pre">bayesian_optimization()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="optimize.html#blackboxoptim.optimize.cptv"><code class="docutils literal notranslate"><span class="pre">cptv()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="optimize.html#blackboxoptim.optimize.cptvl"><code class="docutils literal notranslate"><span class="pre">cptvl()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="optimize.html#blackboxoptim.optimize.dycors"><code class="docutils literal notranslate"><span class="pre">dycors()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="optimize.html#blackboxoptim.optimize.gosac"><code class="docutils literal notranslate"><span class="pre">gosac()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="optimize.html#blackboxoptim.optimize.initialize_moo_surrogate"><code class="docutils literal notranslate"><span class="pre">initialize_moo_surrogate()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="optimize.html#blackboxoptim.optimize.initialize_surrogate_constraints"><code class="docutils literal notranslate"><span class="pre">initialize_surrogate_constraints()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="optimize.html#blackboxoptim.optimize.multistart_msrs"><code class="docutils literal notranslate"><span class="pre">multistart_msrs()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="optimize.html#blackboxoptim.optimize.socemo"><code class="docutils literal notranslate"><span class="pre">socemo()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="optimize.html#blackboxoptim.optimize.surrogate_optimization"><code class="docutils literal notranslate"><span class="pre">surrogate_optimization()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="problem.html">blackboxoptim.problem module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="problem.html#blackboxoptim.problem.BBOptDuplicateElimination"><code class="docutils literal notranslate"><span class="pre">BBOptDuplicateElimination</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="problem.html#blackboxoptim.problem.BBOptDuplicateElimination.calc_dist"><code class="docutils literal notranslate"><span class="pre">BBOptDuplicateElimination.calc_dist()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="problem.html#blackboxoptim.problem.MultiobjSurrogateProblem"><code class="docutils literal notranslate"><span class="pre">MultiobjSurrogateProblem</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="problem.html#blackboxoptim.problem.MultiobjSurrogateProblem.surrogateModels"><code class="docutils literal notranslate"><span class="pre">MultiobjSurrogateProblem.surrogateModels</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="problem.html#blackboxoptim.problem.MultiobjTVProblem"><code class="docutils literal notranslate"><span class="pre">MultiobjTVProblem</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="problem.html#blackboxoptim.problem.MultiobjTVProblem.surrogateModels"><code class="docutils literal notranslate"><span class="pre">MultiobjTVProblem.surrogateModels</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="problem.html#blackboxoptim.problem.MultiobjTVProblem.tau"><code class="docutils literal notranslate"><span class="pre">MultiobjTVProblem.tau</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="problem.html#blackboxoptim.problem.ProblemNoConstraint"><code class="docutils literal notranslate"><span class="pre">ProblemNoConstraint</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="problem.html#blackboxoptim.problem.ProblemNoConstraint.objfunc"><code class="docutils literal notranslate"><span class="pre">ProblemNoConstraint.objfunc</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="problem.html#blackboxoptim.problem.ProblemWithConstraint"><code class="docutils literal notranslate"><span class="pre">ProblemWithConstraint</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="problem.html#blackboxoptim.problem.ProblemWithConstraint.objfunc"><code class="docutils literal notranslate"><span class="pre">ProblemWithConstraint.objfunc</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="problem.html#blackboxoptim.problem.ProblemWithConstraint.gfunc"><code class="docutils literal notranslate"><span class="pre">ProblemWithConstraint.gfunc</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="rbf.html">blackboxoptim.rbf module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="rbf.html#blackboxoptim.rbf.MedianLpfFilter"><code class="docutils literal notranslate"><span class="pre">MedianLpfFilter</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rbf.html#blackboxoptim.rbf.MedianLpfFilter.__call__"><code class="docutils literal notranslate"><span class="pre">MedianLpfFilter.__call__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rbf.html#blackboxoptim.rbf.RbfFilter"><code class="docutils literal notranslate"><span class="pre">RbfFilter</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rbf.html#blackboxoptim.rbf.RbfFilter.__call__"><code class="docutils literal notranslate"><span class="pre">RbfFilter.__call__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rbf.html#blackboxoptim.rbf.RbfKernel"><code class="docutils literal notranslate"><span class="pre">RbfKernel</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rbf.html#blackboxoptim.rbf.RbfKernel.CUBIC"><code class="docutils literal notranslate"><span class="pre">RbfKernel.CUBIC</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rbf.html#blackboxoptim.rbf.RbfKernel.LINEAR"><code class="docutils literal notranslate"><span class="pre">RbfKernel.LINEAR</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rbf.html#blackboxoptim.rbf.RbfKernel.THINPLATE"><code class="docutils literal notranslate"><span class="pre">RbfKernel.THINPLATE</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rbf.html#blackboxoptim.rbf.RbfModel"><code class="docutils literal notranslate"><span class="pre">RbfModel</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rbf.html#blackboxoptim.rbf.RbfModel.kernel"><code class="docutils literal notranslate"><span class="pre">RbfModel.kernel</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rbf.html#blackboxoptim.rbf.RbfModel.iindex"><code class="docutils literal notranslate"><span class="pre">RbfModel.iindex</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rbf.html#blackboxoptim.rbf.RbfModel.filter"><code class="docutils literal notranslate"><span class="pre">RbfModel.filter</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rbf.html#blackboxoptim.rbf.RbfModel.__call__"><code class="docutils literal notranslate"><span class="pre">RbfModel.__call__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rbf.html#blackboxoptim.rbf.RbfModel.check_initial_design"><code class="docutils literal notranslate"><span class="pre">RbfModel.check_initial_design()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rbf.html#blackboxoptim.rbf.RbfModel.ddpbasis"><code class="docutils literal notranslate"><span class="pre">RbfModel.ddpbasis()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rbf.html#blackboxoptim.rbf.RbfModel.ddphi"><code class="docutils literal notranslate"><span class="pre">RbfModel.ddphi()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rbf.html#blackboxoptim.rbf.RbfModel.dim"><code class="docutils literal notranslate"><span class="pre">RbfModel.dim()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rbf.html#blackboxoptim.rbf.RbfModel.dpbasis"><code class="docutils literal notranslate"><span class="pre">RbfModel.dpbasis()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rbf.html#blackboxoptim.rbf.RbfModel.dphi"><code class="docutils literal notranslate"><span class="pre">RbfModel.dphi()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rbf.html#blackboxoptim.rbf.RbfModel.dphiOverR"><code class="docutils literal notranslate"><span class="pre">RbfModel.dphiOverR()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rbf.html#blackboxoptim.rbf.RbfModel.get_RBFmatrix"><code class="docutils literal notranslate"><span class="pre">RbfModel.get_RBFmatrix()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rbf.html#blackboxoptim.rbf.RbfModel.get_iindex"><code class="docutils literal notranslate"><span class="pre">RbfModel.get_iindex()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rbf.html#blackboxoptim.rbf.RbfModel.get_matrixP"><code class="docutils literal notranslate"><span class="pre">RbfModel.get_matrixP()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rbf.html#blackboxoptim.rbf.RbfModel.hessp"><code class="docutils literal notranslate"><span class="pre">RbfModel.hessp()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rbf.html#blackboxoptim.rbf.RbfModel.jac"><code class="docutils literal notranslate"><span class="pre">RbfModel.jac()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rbf.html#blackboxoptim.rbf.RbfModel.min_design_space_size"><code class="docutils literal notranslate"><span class="pre">RbfModel.min_design_space_size()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rbf.html#blackboxoptim.rbf.RbfModel.ntrain"><code class="docutils literal notranslate"><span class="pre">RbfModel.ntrain()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rbf.html#blackboxoptim.rbf.RbfModel.pbasis"><code class="docutils literal notranslate"><span class="pre">RbfModel.pbasis()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rbf.html#blackboxoptim.rbf.RbfModel.pdim"><code class="docutils literal notranslate"><span class="pre">RbfModel.pdim()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rbf.html#blackboxoptim.rbf.RbfModel.phi"><code class="docutils literal notranslate"><span class="pre">RbfModel.phi()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rbf.html#blackboxoptim.rbf.RbfModel.reserve"><code class="docutils literal notranslate"><span class="pre">RbfModel.reserve()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rbf.html#blackboxoptim.rbf.RbfModel.reset"><code class="docutils literal notranslate"><span class="pre">RbfModel.reset()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rbf.html#blackboxoptim.rbf.RbfModel.sample"><code class="docutils literal notranslate"><span class="pre">RbfModel.sample()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rbf.html#blackboxoptim.rbf.RbfModel.update"><code class="docutils literal notranslate"><span class="pre">RbfModel.update()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rbf.html#blackboxoptim.rbf.RbfModel.xtrain"><code class="docutils literal notranslate"><span class="pre">RbfModel.xtrain()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rbf.html#blackboxoptim.rbf.RbfModel.ytrain"><code class="docutils literal notranslate"><span class="pre">RbfModel.ytrain()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sampling.html">blackboxoptim.sampling module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sampling.html#blackboxoptim.sampling.Mitchel91Sampler"><code class="docutils literal notranslate"><span class="pre">Mitchel91Sampler</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sampling.html#blackboxoptim.sampling.Mitchel91Sampler.maxCand"><code class="docutils literal notranslate"><span class="pre">Mitchel91Sampler.maxCand</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sampling.html#blackboxoptim.sampling.Mitchel91Sampler.scale"><code class="docutils literal notranslate"><span class="pre">Mitchel91Sampler.scale</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sampling.html#blackboxoptim.sampling.Mitchel91Sampler.get_mitchel91_sample"><code class="docutils literal notranslate"><span class="pre">Mitchel91Sampler.get_mitchel91_sample()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sampling.html#blackboxoptim.sampling.Mitchel91Sampler.get_sample"><code class="docutils literal notranslate"><span class="pre">Mitchel91Sampler.get_sample()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="sampling.html#blackboxoptim.sampling.NormalSampler"><code class="docutils literal notranslate"><span class="pre">NormalSampler</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sampling.html#blackboxoptim.sampling.NormalSampler.sigma"><code class="docutils literal notranslate"><span class="pre">NormalSampler.sigma</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sampling.html#blackboxoptim.sampling.NormalSampler.sigma_min"><code class="docutils literal notranslate"><span class="pre">NormalSampler.sigma_min</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sampling.html#blackboxoptim.sampling.NormalSampler.sigma_max"><code class="docutils literal notranslate"><span class="pre">NormalSampler.sigma_max</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sampling.html#blackboxoptim.sampling.NormalSampler.get_dds_sample"><code class="docutils literal notranslate"><span class="pre">NormalSampler.get_dds_sample()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sampling.html#blackboxoptim.sampling.NormalSampler.get_normal_sample"><code class="docutils literal notranslate"><span class="pre">NormalSampler.get_normal_sample()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sampling.html#blackboxoptim.sampling.NormalSampler.get_sample"><code class="docutils literal notranslate"><span class="pre">NormalSampler.get_sample()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="sampling.html#blackboxoptim.sampling.Sampler"><code class="docutils literal notranslate"><span class="pre">Sampler</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sampling.html#blackboxoptim.sampling.Sampler.n"><code class="docutils literal notranslate"><span class="pre">Sampler.n</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sampling.html#blackboxoptim.sampling.Sampler.strategy"><code class="docutils literal notranslate"><span class="pre">Sampler.strategy</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sampling.html#blackboxoptim.sampling.Sampler.get_sample"><code class="docutils literal notranslate"><span class="pre">Sampler.get_sample()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sampling.html#blackboxoptim.sampling.Sampler.get_slhd_sample"><code class="docutils literal notranslate"><span class="pre">Sampler.get_slhd_sample()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sampling.html#blackboxoptim.sampling.Sampler.get_uniform_sample"><code class="docutils literal notranslate"><span class="pre">Sampler.get_uniform_sample()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="sampling.html#blackboxoptim.sampling.SamplingStrategy"><code class="docutils literal notranslate"><span class="pre">SamplingStrategy</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sampling.html#blackboxoptim.sampling.SamplingStrategy.DDS"><code class="docutils literal notranslate"><span class="pre">SamplingStrategy.DDS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sampling.html#blackboxoptim.sampling.SamplingStrategy.DDS_UNIFORM"><code class="docutils literal notranslate"><span class="pre">SamplingStrategy.DDS_UNIFORM</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sampling.html#blackboxoptim.sampling.SamplingStrategy.MITCHEL91"><code class="docutils literal notranslate"><span class="pre">SamplingStrategy.MITCHEL91</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sampling.html#blackboxoptim.sampling.SamplingStrategy.NORMAL"><code class="docutils literal notranslate"><span class="pre">SamplingStrategy.NORMAL</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sampling.html#blackboxoptim.sampling.SamplingStrategy.SLHD"><code class="docutils literal notranslate"><span class="pre">SamplingStrategy.SLHD</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sampling.html#blackboxoptim.sampling.SamplingStrategy.UNIFORM"><code class="docutils literal notranslate"><span class="pre">SamplingStrategy.UNIFORM</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="module-blackboxoptim">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-blackboxoptim" title="Link to this heading"></a></h2>
+<p>Black-Box Optimization Library</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to Black-box Opt’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="acquisition.html" class="btn btn-neutral float-right" title="blackboxoptim.acquisition module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Alliance for Sustainable Energy, LLC.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Other Versions</span>
+    
+      v: v1.0.0
+    
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    <dl>
+      <dt>Tags</dt>
+      
+        <dd><a href="../v0.1.0/index.html">v0.1.0</a></dd>
+      
+        <dd><a href="../v0.2.0/index.html">v0.2.0</a></dd>
+      
+        <dd><a href="../v0.3.0/index.html">v0.3.0</a></dd>
+      
+        <dd><a href="../v0.3.1/index.html">v0.3.1</a></dd>
+      
+        <dd><a href="../v0.3.2/index.html">v0.3.2</a></dd>
+      
+        <dd><a href="../v0.4.0/index.html">v0.4.0</a></dd>
+      
+        <dd><a href="../v0.4.1/index.html">v0.4.1</a></dd>
+      
+        <dd><a href="../v0.4.2/index.html">v0.4.2</a></dd>
+      
+        <dd><a href="../v0.5.0/index.html">v0.5.0</a></dd>
+      
+        <dd><a href="../v0.5.1/index.html">v0.5.1</a></dd>
+      
+        <dd><a href="../v0.5.2/index.html">v0.5.2</a></dd>
+      
+        <dd><a href="blackboxoptim.html">v1.0.0</a></dd>
+      
+        <dd><a href="../v1.0.1/blackboxoptim.html">v1.0.1</a></dd>
+      
+        <dd><a href="../v1.1.0/blackboxoptim.html">v1.1.0</a></dd>
+      
+        <dd><a href="../v1.2.0/index.html">v1.2.0</a></dd>
+      
+        <dd><a href="../v1.2.1/index.html">v1.2.1</a></dd>
+      
+        <dd><a href="../v1.2.2/index.html">v1.2.2</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Branches</dt>
+      
+        <dd><a href="../main/index.html">main</a></dd>
+      
+    </dl>
+  </div>
+</div>
+
+<script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

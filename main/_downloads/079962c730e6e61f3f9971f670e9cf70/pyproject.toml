@@ -1,0 +1,74 @@
+[project]
+name = "soogo"
+dynamic = ["version"]
+description = "Surrogate-based 0-th Order Global Optimization for black-box problems"
+authors = [
+    {name = "Weslley da Silva Pereira", email = "weslley.dasilvapereira@nrel.gov"},
+]
+license = {file = "LICENSE"}
+readme = "README.md"
+classifiers = [
+    "License :: OSI Approved :: GNU General Public License (GPL)",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+]
+keywords = ["optimization", "surrogate", "black-box", "gradient-free"]
+requires-python = ">=3.9"
+dependencies = [
+    "numpy",
+    "scipy",
+    "pymoo",
+    "scikit-learn",
+    "autograd",
+    "networkx",
+]
+
+[project.urls]
+Homepage = "https://github.com/NREL/soogo"
+Docs = "https://nrel.github.io/soogo"
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[dependency-groups]
+test = [
+    "pytest",
+    "jupyter",
+    "ipykernel",
+    "pygoblet",
+    "PyNomadBBO",
+]
+lint = [
+    "ruff",
+]
+example = [
+    "jupyter",
+    "matplotlib",
+    "ipykernel",
+]
+
+[tool.pdm]
+distribution = true
+
+[tool.pdm.version]
+source = "scm"
+tag_filter = "v[0-9]*"
+
+[tool.pdm.build]
+includes = ["soogo"]
+source-includes = ["tests/*.py"]
+
+[tool.ruff]
+line-length = 79
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "W"]
+ignore = []
+
+[tool.ruff.format]
+docstring-code-format = true
+docstring-code-line-length = 60
+
+[tool.ruff.lint.pycodestyle]
+max-doc-length = 80

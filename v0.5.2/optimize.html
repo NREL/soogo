@@ -1,0 +1,736 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>blackboxopt.optimize module &mdash; soogo (Surrogate-based 0-th Order Global Optimization) 0.5.2 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=8e576371"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="blackboxopt.problem module" href="problem.html" />
+    <link rel="prev" title="blackboxopt.gp module" href="gp.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            soogo (Surrogate-based 0-th Order Global Optimization)
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="blackboxopt.html">blackboxopt package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="blackboxopt.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="acquisition.html">blackboxopt.acquisition module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gp.html">blackboxopt.gp module</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">blackboxopt.optimize module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#blackboxopt.optimize.OptimizeResult"><code class="docutils literal notranslate"><span class="pre">OptimizeResult</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#blackboxopt.optimize.bayesian_optimization"><code class="docutils literal notranslate"><span class="pre">bayesian_optimization()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#blackboxopt.optimize.cptv"><code class="docutils literal notranslate"><span class="pre">cptv()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#blackboxopt.optimize.cptvl"><code class="docutils literal notranslate"><span class="pre">cptvl()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#blackboxopt.optimize.dycors"><code class="docutils literal notranslate"><span class="pre">dycors()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#blackboxopt.optimize.gosac"><code class="docutils literal notranslate"><span class="pre">gosac()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#blackboxopt.optimize.initialize_moo_surrogate"><code class="docutils literal notranslate"><span class="pre">initialize_moo_surrogate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#blackboxopt.optimize.initialize_surrogate_constraints"><code class="docutils literal notranslate"><span class="pre">initialize_surrogate_constraints()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#blackboxopt.optimize.multistart_msrs"><code class="docutils literal notranslate"><span class="pre">multistart_msrs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#blackboxopt.optimize.socemo"><code class="docutils literal notranslate"><span class="pre">socemo()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#blackboxopt.optimize.surrogate_optimization"><code class="docutils literal notranslate"><span class="pre">surrogate_optimization()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="problem.html">blackboxopt.problem module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rbf.html">blackboxopt.rbf module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sampling.html">blackboxopt.sampling module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="blackboxopt.html#module-blackboxopt">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tests.html">tests package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">soogo (Surrogate-based 0-th Order Global Optimization)</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="blackboxopt.html">blackboxopt package</a></li>
+      <li class="breadcrumb-item active">blackboxopt.optimize module</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/NREL/soogo/blob/main/docs/optimize.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-blackboxopt.optimize">
+<span id="blackboxopt-optimize-module"></span><h1>blackboxopt.optimize module<a class="headerlink" href="#module-blackboxopt.optimize" title="Link to this heading"></a></h1>
+<p>Optimization algorithms for blackboxopt.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="blackboxopt.optimize.OptimizeResult">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blackboxopt.optimize.</span></span><span class="sig-name descname"><span class="pre">OptimizeResult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nfev</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fsample</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#blackboxopt.optimize.OptimizeResult" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Optimization result for the global optimizers provided by this
+package.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blackboxopt.optimize.OptimizeResult.fsample">
+<span class="sig-name descname"><span class="pre">fsample</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code> <span class="pre">|</span> <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#blackboxopt.optimize.OptimizeResult.fsample" title="Link to this definition"></a></dt>
+<dd><p>Vector with all n objective values</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blackboxopt.optimize.OptimizeResult.fx">
+<span class="sig-name descname"><span class="pre">fx</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code> <span class="pre">|</span> <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code> <span class="pre">|</span> <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#blackboxopt.optimize.OptimizeResult.fx" title="Link to this definition"></a></dt>
+<dd><p>Best objective function value</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blackboxopt.optimize.OptimizeResult.init">
+<span class="sig-name descname"><span class="pre">init</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fun</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mineval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxeval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">surrogateModel</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#blackboxopt.optimize.OptimizeResult.init" title="Link to this definition"></a></dt>
+<dd><p>Initialize <a class="reference internal" href="#blackboxopt.optimize.OptimizeResult.nfev" title="blackboxopt.optimize.OptimizeResult.nfev"><code class="xref py py-attr docutils literal notranslate"><span class="pre">nfev</span></code></a> and <a class="reference internal" href="#blackboxopt.optimize.OptimizeResult.sample" title="blackboxopt.optimize.OptimizeResult.sample"><code class="xref py py-attr docutils literal notranslate"><span class="pre">sample</span></code></a> and <a class="reference internal" href="#blackboxopt.optimize.OptimizeResult.fsample" title="blackboxopt.optimize.OptimizeResult.fsample"><code class="xref py py-attr docutils literal notranslate"><span class="pre">fsample</span></code></a> with
+data about the optimization that is starting.</p>
+<p>This routine calls the objective function <a class="reference internal" href="#blackboxopt.optimize.OptimizeResult.nfev" title="blackboxopt.optimize.OptimizeResult.nfev"><code class="xref py py-attr docutils literal notranslate"><span class="pre">nfev</span></code></a> times.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fun</strong> – The objective function to be minimized.</p></li>
+<li><p><strong>bounds</strong> (<em>sequence</em>) – List with the limits [x_min,x_max] of each
+direction x in the space.</p></li>
+<li><p><strong>mineval</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Minimum number of function evaluations to build the
+surrogate model.</p></li>
+<li><p><strong>maxeval</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Maximum number of function evaluations.</p></li>
+<li><p><strong>surrogateModel</strong> – Surrogate model to be used.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blackboxopt.optimize.OptimizeResult.init_best_values">
+<span class="sig-name descname"><span class="pre">init_best_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">surrogateModel</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#blackboxopt.optimize.OptimizeResult.init_best_values" title="Link to this definition"></a></dt>
+<dd><p>Initialize <a class="reference internal" href="#blackboxopt.optimize.OptimizeResult.x" title="blackboxopt.optimize.OptimizeResult.x"><code class="xref py py-attr docutils literal notranslate"><span class="pre">x</span></code></a> and <a class="reference internal" href="#blackboxopt.optimize.OptimizeResult.fx" title="blackboxopt.optimize.OptimizeResult.fx"><code class="xref py py-attr docutils literal notranslate"><span class="pre">fx</span></code></a> based on the best values for the
+surrogate.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>surrogateModel</strong> – Surrogate model.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blackboxopt.optimize.OptimizeResult.nfev">
+<span class="sig-name descname"><span class="pre">nfev</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#blackboxopt.optimize.OptimizeResult.nfev" title="Link to this definition"></a></dt>
+<dd><p>Number of function evaluations taken</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blackboxopt.optimize.OptimizeResult.nit">
+<span class="sig-name descname"><span class="pre">nit</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#blackboxopt.optimize.OptimizeResult.nit" title="Link to this definition"></a></dt>
+<dd><p>Number of active learning iterations</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blackboxopt.optimize.OptimizeResult.sample">
+<span class="sig-name descname"><span class="pre">sample</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code> <span class="pre">|</span> <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#blackboxopt.optimize.OptimizeResult.sample" title="Link to this definition"></a></dt>
+<dd><p>n-by-dim matrix with all n samples</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blackboxopt.optimize.OptimizeResult.x">
+<span class="sig-name descname"><span class="pre">x</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code> <span class="pre">|</span> <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#blackboxopt.optimize.OptimizeResult.x" title="Link to this definition"></a></dt>
+<dd><p>Best sample point found so far</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="blackboxopt.optimize.bayesian_optimization">
+<span class="sig-prename descclassname"><span class="pre">blackboxopt.optimize.</span></span><span class="sig-name descname"><span class="pre">bayesian_optimization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fun</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxeval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x0y0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">surrogateModel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acquisitionFunc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="acquisition.html#blackboxopt.acquisition.MaximizeEI" title="blackboxopt.acquisition.MaximizeEI"><span class="pre">MaximizeEI</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batchSize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#blackboxopt.optimize.OptimizeResult" title="blackboxopt.optimize.OptimizeResult"><span class="pre">OptimizeResult</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#blackboxopt.optimize.OptimizeResult" title="blackboxopt.optimize.OptimizeResult"><span class="pre">OptimizeResult</span></a></span></span><a class="headerlink" href="#blackboxopt.optimize.bayesian_optimization" title="Link to this definition"></a></dt>
+<dd><p>Minimize a scalar function of one or more variables via active learning
+of a Gaussian Process model.</p>
+<p>See <a class="footnote-reference brackets" href="#id2" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> for details.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fun</strong> – The objective function to be minimized.</p></li>
+<li><p><strong>bounds</strong> – List with the limits [x_min,x_max] of each direction x in the search
+space.</p></li>
+<li><p><strong>maxeval</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Maximum number of function evaluations.</p></li>
+<li><p><strong>x0y0</strong> – Initial guess for the solution and the value of the objective function
+at the initial guess. (default: <code class="docutils literal notranslate"><span class="pre">()</span></code>)</p></li>
+<li><p><strong>surrogateModel</strong> – Gaussian Process surrogate model. The default is GaussianProcess().
+On exit, if provided, the surrogate model is updated to represent the
+one used in the last iteration. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>acquisitionFunc</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="acquisition.html#blackboxopt.acquisition.MaximizeEI" title="blackboxopt.acquisition.MaximizeEI"><code class="xref py py-class docutils literal notranslate"><span class="pre">MaximizeEI</span></code></a> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – Acquisition function to be used. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>batchSize</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Number of new sample points to be generated per iteration. The default is 1. (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
+<li><p><strong>disp</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If True, print information about the optimization process. The default
+is False. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
+<li><p><strong>callback</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<a class="reference internal" href="#blackboxopt.optimize.OptimizeResult" title="blackboxopt.optimize.OptimizeResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">OptimizeResult</span></code></a>], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>] | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – If provided, the callback function will be called after each iteration
+with the current optimization result. The default is None. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#blackboxopt.optimize.OptimizeResult" title="blackboxopt.optimize.OptimizeResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">OptimizeResult</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The optimization result.</p>
+</dd>
+</dl>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id2" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>Che Y, Müller J, Cheng C. Dispersion-enhanced sequential batch
+sampling for adaptive contour estimation. Qual Reliab Eng Int. 2024;
+40: 131–144. <a class="reference external" href="https://doi.org/10.1002/qre.3245">https://doi.org/10.1002/qre.3245</a></p>
+</aside>
+</aside>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="blackboxopt.optimize.cptv">
+<span class="sig-prename descclassname"><span class="pre">blackboxopt.optimize.</span></span><span class="sig-name descname"><span class="pre">cptv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fun</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxeval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x0y0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">surrogateModel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="rbf.html#blackboxopt.rbf.RbfModel" title="blackboxopt.rbf.RbfModel"><span class="pre">RbfModel</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acquisitionFunc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="acquisition.html#blackboxopt.acquisition.WeightedAcquisition" title="blackboxopt.acquisition.WeightedAcquisition"><span class="pre">WeightedAcquisition</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">improvementTol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">consecutiveQuickFailuresTol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">useLocalSearch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#blackboxopt.optimize.OptimizeResult" title="blackboxopt.optimize.OptimizeResult"><span class="pre">OptimizeResult</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#blackboxopt.optimize.OptimizeResult" title="blackboxopt.optimize.OptimizeResult"><span class="pre">OptimizeResult</span></a></span></span><a class="headerlink" href="#blackboxopt.optimize.cptv" title="Link to this definition"></a></dt>
+<dd><p>Minimize a scalar function of one or more variables using the coordinate
+perturbation and target value strategy.</p>
+<p>This is an implementation of the algorithm desribed in <a class="footnote-reference brackets" href="#id5" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>. The algorithm
+uses a sequence of different acquisition functions as follows:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><dl class="simple">
+<dt>CP step: <a class="reference internal" href="#blackboxopt.optimize.surrogate_optimization" title="blackboxopt.optimize.surrogate_optimization"><code class="xref py py-func docutils literal notranslate"><span class="pre">surrogate_optimization()</span></code></a> with <cite>acquisitionFunc</cite>. Ideally,</dt><dd><p>this step would use a <code class="xref py py-class docutils literal notranslate"><span class="pre">WeightedAcquisition</span></code> object with a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">NormalSampler</span></code> sampler. The implementation is configured to
+use the acquisition proposed by Müller (2016) by default.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>TV step: <a class="reference internal" href="#blackboxopt.optimize.surrogate_optimization" title="blackboxopt.optimize.surrogate_optimization"><code class="xref py py-func docutils literal notranslate"><span class="pre">surrogate_optimization()</span></code></a> with a</dt><dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">TargetValueAcquisition</span></code> object.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Local step (only when <cite>useLocalSearch</cite> is True): Runs a local</dt><dd><p>continuous optimization with the true objective using the best point
+found so far as initial guess.</p>
+</dd>
+</dl>
+</li>
+</ol>
+</div></blockquote>
+<p>The stopping criteria of steps 1 and 2 is related to the number of
+consecutive attempts that fail to improve the best solution by at least
+<cite>improvementTol</cite>. The algorithm alternates between steps 1 and 2 until there
+is a sequence (CP,TV,CP) where the individual steps do not meet the
+successful improvement tolerance. In that case, the algorithm switches to
+step 3. When the local step is finished, the algorithm goes back top step 1.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fun</strong> – The objective function to be minimized.</p></li>
+<li><p><strong>bounds</strong> – List with the limits [x_min,x_max] of each direction x in the
+search space.</p></li>
+<li><p><strong>maxeval</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Maximum number of function evaluations.</p></li>
+<li><p><strong>x0y0</strong> – Initial guess for the solution and the value of the objective
+function at the initial guess. (default: <code class="docutils literal notranslate"><span class="pre">()</span></code>)</p></li>
+<li><p><strong>surrogateModel</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="rbf.html#blackboxopt.rbf.RbfModel" title="blackboxopt.rbf.RbfModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">RbfModel</span></code></a> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – Surrogate model to be used. If None is provided, a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">RbfModel</span></code> model with median low-pass filter is used.
+On exit, if provided, the surrogate model is updated to represent the
+one used in the last iteration. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>acquisitionFunc</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="acquisition.html#blackboxopt.acquisition.WeightedAcquisition" title="blackboxopt.acquisition.WeightedAcquisition"><code class="xref py py-class docutils literal notranslate"><span class="pre">WeightedAcquisition</span></code></a> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – Acquisition function to be used. If None is
+provided, a <code class="xref py py-class docutils literal notranslate"><span class="pre">WeightedAcquisition</span></code> is used following what is
+described by Müller (2016). (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>improvementTol</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – Expected improvement in the global optimum per
+iteration. (default: <code class="docutils literal notranslate"><span class="pre">0.001</span></code>)</p></li>
+<li><p><strong>consecutiveQuickFailuresTol</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Number of times that the CP step or the
+TV step fails quickly before the
+algorithm stops. The default is 0, which means the algorithm will stop
+after <code class="docutils literal notranslate"><span class="pre">maxeval</span></code> function evaluations. A quick failure is when the
+acquisition function in the CP or TV step does not find any significant
+improvement. (default: <code class="docutils literal notranslate"><span class="pre">0</span></code>)</p></li>
+<li><p><strong>useLocalSearch</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If True, the algorithm will perform a continuous
+local search when a significant improvement is not found in a sequence
+of (CP,TV,CP) steps. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
+<li><p><strong>disp</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If True, print information about the optimization process. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
+<li><p><strong>callback</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<a class="reference internal" href="#blackboxopt.optimize.OptimizeResult" title="blackboxopt.optimize.OptimizeResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">OptimizeResult</span></code></a>], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>] | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – If provided, the callback function will be called after
+each iteration with the current optimization result. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#blackboxopt.optimize.OptimizeResult" title="blackboxopt.optimize.OptimizeResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">OptimizeResult</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The optimization result.</p>
+</dd>
+</dl>
+<section id="id4">
+<h2>References<a class="headerlink" href="#id4" title="Link to this heading"></a></h2>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id5" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">2</a><span class="fn-bracket">]</span></span>
+<p>Müller, J. MISO: mixed-integer surrogate optimization framework.
+Optim Eng 17, 177–203 (2016). <a class="reference external" href="https://doi.org/10.1007/s11081-015-9281-2">https://doi.org/10.1007/s11081-015-9281-2</a></p>
+</aside>
+</aside>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="blackboxopt.optimize.cptvl">
+<span class="sig-prename descclassname"><span class="pre">blackboxopt.optimize.</span></span><span class="sig-name descname"><span class="pre">cptvl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#blackboxopt.optimize.OptimizeResult" title="blackboxopt.optimize.OptimizeResult"><span class="pre">OptimizeResult</span></a></span></span><a class="headerlink" href="#blackboxopt.optimize.cptvl" title="Link to this definition"></a></dt>
+<dd><p>Wrapper to cptv. See <a class="reference internal" href="#blackboxopt.optimize.cptv" title="blackboxopt.optimize.cptv"><code class="xref py py-func docutils literal notranslate"><span class="pre">cptv()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#blackboxopt.optimize.OptimizeResult" title="blackboxopt.optimize.OptimizeResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">OptimizeResult</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="blackboxopt.optimize.dycors">
+<span class="sig-prename descclassname"><span class="pre">blackboxopt.optimize.</span></span><span class="sig-name descname"><span class="pre">dycors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fun</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxeval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x0y0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">surrogateModel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acquisitionFunc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="acquisition.html#blackboxopt.acquisition.WeightedAcquisition" title="blackboxopt.acquisition.WeightedAcquisition"><span class="pre">WeightedAcquisition</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batchSize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#blackboxopt.optimize.OptimizeResult" title="blackboxopt.optimize.OptimizeResult"><span class="pre">OptimizeResult</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#blackboxopt.optimize.dycors" title="Link to this definition"></a></dt>
+<dd><p>DYCORS algorithm for single-objective optimization</p>
+<p>Implementation of the DYCORS (DYnamic COordinate search using Response
+Surface models) algorithm proposed in <a class="footnote-reference brackets" href="#id8" id="id6" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a>. That is a wrapper to
+<a class="reference internal" href="#blackboxopt.optimize.surrogate_optimization" title="blackboxopt.optimize.surrogate_optimization"><code class="xref py py-func docutils literal notranslate"><span class="pre">surrogate_optimization()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fun</strong> – The objective function to be minimized.</p></li>
+<li><p><strong>bounds</strong> – List with the limits [x_min,x_max] of each direction x in the
+search space.</p></li>
+<li><p><strong>maxeval</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Maximum number of function evaluations.</p></li>
+<li><p><strong>x0y0</strong> – Initial guess for the solution and the value of the objective
+function at the initial guess. (default: <code class="docutils literal notranslate"><span class="pre">()</span></code>)</p></li>
+<li><p><strong>surrogateModel</strong> – Surrogate model to be used. If None is provided, a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">RbfModel</span></code> model with median low-pass filter is used.
+On exit, if provided, the surrogate model is updated to represent the
+one used in the last iteration. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>acquisitionFunc</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="acquisition.html#blackboxopt.acquisition.WeightedAcquisition" title="blackboxopt.acquisition.WeightedAcquisition"><code class="xref py py-class docutils literal notranslate"><span class="pre">WeightedAcquisition</span></code></a> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – Acquisition function to be used. If None is
+provided, the acquisition function is the one used in DYCORS-LMSRBF from
+Regis and Shoemaker (2012). (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>batchSize</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Number of new sample points to be generated per iteration. (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
+<li><p><strong>disp</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If True, print information about the optimization process. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
+<li><p><strong>callback</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<a class="reference internal" href="#blackboxopt.optimize.OptimizeResult" title="blackboxopt.optimize.OptimizeResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">OptimizeResult</span></code></a>], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>] | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – If provided, the callback function will be called after
+each iteration with the current optimization result. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The optimization result.</p>
+</dd>
+</dl>
+<section id="id7">
+<h2>References<a class="headerlink" href="#id7" title="Link to this heading"></a></h2>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id8" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id6">3</a><span class="fn-bracket">]</span></span>
+<p>Regis, R. G., &amp; Shoemaker, C. A. (2012). Combining radial basis
+function surrogates and dynamic coordinate search in
+high-dimensional expensive black-box optimization.
+Engineering Optimization, 45(5), 529–555.
+<a class="reference external" href="https://doi.org/10.1080/0305215X.2012.687731">https://doi.org/10.1080/0305215X.2012.687731</a></p>
+</aside>
+</aside>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="blackboxopt.optimize.gosac">
+<span class="sig-prename descclassname"><span class="pre">blackboxopt.optimize.</span></span><span class="sig-name descname"><span class="pre">gosac</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">fun,</span> <span class="pre">gfun,</span> <span class="pre">bounds,</span> <span class="pre">maxeval:</span> <span class="pre">int,</span> <span class="pre">*,</span> <span class="pre">surrogateModels=(&lt;blackboxopt.rbf.RbfModel</span> <span class="pre">object&gt;,),</span> <span class="pre">disp:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False,</span> <span class="pre">callback:</span> <span class="pre">~typing.Callable[[~blackboxopt.optimize.OptimizeResult],</span> <span class="pre">None]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#blackboxopt.optimize.gosac" title="Link to this definition"></a></dt>
+<dd><p>Minimize a scalar function of one or more variables subject to
+constraints.</p>
+<p>The surrogate models are used to approximate the constraints. The objective
+function is assumed to be cheap to evaluate, while the constraints are
+assumed to be expensive to evaluate.</p>
+<p>This method is based on <a class="footnote-reference brackets" href="#id11" id="id9" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fun</strong> – The objective function to be minimized.</p></li>
+<li><p><strong>gfun</strong> – The constraint function to be minimized. The constraints must be
+formulated as g(x) &lt;= 0.</p></li>
+<li><p><strong>bounds</strong> – List with the limits [x_min,x_max] of each direction x in the search
+space.</p></li>
+<li><p><strong>maxeval</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Maximum number of function evaluations.</p></li>
+<li><p><strong>surrogateModels</strong> – Surrogate models to be used. The default is (RbfModel(),). (default: <code class="docutils literal notranslate"><span class="pre">(&lt;blackboxopt.rbf.RbfModel</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f5c36118b00&gt;,)</span></code>)</p></li>
+<li><p><strong>disp</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If True, print information about the optimization process. The default
+is False. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
+<li><p><strong>callback</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<a class="reference internal" href="#blackboxopt.optimize.OptimizeResult" title="blackboxopt.optimize.OptimizeResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">OptimizeResult</span></code></a>], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>] | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – If provided, the callback function will be called after each iteration
+with the current optimization result. The default is None. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The optimization result.</p>
+</dd>
+</dl>
+<section id="id10">
+<h2>References<a class="headerlink" href="#id10" title="Link to this heading"></a></h2>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id11" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id9">4</a><span class="fn-bracket">]</span></span>
+<p>Juliane Müller and Joshua D. Woodbury. 2017. GOSAC: global
+optimization with surrogate approximation of constraints. J. of Global
+Optimization 69, 1 (September 2017), 117–136.
+<a class="reference external" href="https://doi.org/10.1007/s10898-017-0496-y">https://doi.org/10.1007/s10898-017-0496-y</a></p>
+</aside>
+</aside>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="blackboxopt.optimize.initialize_moo_surrogate">
+<span class="sig-prename descclassname"><span class="pre">blackboxopt.optimize.</span></span><span class="sig-name descname"><span class="pre">initialize_moo_surrogate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fun</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mineval:</span> <span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxeval:</span> <span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">surrogateModels=(&lt;blackboxopt.rbf.RbfModel</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#blackboxopt.optimize.OptimizeResult" title="blackboxopt.optimize.OptimizeResult"><span class="pre">OptimizeResult</span></a></span></span><a class="headerlink" href="#blackboxopt.optimize.initialize_moo_surrogate" title="Link to this definition"></a></dt>
+<dd><p>Initialize the surrogate model and the output of the optimization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fun</strong> – The objective function to be minimized.</p></li>
+<li><p><strong>bounds</strong> – List with the limits [x_min,x_max] of each direction x in the search
+space.</p></li>
+<li><p><strong>mineval</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Minimum number of function evaluations to build the surrogate model.</p></li>
+<li><p><strong>maxeval</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Maximum number of function evaluations.</p></li>
+<li><p><strong>surrogateModels</strong> – Surrogate models to be used. The default is (RbfModel(),). (default: <code class="docutils literal notranslate"><span class="pre">(&lt;blackboxopt.rbf.RbfModel</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f5c361ba270&gt;,)</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#blackboxopt.optimize.OptimizeResult" title="blackboxopt.optimize.OptimizeResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">OptimizeResult</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The optimization result.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="blackboxopt.optimize.initialize_surrogate_constraints">
+<span class="sig-prename descclassname"><span class="pre">blackboxopt.optimize.</span></span><span class="sig-name descname"><span class="pre">initialize_surrogate_constraints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fun</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gfun</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mineval:</span> <span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxeval:</span> <span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">surrogateModels=(&lt;blackboxopt.rbf.RbfModel</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#blackboxopt.optimize.OptimizeResult" title="blackboxopt.optimize.OptimizeResult"><span class="pre">OptimizeResult</span></a></span></span><a class="headerlink" href="#blackboxopt.optimize.initialize_surrogate_constraints" title="Link to this definition"></a></dt>
+<dd><p>Initialize the surrogate models for the constraints.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fun</strong> – The objective function to be minimized.</p></li>
+<li><p><strong>gfun</strong> – The constraint functions. Each constraint function must return a scalar
+value. If the constraint function returns a value greater than zero, it
+is considered a violation of the constraint.</p></li>
+<li><p><strong>bounds</strong> – List with the limits [x_min,x_max] of each direction x in the search
+space.</p></li>
+<li><p><strong>mineval</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Minimum number of function evaluations to build the surrogate model.</p></li>
+<li><p><strong>maxeval</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Maximum number of function evaluations.</p></li>
+<li><p><strong>surrogateModels</strong> – Surrogate models to be used. The default is (RbfModel(),). (default: <code class="docutils literal notranslate"><span class="pre">(&lt;blackboxopt.rbf.RbfModel</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f5c3617ad50&gt;,)</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#blackboxopt.optimize.OptimizeResult" title="blackboxopt.optimize.OptimizeResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">OptimizeResult</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The optimization result.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="blackboxopt.optimize.multistart_msrs">
+<span class="sig-prename descclassname"><span class="pre">blackboxopt.optimize.</span></span><span class="sig-name descname"><span class="pre">multistart_msrs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fun</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxeval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">surrogateModel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batchSize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#blackboxopt.optimize.OptimizeResult" title="blackboxopt.optimize.OptimizeResult"><span class="pre">OptimizeResult</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#blackboxopt.optimize.OptimizeResult" title="blackboxopt.optimize.OptimizeResult"><span class="pre">OptimizeResult</span></a></span></span><a class="headerlink" href="#blackboxopt.optimize.multistart_msrs" title="Link to this definition"></a></dt>
+<dd><p>Minimize a scalar function of one or more variables using a response
+surface model approach with restarts.</p>
+<p>This implementation generalizes the algorithms Multistart LMSRS from <a class="footnote-reference brackets" href="#id14" id="id12" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a>.
+The general algorithm calls <a class="reference internal" href="#blackboxopt.optimize.surrogate_optimization" title="blackboxopt.optimize.surrogate_optimization"><code class="xref py py-func docutils literal notranslate"><span class="pre">surrogate_optimization()</span></code></a> successive
+times until there are no more function evaluations available. The first
+time <a class="reference internal" href="#blackboxopt.optimize.surrogate_optimization" title="blackboxopt.optimize.surrogate_optimization"><code class="xref py py-func docutils literal notranslate"><span class="pre">surrogate_optimization()</span></code></a> is called with the given, if any, trained
+surrogate model. Other function calls use an empty surrogate model. This is
+done to enable truly different starting samples each time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fun</strong> – The objective function to be minimized.</p></li>
+<li><p><strong>bounds</strong> – List with the limits [x_min,x_max] of each direction x in the
+search space.</p></li>
+<li><p><strong>maxeval</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Maximum number of function evaluations.</p></li>
+<li><p><strong>surrogateModel</strong> – Surrogate model to be used. If None is provided, a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">RbfModel</span></code> model with median low-pass filter is used. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>batchSize</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Number of new sample points to be generated per iteration. (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
+<li><p><strong>disp</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If True, print information about the optimization process. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
+<li><p><strong>callback</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<a class="reference internal" href="#blackboxopt.optimize.OptimizeResult" title="blackboxopt.optimize.OptimizeResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">OptimizeResult</span></code></a>], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>] | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – If provided, the callback function will be called after
+each iteration with the current optimization result. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#blackboxopt.optimize.OptimizeResult" title="blackboxopt.optimize.OptimizeResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">OptimizeResult</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The optimization result.</p>
+</dd>
+</dl>
+<section id="id13">
+<h2>References<a class="headerlink" href="#id13" title="Link to this heading"></a></h2>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id14" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id12">5</a><span class="fn-bracket">]</span></span>
+<p>Rommel G Regis and Christine A Shoemaker. A stochastic radial basis
+function method for the global optimization of expensive functions.
+INFORMS Journal on Computing, 19(4):497–509, 2007.</p>
+</aside>
+</aside>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="blackboxopt.optimize.socemo">
+<span class="sig-prename descclassname"><span class="pre">blackboxopt.optimize.</span></span><span class="sig-name descname"><span class="pre">socemo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">fun,</span> <span class="pre">bounds,</span> <span class="pre">maxeval:</span> <span class="pre">int,</span> <span class="pre">*,</span> <span class="pre">surrogateModels=(&lt;blackboxopt.rbf.RbfModel</span> <span class="pre">object&gt;,),</span> <span class="pre">acquisitionFunc:</span> <span class="pre">~blackboxopt.acquisition.WeightedAcquisition</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">acquisitionFuncGlobal:</span> <span class="pre">~blackboxopt.acquisition.WeightedAcquisition</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">disp:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False,</span> <span class="pre">callback:</span> <span class="pre">~typing.Callable[[~blackboxopt.optimize.OptimizeResult],</span> <span class="pre">None]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#blackboxopt.optimize.socemo" title="Link to this definition"></a></dt>
+<dd><p>Minimize a multiobjective function using the surrogate model approach
+from <a class="footnote-reference brackets" href="#id17" id="id15" role="doc-noteref"><span class="fn-bracket">[</span>6<span class="fn-bracket">]</span></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fun</strong> – The objective function to be minimized.</p></li>
+<li><p><strong>bounds</strong> – List with the limits [x_min,x_max] of each direction x in the search
+space.</p></li>
+<li><p><strong>maxeval</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Maximum number of function evaluations.</p></li>
+<li><p><strong>surrogateModels</strong> – Surrogate models to be used. The default is (RbfModel(),). (default: <code class="docutils literal notranslate"><span class="pre">(&lt;blackboxopt.rbf.RbfModel</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f5c3617afd0&gt;,)</span></code>)</p></li>
+<li><p><strong>acquisitionFunc</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="acquisition.html#blackboxopt.acquisition.WeightedAcquisition" title="blackboxopt.acquisition.WeightedAcquisition"><code class="xref py py-class docutils literal notranslate"><span class="pre">WeightedAcquisition</span></code></a> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – Acquisition function to be used in the CP step. The default is
+WeightedAcquisition(0). (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>acquisitionFuncGlobal</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="acquisition.html#blackboxopt.acquisition.WeightedAcquisition" title="blackboxopt.acquisition.WeightedAcquisition"><code class="xref py py-class docutils literal notranslate"><span class="pre">WeightedAcquisition</span></code></a> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – Acquisition function to be used in the global step. The default is
+WeightedAcquisition(Sampler(0), 0.95). (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>disp</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If True, print information about the optimization process. The default
+is False. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
+<li><p><strong>callback</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<a class="reference internal" href="#blackboxopt.optimize.OptimizeResult" title="blackboxopt.optimize.OptimizeResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">OptimizeResult</span></code></a>], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>] | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – If provided, the callback function will be called after each iteration
+with the current optimization result. The default is None. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The optimization result.</p>
+</dd>
+</dl>
+<section id="id16">
+<h2>References<a class="headerlink" href="#id16" title="Link to this heading"></a></h2>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id17" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id15">6</a><span class="fn-bracket">]</span></span>
+<p>Juliane Mueller. SOCEMO: Surrogate Optimization of Computationally
+Expensive Multiobjective Problems.
+INFORMS Journal on Computing, 29(4):581-783, 2017.
+<a class="reference external" href="https://doi.org/10.1287/ijoc.2017.0749">https://doi.org/10.1287/ijoc.2017.0749</a></p>
+</aside>
+</aside>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="blackboxopt.optimize.surrogate_optimization">
+<span class="sig-prename descclassname"><span class="pre">blackboxopt.optimize.</span></span><span class="sig-name descname"><span class="pre">surrogate_optimization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fun</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxeval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x0y0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">surrogateModel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acquisitionFunc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="acquisition.html#blackboxopt.acquisition.AcquisitionFunction" title="blackboxopt.acquisition.AcquisitionFunction"><span class="pre">AcquisitionFunction</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batchSize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">improvementTol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nSuccTol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nFailTol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">performContinuousSearch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">termination</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#blackboxopt.optimize.OptimizeResult" title="blackboxopt.optimize.OptimizeResult"><span class="pre">OptimizeResult</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#blackboxopt.optimize.OptimizeResult" title="blackboxopt.optimize.OptimizeResult"><span class="pre">OptimizeResult</span></a></span></span><a class="headerlink" href="#blackboxopt.optimize.surrogate_optimization" title="Link to this definition"></a></dt>
+<dd><p>Minimize a scalar function of one or more variables using a surrogate
+model and an acquisition strategy.</p>
+<p>This is a more generic implementation of the RBF algorithm described in
+<a class="footnote-reference brackets" href="#id21" id="id18" role="doc-noteref"><span class="fn-bracket">[</span>7<span class="fn-bracket">]</span></a>, using multiple ideas from <a class="footnote-reference brackets" href="#id22" id="id19" role="doc-noteref"><span class="fn-bracket">[</span>8<span class="fn-bracket">]</span></a> especially in what concerns
+mixed-integer optimization. Briefly, the implementation works as follows:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>If a surrogate model or initial sample points are not provided,
+choose the initial sample using a Symmetric Latin Hypercube design.
+Evaluate the objective function at the initial sample points.</p></li>
+<li><p>Repeat 3-8 until there are no function evaluations left.</p></li>
+<li><p>Update the surrogate model with the last sample.</p></li>
+<li><p>Acquire a new sample based on the provided acquisition function.</p></li>
+<li><p>Evaluate the objective function at the new sample.</p></li>
+<li><p>Update the optimization solution and best function value if needed.</p></li>
+<li><p>Determine if there is a significant improvement and update counters.</p></li>
+<li><p>Exit after <cite>nFailTol</cite> successive failures to improve the minimum.</p></li>
+</ol>
+</div></blockquote>
+<p>Mind that, when solving mixed-integer optimization, the algorithm may
+perform a continuous search whenever a significant improvement is found by
+updating an integer variable. In the continuous search mode, the algorithm
+executes step 4 only on continuous variables. The continuous search ends
+when there are no significant improvements for a number of times as in
+Müller (2016).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fun</strong> – The objective function to be minimized.</p></li>
+<li><p><strong>bounds</strong> – List with the limits [x_min,x_max] of each direction x in the
+search space.</p></li>
+<li><p><strong>maxeval</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Maximum number of function evaluations.</p></li>
+<li><p><strong>x0y0</strong> – Initial guess for the solution and the value of the objective
+function at the initial guess. (default: <code class="docutils literal notranslate"><span class="pre">()</span></code>)</p></li>
+<li><p><strong>surrogateModel</strong> – Surrogate model to be used. If None is provided, a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">RbfModel</span></code> model with median low-pass filter is used.
+On exit, if provided, the surrogate model is updated to represent the
+one used in the last iteration. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>acquisitionFunc</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="acquisition.html#blackboxopt.acquisition.AcquisitionFunction" title="blackboxopt.acquisition.AcquisitionFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">AcquisitionFunction</span></code></a> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – Acquisition function to be used. If None is
+provided, the <code class="xref py py-class docutils literal notranslate"><span class="pre">TargetValueAcquisition</span></code> is used. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>batchSize</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Number of new sample points to be generated per iteration. (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
+<li><p><strong>improvementTol</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – Expected improvement in the global optimum per
+iteration. (default: <code class="docutils literal notranslate"><span class="pre">0.001</span></code>)</p></li>
+<li><p><strong>nSuccTol</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Number of consecutive successes before updating the
+acquisition when necessary. A zero value means there is no need to
+update the acquisition based no the number of successes. (default: <code class="docutils literal notranslate"><span class="pre">3</span></code>)</p></li>
+<li><p><strong>nFailTol</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Number of consecutive failures before updating the
+acquisition when necessary. A zero value means there is no need to
+update the acquisition based no the number of failures. (default: <code class="docutils literal notranslate"><span class="pre">5</span></code>)</p></li>
+<li><p><strong>termination</strong> – Termination condition. Possible values: “nFailTol” and
+None. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>performContinuousSearch</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If True, the algorithm will perform a
+continuous search when a significant improvement is found by updating an
+integer variable. (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)</p></li>
+<li><p><strong>disp</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If True, print information about the optimization process. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
+<li><p><strong>callback</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<a class="reference internal" href="#blackboxopt.optimize.OptimizeResult" title="blackboxopt.optimize.OptimizeResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">OptimizeResult</span></code></a>], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>] | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – If provided, the callback function will be called after
+each iteration with the current optimization result. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#blackboxopt.optimize.OptimizeResult" title="blackboxopt.optimize.OptimizeResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">OptimizeResult</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The optimization result.</p>
+</dd>
+</dl>
+<section id="id20">
+<h2>References<a class="headerlink" href="#id20" title="Link to this heading"></a></h2>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id21" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id18">7</a><span class="fn-bracket">]</span></span>
+<p>Björkman, M., Holmström, K. Global Optimization of Costly
+Nonconvex Functions Using Radial Basis Functions. Optimization and
+Engineering 1, 373–397 (2000). <a class="reference external" href="https://doi.org/10.1023/A:1011584207202">https://doi.org/10.1023/A:1011584207202</a></p>
+</aside>
+<aside class="footnote brackets" id="id22" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id19">8</a><span class="fn-bracket">]</span></span>
+<p>Müller, J. MISO: mixed-integer surrogate optimization framework.
+Optim Eng 17, 177–203 (2016). <a class="reference external" href="https://doi.org/10.1007/s11081-015-9281-2">https://doi.org/10.1007/s11081-015-9281-2</a></p>
+</aside>
+</aside>
+</section>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="gp.html" class="btn btn-neutral float-left" title="blackboxopt.gp module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="problem.html" class="btn btn-neutral float-right" title="blackboxopt.problem module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Alliance for Sustainable Energy, LLC.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Other Versions</span>
+    
+      v: v0.5.2
+    
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    <dl>
+      <dt>Tags</dt>
+      
+        <dd><a href="../v0.1.0/index.html">v0.1.0</a></dd>
+      
+        <dd><a href="../v0.2.0/index.html">v0.2.0</a></dd>
+      
+        <dd><a href="../v0.3.0/index.html">v0.3.0</a></dd>
+      
+        <dd><a href="../v0.3.1/index.html">v0.3.1</a></dd>
+      
+        <dd><a href="../v0.3.2/index.html">v0.3.2</a></dd>
+      
+        <dd><a href="../v0.4.0/index.html">v0.4.0</a></dd>
+      
+        <dd><a href="../v0.4.1/index.html">v0.4.1</a></dd>
+      
+        <dd><a href="../v0.4.2/index.html">v0.4.2</a></dd>
+      
+        <dd><a href="../v0.5.0/optimize.html">v0.5.0</a></dd>
+      
+        <dd><a href="../v0.5.1/optimize.html">v0.5.1</a></dd>
+      
+        <dd><a href="optimize.html">v0.5.2</a></dd>
+      
+        <dd><a href="../v1.0.0/optimize.html">v1.0.0</a></dd>
+      
+        <dd><a href="../v1.0.1/optimize.html">v1.0.1</a></dd>
+      
+        <dd><a href="../v1.1.0/optimize.html">v1.1.0</a></dd>
+      
+        <dd><a href="../v1.2.0/optimize.html">v1.2.0</a></dd>
+      
+        <dd><a href="../v1.2.1/optimize.html">v1.2.1</a></dd>
+      
+        <dd><a href="../v1.2.2/optimize.html">v1.2.2</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Branches</dt>
+      
+        <dd><a href="../main/index.html">main</a></dd>
+      
+    </dl>
+  </div>
+</div>
+
+<script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

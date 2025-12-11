@@ -1,0 +1,352 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>blackboxopt.gp module &mdash; soogo (Surrogate-based 0-th Order Global Optimization) 0.5.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=1dd76d02"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="blackboxopt.optimize module" href="optimize.html" />
+    <link rel="prev" title="blackboxopt.acquisition module" href="acquisition.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            soogo (Surrogate-based 0-th Order Global Optimization)
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="blackboxopt.html">blackboxopt package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="blackboxopt.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="acquisition.html">blackboxopt.acquisition module</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">blackboxopt.gp module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#blackboxopt.gp.GaussianProcess"><code class="docutils literal notranslate"><span class="pre">GaussianProcess</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="optimize.html">blackboxopt.optimize module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="problem.html">blackboxopt.problem module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rbf.html">blackboxopt.rbf module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sampling.html">blackboxopt.sampling module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="blackboxopt.html#module-blackboxopt">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tests.html">tests package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">soogo (Surrogate-based 0-th Order Global Optimization)</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="blackboxopt.html">blackboxopt package</a></li>
+      <li class="breadcrumb-item active">blackboxopt.gp module</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/NREL/soogo/blob/main/docs/gp.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-blackboxopt.gp">
+<span id="blackboxopt-gp-module"></span><h1>blackboxopt.gp module<a class="headerlink" href="#module-blackboxopt.gp" title="Link to this heading"></a></h1>
+<p>Gaussian process module.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="blackboxopt.gp.GaussianProcess">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blackboxopt.gp.</span></span><span class="sig-name descname"><span class="pre">GaussianProcess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">scaler</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxiterLBFGS</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">15000</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#blackboxopt.gp.GaussianProcess" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">GaussianProcessRegressor</span></code></p>
+<p>Gaussian Process model.</p>
+<p>This model uses default attributes and parameters from
+GaussianProcessRegressor with the following exceptions:</p>
+<ul class="simple">
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">kernel</span></code>: Default is <cite>sklearn.gaussian_process.kernels.RBF()</cite>.</p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">optimizer</span></code>: Default is <code class="xref py py-meth docutils literal notranslate"><span class="pre">_optimizer()</span></code>.</p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">normalize_y</span></code>: Default is <cite>True</cite>.</p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">n_restarts_optimizer</span></code>: Default is 10.</p></li>
+</ul>
+<p>Check other attributes and parameters for GaussianProcessRegressor at
+<a class="reference external" href="https://scikit-learn.org/dev/modules/generated/sklearn.gaussian_process.GaussianProcessRegressor.html">https://scikit-learn.org/dev/modules/generated/sklearn.gaussian_process.GaussianProcessRegressor.html</a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>scaler</strong> – Scaler for the input data. For details, see
+<a class="reference external" href="https://scikit-learn.org/stable/modules/preprocessing.html">https://scikit-learn.org/stable/modules/preprocessing.html</a>. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>maxiterLBFGS</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Maximum number of iterations for the L-BFGS-B optimizer.
+Stored in <a class="reference internal" href="#blackboxopt.gp.GaussianProcess.maxiterLBFGS" title="blackboxopt.gp.GaussianProcess.maxiterLBFGS"><code class="xref py py-attr docutils literal notranslate"><span class="pre">maxiterLBFGS</span></code></a>. (default: <code class="docutils literal notranslate"><span class="pre">15000</span></code>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blackboxopt.gp.GaussianProcess.maxiterLBFGS">
+<span class="sig-name descname"><span class="pre">maxiterLBFGS</span></span><a class="headerlink" href="#blackboxopt.gp.GaussianProcess.maxiterLBFGS" title="Link to this definition"></a></dt>
+<dd><p>Maximum number of iterations for the L-BFGS-B optimizer. Used in the
+training of the gaussian process.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blackboxopt.gp.GaussianProcess.scaler">
+<span class="sig-name descname"><span class="pre">scaler</span></span><a class="headerlink" href="#blackboxopt.gp.GaussianProcess.scaler" title="Link to this definition"></a></dt>
+<dd><p>Scaler used to preprocess input data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blackboxopt.gp.GaussianProcess.__call__">
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#blackboxopt.gp.GaussianProcess.__call__" title="Link to this definition"></a></dt>
+<dd><p>Evaluates the model at one or multiple points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – m-by-d matrix with m point coordinates in a d-dimensional
+space.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]</span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p>Mean value predicted by the GP model on each of the input points.</p></li>
+<li><p>Std value predicted by the GP model on each of the input points.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blackboxopt.gp.GaussianProcess.check_initial_design">
+<span class="sig-name descname"><span class="pre">check_initial_design</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#blackboxopt.gp.GaussianProcess.check_initial_design" title="Link to this definition"></a></dt>
+<dd><p>Check if the sample is able to generate a valid surrogate.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sample</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – m-by-d matrix with m training points in a d-dimensional
+space.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blackboxopt.gp.GaussianProcess.get_iindex">
+<span class="sig-name descname"><span class="pre">get_iindex</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#blackboxopt.gp.GaussianProcess.get_iindex" title="Link to this definition"></a></dt>
+<dd><p>Return iindex, the sequence of integer variable indexes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blackboxopt.gp.GaussianProcess.get_kernel">
+<span class="sig-name descname"><span class="pre">get_kernel</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#blackboxopt.gp.GaussianProcess.get_kernel" title="Link to this definition"></a></dt>
+<dd><p>Get the kernel used for prediction. The structure of the kernel is
+the same as the one passed as parameter but with optimized
+hyperparameters.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blackboxopt.gp.GaussianProcess.min_design_space_size">
+<span class="sig-name descname"><span class="pre">min_design_space_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#blackboxopt.gp.GaussianProcess.min_design_space_size" title="Link to this definition"></a></dt>
+<dd><p>Return the minimum design space size for a given space dimension.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blackboxopt.gp.GaussianProcess.ntrain">
+<span class="sig-name descname"><span class="pre">ntrain</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#blackboxopt.gp.GaussianProcess.ntrain" title="Link to this definition"></a></dt>
+<dd><p>Get the number of sampled points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blackboxopt.gp.GaussianProcess.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Xnew</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ynew</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#blackboxopt.gp.GaussianProcess.update" title="Link to this definition"></a></dt>
+<dd><p>Updates the model with new pairs of data (x,y).</p>
+<p>When the default optimizer method, <code class="xref py py-meth docutils literal notranslate"><span class="pre">_optimizer()</span></code>, is used as
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">optimizer</span></code>, this routine reports different warnings compared to
+<cite>sklearn.gaussian_process.GaussianProcessRegressor.fit()</cite>. The latter
+reports any convergence failure in L-BFGS-B. This implementation reports
+the last convergence failure in the multiple L-BFGS-B runs only if there
+all the runs end up failing. The number of optimization runs is
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">n_restarts_optimizer</span></code> + 1.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Xnew</strong> – m-by-d matrix with m point coordinates in a d-dimensional
+space.</p></li>
+<li><p><strong>ynew</strong> – Function values on the sampled points.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blackboxopt.gp.GaussianProcess.xtrain">
+<span class="sig-name descname"><span class="pre">xtrain</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#blackboxopt.gp.GaussianProcess.xtrain" title="Link to this definition"></a></dt>
+<dd><p>Get the training data points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>m-by-d matrix with m training points in a d-dimensional space.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blackboxopt.gp.GaussianProcess.ytrain">
+<span class="sig-name descname"><span class="pre">ytrain</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#blackboxopt.gp.GaussianProcess.ytrain" title="Link to this definition"></a></dt>
+<dd><p>Get f(x) for the sampled points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="acquisition.html" class="btn btn-neutral float-left" title="blackboxopt.acquisition module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="optimize.html" class="btn btn-neutral float-right" title="blackboxopt.optimize module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Alliance for Sustainable Energy, LLC.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Other Versions</span>
+    
+      v: v0.5.0
+    
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    <dl>
+      <dt>Tags</dt>
+      
+        <dd><a href="../v0.1.0/index.html">v0.1.0</a></dd>
+      
+        <dd><a href="../v0.2.0/index.html">v0.2.0</a></dd>
+      
+        <dd><a href="../v0.3.0/index.html">v0.3.0</a></dd>
+      
+        <dd><a href="../v0.3.1/index.html">v0.3.1</a></dd>
+      
+        <dd><a href="../v0.3.2/index.html">v0.3.2</a></dd>
+      
+        <dd><a href="../v0.4.0/index.html">v0.4.0</a></dd>
+      
+        <dd><a href="../v0.4.1/index.html">v0.4.1</a></dd>
+      
+        <dd><a href="../v0.4.2/index.html">v0.4.2</a></dd>
+      
+        <dd><a href="gp.html">v0.5.0</a></dd>
+      
+        <dd><a href="../v0.5.1/gp.html">v0.5.1</a></dd>
+      
+        <dd><a href="../v0.5.2/gp.html">v0.5.2</a></dd>
+      
+        <dd><a href="../v1.0.0/gp.html">v1.0.0</a></dd>
+      
+        <dd><a href="../v1.0.1/gp.html">v1.0.1</a></dd>
+      
+        <dd><a href="../v1.1.0/gp.html">v1.1.0</a></dd>
+      
+        <dd><a href="../v1.2.0/gp.html">v1.2.0</a></dd>
+      
+        <dd><a href="../v1.2.1/gp.html">v1.2.1</a></dd>
+      
+        <dd><a href="../v1.2.2/gp.html">v1.2.2</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Branches</dt>
+      
+        <dd><a href="../main/index.html">main</a></dd>
+      
+    </dl>
+  </div>
+</div>
+
+<script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

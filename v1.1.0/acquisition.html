@@ -1,0 +1,1192 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>blackboxoptim.acquisition module &mdash; soogo (Surrogate-based 0-th Order Global Optimization) 1.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=fc837d61"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="blackboxoptim.gp module" href="gp.html" />
+    <link rel="prev" title="blackboxoptim package" href="blackboxoptim.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            soogo (Surrogate-based 0-th Order Global Optimization)
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="blackboxoptim.html">blackboxoptim package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="blackboxoptim.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">blackboxoptim.acquisition module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#blackboxoptim.acquisition.AcquisitionFunction"><code class="docutils literal notranslate"><span class="pre">AcquisitionFunction</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#blackboxoptim.acquisition.CoordinatePerturbationOverNondominated"><code class="docutils literal notranslate"><span class="pre">CoordinatePerturbationOverNondominated</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#blackboxoptim.acquisition.EndPointsParetoFront"><code class="docutils literal notranslate"><span class="pre">EndPointsParetoFront</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#blackboxoptim.acquisition.GosacSample"><code class="docutils literal notranslate"><span class="pre">GosacSample</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#blackboxoptim.acquisition.MaximizeEI"><code class="docutils literal notranslate"><span class="pre">MaximizeEI</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#blackboxoptim.acquisition.MinimizeMOSurrogate"><code class="docutils literal notranslate"><span class="pre">MinimizeMOSurrogate</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#blackboxoptim.acquisition.MinimizeSurrogate"><code class="docutils literal notranslate"><span class="pre">MinimizeSurrogate</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#blackboxoptim.acquisition.ParetoFront"><code class="docutils literal notranslate"><span class="pre">ParetoFront</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#blackboxoptim.acquisition.TargetValueAcquisition"><code class="docutils literal notranslate"><span class="pre">TargetValueAcquisition</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#blackboxoptim.acquisition.WeightedAcquisition"><code class="docutils literal notranslate"><span class="pre">WeightedAcquisition</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#blackboxoptim.acquisition.expected_improvement"><code class="docutils literal notranslate"><span class="pre">expected_improvement()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#blackboxoptim.acquisition.find_pareto_front"><code class="docutils literal notranslate"><span class="pre">find_pareto_front()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="gp.html">blackboxoptim.gp module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="optimize.html">blackboxoptim.optimize module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="problem.html">blackboxoptim.problem module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rbf.html">blackboxoptim.rbf module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sampling.html">blackboxoptim.sampling module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="blackboxoptim.html#module-blackboxoptim">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tests.html">tests package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">soogo (Surrogate-based 0-th Order Global Optimization)</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="blackboxoptim.html">blackboxoptim package</a></li>
+      <li class="breadcrumb-item active">blackboxoptim.acquisition module</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/NREL/soogo/blob/main/docs/acquisition.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="blackboxoptim-acquisition-module">
+<h1>blackboxoptim.acquisition module<a class="headerlink" href="#blackboxoptim-acquisition-module" title="Link to this heading"></a></h1>
+<p id="module-blackboxoptim.acquisition">Acquisition functions for surrogate optimization.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.AcquisitionFunction">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blackboxoptim.acquisition.</span></span><span class="sig-name descname"><span class="pre">AcquisitionFunction</span></span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#blackboxoptim.acquisition.AcquisitionFunction" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base class for acquisition functions.</p>
+<p>This an abstract class. Subclasses must implement the method
+<a class="reference internal" href="#blackboxoptim.acquisition.AcquisitionFunction.acquire" title="blackboxoptim.acquisition.AcquisitionFunction.acquire"><code class="xref py py-meth docutils literal notranslate"><span class="pre">acquire()</span></code></a>.</p>
+<p>Acquisition functions are strategies to propose new sample points to a
+surrogate. The acquisition functions here are modeled as objects with the
+goals of adding states to the learning process. Moreover, this design
+enables the definition of the <a class="reference internal" href="#blackboxoptim.acquisition.AcquisitionFunction.acquire" title="blackboxoptim.acquisition.AcquisitionFunction.acquire"><code class="xref py py-meth docutils literal notranslate"><span class="pre">acquire()</span></code></a> method with a similar API
+when we compare different acquisition strategies.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.AcquisitionFunction.acquire">
+<span class="sig-name descname"><span class="pre">acquire</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">surrogateModel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#blackboxoptim.acquisition.AcquisitionFunction.acquire" title="Link to this definition"></a></dt>
+<dd><p>Propose a maximum of n new sample points to improve the surrogate.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>surrogateModel</strong> – Surrogate model.</p></li>
+<li><p><strong>bounds</strong> (<em>sequence</em>) – List with the limits [x_min,x_max] of each
+direction x in the space.</p></li>
+<li><p><strong>n</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Number of points to be acquired, or maximum requested number. (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>m-by-dim matrix with the selected points, where m &lt;= n.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.CoordinatePerturbationOverNondominated">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blackboxoptim.acquisition.</span></span><span class="sig-name descname"><span class="pre">CoordinatePerturbationOverNondominated</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">acquisitionFunc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#blackboxoptim.acquisition.WeightedAcquisition" title="blackboxoptim.acquisition.WeightedAcquisition"><span class="pre">WeightedAcquisition</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#blackboxoptim.acquisition.CoordinatePerturbationOverNondominated" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#blackboxoptim.acquisition.AcquisitionFunction" title="blackboxoptim.acquisition.AcquisitionFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">AcquisitionFunction</span></code></a></p>
+<p>Coordinate perturbation acquisition function over the nondominated set.</p>
+<p>This acquisition method was proposed in <a class="footnote-reference brackets" href="#id2" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>. It perturbs locally each of
+the non-dominated sample points to find new sample points. The perturbation
+is performed by <a class="reference internal" href="#blackboxoptim.acquisition.CoordinatePerturbationOverNondominated.acquisitionFunc" title="blackboxoptim.acquisition.CoordinatePerturbationOverNondominated.acquisitionFunc"><code class="xref py py-attr docutils literal notranslate"><span class="pre">acquisitionFunc</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>acquisitionFunc</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#blackboxoptim.acquisition.WeightedAcquisition" title="blackboxoptim.acquisition.WeightedAcquisition"><code class="xref py py-class docutils literal notranslate"><span class="pre">WeightedAcquisition</span></code></a></span>) – Weighted acquisition function with a normal sampler.
+Stored in <a class="reference internal" href="#blackboxoptim.acquisition.CoordinatePerturbationOverNondominated.acquisitionFunc" title="blackboxoptim.acquisition.CoordinatePerturbationOverNondominated.acquisitionFunc"><code class="xref py py-attr docutils literal notranslate"><span class="pre">acquisitionFunc</span></code></a>.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.CoordinatePerturbationOverNondominated.acquisitionFunc">
+<span class="sig-name descname"><span class="pre">acquisitionFunc</span></span><a class="headerlink" href="#blackboxoptim.acquisition.CoordinatePerturbationOverNondominated.acquisitionFunc" title="Link to this definition"></a></dt>
+<dd><p>Weighted acquisition function with a normal sampler.</p>
+</dd></dl>
+
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id2" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>Juliane Mueller. SOCEMO: Surrogate Optimization of Computationally
+Expensive Multiobjective Problems.
+INFORMS Journal on Computing, 29(4):581-783, 2017.
+<a class="reference external" href="https://doi.org/10.1287/ijoc.2017.0749">https://doi.org/10.1287/ijoc.2017.0749</a></p>
+</aside>
+</aside>
+<dl class="py method">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.CoordinatePerturbationOverNondominated.acquire">
+<span class="sig-name descname"><span class="pre">acquire</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">surrogateModels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">nondominated</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">paretoFront</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#blackboxoptim.acquisition.CoordinatePerturbationOverNondominated.acquire" title="Link to this definition"></a></dt>
+<dd><p>Acquire k points, where k &lt;= n.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>surrogateModels</strong> – List of surrogate models.</p></li>
+<li><p><strong>bounds</strong> (<em>sequence</em>) – List with the limits [x_min,x_max] of each
+direction x in the space.</p></li>
+<li><p><strong>n</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Maximum number of points to be acquired. (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
+<li><p><strong>nondominated</strong> – Nondominated set in the objective space. (default: <code class="docutils literal notranslate"><span class="pre">()</span></code>)</p></li>
+<li><p><strong>paretoFront</strong> – Pareto front in the objective space. (default: <code class="docutils literal notranslate"><span class="pre">()</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.EndPointsParetoFront">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blackboxoptim.acquisition.</span></span><span class="sig-name descname"><span class="pre">EndPointsParetoFront</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">optimizer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-06</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#blackboxoptim.acquisition.EndPointsParetoFront" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#blackboxoptim.acquisition.AcquisitionFunction" title="blackboxoptim.acquisition.AcquisitionFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">AcquisitionFunction</span></code></a></p>
+<p>Obtain endpoints of the Pareto front as described in <a class="footnote-reference brackets" href="#id5" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>.</p>
+<p>For each component i in the target space, this algorithm solves a cheap
+auxiliary optimization problem to minimize the i-th component of the
+trained surrogate model. Points that are too close to each other and to
+training sample points are eliminated. If all points were to be eliminated,
+consider the whole variable domain and sample at the point that maximizes
+the minimum distance to training sample points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>optimizer</strong> – Single-objective optimizer. If None, use MixedVariableGA
+from pymoo. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>rtol</strong> – Tolerance value for excluding candidate points that are too
+close to already sampled points. Stored in <code class="xref py py-attr docutils literal notranslate"><span class="pre">tol</span></code>. (default: <code class="docutils literal notranslate"><span class="pre">1e-06</span></code>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.EndPointsParetoFront.optimizer">
+<span class="sig-name descname"><span class="pre">optimizer</span></span><a class="headerlink" href="#blackboxoptim.acquisition.EndPointsParetoFront.optimizer" title="Link to this definition"></a></dt>
+<dd><p>Single-objective optimizer.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.EndPointsParetoFront.rtol">
+<span class="sig-name descname"><span class="pre">rtol</span></span><a class="headerlink" href="#blackboxoptim.acquisition.EndPointsParetoFront.rtol" title="Link to this definition"></a></dt>
+<dd><p>Tolerance value for excluding candidate points that are too close to
+already sampled points.</p>
+</dd></dl>
+
+<section id="id4">
+<h2>References<a class="headerlink" href="#id4" title="Link to this heading"></a></h2>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id5" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">2</a><span class="fn-bracket">]</span></span>
+<p>Juliane Mueller. SOCEMO: Surrogate Optimization of Computationally
+Expensive Multiobjective Problems.
+INFORMS Journal on Computing, 29(4):581-783, 2017.
+<a class="reference external" href="https://doi.org/10.1287/ijoc.2017.0749">https://doi.org/10.1287/ijoc.2017.0749</a></p>
+</aside>
+</aside>
+<dl class="py method">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.EndPointsParetoFront.acquire">
+<span class="sig-name descname"><span class="pre">acquire</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">surrogateModels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#blackboxoptim.acquisition.EndPointsParetoFront.acquire" title="Link to this definition"></a></dt>
+<dd><p>Acquire k points at most, where k &lt;= n.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>surrogateModels</strong> – List of surrogate models.</p></li>
+<li><p><strong>bounds</strong> (<em>sequence</em>) – List with the limits [x_min,x_max] of each
+direction x in the space.</p></li>
+<li><p><strong>n</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Maximum number of points to be acquired. (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>k-by-dim matrix with the selected points.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.GosacSample">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blackboxoptim.acquisition.</span></span><span class="sig-name descname"><span class="pre">GosacSample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fun</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-06</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#blackboxoptim.acquisition.GosacSample" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#blackboxoptim.acquisition.AcquisitionFunction" title="blackboxoptim.acquisition.AcquisitionFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">AcquisitionFunction</span></code></a></p>
+<p>GOSAC acquisition function as described in <a class="footnote-reference brackets" href="#id8" id="id6" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a>.</p>
+<p>Minimize the objective function with surrogate constraints. If a feasible
+solution is found and is different from previous sample points, return it as
+the new sample. Otherwise, the new sample is the point that is farthest from
+previously selected sample points.</p>
+<p>This acquisition function is only able to acuire 1 point at a time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fun</strong> – Objective function. Stored in <a class="reference internal" href="#blackboxoptim.acquisition.GosacSample.fun" title="blackboxoptim.acquisition.GosacSample.fun"><code class="xref py py-attr docutils literal notranslate"><span class="pre">fun</span></code></a>.</p></li>
+<li><p><strong>optimizer</strong> – Single-objective optimizer. If None, use MixedVariableGA
+from pymoo. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>rtol</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – Tolerance value for excluding candidate points that are too
+close to already sampled points. Stored in <code class="xref py py-attr docutils literal notranslate"><span class="pre">tol</span></code>. (default: <code class="docutils literal notranslate"><span class="pre">1e-06</span></code>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.GosacSample.fun">
+<span class="sig-name descname"><span class="pre">fun</span></span><a class="headerlink" href="#blackboxoptim.acquisition.GosacSample.fun" title="Link to this definition"></a></dt>
+<dd><p>Objective function.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.GosacSample.optimizer">
+<span class="sig-name descname"><span class="pre">optimizer</span></span><a class="headerlink" href="#blackboxoptim.acquisition.GosacSample.optimizer" title="Link to this definition"></a></dt>
+<dd><p>Single-objective optimizer.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.GosacSample.rtol">
+<span class="sig-name descname"><span class="pre">rtol</span></span><a class="headerlink" href="#blackboxoptim.acquisition.GosacSample.rtol" title="Link to this definition"></a></dt>
+<dd><p>Tolerance value for excluding candidate points that are too close to
+already sampled points.</p>
+</dd></dl>
+
+<section id="id7">
+<h2>References<a class="headerlink" href="#id7" title="Link to this heading"></a></h2>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id8" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id6">3</a><span class="fn-bracket">]</span></span>
+<p>Juliane Mueller and Joshua D. Woodbury. GOSAC: global optimization
+with surrogate approximation of constraints.
+J Glob Optim, 69:117-136, 2017.
+<a class="reference external" href="https://doi.org/10.1007/s10898-017-0496-y">https://doi.org/10.1007/s10898-017-0496-y</a></p>
+</aside>
+</aside>
+<dl class="py method">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.GosacSample.acquire">
+<span class="sig-name descname"><span class="pre">acquire</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">surrogateModels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#blackboxoptim.acquisition.GosacSample.acquire" title="Link to this definition"></a></dt>
+<dd><p>Acquire 1 point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>surrogateModels</strong> – List of surrogate models for the constraints.</p></li>
+<li><p><strong>bounds</strong> (<em>sequence</em>) – List with the limits [x_min,x_max] of each
+direction x in the space.</p></li>
+<li><p><strong>n</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Unused. (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>1-by-dim matrix with the selected points.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.MaximizeEI">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blackboxoptim.acquisition.</span></span><span class="sig-name descname"><span class="pre">MaximizeEI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sampler</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">avoid_clusters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#blackboxoptim.acquisition.MaximizeEI" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#blackboxoptim.acquisition.AcquisitionFunction" title="blackboxoptim.acquisition.AcquisitionFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">AcquisitionFunction</span></code></a></p>
+<p>Acquisition by maximization of the expected improvement of a Gaussian
+Process.</p>
+<p>It starts by running a
+global optimization algorithm to find a point <cite>xs</cite> that maximizes the EI. If
+this point is found and the sample size is 1, return this point. Else,
+creates a pool of candidates using <a class="reference internal" href="#blackboxoptim.acquisition.MaximizeEI.sampler" title="blackboxoptim.acquisition.MaximizeEI.sampler"><code class="xref py py-attr docutils literal notranslate"><span class="pre">sampler</span></code></a> and <cite>xs</cite>. From this pool,
+select the set of points with that maximize the expected improvement. If
+<a class="reference internal" href="#blackboxoptim.acquisition.MaximizeEI.avoid_clusters" title="blackboxoptim.acquisition.MaximizeEI.avoid_clusters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">avoid_clusters</span></code></a> is <cite>True</cite> avoid points that are too close to already
+chosen ones inspired in the strategy from <a class="footnote-reference brackets" href="#id11" id="id9" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a>. Mind that the latter
+strategy can slow down considerably the acquisition process, although is
+advisable for a sample of good quality.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sampler</strong> – Sampler to generate candidate points. Stored in
+<a class="reference internal" href="#blackboxoptim.acquisition.MaximizeEI.sampler" title="blackboxoptim.acquisition.MaximizeEI.sampler"><code class="xref py py-attr docutils literal notranslate"><span class="pre">sampler</span></code></a>. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>avoid_clusters</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – When <cite>True</cite>, use a strategy that avoids points too
+close to already chosen ones. Stored in <a class="reference internal" href="#blackboxoptim.acquisition.MaximizeEI.avoid_clusters" title="blackboxoptim.acquisition.MaximizeEI.avoid_clusters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">avoid_clusters</span></code></a>. (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.MaximizeEI.sampler">
+<span class="sig-name descname"><span class="pre">sampler</span></span><a class="headerlink" href="#blackboxoptim.acquisition.MaximizeEI.sampler" title="Link to this definition"></a></dt>
+<dd><p>Sampler to generate candidate points.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.MaximizeEI.avoid_clusters">
+<span class="sig-name descname"><span class="pre">avoid_clusters</span></span><a class="headerlink" href="#blackboxoptim.acquisition.MaximizeEI.avoid_clusters" title="Link to this definition"></a></dt>
+<dd><p>When <cite>True</cite>, use a strategy that avoids points too close to already
+chosen ones.</p>
+</dd></dl>
+
+<section id="id10">
+<h2>References<a class="headerlink" href="#id10" title="Link to this heading"></a></h2>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id11" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id9">4</a><span class="fn-bracket">]</span></span>
+<p>Che Y, Müller J, Cheng C. Dispersion-enhanced sequential batch
+sampling for adaptive contour estimation. Qual Reliab Eng Int. 2024;
+40: 131–144. <a class="reference external" href="https://doi.org/10.1002/qre.3245">https://doi.org/10.1002/qre.3245</a></p>
+</aside>
+</aside>
+<dl class="py method">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.MaximizeEI.acquire">
+<span class="sig-name descname"><span class="pre">acquire</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">surrogateModel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">ybest</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#blackboxoptim.acquisition.MaximizeEI.acquire" title="Link to this definition"></a></dt>
+<dd><p>Acquire n points.</p>
+<p>Run a global optimization procedure to try to find a point that has the
+highest expected improvement for the Gaussian Process.
+Moreover, if <cite>ybest</cite> isn’t provided, run a global optimization procedure
+to find the minimum value of the surrogate model. Use the minimum point
+as a candidate for this acquisition.</p>
+<p>This implementation only works for continuous design variables.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>surrogateModel</strong> – Surrogate model.</p></li>
+<li><p><strong>bounds</strong> (<em>sequence</em>) – List with the limits [x_min,x_max] of each
+direction x in the space.</p></li>
+<li><p><strong>n</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Number of points to be acquired. (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
+<li><p><strong>ybest</strong> – Best point so far. If not provided, find the minimum value
+for the surrogate. Use it as a possible candidate. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.MinimizeMOSurrogate">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blackboxoptim.acquisition.</span></span><span class="sig-name descname"><span class="pre">MinimizeMOSurrogate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mooptimizer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-06</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#blackboxoptim.acquisition.MinimizeMOSurrogate" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#blackboxoptim.acquisition.AcquisitionFunction" title="blackboxoptim.acquisition.AcquisitionFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">AcquisitionFunction</span></code></a></p>
+<p>Obtain pareto-optimal sample points for the multi-objective surrogate
+model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mooptimizer</strong> – Multi-objective optimizer. If None, use MixedVariableGA
+from pymoo with RankAndCrowding survival strategy. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>rtol</strong> – Tolerance value for excluding candidate points that are too
+close to already sampled points. Stored in <code class="xref py py-attr docutils literal notranslate"><span class="pre">tol</span></code>. (default: <code class="docutils literal notranslate"><span class="pre">1e-06</span></code>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.MinimizeMOSurrogate.mooptimizer">
+<span class="sig-name descname"><span class="pre">mooptimizer</span></span><a class="headerlink" href="#blackboxoptim.acquisition.MinimizeMOSurrogate.mooptimizer" title="Link to this definition"></a></dt>
+<dd><p>Multi-objective optimizer for the surrogate optimization problem.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.MinimizeMOSurrogate.rtol">
+<span class="sig-name descname"><span class="pre">rtol</span></span><a class="headerlink" href="#blackboxoptim.acquisition.MinimizeMOSurrogate.rtol" title="Link to this definition"></a></dt>
+<dd><p>Tolerance value for excluding candidate points that are too close to
+already sampled points.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.MinimizeMOSurrogate.acquire">
+<span class="sig-name descname"><span class="pre">acquire</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">surrogateModels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#blackboxoptim.acquisition.MinimizeMOSurrogate.acquire" title="Link to this definition"></a></dt>
+<dd><p>Acquire k points, where k &lt;= n.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>surrogateModels</strong> – List of surrogate models.</p></li>
+<li><p><strong>bounds</strong> (<em>sequence</em>) – List with the limits [x_min,x_max] of each
+direction x in the space.</p></li>
+<li><p><strong>n</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Maximum number of points to be acquired. If n is zero, use all
+points in the Pareto front. (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>k-by-dim matrix with the selected points.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.MinimizeSurrogate">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blackboxoptim.acquisition.</span></span><span class="sig-name descname"><span class="pre">MinimizeSurrogate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nCand</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#blackboxoptim.acquisition.MinimizeSurrogate" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#blackboxoptim.acquisition.AcquisitionFunction" title="blackboxoptim.acquisition.AcquisitionFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">AcquisitionFunction</span></code></a></p>
+<p>Obtain sample points that are local minima of the surrogate model.</p>
+<p>This implementation is based on the one of MISO-MS used in the paper <a class="footnote-reference brackets" href="#id15" id="id12" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a>.
+The original method, Multi-level Single-Linkage, was described in <a class="footnote-reference brackets" href="#id16" id="id13" role="doc-noteref"><span class="fn-bracket">[</span>6<span class="fn-bracket">]</span></a>.
+In each iteration, the algorithm generates a pool of candidates and select
+the best candidates (lowest predicted value) that are far enough from each
+other. The number of candidates chosen as well as the distance threshold
+vary with each iteration. The hypothesis is that the successful candidates
+each belong to a different region in the space, which may contain a local
+minimum, and those regions cover the whole search space. In the sequence,
+the algorithm runs multiple local minimization procedures using the
+successful candidates as local guesses. The results of the minimization are
+collected for the new sample.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nCand</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Number of candidates used on each iteration.</p></li>
+<li><p><strong>rtol</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – Tolerance for excluding points that are too close to each other
+from the new sample. (default: <code class="docutils literal notranslate"><span class="pre">0.001</span></code>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.MinimizeSurrogate.sampler">
+<span class="sig-name descname"><span class="pre">sampler</span></span><a class="headerlink" href="#blackboxoptim.acquisition.MinimizeSurrogate.sampler" title="Link to this definition"></a></dt>
+<dd><p>Sampler to generate candidate points.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.MinimizeSurrogate.rtol">
+<span class="sig-name descname"><span class="pre">rtol</span></span><a class="headerlink" href="#blackboxoptim.acquisition.MinimizeSurrogate.rtol" title="Link to this definition"></a></dt>
+<dd><p>Tolerance value for excluding candidate points that are too close to
+already sampled points.</p>
+</dd></dl>
+
+<section id="id14">
+<h2>References<a class="headerlink" href="#id14" title="Link to this heading"></a></h2>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id15" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id12">5</a><span class="fn-bracket">]</span></span>
+<p>Müller, J. MISO: mixed-integer surrogate optimization framework.
+Optim Eng 17, 177–203 (2016). <a class="reference external" href="https://doi.org/10.1007/s11081-015-9281-2">https://doi.org/10.1007/s11081-015-9281-2</a></p>
+</aside>
+<aside class="footnote brackets" id="id16" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id13">6</a><span class="fn-bracket">]</span></span>
+<p>Rinnooy Kan, A.H.G., Timmer, G.T. Stochastic global optimization
+methods part II: Multi level methods. Mathematical Programming 39, 57–78
+(1987). <a class="reference external" href="https://doi.org/10.1007/BF02592071">https://doi.org/10.1007/BF02592071</a></p>
+</aside>
+</aside>
+<dl class="py method">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.MinimizeSurrogate.acquire">
+<span class="sig-name descname"><span class="pre">acquire</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">surrogateModel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#blackboxoptim.acquisition.MinimizeSurrogate.acquire" title="Link to this definition"></a></dt>
+<dd><p>Acquire n points based on MISO-MS from Müller (2016).</p>
+<p>The critical distance is the same used in the seminal work from
+Rinnooy Kan and Timmer (1987).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>surrogateModel</strong> – Surrogate model.</p></li>
+<li><p><strong>bounds</strong> (<em>sequence</em>) – List with the limits [x_min,x_max] of each
+direction x in the space.</p></li>
+<li><p><strong>n</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Max number of points to be acquired. (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>n-by-dim matrix with the selected points.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.ParetoFront">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blackboxoptim.acquisition.</span></span><span class="sig-name descname"><span class="pre">ParetoFront</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mooptimizer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oldTV</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#blackboxoptim.acquisition.ParetoFront" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#blackboxoptim.acquisition.AcquisitionFunction" title="blackboxoptim.acquisition.AcquisitionFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">AcquisitionFunction</span></code></a></p>
+<p>Obtain sample points that fill gaps in the Pareto front from <a class="footnote-reference brackets" href="#id19" id="id17" role="doc-noteref"><span class="fn-bracket">[</span>7<span class="fn-bracket">]</span></a>.</p>
+<p>The algorithm proceeds as follows to find each new point:</p>
+<ol class="arabic simple">
+<li><p>Find a target value <span class="math notranslate nohighlight">\(\tau\)</span> that should fill a gap in the Pareto
+front. Make sure to use a target value that wasn’t used before.</p></li>
+<li><p>Solve a multi-objective optimization problem that minimizes
+<span class="math notranslate nohighlight">\(\|s_i(x)-\tau\|\)</span> for all <span class="math notranslate nohighlight">\(x\)</span> in the search space, where
+<span class="math notranslate nohighlight">\(s_i(x)\)</span> is the i-th target value predicted by the surrogate for
+<span class="math notranslate nohighlight">\(x\)</span>.</p></li>
+<li><p>If a Pareto-optimal solution was found for the problem above, chooses the
+point that minimizes the L1 distance to <span class="math notranslate nohighlight">\(\tau\)</span> to be part of the
+new sample.</p></li>
+</ol>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mooptimizer</strong> – Multi-objective optimizer. If None, use MixedVariableGA
+from pymoo with RankAndCrowding survival strategy. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>oldTV</strong> – Old target values to be avoided in the acquisition.
+Copied to <a class="reference internal" href="#blackboxoptim.acquisition.ParetoFront.oldTV" title="blackboxoptim.acquisition.ParetoFront.oldTV"><code class="xref py py-attr docutils literal notranslate"><span class="pre">oldTV</span></code></a>. (default: <code class="docutils literal notranslate"><span class="pre">()</span></code>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.ParetoFront.mooptimizer">
+<span class="sig-name descname"><span class="pre">mooptimizer</span></span><a class="headerlink" href="#blackboxoptim.acquisition.ParetoFront.mooptimizer" title="Link to this definition"></a></dt>
+<dd><p>Multi-objective optimizer used in the step 2 of the algorithm.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.ParetoFront.oldTV">
+<span class="sig-name descname"><span class="pre">oldTV</span></span><a class="headerlink" href="#blackboxoptim.acquisition.ParetoFront.oldTV" title="Link to this definition"></a></dt>
+<dd><p>Old target values to be avoided in the acquisition of step 1.</p>
+</dd></dl>
+
+<section id="id18">
+<h2>References<a class="headerlink" href="#id18" title="Link to this heading"></a></h2>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id19" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id17">7</a><span class="fn-bracket">]</span></span>
+<p>Juliane Mueller. SOCEMO: Surrogate Optimization of Computationally
+Expensive Multiobjective Problems.
+INFORMS Journal on Computing, 29(4):581-783, 2017.
+<a class="reference external" href="https://doi.org/10.1287/ijoc.2017.0749">https://doi.org/10.1287/ijoc.2017.0749</a></p>
+</aside>
+</aside>
+<dl class="py method">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.ParetoFront.acquire">
+<span class="sig-name descname"><span class="pre">acquire</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">surrogateModels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">nondominated</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">paretoFront</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#blackboxoptim.acquisition.ParetoFront.acquire" title="Link to this definition"></a></dt>
+<dd><p>Acquire k points, where k &lt;= n.</p>
+<p>Perform n attempts to find n points to fill gaps in the Pareto front.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>surrogateModels</strong> – List of surrogate models.</p></li>
+<li><p><strong>bounds</strong> (<em>sequence</em>) – List with the limits [x_min,x_max] of each
+direction x in the space.</p></li>
+<li><p><strong>n</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Number of points to be acquired. (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
+<li><p><strong>nondominated</strong> – Nondominated set in the objective space. (default: <code class="docutils literal notranslate"><span class="pre">()</span></code>)</p></li>
+<li><p><strong>paretoFront</strong> – Pareto front in the objective space. If not
+provided, use the surrogate to compute it. (default: <code class="docutils literal notranslate"><span class="pre">()</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>k-by-dim matrix with the selected points.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.ParetoFront.pareto_front_target">
+<span class="sig-name descname"><span class="pre">pareto_front_target</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">paretoFront</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#blackboxoptim.acquisition.ParetoFront.pareto_front_target" title="Link to this definition"></a></dt>
+<dd><p>Find a target value that should fill a gap in the Pareto front.</p>
+<p>As suggested by Mueller (2017), the algorithm fits a linear RBF
+model with the points in the Pareto front. This will represent the
+(d-1)-dimensional Pareto front surface. Then, the algorithm searches the
+a value in the surface that maximizes the distances to previously
+selected target values and to the training points of the RBF model. This
+value is projected in the d-dimensional space to obtain <span class="math notranslate nohighlight">\(\tau\)</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>paretoFront</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Pareto front in the objective space.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The target value <span class="math notranslate nohighlight">\(\tau\)</span>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.TargetValueAcquisition">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blackboxoptim.acquisition.</span></span><span class="sig-name descname"><span class="pre">TargetValueAcquisition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">optimizer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-06</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cycleLength</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">6</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#blackboxoptim.acquisition.TargetValueAcquisition" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#blackboxoptim.acquisition.AcquisitionFunction" title="blackboxoptim.acquisition.AcquisitionFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">AcquisitionFunction</span></code></a></p>
+<p>Target value acquisition function for the RBF model based on <a class="footnote-reference brackets" href="#id25" id="id20" role="doc-noteref"><span class="fn-bracket">[</span>8<span class="fn-bracket">]</span></a>, <a class="footnote-reference brackets" href="#id26" id="id21" role="doc-noteref"><span class="fn-bracket">[</span>9<span class="fn-bracket">]</span></a>,
+and <a class="footnote-reference brackets" href="#id27" id="id22" role="doc-noteref"><span class="fn-bracket">[</span>10<span class="fn-bracket">]</span></a>.</p>
+<p>Every iteration of the algorithm sequentially chooses a number from 0 to
+<a class="reference internal" href="#blackboxoptim.acquisition.TargetValueAcquisition.cycleLength" title="blackboxoptim.acquisition.TargetValueAcquisition.cycleLength"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cycleLength</span></code></a> + 1 (inclusive) and runs one of the procedures:</p>
+<ul class="simple">
+<li><p>Inf-step (0): Selects a sample point that minimizes the
+<span class="math notranslate nohighlight">\(\mu\)</span> measure, i.e., <a class="reference internal" href="#blackboxoptim.acquisition.TargetValueAcquisition.mu_measure" title="blackboxoptim.acquisition.TargetValueAcquisition.mu_measure"><code class="xref py py-meth docutils literal notranslate"><span class="pre">mu_measure()</span></code></a>. The point selected is
+the farthest from the current sample using the kernel measure.</p></li>
+<li><p>Global search (1 to <a class="reference internal" href="#blackboxoptim.acquisition.TargetValueAcquisition.cycleLength" title="blackboxoptim.acquisition.TargetValueAcquisition.cycleLength"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cycleLength</span></code></a>): Minimizes the product of
+<span class="math notranslate nohighlight">\(\mu\)</span> measure by the distance to a target value. The target value
+is based on the distance to the current minimum of the surrogate. The
+described measure is known as the ‘bumpiness measure’.</p></li>
+<li><p>Local search (<a class="reference internal" href="#blackboxoptim.acquisition.TargetValueAcquisition.cycleLength" title="blackboxoptim.acquisition.TargetValueAcquisition.cycleLength"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cycleLength</span></code></a> + 1): Minimizes the bumpiness measure with
+a target value equal to the current minimum of the surrogate. If the
+current minimum is already represented by the training points of the
+surrogate, do a global search with a target value slightly smaller than
+the current minimum.</p></li>
+</ul>
+<p>After each sample point is chosen we verify how close it is from the current
+sample. If it is too close, we replace it by a random point in the domain
+drawn from an uniform distribution. This is strategy was proposed in <a class="footnote-reference brackets" href="#id28" id="id23" role="doc-noteref"><span class="fn-bracket">[</span>11<span class="fn-bracket">]</span></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>optimizer</strong> – Single-objective optimizer. If None, use MixedVariableGA
+from pymoo. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>rtol</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – Tolerance value for excluding candidate points that are too
+close to already sampled points. Stored in <code class="xref py py-attr docutils literal notranslate"><span class="pre">tol</span></code>. (default: <code class="docutils literal notranslate"><span class="pre">1e-06</span></code>)</p></li>
+<li><p><strong>cycleLength</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Length of the global search cycle. Stored in
+<a class="reference internal" href="#blackboxoptim.acquisition.TargetValueAcquisition.cycleLength" title="blackboxoptim.acquisition.TargetValueAcquisition.cycleLength"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cycleLength</span></code></a>. (default: <code class="docutils literal notranslate"><span class="pre">6</span></code>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.TargetValueAcquisition.optimizer">
+<span class="sig-name descname"><span class="pre">optimizer</span></span><a class="headerlink" href="#blackboxoptim.acquisition.TargetValueAcquisition.optimizer" title="Link to this definition"></a></dt>
+<dd><p>Single-objective optimizer.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.TargetValueAcquisition.rtol">
+<span class="sig-name descname"><span class="pre">rtol</span></span><a class="headerlink" href="#blackboxoptim.acquisition.TargetValueAcquisition.rtol" title="Link to this definition"></a></dt>
+<dd><p>Tolerance value for excluding candidate points that are too close to
+already sampled points.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.TargetValueAcquisition.cycleLength">
+<span class="sig-name descname"><span class="pre">cycleLength</span></span><a class="headerlink" href="#blackboxoptim.acquisition.TargetValueAcquisition.cycleLength" title="Link to this definition"></a></dt>
+<dd><p>Length of the global search cycle to be used in <a class="reference internal" href="#blackboxoptim.acquisition.TargetValueAcquisition.acquire" title="blackboxoptim.acquisition.TargetValueAcquisition.acquire"><code class="xref py py-meth docutils literal notranslate"><span class="pre">acquire()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.TargetValueAcquisition._cycle">
+<span class="sig-name descname"><span class="pre">_cycle</span></span><a class="headerlink" href="#blackboxoptim.acquisition.TargetValueAcquisition._cycle" title="Link to this definition"></a></dt>
+<dd><p>Internal counter of cycles. The value to be used in the next call of
+<a class="reference internal" href="#blackboxoptim.acquisition.TargetValueAcquisition.acquire" title="blackboxoptim.acquisition.TargetValueAcquisition.acquire"><code class="xref py py-meth docutils literal notranslate"><span class="pre">acquire()</span></code></a>.</p>
+</dd></dl>
+
+<section id="id24">
+<h2>References<a class="headerlink" href="#id24" title="Link to this heading"></a></h2>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id25" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id20">8</a><span class="fn-bracket">]</span></span>
+<p>Gutmann, HM. A Radial Basis Function Method for Global
+Optimization. Journal of Global Optimization 19, 201–227 (2001).
+<a class="reference external" href="https://doi.org/10.1023/A:1011255519438">https://doi.org/10.1023/A:1011255519438</a></p>
+</aside>
+<aside class="footnote brackets" id="id26" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id21">9</a><span class="fn-bracket">]</span></span>
+<p>Björkman, M., Holmström, K. Global Optimization of Costly
+Nonconvex Functions Using Radial Basis Functions. Optimization and
+Engineering 1, 373–397 (2000). <a class="reference external" href="https://doi.org/10.1023/A:1011584207202">https://doi.org/10.1023/A:1011584207202</a></p>
+</aside>
+<aside class="footnote brackets" id="id27" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id22">10</a><span class="fn-bracket">]</span></span>
+<p>Holmström, K. An adaptive radial basis algorithm (ARBF) for expensive
+black-box global optimization. J Glob Optim 41, 447–464 (2008).
+<a class="reference external" href="https://doi.org/10.1007/s10898-007-9256-8">https://doi.org/10.1007/s10898-007-9256-8</a></p>
+</aside>
+<aside class="footnote brackets" id="id28" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id23">11</a><span class="fn-bracket">]</span></span>
+<p>Müller, J. MISO: mixed-integer surrogate optimization framework.
+Optim Eng 17, 177–203 (2016). <a class="reference external" href="https://doi.org/10.1007/s11081-015-9281-2">https://doi.org/10.1007/s11081-015-9281-2</a></p>
+</aside>
+</aside>
+<dl class="py method">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.TargetValueAcquisition.acquire">
+<span class="sig-name descname"><span class="pre">acquire</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">surrogateModel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="rbf.html#blackboxoptim.rbf.RbfModel" title="blackboxoptim.rbf.RbfModel"><span class="pre">RbfModel</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampleStage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#blackboxoptim.acquisition.TargetValueAcquisition.acquire" title="Link to this definition"></a></dt>
+<dd><p>Acquire n points following the algorithm from Holmström et al.(2008).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>surrogateModel</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="rbf.html#blackboxoptim.rbf.RbfModel" title="blackboxoptim.rbf.RbfModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">RbfModel</span></code></a></span>) – Surrogate model.</p></li>
+<li><p><strong>bounds</strong> (<em>sequence</em>) – List with the limits [x_min,x_max] of each
+direction x in the space.</p></li>
+<li><p><strong>n</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Number of points to be acquired. (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
+<li><p><strong>sampleStage</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Stage of the sampling process. The default is -1,
+which means that the stage is not specified. (default: <code class="docutils literal notranslate"><span class="pre">-1</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>n-by-dim matrix with the selected points.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.TargetValueAcquisition.bumpiness_measure">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">bumpiness_measure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">surrogate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="rbf.html#blackboxoptim.rbf.RbfModel" title="blackboxoptim.rbf.RbfModel"><span class="pre">RbfModel</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">LDLt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#blackboxoptim.acquisition.TargetValueAcquisition.bumpiness_measure" title="Link to this definition"></a></dt>
+<dd><p>Compute the bumpiness of the surrogate model.</p>
+<p>The bumpiness measure <span class="math notranslate nohighlight">\(g_y\)</span> was first defined by Gutmann (2001)
+with
+suggestions of usage for global optimization with RBF functions. Gutmann
+notes that <span class="math notranslate nohighlight">\(g_y(x)\)</span> tends to infinity
+when <span class="math notranslate nohighlight">\(x\)</span> tends to a training point of the surrogate, and so they
+use <span class="math notranslate nohighlight">\(-1/g_y(x)\)</span> for the minimization problem. Björkman and
+Holmström use <span class="math notranslate nohighlight">\(-\log(1/g_y(x))\)</span>, which is the same as minimizing
+<span class="math notranslate nohighlight">\(\log(g_y(x))\)</span>, to avoid a flat minimum. This option seems to
+slow down convergence rates for <span class="math notranslate nohighlight">\(g_y(x)\)</span> in <cite>[0,1]</cite> since it
+increases distances in that range.</p>
+<p>The present implementation uses genetic algorithms by default, so there
+is no point in trying to make <span class="math notranslate nohighlight">\(g_y\)</span> smoother.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>surrogate</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="rbf.html#blackboxoptim.rbf.RbfModel" title="blackboxoptim.rbf.RbfModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">RbfModel</span></code></a></span>) – RBF surrogate model.</p></li>
+<li><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Possible point to be added to the surrogate model.</p></li>
+<li><p><strong>target</strong> – Target value.</p></li>
+<li><p><strong>LDLt</strong> – LDLt factorization of the matrix A as returned by the
+function scipy.linalg.ldl.</p></li>
+<li><p><strong>target_range</strong> – Known range in the target space. Used to scale
+the function values to avoid overflow. (default: <code class="docutils literal notranslate"><span class="pre">1.0</span></code>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.TargetValueAcquisition.mu_measure">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mu_measure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">surrogate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="rbf.html#blackboxoptim.rbf.RbfModel" title="blackboxoptim.rbf.RbfModel"><span class="pre">RbfModel</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">LDLt</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#blackboxoptim.acquisition.TargetValueAcquisition.mu_measure" title="Link to this definition"></a></dt>
+<dd><p>Compute the value of abs(mu) for an RBF model.</p>
+<p>The mu measure was first defined in <a class="footnote-reference brackets" href="#id32" id="id29" role="doc-noteref"><span class="fn-bracket">[</span>12<span class="fn-bracket">]</span></a> with suggestions of usage for
+global optimization with RBF functions. In <a class="footnote-reference brackets" href="#id33" id="id30" role="doc-noteref"><span class="fn-bracket">[</span>13<span class="fn-bracket">]</span></a>, the authors detail the
+strategy to make the evaluations computationally viable.</p>
+<p>The current
+implementation, uses a different strategy than that from Björkman and
+Holmström (2000), where a single LDLt factorization is used instead of
+the QR and Cholesky factorizations. The new algorithm’s performs 10
+times less operations than the former. Like the former, the new
+algorithm is also able to use high-intensity linear algebra operations
+when the routine is called with multiple points <span class="math notranslate nohighlight">\(x\)</span> are evaluated
+at once.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>surrogate</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="rbf.html#blackboxoptim.rbf.RbfModel" title="blackboxoptim.rbf.RbfModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">RbfModel</span></code></a></span>) – RBF surrogate model.</p></li>
+<li><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Possible point to be added to the surrogate model.</p></li>
+<li><p><strong>LDLt</strong> – LDLt factorization of the matrix A as returned by the
+function scipy.linalg.ldl.</p></li>
+</ul>
+</dd>
+</dl>
+<section id="id31">
+<h3>References<a class="headerlink" href="#id31" title="Link to this heading"></a></h3>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id32" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id29">12</a><span class="fn-bracket">]</span></span>
+<p>Gutmann, HM. A Radial Basis Function Method for Global
+Optimization. Journal of Global Optimization 19, 201–227 (2001).
+<a class="reference external" href="https://doi.org/10.1023/A:1011255519438">https://doi.org/10.1023/A:1011255519438</a></p>
+</aside>
+<aside class="footnote brackets" id="id33" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id30">13</a><span class="fn-bracket">]</span></span>
+<p>Björkman, M., Holmström, K. Global Optimization of Costly
+Nonconvex Functions Using Radial Basis Functions. Optimization and
+Engineering 1, 373–397 (2000). <a class="reference external" href="https://doi.org/10.1023/A:1011584207202">https://doi.org/10.1023/A:1011584207202</a></p>
+</aside>
+</aside>
+</section>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.WeightedAcquisition">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blackboxoptim.acquisition.</span></span><span class="sig-name descname"><span class="pre">WeightedAcquisition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sampler</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weightpattern</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-06</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxeval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#blackboxoptim.acquisition.WeightedAcquisition" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#blackboxoptim.acquisition.AcquisitionFunction" title="blackboxoptim.acquisition.AcquisitionFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">AcquisitionFunction</span></code></a></p>
+<p>Select candidates based on the minimization of an weighted average score.</p>
+<p>The weighted average is <span class="math notranslate nohighlight">\(w f_s(x) + (1-w) (-d_s(x))\)</span>, where
+<span class="math notranslate nohighlight">\(f_s(x)\)</span> is the surrogate value at <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(d_s(x)\)</span> is the
+distance of <span class="math notranslate nohighlight">\(x\)</span> to its closest neighbor in the current sample. Both
+values are scaled to the interval [0, 1], based on the maximum and minimum
+values for the pool of candidates. The sampler generates the candidate
+points to be scored and then selected.</p>
+<p>This acquisition method is prepared deals with multi-objective optimization
+following the random perturbation strategy in <a class="footnote-reference brackets" href="#id37" id="id34" role="doc-noteref"><span class="fn-bracket">[</span>14<span class="fn-bracket">]</span></a> and <a class="footnote-reference brackets" href="#id38" id="id35" role="doc-noteref"><span class="fn-bracket">[</span>15<span class="fn-bracket">]</span></a>. More
+specificaly, the
+algorithm takes the average value among the predicted target values given by
+the surrogate. In other words, <span class="math notranslate nohighlight">\(f_s(x)\)</span> is the average value between
+the target components of the surrogate model evaluate at <span class="math notranslate nohighlight">\(x\)</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sampler</strong> (<a class="reference internal" href="sampling.html#blackboxoptim.sampling.Sampler" title="blackboxoptim.sampling.Sampler"><em>Sampler</em></a>) – Sampler to generate candidate points.
+Stored in <a class="reference internal" href="#blackboxoptim.acquisition.WeightedAcquisition.sampler" title="blackboxoptim.acquisition.WeightedAcquisition.sampler"><code class="xref py py-attr docutils literal notranslate"><span class="pre">sampler</span></code></a>.</p></li>
+<li><p><strong>weightpattern</strong> (<em>float</em><em>|</em><em>sequence</em>) – Weight(s) <cite>w</cite> to be used in the score.
+Stored in <a class="reference internal" href="#blackboxoptim.acquisition.WeightedAcquisition.weightpattern" title="blackboxoptim.acquisition.WeightedAcquisition.weightpattern"><code class="xref py py-attr docutils literal notranslate"><span class="pre">weightpattern</span></code></a>.
+The default value is [0.2, 0.4, 0.6, 0.9, 0.95, 1].</p></li>
+<li><p><strong>rtol</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – Description
+Stored in <a class="reference internal" href="#blackboxoptim.acquisition.WeightedAcquisition.rtol" title="blackboxoptim.acquisition.WeightedAcquisition.rtol"><code class="xref py py-attr docutils literal notranslate"><span class="pre">rtol</span></code></a>. (default: <code class="docutils literal notranslate"><span class="pre">1e-06</span></code>)</p></li>
+<li><p><strong>maxeval</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Description
+Stored in <a class="reference internal" href="#blackboxoptim.acquisition.WeightedAcquisition.maxeval" title="blackboxoptim.acquisition.WeightedAcquisition.maxeval"><code class="xref py py-attr docutils literal notranslate"><span class="pre">maxeval</span></code></a>. (default: <code class="docutils literal notranslate"><span class="pre">0</span></code>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.WeightedAcquisition.neval">
+<span class="sig-name descname"><span class="pre">neval</span></span><a class="headerlink" href="#blackboxoptim.acquisition.WeightedAcquisition.neval" title="Link to this definition"></a></dt>
+<dd><p>Number of evaluations done so far. Used and updated in
+<a class="reference internal" href="#blackboxoptim.acquisition.WeightedAcquisition.acquire" title="blackboxoptim.acquisition.WeightedAcquisition.acquire"><code class="xref py py-meth docutils literal notranslate"><span class="pre">acquire()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.WeightedAcquisition.sampler">
+<span class="sig-name descname"><span class="pre">sampler</span></span><a class="headerlink" href="#blackboxoptim.acquisition.WeightedAcquisition.sampler" title="Link to this definition"></a></dt>
+<dd><p>Sampler to generate candidate points. Used in <a class="reference internal" href="#blackboxoptim.acquisition.WeightedAcquisition.acquire" title="blackboxoptim.acquisition.WeightedAcquisition.acquire"><code class="xref py py-meth docutils literal notranslate"><span class="pre">acquire()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.WeightedAcquisition.weightpattern">
+<span class="sig-name descname"><span class="pre">weightpattern</span></span><a class="headerlink" href="#blackboxoptim.acquisition.WeightedAcquisition.weightpattern" title="Link to this definition"></a></dt>
+<dd><p>Weight(s) <cite>w</cite> to be used in the score. This is a circular list that is
+rotated every time <a class="reference internal" href="#blackboxoptim.acquisition.WeightedAcquisition.acquire" title="blackboxoptim.acquisition.WeightedAcquisition.acquire"><code class="xref py py-meth docutils literal notranslate"><span class="pre">acquire()</span></code></a> is called.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.WeightedAcquisition.rtol">
+<span class="sig-name descname"><span class="pre">rtol</span></span><a class="headerlink" href="#blackboxoptim.acquisition.WeightedAcquisition.rtol" title="Link to this definition"></a></dt>
+<dd><p>Tolerance value for excluding candidates that are too close to
+current sample points. This value is used to compute the final
+tolerance in <a class="reference internal" href="#blackboxoptim.acquisition.WeightedAcquisition.tol" title="blackboxoptim.acquisition.WeightedAcquisition.tol"><code class="xref py py-meth docutils literal notranslate"><span class="pre">tol()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.WeightedAcquisition.maxeval">
+<span class="sig-name descname"><span class="pre">maxeval</span></span><a class="headerlink" href="#blackboxoptim.acquisition.WeightedAcquisition.maxeval" title="Link to this definition"></a></dt>
+<dd><p>Maximum number of evaluations. A value 0 means there is no maximum.</p>
+</dd></dl>
+
+<section id="id36">
+<h2>References<a class="headerlink" href="#id36" title="Link to this heading"></a></h2>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id37" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id34">14</a><span class="fn-bracket">]</span></span>
+<p>Regis, R. G., &amp; Shoemaker, C. A. (2012). Combining radial basis
+function surrogates and dynamic coordinate search in
+high-dimensional expensive black-box optimization.
+Engineering Optimization, 45(5), 529–555.
+<a class="reference external" href="https://doi.org/10.1080/0305215X.2012.687731">https://doi.org/10.1080/0305215X.2012.687731</a></p>
+</aside>
+<aside class="footnote brackets" id="id38" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id35">15</a><span class="fn-bracket">]</span></span>
+<p>Juliane Mueller. SOCEMO: Surrogate Optimization of Computationally
+Expensive Multiobjective Problems.
+INFORMS Journal on Computing, 29(4):581-783, 2017.
+<a class="reference external" href="https://doi.org/10.1287/ijoc.2017.0749">https://doi.org/10.1287/ijoc.2017.0749</a></p>
+</aside>
+</aside>
+<dl class="py method">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.WeightedAcquisition.acquire">
+<span class="sig-name descname"><span class="pre">acquire</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">surrogateModel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#blackboxoptim.acquisition.WeightedAcquisition.acquire" title="Link to this definition"></a></dt>
+<dd><p>Generate a number of candidates using the <a class="reference internal" href="#blackboxoptim.acquisition.WeightedAcquisition.sampler" title="blackboxoptim.acquisition.WeightedAcquisition.sampler"><code class="xref py py-attr docutils literal notranslate"><span class="pre">sampler</span></code></a>. Then,
+select up to n points that maximize the score.</p>
+<p>When <cite>sampler.strategy</cite> is
+<a class="reference internal" href="sampling.html#blackboxoptim.sampling.SamplingStrategy.DDS" title="blackboxoptim.sampling.SamplingStrategy.DDS"><code class="xref py py-attr docutils literal notranslate"><span class="pre">blackboxoptim.sampling.SamplingStrategy.DDS</span></code></a> or
+<a class="reference internal" href="sampling.html#blackboxoptim.sampling.SamplingStrategy.DDS_UNIFORM" title="blackboxoptim.sampling.SamplingStrategy.DDS_UNIFORM"><code class="xref py py-attr docutils literal notranslate"><span class="pre">blackboxoptim.sampling.SamplingStrategy.DDS_UNIFORM</span></code></a>, the
+probability is computed based on the DYCORS method as proposed by Regis
+and Shoemaker (2012).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>surrogateModel</strong> – Surrogate model.</p></li>
+<li><p><strong>bounds</strong> (<em>sequence</em>) – List with the limits [x_min,x_max] of each
+direction x in the space.</p></li>
+<li><p><strong>n</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Number of points requested. (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
+<li><p><strong>xbest</strong> – Best point so far. Used if <a class="reference internal" href="#blackboxoptim.acquisition.WeightedAcquisition.sampler" title="blackboxoptim.acquisition.WeightedAcquisition.sampler"><code class="xref py py-attr docutils literal notranslate"><span class="pre">sampler</span></code></a> is an instance
+of <a class="reference internal" href="sampling.html#blackboxoptim.sampling.NormalSampler" title="blackboxoptim.sampling.NormalSampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">blackboxoptim.sampling.NormalSampler</span></code></a>. If not provided,
+compute it based on the training data for the surrogate.</p></li>
+<li><p><strong>countinuousSearch</strong> (<em>bool</em>) – If True,
+optimize over the continuous variables only. Used if <a class="reference internal" href="#blackboxoptim.acquisition.WeightedAcquisition.sampler" title="blackboxoptim.acquisition.WeightedAcquisition.sampler"><code class="xref py py-attr docutils literal notranslate"><span class="pre">sampler</span></code></a>
+is an instance of <a class="reference internal" href="sampling.html#blackboxoptim.sampling.NormalSampler" title="blackboxoptim.sampling.NormalSampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">blackboxoptim.sampling.NormalSampler</span></code></a>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>m-by-dim matrix with the selected points, where m &lt;= n.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.WeightedAcquisition.argminscore">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">argminscore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scaledvalue</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dist</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#blackboxoptim.acquisition.WeightedAcquisition.argminscore" title="Link to this definition"></a></dt>
+<dd><p>Gets the index of the candidate point that minimizes the score.</p>
+<p>The score is <span class="math notranslate nohighlight">\(w f_s(x) + (1-w) (-d_s(x))\)</span>, where</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(w\)</span> is a weight.</p></li>
+<li><p><span class="math notranslate nohighlight">\(f_s(x)\)</span> is the estimated value for the objective function on x,
+scaled to [0,1].</p></li>
+<li><p><span class="math notranslate nohighlight">\(d_s(x)\)</span> is the minimum distance between x and the previously
+selected evaluation points, scaled to [-1,0].</p></li>
+</ul>
+<p>Returns -1 if there is no feasible point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>scaledvalue</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Function values <span class="math notranslate nohighlight">\(f_s(x)\)</span> scaled to [0, 1].</p></li>
+<li><p><strong>dist</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Minimum distance between a candidate point and previously
+evaluated sampled points.</p></li>
+<li><p><strong>weight</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – Weight <span class="math notranslate nohighlight">\(w\)</span>.</p></li>
+<li><p><strong>tol</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – Tolerance value for excluding candidates that are too close to
+current sample points.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.WeightedAcquisition.minimize_weightedavg_fx_distx">
+<span class="sig-name descname"><span class="pre">minimize_weightedavg_fx_distx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#blackboxoptim.acquisition.WeightedAcquisition.minimize_weightedavg_fx_distx" title="Link to this definition"></a></dt>
+<dd><p>Select n points from a pool of candidates using <a class="reference internal" href="#blackboxoptim.acquisition.WeightedAcquisition.argminscore" title="blackboxoptim.acquisition.WeightedAcquisition.argminscore"><code class="xref py py-meth docutils literal notranslate"><span class="pre">argminscore()</span></code></a>
+iteratively.</p>
+<p>The score on the iteration <cite>i &gt; 1</cite> uses the distances to cadidates
+selected in the iterations <cite>0</cite> to <cite>i-1</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Matrix with candidate points.</p></li>
+<li><p><strong>distx</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Matrix with the distances between the candidate points and
+the m number of rows of x.</p></li>
+<li><p><strong>fx</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Vector with the estimated values for the objective function
+on the candidate points.</p></li>
+<li><p><strong>n</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Number of points to be selected for the next costly
+evaluation.</p></li>
+<li><p><strong>tol</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – Tolerance value for excluding candidates that are too close to
+current sample points.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]</span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p>n-by-dim matrix with the selected points.</p></li>
+<li><p>n-by-(n+m) matrix with the distances between the n selected points
+and the (n+m) sampled points (m is the number of points that have
+been sampled so far).</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.WeightedAcquisition.tol">
+<span class="sig-name descname"><span class="pre">tol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#blackboxoptim.acquisition.WeightedAcquisition.tol" title="Link to this definition"></a></dt>
+<dd><p>Compute tolerance used to eliminate points that are too close to
+previously selected ones.</p>
+<p>The tolerance value is based on <a class="reference internal" href="#blackboxoptim.acquisition.WeightedAcquisition.rtol" title="blackboxoptim.acquisition.WeightedAcquisition.rtol"><code class="xref py py-attr docutils literal notranslate"><span class="pre">rtol</span></code></a> and the diameter of the
+largest d-dimensional cube that can be inscribed whithin the bounds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>bounds</strong> (<em>sequence</em>) – List with the limits [x_min,x_max] of each
+direction x in the space.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.expected_improvement">
+<span class="sig-prename descclassname"><span class="pre">blackboxoptim.acquisition.</span></span><span class="sig-name descname"><span class="pre">expected_improvement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ybest</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#blackboxoptim.acquisition.expected_improvement" title="Link to this definition"></a></dt>
+<dd><p>Expected Improvement function for a distribution from <a class="footnote-reference brackets" href="#id41" id="id39" role="doc-noteref"><span class="fn-bracket">[</span>16<span class="fn-bracket">]</span></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mu</strong> – The average value of a variable.</p></li>
+<li><p><strong>sigma</strong> – The standard deviation associated to the same variable.</p></li>
+<li><p><strong>ybest</strong> – The best (smallest) known value in the distribution.</p></li>
+</ul>
+</dd>
+</dl>
+<section id="id40">
+<h2>References<a class="headerlink" href="#id40" title="Link to this heading"></a></h2>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id41" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id39">16</a><span class="fn-bracket">]</span></span>
+<p>Donald R. Jones, Matthias Schonlau, and William J. Welch. Efficient
+global optimization of expensive black-box functions. Journal of Global
+Optimization, 13(4):455–492, 1998.</p>
+</aside>
+</aside>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="blackboxoptim.acquisition.find_pareto_front">
+<span class="sig-prename descclassname"><span class="pre">blackboxoptim.acquisition.</span></span><span class="sig-name descname"><span class="pre">find_pareto_front</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iStart</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#blackboxoptim.acquisition.find_pareto_front" title="Link to this definition"></a></dt>
+<dd><p>Find the Pareto front given a set of points in the target space.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fx</strong> – List with n points in the m-dimensional target space.</p></li>
+<li><p><strong>iStart</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Points from 0 to iStart - 1 are already known to be in the
+Pareto front. (default: <code class="docutils literal notranslate"><span class="pre">0</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Indices of the points in the Pareto front.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="blackboxoptim.html" class="btn btn-neutral float-left" title="blackboxoptim package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="gp.html" class="btn btn-neutral float-right" title="blackboxoptim.gp module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Alliance for Sustainable Energy, LLC.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Other Versions</span>
+    
+      v: v1.1.0
+    
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    <dl>
+      <dt>Tags</dt>
+      
+        <dd><a href="../v0.1.0/index.html">v0.1.0</a></dd>
+      
+        <dd><a href="../v0.2.0/index.html">v0.2.0</a></dd>
+      
+        <dd><a href="../v0.3.0/index.html">v0.3.0</a></dd>
+      
+        <dd><a href="../v0.3.1/index.html">v0.3.1</a></dd>
+      
+        <dd><a href="../v0.3.2/index.html">v0.3.2</a></dd>
+      
+        <dd><a href="../v0.4.0/index.html">v0.4.0</a></dd>
+      
+        <dd><a href="../v0.4.1/index.html">v0.4.1</a></dd>
+      
+        <dd><a href="../v0.4.2/index.html">v0.4.2</a></dd>
+      
+        <dd><a href="../v0.5.0/acquisition.html">v0.5.0</a></dd>
+      
+        <dd><a href="../v0.5.1/acquisition.html">v0.5.1</a></dd>
+      
+        <dd><a href="../v0.5.2/acquisition.html">v0.5.2</a></dd>
+      
+        <dd><a href="../v1.0.0/acquisition.html">v1.0.0</a></dd>
+      
+        <dd><a href="../v1.0.1/acquisition.html">v1.0.1</a></dd>
+      
+        <dd><a href="acquisition.html">v1.1.0</a></dd>
+      
+        <dd><a href="../v1.2.0/acquisition.html">v1.2.0</a></dd>
+      
+        <dd><a href="../v1.2.1/acquisition.html">v1.2.1</a></dd>
+      
+        <dd><a href="../v1.2.2/acquisition.html">v1.2.2</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Branches</dt>
+      
+        <dd><a href="../main/index.html">main</a></dd>
+      
+    </dl>
+  </div>
+</div>
+
+<script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
