@@ -252,11 +252,11 @@ class FarEnoughSampleFilter:
         dist, _ = self.tree.query(x.reshape(1, -1))
         return dist[0] >= self.tol
 
-    def __call__(self, Xc):
+    def indices(self, Xc):
         """Filter candidates based on minimum distance criterion.
 
         :param Xc: Matrix of candidate points (m x d).
-        :return: Filtered matrix containing only points that are far
+        :return: Filtered indices for points that are far
             enough from existing samples.
         """
         # Discard points that are too close to X
@@ -276,6 +276,17 @@ class FarEnoughSampleFilter:
                 if dist[i, j] < self.tol
             ]
         )
-
         idx = maximum_independent_set(g)
-        return Xc0[list(idx)]
+
+        # Recover original indices
+        original_indices = np.where(mask0)[0]
+        return original_indices[list(idx)]
+
+    def __call__(self, Xc):
+        """Filter candidates based on minimum distance criterion.
+
+        :param Xc: Matrix of candidate points (m x d).
+        :return: Filtered matrix containing only points that are far
+            enough from existing samples.
+        """
+        return Xc[self.indices(Xc)]

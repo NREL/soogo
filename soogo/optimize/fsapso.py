@@ -122,7 +122,11 @@ def fsapso(
 
         # Evaluate initial points
         for x0 in xInit:
-            _ = evaluate_and_log_point(fun, x0, out)
+            y0 = evaluate_and_log_point(fun, x0.reshape(1, -1), out)[0]
+
+            if y0 < out.fx:
+                out.x[:] = x0
+                out.fx = y0
 
             if disp:
                 print("fEvals: %d" % out.nfev)
@@ -211,7 +215,11 @@ def fsapso(
         # Check xMin is at least tol away from existing points
         if np.min(cdist(xMin.reshape(1, -1), out.sample[: out.nfev])) > tol:
             # Evaluate minimum with true objective
-            fMin = evaluate_and_log_point(fun, xMin, out)
+            fMin = evaluate_and_log_point(fun, xMin.reshape(1, -1), out)[0]
+
+            if fMin < out.fx:
+                out.x[:] = xMin
+                out.fx = fMin
 
             if disp:
                 print("fEvals: %d" % out.nfev)
@@ -252,7 +260,13 @@ def fsapso(
                 )
                 > tol
             ):
-                fBestParticle = evaluate_and_log_point(fun, xBestParticle, out)
+                fBestParticle = evaluate_and_log_point(
+                    fun, xBestParticle.reshape(1, -1), out
+                )[0]
+
+                if fBestParticle < out.fx:
+                    out.x[:] = xBestParticle
+                    out.fx = fBestParticle
 
                 if disp:
                     print("fEvals: %d" % out.nfev)
@@ -296,8 +310,12 @@ def fsapso(
                 > tol
             ):
                 fMostUncertain = evaluate_and_log_point(
-                    fun, xMostUncertain, out
-                )
+                    fun, xMostUncertain.reshape(1, -1), out
+                )[0]
+
+                if fMostUncertain < out.fx:
+                    out.x[:] = xMostUncertain
+                    out.fx = fMostUncertain
 
                 if disp:
                     print("fEvals: %d" % out.nfev)

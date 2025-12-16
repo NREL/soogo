@@ -60,7 +60,7 @@ class GosacSample(Acquisition):
         surrogateModel: Surrogate,
         bounds,
         n: int = 1,
-        constraintTransform: callable = None,
+        constr_fun=None,
         **kwargs,
     ) -> np.ndarray:
         """Acquire 1 point.
@@ -69,10 +69,9 @@ class GosacSample(Acquisition):
         :param sequence bounds: List with the limits [x_min,x_max] of each
             direction x in the space.
         :param n: Unused.
-        :param constraintTransform: Function to transform the constraints.
-            If not provided, use the identity function. The optimizer, pymoo,
-            expects that negative and zero values are feasible, and positive
-            values are infeasible.
+        :param constr_fun: Constraint function to be applied to surrogate model
+            predictions. If none is provided, use the surrogate model as
+            the constraint function.
         :return: 1-by-dim matrix with the selected points.
         """
         dim = len(bounds)
@@ -81,20 +80,11 @@ class GosacSample(Acquisition):
         iindex = surrogateModel.iindex
         optimizer = self.optimizer if len(iindex) == 0 else self.mi_optimizer
 
-        if constraintTransform is None:
-
-            def constraintTransform(x):
-                return x
-
-        def transformedConstraint(x):
-            surrogateOutput = surrogateModel(x)
-            return constraintTransform(surrogateOutput)
-
         cheapProblem = PymooProblem(
             self.fun,
             bounds,
             iindex,
-            gfunc=transformedConstraint,
+            gfunc=surrogateModel if constr_fun is None else constr_fun,
             n_ieq_constr=gdim,
         )
         res = pymoo_minimize(
