@@ -20,6 +20,7 @@ __authors__ = ["Weslley S. Pereira", "Byron Selvage"]
 
 import numpy as np
 from scipy.spatial.distance import cdist
+from scipy.spatial import KDTree
 import networkx as nx
 from networkx.algorithms.approximation import maximum_independent_set
 
@@ -31,7 +32,7 @@ def weighted_score(
     sx_min: float = 0.0,
     sx_max: float = 1.0,
     dx_max: float = 1.0,
-) -> float:
+):
     r"""Computes the weighted score from the predicted value of the surrogate
     model at a point and minimum distance from the point to the set of
     previously selected evaluation points.
@@ -226,9 +227,21 @@ class FarEnoughSampleFilter:
     distance threshold from already sampled points.
 
     :param X: Matrix of existing sample points (n x d).
-    :param tol: Minimum distance threshold. Points closer than this are
-        filtered out.
+    :param tol: Minimum distance threshold.
+
+    .. attribute:: tree
+
+        KDTree built from the existing sample points for efficient distance
+        queries.
+
+    .. attribute:: tol
+
+        Minimum distance threshold. Points closer than this are filtered out.
     """
+
+    def __init__(self, X, tol):
+        self.tree = KDTree(X)
+        self.tol = tol
 
     def is_far_enough(self, x):
         """Check if a point is far enough from existing samples.
