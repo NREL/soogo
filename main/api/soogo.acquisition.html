@@ -432,7 +432,7 @@ J Glob Optim, 69:117-136, 2017.
 </aside>
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.acquisition.gosac_sample.GosacSample.optimize">
-<span class="sig-name descname"><span class="pre">optimize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">surrogateModel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="soogo.model.html#soogo.model.base.Surrogate" title="soogo.model.base.Surrogate"><span class="pre">Surrogate</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constraintTransform</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">callable</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#soogo.acquisition.gosac_sample.GosacSample.optimize" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">optimize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">surrogateModel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="soogo.model.html#soogo.model.base.Surrogate" title="soogo.model.base.Surrogate"><span class="pre">Surrogate</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constr_fun</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#soogo.acquisition.gosac_sample.GosacSample.optimize" title="Link to this definition"></a></dt>
 <dd><p>Acquire 1 point.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -441,10 +441,9 @@ J Glob Optim, 69:117-136, 2017.
 <li><p><strong>bounds</strong> (<em>sequence</em>) – List with the limits [x_min,x_max] of each
 direction x in the space.</p></li>
 <li><p><strong>n</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Unused. (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
-<li><p><strong>constraintTransform</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">callable</span></code></span>) – Function to transform the constraints.
-If not provided, use the identity function. The optimizer, pymoo,
-expects that negative and zero values are feasible, and positive
-values are infeasible. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>constr_fun</strong> – Constraint function to be applied to surrogate model
+predictions. If none is provided, use the surrogate model as
+the constraint function. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -1169,6 +1168,21 @@ enough from existing samples.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="soogo.acquisition.utils.FarEnoughSampleFilter.indices">
+<span class="sig-name descname"><span class="pre">indices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Xc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.acquisition.utils.FarEnoughSampleFilter.indices" title="Link to this definition"></a></dt>
+<dd><p>Filter candidates based on minimum distance criterion.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Xc</strong> – Matrix of candidate points (m x d).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Filtered indices for points that are far
+enough from existing samples.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="soogo.acquisition.utils.FarEnoughSampleFilter.is_far_enough">
 <span class="sig-name descname"><span class="pre">is_far_enough</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.acquisition.utils.FarEnoughSampleFilter.is_far_enough" title="Link to this definition"></a></dt>
 <dd><p>Check if a point is far enough from existing samples.</p>
@@ -1379,7 +1393,7 @@ INFORMS Journal on Computing, 29(4):581-783, 2017.
 </aside>
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.acquisition.weighted_acquisition.WeightedAcquisition.optimize">
-<span class="sig-name descname"><span class="pre">optimize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">surrogateModel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="soogo.model.html#soogo.model.base.Surrogate" title="soogo.model.base.Surrogate"><span class="pre">Surrogate</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#soogo.acquisition.weighted_acquisition.WeightedAcquisition.optimize" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">optimize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">surrogateModel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="soogo.model.html#soogo.model.base.Surrogate" title="soogo.model.base.Surrogate"><span class="pre">Surrogate</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">constr_fun</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">perturbation_probability</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#soogo.acquisition.weighted_acquisition.WeightedAcquisition.optimize" title="Link to this definition"></a></dt>
 <dd><p>Generate a number of candidates using the <a class="reference internal" href="#soogo.acquisition.weighted_acquisition.WeightedAcquisition.sampler" title="soogo.acquisition.weighted_acquisition.WeightedAcquisition.sampler"><code class="xref py py-attr docutils literal notranslate"><span class="pre">sampler</span></code></a>. Then,
 select up to n points that maximize the score.</p>
 <p>When <cite>sampler.strategy</cite> is
