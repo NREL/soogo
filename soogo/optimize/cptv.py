@@ -52,8 +52,9 @@ def cptv(
     This is an implementation of the algorithm desribed in [#]_. The algorithm
     uses a sequence of different acquisition functions as follows:
 
-        1. CP step: :func:`surrogate_optimization()` with `acquisitionFunc`. Ideally,
-            this step would use a :class:`WeightedAcquisition` object with a
+        1. CP step: :func:`surrogate_optimization()` with
+            `acquisitionFunc`. Ideally, this step would use a
+            :class:`WeightedAcquisition` object with a
             :class:`NormalSampler` sampler. The implementation is configured to
             use the acquisition proposed by Müller (2016) by default.
 
@@ -257,9 +258,9 @@ def cptv(
                 bounds=cbounds,
                 options={"maxfev": maxeval - out.nfev},
             )
-            assert out_local_.nfev <= (maxeval - out.nfev), (
-                f"Sanity check, {out_local_.nfev} <= ({maxeval} - {out.nfev}). We should adjust either `maxfun` or change the `method`"
-            )
+            assert (
+                out_local_.nfev <= (maxeval - out.nfev)
+            ), f"Sanity check, {out_local_.nfev} <= ({maxeval} - {out.nfev}). We should adjust either `maxfun` or change the `method`"
 
             out_local = OptimizeResult(
                 x=out.x.copy(),
@@ -315,9 +316,9 @@ def cptv(
 def cptvl(*args, **kwargs) -> OptimizeResult:
     """Wrapper to cptv. See :func:`cptv()`."""
     if "useLocalSearch" in kwargs:
-        assert kwargs["useLocalSearch"] is True, (
-            "`useLocalSearch` must be True for `cptvl`."
-        )
+        assert (
+            kwargs["useLocalSearch"] is True
+        ), "`useLocalSearch` must be True for `cptvl`."
     else:
         kwargs["useLocalSearch"] = True
     return cptv(*args, **kwargs)

@@ -1,5 +1,23 @@
 """Pareto front acquisition functions for multi-objective optimization."""
 
+# Copyright (c) 2025 Alliance for Sustainable Energy, LLC
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+__authors__ = ["Weslley S. Pereira"]
+
+
 import numpy as np
 from scipy.spatial import KDTree
 from scipy.optimize import differential_evolution
@@ -184,7 +202,8 @@ class ParetoFront(Acquisition):
                     eliminate_duplicates=optimizer.eliminate_duplicates,
                 )
 
-            # Find the Pareto-optimal solution set that minimizes dist(s(x),tau).
+            # Find the Pareto-optimal solution set that minimizes
+            # dist(s(x),tau).
             # For discontinuous Pareto fronts in the original problem, such set
             # may not exist, or it may be too far from the target value.
             multiobjTVProblem = PymooProblem(
@@ -206,7 +225,8 @@ class ParetoFront(Acquisition):
                 # Save X into an array
                 newX = np.array([[x[i] for i in range(dim)] for x in res.X])
 
-                # Eliminate points that are too close to previously sampled points
+                # Eliminate points that are too close to previously
+                # sampled points
                 newX = filter(newX)
 
                 # Transform the values of the optimization into a matrix

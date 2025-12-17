@@ -16,11 +16,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 __authors__ = ["Weslley S. Pereira"]
-__contact__ = "weslley.dasilvapereira@nrel.gov"
-__maintainer__ = "Weslley S. Pereira"
-__email__ = "weslley.dasilvapereira@nrel.gov"
-__credits__ = ["Weslley S. Pereira"]
-__deprecated__ = False
 
 import warnings
 import numpy as np
@@ -98,7 +93,8 @@ class GaussianProcess(Surrogate):
 
         :param x: m-by-d matrix with m point coordinates in a d-dimensional
             space.
-        :param i: Index of the target dimension to evaluate. If -1, evaluate all.
+        :param i: Index of the target dimension to evaluate. If -1,
+            evaluate all.
         :param return_std: If `True`, returns the standard deviation of the
             predictions.
         :param return_cov: If `True`, returns the covariance of the predictions.
@@ -109,8 +105,9 @@ class GaussianProcess(Surrogate):
             * If `return_std` is `True`, the second output is a m-by-n matrix
                 with the standard deviations.
 
-            * If `return_cov` is `True`, the third output is a m-by-m matrix
-                with the covariances if n=1, otherwise it is a m-by-m-by-n matrix.
+            * If `return_cov` is `True`, the third output is a m-by-m
+                matrix with the covariances if n=1, otherwise it is a
+                m-by-m-by-n matrix.
         """
         res = self.model.predict(
             x if self.scaler is None else self.scaler.transform(x),

@@ -34,9 +34,9 @@ def bayesian_optimization(
     model and the Expected Improvement acquisition function.
 
     :param \\*args: Positional arguments passed to surrogate_optimization().
-    :param surrogateModel: Gaussian Process surrogate model. The default is GaussianProcess().
-        On exit, if provided, the surrogate model the points used during the
-        optimization.
+    :param surrogateModel: Gaussian Process surrogate model. The
+        default is GaussianProcess(). On exit, if provided, the surrogate
+        model the points used during the optimization.
     :param acquisitionFunc: Acquisition function to be used.
     :param \\*\\*kwargs: Keyword arguments passed to surrogate_optimization().
     """

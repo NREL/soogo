@@ -16,11 +16,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 __authors__ = ["Weslley S. Pereira"]
-__contact__ = "weslley.dasilvapereira@nrel.gov"
-__maintainer__ = "Weslley S. Pereira"
-__email__ = "weslley.dasilvapereira@nrel.gov"
-__credits__ = ["Weslley S. Pereira"]
-__deprecated__ = False
 
 from abc import abstractmethod, ABC
 import sys
@@ -38,7 +33,9 @@ class RadialBasisFunction(ABC):
         pass
 
     def __init__(self):
-        """Initialize the radial basis function and set up autograd functions."""
+        """Initialize the radial basis function and set up autograd
+        functions.
+        """
         self._grad = grad(self.__call__)
         self._hess = grad(self._grad)
 

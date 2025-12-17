@@ -67,10 +67,10 @@ def fsapso(
 
     References
     ----------
-    .. [#] Li, F., Shen, W., Cai, X., Gao, L., & Gary Wang, G. 2020; A fast
-        surrogate-assisted particle swarm optimization algorithm for computationally
-        expensive problems. Applied Soft Computing, 92, 106303.
-        https://doi.org/10.1016/j.asoc.2020.106303
+    .. [#] Li, F., Shen, W., Cai, X., Gao, L., & Gary Wang, G. 2020; A
+        fast surrogate-assisted particle swarm optimization algorithm for
+        computationally expensive problems. Applied Soft Computing, 92,
+        106303. https://doi.org/10.1016/j.asoc.2020.106303
     """
     # Initialize parameters
     bounds = np.array(bounds)

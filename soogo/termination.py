@@ -20,18 +20,7 @@ successful improvements, robustness of conditions, and more.
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-__authors__ = [
-    "Weslley S. Pereira",
-    "Byron Selvage",
-]
-__contact__ = "weslley.dasilvapereira@nrel.gov"
-__maintainer__ = "Weslley S. Pereira"
-__email__ = "weslley.dasilvapereira@nrel.gov"
-__credits__ = [
-    "Weslley S. Pereira",
-    "Byron Selvage",
-]
-__deprecated__ = False
+__authors__ = ["Weslley S. Pereira", "Byron Selvage"]
 
 from abc import ABC, abstractmethod
 from collections import deque
@@ -115,9 +104,9 @@ class UnsuccessfulImprovement(TerminationCondition):
             # No function evaluations, cannot update condition
             return
 
-        assert out.nobj == 1, (
-            "Expected a single objective function value, but got multiple objectives."
-        )
+        assert (
+            out.nobj == 1
+        ), "Expected a single objective function value, but got multiple objectives."
 
         # Get the new best value from the optimization result
         new_best_value = (
@@ -125,9 +114,9 @@ class UnsuccessfulImprovement(TerminationCondition):
             if isinstance(out.fx, np.ndarray)
             else out.fx
         )
-        assert isinstance(new_best_value, float), (
-            "Expected out.fx to be a float, but got a different type."
-        )
+        assert isinstance(
+            new_best_value, float
+        ), "Expected out.fx to be a float, but got a different type."
 
         # Compute the relative improvement
         value_improvement = self.lowest_value - new_best_value
@@ -159,9 +148,9 @@ class RobustCondition(TerminationCondition):
         self.history = deque(maxlen=period)
 
     def is_met(self) -> bool:
-        assert isinstance(self.history.maxlen, int), (
-            "History maxlen must be set."
-        )
+        assert isinstance(
+            self.history.maxlen, int
+        ), "History maxlen must be set."
 
         if len(self.history) < self.history.maxlen:
             return False

@@ -15,6 +15,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+__credits__ = [
+    "Weslley S. Pereira",
+    "Juliane Mueller",
+    "Christine A. Shoemaker",
+    "Marcus Day",
+    "Haoyu Jia",
+    "Byron Selvage",
+]
+
 # Optimization algorithms
 from .optimize import (
     surrogate_optimization,

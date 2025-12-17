@@ -16,11 +16,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 __authors__ = ["Weslley S. Pereira"]
-__contact__ = "weslley.dasilvapereira@nrel.gov"
-__maintainer__ = "Weslley S. Pereira"
-__email__ = "weslley.dasilvapereira@nrel.gov"
-__credits__ = ["Weslley S. Pereira"]
-__deprecated__ = False
 
 from typing import Optional, Union, Tuple
 import warnings
@@ -270,7 +265,8 @@ class RbfModel(Surrogate):
 
         :param x: m-by-d matrix with m point coordinates in a d-dimensional
             space.
-        :param i: Index of the target dimension to evaluate. If -1, evaluate all.
+        :param i: Index of the target dimension to evaluate. If -1,
+            evaluate all.
         :param return_dist: If `True`, returns the distance matrix between the
             input points and the training points.
         :return:
@@ -287,9 +283,9 @@ class RbfModel(Surrogate):
         coef0 = self._coef[0 : self._m]
         coef1 = self._coef[self._m : self._m + self.polynomial_tail_size()]
         if i >= 0:
-            assert i < self.ntarget, (
-                "Index out of bounds for target dimension."
-            )
+            assert (
+                i < self.ntarget
+            ), "Index out of bounds for target dimension."
             if self.ntarget > 1:
                 coef0 = coef0[:, i]
                 coef1 = coef1[:, i]

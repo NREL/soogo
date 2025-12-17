@@ -1,5 +1,22 @@
 """Test the optimization algorithms converge."""
 
+# Copyright (c) 2025 Alliance for Sustainable Energy, LLC
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+__authors__ = ["Weslley S. Pereira", "Byron Selvage"]
+
 import pygoblet
 import numpy as np
 import pytest
@@ -121,9 +138,9 @@ def test_unconstrained_algorithms(
         run_vals = np.array(run_vals)
         n_success = np.sum(np.abs(run_vals - min_value) < tol)
         success_rate = n_success / n_runs
-        assert success_rate >= min_success_rate, (
-            f"{alg.__name__} failed on {type(prob_instance).__name__}: success rate {success_rate:.2f} < {min_success_rate}"
-        )
+        assert (
+            success_rate >= min_success_rate
+        ), f"{alg.__name__} failed on {type(prob_instance).__name__}: success rate {success_rate:.2f} < {min_success_rate}"
 
 
 slow_algorithms = [surrogate_optimization, bayesian_optimization, fsapso]
@@ -190,9 +207,9 @@ def test_constrained_algorithms(
                 prob_instance.bounds(),
                 maxevals,
             )
-            assert -prob_instance.constraint1(out.x) <= 0, (
-                "Returned solution does not satisfy constraint"
-            )
+            assert (
+                -prob_instance.constraint1(out.x) <= 0
+            ), "Returned solution does not satisfy constraint"
             run_vals.append(out.fx[0])
             print(
                 f"Testing {alg.__name__} on {problem.__name__}, run {run + 1}: fx = {out.fx}, best known = {min_value}"
@@ -200,6 +217,6 @@ def test_constrained_algorithms(
         run_vals = np.array(run_vals)
         n_success = np.sum(np.abs(run_vals - min_value) < tol)
         success_rate = n_success / n_runs
-        assert success_rate >= min_success_rate, (
-            f"{alg.__name__} failed on {problem.__name__}: success rate {success_rate:.2f} < {min_success_rate}"
-        )
+        assert (
+            success_rate >= min_success_rate
+        ), f"{alg.__name__} failed on {problem.__name__}: success rate {success_rate:.2f} < {min_success_rate}"

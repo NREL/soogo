@@ -50,19 +50,21 @@ def socemo(
     from [#]_.
 
     :param fun: The objective function to be minimized.
-    :param bounds: List with the limits [x_min,x_max] of each direction x in the search
-        space.
+    :param bounds: List with the limits [x_min,x_max] of each direction
+        x in the search space.
     :param maxeval: Maximum number of function evaluations.
-    :param surrogateModel: Multi-target surrogate model to be used. If None is provided, a
-        :class:`RbfModel` model is used.
-    :param acquisitionFunc: Acquisition function to be used in the CP step. The default is
-        WeightedAcquisition(0).
-    :param acquisitionFuncGlobal: Acquisition function to be used in the global step. The default is
-        WeightedAcquisition(Sampler(0), 0.95).
-    :param disp: If True, print information about the optimization process. The default
-        is False.
-    :param callback: If provided, the callback function will be called after each iteration
-        with the current optimization result. The default is None.
+    :param surrogateModel: Multi-target surrogate model to be used. If
+        None is provided, a :class:`RbfModel` model is used.
+    :param acquisitionFunc: Acquisition function to be used in the CP
+        step. The default is WeightedAcquisition(0).
+    :param acquisitionFuncGlobal: Acquisition function to be used in the
+        global step. The default is WeightedAcquisition(Sampler(0),
+        0.95).
+    :param disp: If True, print information about the optimization
+        process. The default is False.
+    :param callback: If provided, the callback function will be called
+        after each iteration with the current optimization result. The
+        default is None.
     :return: The optimization result.
 
     References

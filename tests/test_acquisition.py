@@ -15,18 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-__authors__ = [
-    "Weslley S. Pereira",
-    "Byron Selvage",
-]
-__contact__ = "weslley.dasilvapereira@nrel.gov"
-__maintainer__ = "Weslley S. Pereira"
-__email__ = "weslley.dasilvapereira@nrel.gov"
-__credits__ = [
-    "Weslley S. Pereira",
-    "Byron Selvage",
-]
-__deprecated__ = False
+__authors__ = ["Weslley S. Pereira", "Byron Selvage"]
 
 import numpy as np
 import pytest
@@ -520,7 +509,9 @@ class TestFarEnoughSampleFilter:
             assert filter.is_far_enough(x)
 
     def test_call_handles_clustering_candidates(self):
-        """Test that __call__ handles candidates that are too close to each other."""
+        """Test that __call__ handles candidates that are too close to
+        each other.
+        """
         from soogo.acquisition.utils import FarEnoughSampleFilter
 
         X = np.array([[0.0, 0.0]])
@@ -556,7 +547,9 @@ class TestFarEnoughSampleFilter:
             assert np.all(pairwise_dist >= tol)
 
     def test_call_returns_empty_when_all_too_close(self):
-        """Test that __call__ returns empty array when all candidates are too close."""
+        """Test that __call__ returns empty array when all candidates are
+        too close.
+        """
         from soogo.acquisition.utils import FarEnoughSampleFilter
 
         X = np.array([[0.0, 0.0], [1.0, 1.0], [2.0, 2.0]])
@@ -573,7 +566,9 @@ class TestFarEnoughSampleFilter:
         assert result.shape[1] == Xc.shape[1]
 
     def test_call_with_various_dimensions(self):
-        """Test that FarEnoughSampleFilter works with different dimensionalities."""
+        """Test that FarEnoughSampleFilter works with different
+        dimensionalities.
+        """
         from soogo.acquisition.utils import FarEnoughSampleFilter
 
         for dim in [1, 2, 3, 5, 10]:

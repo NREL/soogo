@@ -45,17 +45,19 @@ def gosac(
     This method is based on [#]_.
 
     :param fun: The objective function to be minimized.
-    :param gfun: The constraint function to be minimized. The constraints must be
-        formulated as g(x) <= 0.
-    :param bounds: List with the limits [x_min,x_max] of each direction x in the search
-        space.
+    :param gfun: The constraint function to be minimized. The
+        constraints must be formulated as g(x) <= 0.
+    :param bounds: List with the limits [x_min,x_max] of each direction
+        x in the search space.
     :param maxeval: Maximum number of function evaluations.
-    :param surrogateModel: Surrogate model to be used for the constraints. If None is provided, a
-        :class:`RbfModel` model is used.
-    :param disp: If True, print information about the optimization process. The default
-        is False.
-    :param callback: If provided, the callback function will be called after each iteration
-        with the current optimization result. The default is None.
+    :param surrogateModel: Surrogate model to be used for the
+        constraints. If None is provided, a :class:`RbfModel` model is
+        used.
+    :param disp: If True, print information about the optimization
+        process. The default is False.
+    :param callback: If provided, the callback function will be called
+        after each iteration with the current optimization result. The
+        default is None.
     :return: The optimization result.
 
     References

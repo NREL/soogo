@@ -16,11 +16,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 __authors__ = ["Weslley S. Pereira"]
-__contact__ = "weslley.dasilvapereira@nrel.gov"
-__maintainer__ = "Weslley S. Pereira"
-__email__ = "weslley.dasilvapereira@nrel.gov"
-__credits__ = ["Weslley S. Pereira"]
-__deprecated__ = False
 
 from abc import ABC, abstractmethod
 import numpy as np
@@ -57,7 +52,8 @@ class Surrogate(ABC):
 
         :param x: m-by-d matrix with m point coordinates in a d-dimensional
             space.
-        :param i: Index of the target dimension to evaluate. If -1, evaluate all.
+        :param i: Index of the target dimension to evaluate. If -1,
+            evaluate all.
         :return: Model predictions at the input points. Some models may return
             additional information such as uncertainty estimates.
         """

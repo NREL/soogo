@@ -45,9 +45,10 @@ def multistart_msrs(
     This implementation generalizes the algorithms Multistart LMSRS from [#]_.
     The general algorithm calls :func:`surrogate_optimization()` successive
     times until there are no more function evaluations available. The first
-    time :func:`surrogate_optimization()` is called with the given, if any, trained
-    surrogate model. Other function calls use an empty surrogate model. This is
-    done to enable truly different starting samples each time.
+    time :func:`surrogate_optimization()` is called with the given, if
+    any, trained surrogate model. Other function calls use an empty
+    surrogate model. This is done to enable truly different starting samples
+    each time.
 
     :param fun: The objective function to be minimized.
     :param bounds: List with the limits [x_min,x_max] of each direction x in the
