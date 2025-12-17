@@ -25,47 +25,35 @@ import numpy as np
 from .result import OptimizeResult
 
 
-def evaluate_and_log_point(fun: Callable, x: np.ndarray, out: OptimizeResult):
-    """
-    Evaluate a point or array of points and log the results. If the function
-    errors or the result is invalid (NaN or Inf), the output is logged as NaN.
-    If the function value is less than the current best, the current best (
-    out.x, out.fx) is updated. Provided points are evaluated as a batch. This
-    function only supports single-objective functions.
+def evaluate_and_log_point(
+    fun: Callable, x: np.ndarray, out: OptimizeResult
+) -> np.ndarray:
+    """Evaluate an array of points and log the results in out.
 
     :param fun: The function to evaluate.
-    :param x: The point(s) to evaluate. Can be a 1D array (single point) or
-              2D array (multiple points).
+    :param x: 2D array of points to evaluate.
     :param out: The output object to log the results.
 
-    :return: The function value(s) or NaN. Returns a scalar for single point,
-             array for multiple points.
+    :return: The function value(s) or NaN.
     """
-    x = np.atleast_2d(x)
+    assert out.sample is not None and out.fsample is not None, (
+        "Output object not initialized."
+    )
 
+    # Evaluate function
+    n = len(x)
     try:
-        results = fun(x)
-        results = np.atleast_1d(results)
+        y = np.asarray(fun(x))
     except Exception:
-        results = np.full(x.shape[0], np.nan)
+        shape_y = (n,) if out.fsample.ndim == 1 else (n, out.fsample.shape[1])
+        y = np.full(shape_y, np.nan)
 
-    # Process each result individually
-    for i, y in enumerate(results):
-        if hasattr(y, "__len__") and len(y) > 0:
-            y = y[0]
-        if np.isnan(y) or np.isinf(y):
-            y = np.nan
-        results[i] = y
+    # Log results
+    out.sample[out.nfev : out.nfev + n] = x
+    out.fsample[out.nfev : out.nfev + n] = y
+    out.nfev += n
 
-        out.sample[out.nfev, :] = x[i]
-        out.fsample[out.nfev] = y
-        out.nfev += 1
-
-        if not np.isnan(y) and (out.fx is None or y < out.fx):
-            out.x = x[i]
-            out.fx = y
-
-    return results[0] if len(results) == 1 else results
+    return y
 
 
 def uncertainty_score(candidates, points, fvals, k=3):

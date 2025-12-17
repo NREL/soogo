@@ -48,10 +48,12 @@ class NomadProblem:
         point = np.array([x.get_coord(i) for i in range(x.size())])
         self._xHistory.append(point)
 
-        f = evaluate_and_log_point(self.func, point, self.out)
+        f = evaluate_and_log_point(self.func, point.reshape(1, -1), self.out)[
+            0
+        ]
         self._fHistory.append(f)
 
-        if not np.isnan(f):
+        if np.isfinite(f):
             # Set NOMAD objective function value
             x.setBBO(str(f).encode("UTF-8"))
             return 1

@@ -146,6 +146,9 @@ class WeightedAcquisition(Acquisition):
         surrogateModel: Surrogate,
         bounds,
         n: int = 1,
+        *,
+        constr_fun=None,
+        perturbation_probability=None,
         **kwargs,
     ) -> np.ndarray:
         """Generate a number of candidates using the :attr:`sampler`. Then,
@@ -186,12 +189,15 @@ class WeightedAcquisition(Acquisition):
                 coord = [i for i in range(dim)]
 
             # Compute probability in case DDS is used
-            if self.maxeval > 1 and self.neval < self.maxeval:
-                prob = min(20 / dim, 1) * (
-                    1 - (log(self.neval + 1) / log(self.maxeval))
-                )
+            if perturbation_probability is None:
+                if self.maxeval > 1 and self.neval < self.maxeval:
+                    prob = min(20 / dim, 1) * (
+                        1 - (log(self.neval + 1) / log(self.maxeval))
+                    )
+                else:
+                    prob = 1.0
             else:
-                prob = 1.0
+                prob = perturbation_probability
 
             x = self.sampler.get_sample(
                 bounds,
@@ -202,6 +208,17 @@ class WeightedAcquisition(Acquisition):
             )
         else:
             x = self.sampler.get_sample(bounds, iindex=iindex)
+
+        if constr_fun is not None:
+            # Filter out candidates that do not satisfy the constraints
+            constr_values = constr_fun(x)
+            if constr_values.ndim == 1:
+                feasible_idx = constr_values <= 0
+            else:
+                feasible_idx = np.all(constr_values <= 0, axis=1)
+            x = x[feasible_idx]
+            if x.shape[0] == 0:
+                return np.empty((0, dim))
 
         # Evaluate candidates
         fx = surrogateModel(x)
