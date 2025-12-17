@@ -36,15 +36,14 @@ class TerminationCondition(ABC):
 
     This class defines the interface for conditions that can be used to
     determine when an optimization process should terminate.
-
-    :param out: The optimization result containing the current state.
-    :param model: The surrogate model used in the optimization, if any.
-    :return: True if the condition is met, False otherwise.
     """
 
     @abstractmethod
     def is_met(self) -> bool:
-        """Check if the condition is met."""
+        """Check if the termination condition is met.
+
+        :return: True if the condition is met, False otherwise.
+        """
         pass
 
     @abstractmethod
@@ -104,9 +103,9 @@ class UnsuccessfulImprovement(TerminationCondition):
             # No function evaluations, cannot update condition
             return
 
-        assert (
-            out.nobj == 1
-        ), "Expected a single objective function value, but got multiple objectives."
+        assert out.nobj == 1, (
+            "Expected a single objective function value, but got multiple objectives."
+        )
 
         # Get the new best value from the optimization result
         new_best_value = (
@@ -114,9 +113,9 @@ class UnsuccessfulImprovement(TerminationCondition):
             if isinstance(out.fx, np.ndarray)
             else out.fx
         )
-        assert isinstance(
-            new_best_value, float
-        ), "Expected out.fx to be a float, but got a different type."
+        assert isinstance(new_best_value, float), (
+            "Expected out.fx to be a float, but got a different type."
+        )
 
         # Compute the relative improvement
         value_improvement = self.lowest_value - new_best_value
@@ -148,9 +147,9 @@ class RobustCondition(TerminationCondition):
         self.history = deque(maxlen=period)
 
     def is_met(self) -> bool:
-        assert isinstance(
-            self.history.maxlen, int
-        ), "History maxlen must be set."
+        assert isinstance(self.history.maxlen, int), (
+            "History maxlen must be set."
+        )
 
         if len(self.history) < self.history.maxlen:
             return False

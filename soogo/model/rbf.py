@@ -202,6 +202,14 @@ class RbfModel(Surrogate):
             )
 
     def eval_kernel(self, x, y=None):
+        """Evaluate the RBF kernel between points.
+
+        :param x: m-by-d matrix with m point coordinates in a d-dimensional
+            space.
+        :param y: n-by-d matrix with n point coordinates in a d-dimensional
+            space. If None, use x.
+        :return: Kernel matrix (m x n).
+        """
         if y is None:
             y = x
         return self.rbf(cdist(x, y))
@@ -283,9 +291,9 @@ class RbfModel(Surrogate):
         coef0 = self._coef[0 : self._m]
         coef1 = self._coef[self._m : self._m + self.polynomial_tail_size()]
         if i >= 0:
-            assert (
-                i < self.ntarget
-            ), "Index out of bounds for target dimension."
+            assert i < self.ntarget, (
+                "Index out of bounds for target dimension."
+            )
             if self.ntarget > 1:
                 coef0 = coef0[:, i]
                 coef1 = coef1[:, i]
@@ -525,7 +533,7 @@ class RbfModel(Surrogate):
         """Return iindex, the sequence of integer variable indexes."""
         return self._iindex
 
-    def prepare_mu_measure(self):
+    def prepare_mu_measure(self) -> None:
         """Prepare the model for mu measure computation.
 
         This routine computes the LDLt factorization of the matrix A, which is

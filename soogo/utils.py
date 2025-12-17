@@ -36,7 +36,7 @@ def find_pareto_front(fx, iStart: int = 0) -> list:
                 elif all(fx[j] <= fx[i]) and any(fx[j] < fx[i]):
                     # x[j] dominates x[i]
                     # No need to continue checking, otherwise the previous
-                    # iteration was not a balid Pareto front
+                    # iteration was not a valid Pareto front
                     pareto[i] = False
                     break
     return [i for i in range(len(fx)) if pareto[i]]
@@ -49,6 +49,7 @@ def gp_expected_improvement(delta, sigma):
         the current best function value and :math:`\\mu_n(x)` is the expected
         value for :math:`f(x)`.
     :param sigma: The standard deviation :math:`\\sigma_n(x)`.
+    :return: Expected improvement value.
 
     References
     ----------

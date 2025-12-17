@@ -30,15 +30,15 @@ def bayesian_optimization(
     acquisitionFunc: Optional[MaximizeEI] = None,
     **kwargs,
 ) -> OptimizeResult:
-    """Wrapper for surrogate_optimization() using a Gaussian Process surrogate
+    r"""Wrapper for surrogate_optimization() using a Gaussian Process surrogate
     model and the Expected Improvement acquisition function.
 
-    :param \\*args: Positional arguments passed to surrogate_optimization().
+    :param *args: Positional arguments passed to surrogate_optimization().
     :param surrogateModel: Gaussian Process surrogate model. The
         default is GaussianProcess(). On exit, if provided, the surrogate
         model the points used during the optimization.
     :param acquisitionFunc: Acquisition function to be used.
-    :param \\*\\*kwargs: Keyword arguments passed to surrogate_optimization().
+    :param **kwargs: Keyword arguments passed to surrogate_optimization().
     """
     # Initialize optional variables
     if surrogateModel is None:

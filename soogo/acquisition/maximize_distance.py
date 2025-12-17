@@ -64,6 +64,7 @@ class MaximizeDistance(Acquisition):
         :param n: Number of points to be acquired.
         :param points: Points to consider for distance maximization. If None,
             use all previously sampled points in the surrogate model.
+        :return: Array of acquired points that maximize minimum distance.
         """
         iindex = surrogateModel.iindex
         optimizer = self.optimizer if len(iindex) == 0 else self.mi_optimizer

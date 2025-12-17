@@ -20,7 +20,6 @@ __authors__ = ["Weslley S. Pereira", "Byron Selvage"]
 
 import numpy as np
 from scipy.spatial.distance import cdist
-from scipy.spatial import KDTree
 import networkx as nx
 from networkx.algorithms.approximation import maximum_independent_set
 
@@ -152,13 +151,10 @@ def select_weighted_candidates(
     :param tol: Tolerance value for excluding candidates that are too close to
         current sample points.
     :param weightpattern: List of weights to use cyclically for each selection.
-    :return:
-
-        * n-by-dim matrix with the selected points.
-
-        * n-by-(n+m) matrix with the distances between the n selected points
-            and the (n+m) sampled points (m is the number of points that have
-            been sampled so far).
+    :return: Tuple containing (1) n-by-dim matrix with the selected
+        points, and (2) n-by-(n+m) matrix with the distances between the
+        n selected points and the (n+m) sampled points (m is the number
+        of points that have been sampled so far).
     """
     # Compute neighbor distances
     dist = np.min(distx, axis=1)
@@ -224,15 +220,32 @@ def select_weighted_candidates(
 
 
 class FarEnoughSampleFilter:
-    def __init__(self, X, tol):
-        self.tree = KDTree(X)
-        self.tol = tol
+    """Filter candidate points that are too close to existing points.
+
+    This utility class filters out candidates that are within a minimum
+    distance threshold from already sampled points.
+
+    :param X: Matrix of existing sample points (n x d).
+    :param tol: Minimum distance threshold. Points closer than this are
+        filtered out.
+    """
 
     def is_far_enough(self, x):
+        """Check if a point is far enough from existing samples.
+
+        :param x: Point to check (d-dimensional vector).
+        :return: True if the point is far enough, False otherwise.
+        """
         dist, _ = self.tree.query(x.reshape(1, -1))
         return dist[0] >= self.tol
 
     def __call__(self, Xc):
+        """Filter candidates based on minimum distance criterion.
+
+        :param Xc: Matrix of candidate points (m x d).
+        :return: Filtered matrix containing only points that are far
+            enough from existing samples.
+        """
         # Discard points that are too close to X
         mask0 = np.array([self.is_far_enough(x) for x in Xc], dtype=bool)
         Xc0 = Xc[mask0]

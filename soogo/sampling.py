@@ -39,7 +39,13 @@ class SamplingStrategy(Enum):
     MITCHEL91 = 6  #: Cover empty regions in the search space
 
 
-def _slhd_permutation_matrix(m: int, d: int):
+def _slhd_permutation_matrix(m: int, d: int) -> np.ndarray:
+    """Generate permutation matrix for SLHD sampling.
+
+    :param m: Number of samples.
+    :param d: Number of dimensions.
+    :return: m-by-d permutation matrix.
+    """
     # Generate permutation matrix P
     P = np.zeros((m, d), dtype=int)
     P[:, 0] = np.arange(m)
