@@ -1127,7 +1127,7 @@ evaluability probability below the threshold are discarded. (default: <code clas
 <p>Utility functions for acquisition methods.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="soogo.acquisition.utils.FarEnoughSampleFilter">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">soogo.acquisition.utils.</span></span><span class="sig-name descname"><span class="pre">FarEnoughSampleFilter</span></span><a class="headerlink" href="#soogo.acquisition.utils.FarEnoughSampleFilter" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">soogo.acquisition.utils.</span></span><span class="sig-name descname"><span class="pre">FarEnoughSampleFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.acquisition.utils.FarEnoughSampleFilter" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Filter candidate points that are too close to existing points.</p>
 <p>This utility class filters out candidates that are within a minimum
@@ -1136,11 +1136,23 @@ distance threshold from already sampled points.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>X</strong> – Matrix of existing sample points (n x d).</p></li>
-<li><p><strong>tol</strong> – Minimum distance threshold. Points closer than this are
-filtered out.</p></li>
+<li><p><strong>tol</strong> – Minimum distance threshold.</p></li>
 </ul>
 </dd>
 </dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="soogo.acquisition.utils.FarEnoughSampleFilter.tree">
+<span class="sig-name descname"><span class="pre">tree</span></span><a class="headerlink" href="#soogo.acquisition.utils.FarEnoughSampleFilter.tree" title="Link to this definition"></a></dt>
+<dd><p>KDTree built from the existing sample points for efficient distance
+queries.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="soogo.acquisition.utils.FarEnoughSampleFilter.tol">
+<span class="sig-name descname"><span class="pre">tol</span></span><a class="headerlink" href="#soogo.acquisition.utils.FarEnoughSampleFilter.tol" title="Link to this definition"></a></dt>
+<dd><p>Minimum distance threshold. Points closer than this are filtered out.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.acquisition.utils.FarEnoughSampleFilter.__call__">
 <span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Xc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.acquisition.utils.FarEnoughSampleFilter.__call__" title="Link to this definition"></a></dt>
@@ -1244,7 +1256,7 @@ of points that have been sampled so far).</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="soogo.acquisition.utils.weighted_score">
-<span class="sig-prename descclassname"><span class="pre">soogo.acquisition.utils.</span></span><span class="sig-name descname"><span class="pre">weighted_score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sx_min</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sx_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dx_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#soogo.acquisition.utils.weighted_score" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">soogo.acquisition.utils.</span></span><span class="sig-name descname"><span class="pre">weighted_score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sx_min</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sx_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dx_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.acquisition.utils.weighted_score" title="Link to this definition"></a></dt>
 <dd><p>Computes the weighted score from the predicted value of the surrogate
 model at a point and minimum distance from the point to the set of
 previously selected evaluation points.</p>
@@ -1282,9 +1294,6 @@ previously selected evaluation points.</p>
 <li><p><strong>sx_max</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – Maximum value of the surrogate model. (default: <code class="docutils literal notranslate"><span class="pre">1.0</span></code>)</p></li>
 <li><p><strong>dx_max</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – Maximum distance between a candidate point and the set X. (default: <code class="docutils literal notranslate"><span class="pre">1.0</span></code>)</p></li>
 </ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
