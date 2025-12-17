@@ -140,7 +140,8 @@ surrogate models for approximating expensive objective functions.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – m-by-d matrix with m point coordinates in a d-dimensional
 space.</p></li>
-<li><p><strong>i</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Index of the target dimension to evaluate. If -1, evaluate all. (default: <code class="docutils literal notranslate"><span class="pre">-1</span></code>)</p></li>
+<li><p><strong>i</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Index of the target dimension to evaluate. If -1,
+evaluate all. (default: <code class="docutils literal notranslate"><span class="pre">-1</span></code>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -371,7 +372,8 @@ for further customization or inspection.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – m-by-d matrix with m point coordinates in a d-dimensional
 space.</p></li>
-<li><p><strong>i</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Index of the target dimension to evaluate. If -1, evaluate all. (default: <code class="docutils literal notranslate"><span class="pre">-1</span></code>)</p></li>
+<li><p><strong>i</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Index of the target dimension to evaluate. If -1,
+evaluate all. (default: <code class="docutils literal notranslate"><span class="pre">-1</span></code>)</p></li>
 <li><p><strong>return_std</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If <cite>True</cite>, returns the standard deviation of the
 predictions. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
 <li><p><strong>return_cov</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If <cite>True</cite>, returns the covariance of the predictions. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
@@ -386,7 +388,8 @@ predictions. (default: <code class="docutils literal notranslate"><span class="p
 </dl>
 </li>
 <li><dl class="simple">
-<dt>If <cite>return_cov</cite> is <cite>True</cite>, the third output is a m-by-m matrix</dt><dd><p>with the covariances if n=1, otherwise it is a m-by-m-by-n matrix.</p>
+<dt>If <cite>return_cov</cite> is <cite>True</cite>, the third output is a m-by-m</dt><dd><p>matrix with the covariances if n=1, otherwise it is a
+m-by-m-by-n matrix.</p>
 </dd>
 </dl>
 </li>
@@ -594,7 +597,7 @@ is essential for the good performance of active learning processes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>kernel</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#soogo.model.rbf_kernel.RadialBasisFunction" title="soogo.model.rbf_kernel.RadialBasisFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">RadialBasisFunction</span></code></a></span>) – Kernel function <span class="math notranslate nohighlight">\(\phi\)</span> used in the RBF model. (default: <code class="docutils literal notranslate"><span class="pre">&lt;soogo.model.rbf_kernel.CubicRadialBasisFunction</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f41d6fbee40&gt;</span></code>)</p></li>
+<li><p><strong>kernel</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#soogo.model.rbf_kernel.RadialBasisFunction" title="soogo.model.rbf_kernel.RadialBasisFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">RadialBasisFunction</span></code></a></span>) – Kernel function <span class="math notranslate nohighlight">\(\phi\)</span> used in the RBF model. (default: <code class="docutils literal notranslate"><span class="pre">&lt;soogo.model.rbf_kernel.CubicRadialBasisFunction</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f3e7dc76f90&gt;</span></code>)</p></li>
 <li><p><strong>iindex</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>]</span>) – Indices of integer variables in the feature space. (default: <code class="docutils literal notranslate"><span class="pre">()</span></code>)</p></li>
 <li><p><strong>filter</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#soogo.model.rbf.RbfFilter" title="soogo.model.rbf.RbfFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">RbfFilter</span></code></a> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – Filter to be used in the target (image) space. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 </ul>
@@ -638,7 +641,8 @@ is essential for the good performance of active learning processes.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – m-by-d matrix with m point coordinates in a d-dimensional
 space.</p></li>
-<li><p><strong>i</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Index of the target dimension to evaluate. If -1, evaluate all. (default: <code class="docutils literal notranslate"><span class="pre">-1</span></code>)</p></li>
+<li><p><strong>i</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Index of the target dimension to evaluate. If -1,
+evaluate all. (default: <code class="docutils literal notranslate"><span class="pre">-1</span></code>)</p></li>
 <li><p><strong>return_dist</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If <cite>True</cite>, returns the distance matrix between the
 input points and the training points. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
 </ul>
@@ -678,18 +682,18 @@ space.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.rbf.RbfModel.eval_kernel">
 <span class="sig-name descname"><span class="pre">eval_kernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.model.rbf.RbfModel.eval_kernel" title="Link to this definition"></a></dt>
-<dd><p>Evaluate the kernel function at a pair (x,y).</p>
-<p>The structure of the kernel is the same as the one passed as parameter
-but with optimized hyperparameters.</p>
+<dd><p>Evaluate the RBF kernel between points.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> – First entry in the tuple (x,y).</p></li>
-<li><p><strong>y</strong> – Second entry in the tuple (x,y). If None, use x. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>x</strong> – m-by-d matrix with m point coordinates in a d-dimensional
+space.</p></li>
+<li><p><strong>y</strong> – n-by-d matrix with n point coordinates in a d-dimensional
+space. If None, use x. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Kernel evaluation result.</p>
+<dd class="field-even"><p>Kernel matrix (m x n).</p>
 </dd>
 </dl>
 </dd></dl>
@@ -833,11 +837,16 @@ space.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.rbf.RbfModel.prepare_mu_measure">
-<span class="sig-name descname"><span class="pre">prepare_mu_measure</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#soogo.model.rbf.RbfModel.prepare_mu_measure" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">prepare_mu_measure</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#soogo.model.rbf.RbfModel.prepare_mu_measure" title="Link to this definition"></a></dt>
 <dd><p>Prepare the model for mu measure computation.</p>
 <p>This routine computes the LDLt factorization of the matrix A, which is
 used to compute the mu measure. The factorization is computed only once
 and can be reused for multiple calls to <a class="reference internal" href="#soogo.model.rbf.RbfModel.mu_measure" title="soogo.model.rbf.RbfModel.mu_measure"><code class="xref py py-meth docutils literal notranslate"><span class="pre">mu_measure()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -1110,6 +1119,8 @@ is present.</p>
         <dd><a href="../../v1.2.1/index.html">v1.2.1</a></dd>
       
         <dd><a href="../../v1.2.2/index.html">v1.2.2</a></dd>
+      
+        <dd><a href="../../v2.0.0/api/soogo.model.html">v2.0.0</a></dd>
       
     </dl>
     <dl>

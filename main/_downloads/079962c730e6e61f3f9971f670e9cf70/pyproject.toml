@@ -4,6 +4,10 @@ dynamic = ["version"]
 description = "Surrogate-based 0-th Order Global Optimization for black-box problems"
 authors = [
     {name = "Weslley da Silva Pereira", email = "weslley.dasilvapereira@nrel.gov"},
+    {name = "Byron Selvage"},
+]
+maintainers = [
+    {name = "Weslley da Silva Pereira", email = "weslley.dasilvapereira@nrel.gov"},
 ]
 license = {file = "LICENSE"}
 readme = "README.md"

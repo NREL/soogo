@@ -875,10 +875,13 @@ iterations.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.termination.IterateNTimes.is_met">
 <span class="sig-name descname"><span class="pre">is_met</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#soogo.termination.IterateNTimes.is_met" title="Link to this definition"></a></dt>
-<dd><p>Check if the condition is met.</p>
+<dd><p>Check if the termination condition is met.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the condition is met, False otherwise.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -924,10 +927,13 @@ iterations.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.termination.RobustCondition.is_met">
 <span class="sig-name descname"><span class="pre">is_met</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#soogo.termination.RobustCondition.is_met" title="Link to this definition"></a></dt>
-<dd><p>Check if the condition is met.</p>
+<dd><p>Check if the termination condition is met.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the condition is met, False otherwise.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -972,24 +978,16 @@ iterations.</p>
 <p>Base class for termination conditions.</p>
 <p>This class defines the interface for conditions that can be used to
 determine when an optimization process should terminate.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>out</strong> – The optimization result containing the current state.</p></li>
-<li><p><strong>model</strong> – The surrogate model used in the optimization, if any.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>True if the condition is met, False otherwise.</p>
-</dd>
-</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.termination.TerminationCondition.is_met">
 <em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_met</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#soogo.termination.TerminationCondition.is_met" title="Link to this definition"></a></dt>
-<dd><p>Check if the condition is met.</p>
+<dd><p>Check if the termination condition is met.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the condition is met, False otherwise.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1062,10 +1060,13 @@ normalize the improvement check.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.termination.UnsuccessfulImprovement.is_met">
 <span class="sig-name descname"><span class="pre">is_met</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#soogo.termination.UnsuccessfulImprovement.is_met" title="Link to this definition"></a></dt>
-<dd><p>Check if the condition is met.</p>
+<dd><p>Check if the termination condition is met.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the condition is met, False otherwise.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1140,6 +1141,9 @@ the current best function value and <span class="math notranslate nohighlight">\
 value for <span class="math notranslate nohighlight">\(f(x)\)</span>.</p></li>
 <li><p><strong>sigma</strong> – The standard deviation <span class="math notranslate nohighlight">\(\sigma_n(x)\)</span>.</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Expected improvement value.</p>
 </dd>
 </dl>
 <section id="id7">
@@ -1228,6 +1232,8 @@ Optimization, 13(4):455–492, 1998.</p>
         <dd><a href="../../v1.2.1/index.html">v1.2.1</a></dd>
       
         <dd><a href="../../v1.2.2/index.html">v1.2.2</a></dd>
+      
+        <dd><a href="../../v2.0.0/api/soogo.html">v2.0.0</a></dd>
       
     </dl>
     <dl>

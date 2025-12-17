@@ -218,6 +218,7 @@
 <h1>Tests documentation<a class="headerlink" href="#tests-documentation" title="Link to this heading"></a></h1>
 <section id="module-tests.gosac_benchmark">
 <span id="tests-gosac-benchmark-module"></span><h2>tests.gosac_benchmark module<a class="headerlink" href="#module-tests.gosac_benchmark" title="Link to this heading"></a></h2>
+<p>GOSAC benchmark problems and test functions.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="tests.gosac_benchmark.Problem">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tests.gosac_benchmark.</span></span><span class="sig-name descname"><span class="pre">Problem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">objf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gfun</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iindex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xmin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#tests.gosac_benchmark.Problem" title="Link to this definition"></a></dt>
@@ -656,19 +657,22 @@ functions.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="tests.test_acquisition.TestFarEnoughSampleFilter.test_call_handles_clustering_candidates">
 <span class="sig-name descname"><span class="pre">test_call_handles_clustering_candidates</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_acquisition.TestFarEnoughSampleFilter.test_call_handles_clustering_candidates" title="Link to this definition"></a></dt>
-<dd><p>Test that __call__ handles candidates that are too close to each other.</p>
+<dd><p>Test that __call__ handles candidates that are too close to
+each other.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tests.test_acquisition.TestFarEnoughSampleFilter.test_call_returns_empty_when_all_too_close">
 <span class="sig-name descname"><span class="pre">test_call_returns_empty_when_all_too_close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_acquisition.TestFarEnoughSampleFilter.test_call_returns_empty_when_all_too_close" title="Link to this definition"></a></dt>
-<dd><p>Test that __call__ returns empty array when all candidates are too close.</p>
+<dd><p>Test that __call__ returns empty array when all candidates are
+too close.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tests.test_acquisition.TestFarEnoughSampleFilter.test_call_with_various_dimensions">
 <span class="sig-name descname"><span class="pre">test_call_with_various_dimensions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_acquisition.TestFarEnoughSampleFilter.test_call_with_various_dimensions" title="Link to this definition"></a></dt>
-<dd><p>Test that FarEnoughSampleFilter works with different dimensionalities.</p>
+<dd><p>Test that FarEnoughSampleFilter works with different
+dimensionalities.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -802,7 +806,8 @@ the same.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="tests.test_docs.TestSphinxDocumentation.test_versions_template_renders_without_versions_context">
 <span class="sig-name descname"><span class="pre">test_versions_template_renders_without_versions_context</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_docs.TestSphinxDocumentation.test_versions_template_renders_without_versions_context" title="Link to this definition"></a></dt>
-<dd><p>Ensure versions template renders when sphinx-multiversion context is missing.</p>
+<dd><p>Ensure versions template renders when sphinx-multiversion
+context is missing.</p>
 </dd></dl>
 
 </dd></dl>
@@ -881,6 +886,7 @@ the same.</p></li>
 </section>
 <section id="module-tests.test_gosac_bench">
 <span id="tests-test-gosac-bench-module"></span><h2>tests.test_gosac_bench module<a class="headerlink" href="#module-tests.test_gosac_bench" title="Link to this heading"></a></h2>
+<p>Test GOSAC benchmark problems.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="tests.test_gosac_bench.test_benchmark">
 <span class="sig-prename descclassname"><span class="pre">tests.test_gosac_bench.</span></span><span class="sig-name descname"><span class="pre">test_benchmark</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">problem</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tests.gosac_benchmark.Problem" title="tests.gosac_benchmark.Problem"><span class="pre">Problem</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#tests.test_gosac_bench.test_benchmark" title="Link to this definition"></a></dt>
@@ -1091,6 +1097,8 @@ the same.</p></li>
         <dd><a href="../../v1.2.1/index.html">v1.2.1</a></dd>
       
         <dd><a href="../../v1.2.2/index.html">v1.2.2</a></dd>
+      
+        <dd><a href="../../v2.0.0/api/tests.html">v2.0.0</a></dd>
       
     </dl>
     <dl>
