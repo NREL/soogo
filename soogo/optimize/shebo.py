@@ -91,13 +91,13 @@ def shebo(
         search space.
     :param maxeval: Maximum number of function evaluations.
     :param objSurrogate: Surrogate model for the objective function. If None is
-        provided, a :class:`RbfModel` model with Cubic Radial Basis Function is
+        provided, a :class:`.RbfModel` model with Cubic Radial Basis Function is
         used. On exit, if provided, the surrogate model will contain the points
         used during the optimization process.
     :param evalSurrogate: Surrogate model for the evaluation function. If None
-        is provided, a :class:`RbfModel` model with Linear Radial Basis Function
-        is used. On exit, if provided, the surrogate model will contain the
-        points used during the optimization process.
+        is provided, a :class:`.RbfModel` model with Linear Radial Basis
+        Function is used. On exit, if provided, the surrogate model will contain
+        the points used during the optimization process.
     :param acquisitionFunc: Acquisition function to be used in the optimization
         loop. If None is provided, the acquisition cycle described by
         Müller and Day (2019) is used. Each call, the acquisition function is

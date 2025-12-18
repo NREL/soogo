@@ -72,6 +72,8 @@ class CoordinatePerturbationOverNondominated(Acquisition):
         :param n: Maximum number of points to be acquired.
         :param nondominated: Nondominated set in the objective space.
         :param paretoFront: Pareto front in the objective space.
+        :param kwargs: Additional keyword arguments passed to the acquisition
+            function.
         """
         dim = len(bounds)
         atol = self.acquisitionFunc.tol(bounds)

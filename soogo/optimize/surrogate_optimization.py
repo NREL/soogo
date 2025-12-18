@@ -49,23 +49,23 @@ def surrogate_optimization(
     [#]_, using multiple ideas from [#]_ especially in what concerns
     mixed-integer optimization. Briefly, the implementation works as follows:
 
-        1. If a surrogate model or initial sample points are not provided,
-           choose the initial sample using a Symmetric Latin Hypercube design.
-           Evaluate the objective function at the initial sample points.
+    1. If a surrogate model or initial sample points are not provided,
+    choose the initial sample using a Symmetric Latin Hypercube design.
+    Evaluate the objective function at the initial sample points.
 
-        2. Repeat 3-8 until there are no function evaluations left.
+    2. Repeat 3-8 until there are no function evaluations left.
 
-        3. Update the surrogate model with the last sample.
+    3. Update the surrogate model with the last sample.
 
-        4. Acquire a new sample based on the provided acquisition function.
+    4. Acquire a new sample based on the provided acquisition function.
 
-        5. Evaluate the objective function at the new sample.
+    5. Evaluate the objective function at the new sample.
 
-        6. Update the optimization solution and best function value if needed.
+    6. Update the optimization solution and best function value if needed.
 
-        7. Determine if there is a significant improvement and update counters.
+    7. Determine if there is a significant improvement and update counters.
 
-        8. Exit after `nFailTol` successive failures to improve the minimum.
+    8. Exit after `nFailTol` successive failures to improve the minimum.
 
     Mind that, when solving mixed-integer optimization, the algorithm may
     perform a continuous search whenever a significant improvement is found by
@@ -79,11 +79,11 @@ def surrogate_optimization(
         search space.
     :param maxeval: Maximum number of function evaluations.
     :param surrogateModel: Surrogate model to be used. If None is provided, a
-        :class:`RbfModel` model with median low-pass filter is used.
+        :class:`.RbfModel` model with median low-pass filter is used.
         On exit, if provided, the surrogate model the points used during the
         optimization.
     :param acquisitionFunc: Acquisition function to be used. If None is
-        provided, the :class:`TargetValueAcquisition` is used.
+        provided, the :class:`.TargetValueAcquisition` is used.
     :param batchSize: Number of new sample points to be generated per iteration.
     :param improvementTol: Expected improvement in the global optimum per
         iteration.

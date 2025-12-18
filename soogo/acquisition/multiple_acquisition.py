@@ -26,15 +26,14 @@ from .utils import FarEnoughSampleFilter
 
 
 class MultipleAcquisition(Acquisition):
-    r"""Apply multiple acquisition functions sequentially.
+    """Apply multiple acquisition functions sequentially.
 
     This acquisition function runs multiple acquisition strategies in
     sequence, filtering candidates to ensure they are far enough apart.
 
-    :param acquisitionFuncArray: Sequence of acquisition functions to
-        apply in order.
-    :param **kwargs: Additional arguments passed to the base Acquisition
-        class.
+    :param acquisitionFuncArray: Sequence of acquisition functions to apply in
+        order.
+    :param kwargs: Additional arguments passed to the base Acquisition class.
     """
 
     def __init__(

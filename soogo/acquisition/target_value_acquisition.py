@@ -156,6 +156,7 @@ class TargetValueAcquisition(Acquisition):
         :param n: Number of points to be acquired.
         :param sampleStage: Stage of the sampling process. The default is -1,
             which means that the stage is not specified.
+        :param kwargs: Additional keyword arguments (unused).
         :return: n-by-dim matrix with the selected points.
         """
         dim = len(bounds)  # Dimension of the problem

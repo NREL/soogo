@@ -199,6 +199,7 @@ class TransitionSearch(Acquisition):
         :param scoreWeight: Weight for the predicted function value and distance
             scores in the total score. The total score is computed as:
             `scoreWeight * valueScore + (1 - scoreWeight) * distanceScore`.
+        :param kwargs: Additional keyword arguments (unused).
         """
         # Set Ncand = 500*dim
         dim = len(bounds)

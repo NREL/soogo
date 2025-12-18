@@ -68,6 +68,7 @@ class MinimizeMOSurrogate(Acquisition):
             direction x in the space.
         :param n: Maximum number of points to be acquired. If n is zero, use all
             points in the Pareto front.
+        :param kwargs: Additional keyword arguments (unused).
         :return: k-by-dim matrix with the selected points.
         """
         dim = len(bounds)

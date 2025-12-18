@@ -164,8 +164,13 @@ class WeightedAcquisition(Acquisition):
         :param sequence bounds: List with the limits [x_min,x_max] of each
             direction x in the space.
         :param n: Number of points requested.
+        :param constr_fun: Optional constraint function that returns True for
+            feasible points.
+        :param perturbation_probability: Probability for perturbing each
+            coordinate when using DDS sampling. If None, computed dynamically
+            based on iteration count.
         :param xbest: Best point so far. Used if :attr:`sampler` is an instance
-            of :class:`soogo.sampling.NormalSampler`. If not provided,
+            of :class:`.NormalSampler`. If not provided,
             compute it based on the training data for the surrogate.
         :return: m-by-dim matrix with the selected points, where m <= n.
         """

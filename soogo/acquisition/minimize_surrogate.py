@@ -82,6 +82,7 @@ class MinimizeSurrogate(Acquisition):
         :param sequence bounds: List with the limits [x_min,x_max] of each
             direction x in the space.
         :param n: Max number of points to be acquired.
+        :param kwargs: Additional keyword arguments (unused).
         :return: n-by-dim matrix with the selected points.
         """
         dim = len(bounds)

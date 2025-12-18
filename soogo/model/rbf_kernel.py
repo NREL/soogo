@@ -30,6 +30,11 @@ class RadialBasisFunction(ABC):
 
     @abstractmethod
     def __call__(self, r):
+        """Evaluate the radial basis function.
+
+        :param r: Radial distance value.
+        :return: Function value at distance r.
+        """
         pass
 
     def __init__(self):
@@ -40,15 +45,27 @@ class RadialBasisFunction(ABC):
         self._hess = grad(self._grad)
 
     def grad(self, r):
-        """Gradient of the radial function."""
+        """Gradient of the radial function.
+
+        :param r: Radial distance value.
+        :return: Gradient value at distance r.
+        """
         return self._grad(r)
 
     def hess(self, r):
-        """Hessian of the radial function."""
+        """Hessian of the radial function.
+
+        :param r: Radial distance value.
+        :return: Hessian value at distance r.
+        """
         return self._hess(r)
 
     def grad_over_r(self, r):
-        """Gradient of the radial function."""
+        """Gradient of the radial function divided by r.
+
+        :param r: Radial distance value.
+        :return: Gradient divided by r.
+        """
         return self._grad(r) / r
 
     @staticmethod

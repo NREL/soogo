@@ -254,6 +254,12 @@ class GaussianProcess(Surrogate):
         return res.x, res.fun
 
     def expected_improvement(self, x, ybest):
+        """Compute expected improvement at given points.
+
+        :param x: Points at which to evaluate expected improvement.
+        :param ybest: Best observed function value so far.
+        :return: Expected improvement values.
+        """
         mu, sigma = self(x, return_std=True)
         return gp_expected_improvement(ybest - mu, sigma)
 

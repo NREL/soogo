@@ -51,7 +51,7 @@ def gosac(
         x in the search space.
     :param maxeval: Maximum number of function evaluations.
     :param surrogateModel: Surrogate model to be used for the
-        constraints. If None is provided, a :class:`RbfModel` model is
+        constraints. If None is provided, a :class:`.RbfModel` model is
         used.
     :param disp: If True, print information about the optimization
         process. The default is False.

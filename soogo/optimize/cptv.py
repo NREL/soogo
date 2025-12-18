@@ -52,18 +52,18 @@ def cptv(
     This is an implementation of the algorithm desribed in [#]_. The algorithm
     uses a sequence of different acquisition functions as follows:
 
-        1. CP step: :func:`surrogate_optimization()` with
-            `acquisitionFunc`. Ideally, this step would use a
-            :class:`WeightedAcquisition` object with a
-            :class:`NormalSampler` sampler. The implementation is configured to
-            use the acquisition proposed by Müller (2016) by default.
+    1. CP step: :func:`.surrogate_optimization()` with
+       `acquisitionFunc`. Ideally, this step would use a
+       :class:`.WeightedAcquisition` object with a
+       :class:`.NormalSampler` sampler. The implementation is configured to
+       use the acquisition proposed by Müller (2016) by default.
 
-        2. TV step: :func:`surrogate_optimization()` with a
-            :class:`TargetValueAcquisition` object.
+    2. TV step: :func:`.surrogate_optimization()` with a
+       :class:`.TargetValueAcquisition` object.
 
-        3. Local step (only when `useLocalSearch` is True): Runs a local
-            continuous optimization with the true objective using the best point
-            found so far as initial guess.
+    3. Local step (only when `useLocalSearch` is True): Runs a local
+       continuous optimization with the true objective using the best point
+       found so far as initial guess.
 
     The stopping criteria of steps 1 and 2 is related to the number of
     consecutive attempts that fail to improve the best solution by at least
@@ -77,11 +77,11 @@ def cptv(
         search space.
     :param maxeval: Maximum number of function evaluations.
     :param surrogateModel: Surrogate model to be used. If None is provided, a
-        :class:`RbfModel` model with median low-pass filter is used.
+        :class:`.RbfModel` model with median low-pass filter is used.
         On exit, if provided, the surrogate model the points used during the
         optimization.
     :param acquisitionFunc: Acquisition function to be used. If None is
-        provided, a :class:`WeightedAcquisition` is used following what is
+        provided, a :class:`.WeightedAcquisition` is used following what is
         described by Müller (2016).
     :param improvementTol: Expected improvement in the global optimum per
         iteration.
@@ -258,9 +258,9 @@ def cptv(
                 bounds=cbounds,
                 options={"maxfev": maxeval - out.nfev},
             )
-            assert (
-                out_local_.nfev <= (maxeval - out.nfev)
-            ), f"Sanity check, {out_local_.nfev} <= ({maxeval} - {out.nfev}). We should adjust either `maxfun` or change the `method`"
+            assert out_local_.nfev <= (maxeval - out.nfev), (
+                f"Sanity check, {out_local_.nfev} <= ({maxeval} - {out.nfev}). We should adjust either `maxfun` or change the `method`"
+            )
 
             out_local = OptimizeResult(
                 x=out.x.copy(),
@@ -314,11 +314,11 @@ def cptv(
 
 
 def cptvl(*args, **kwargs) -> OptimizeResult:
-    """Wrapper to cptv. See :func:`cptv()`."""
+    """Wrapper to cptv. See :func:`.cptv()`."""
     if "useLocalSearch" in kwargs:
-        assert (
-            kwargs["useLocalSearch"] is True
-        ), "`useLocalSearch` must be True for `cptvl`."
+        assert kwargs["useLocalSearch"] is True, (
+            "`useLocalSearch` must be True for `cptvl`."
+        )
     else:
         kwargs["useLocalSearch"] = True
     return cptv(*args, **kwargs)

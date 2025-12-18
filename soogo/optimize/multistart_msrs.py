@@ -43,9 +43,9 @@ def multistart_msrs(
     surface model approach with restarts.
 
     This implementation generalizes the algorithms Multistart LMSRS from [#]_.
-    The general algorithm calls :func:`surrogate_optimization()` successive
+    The general algorithm calls :func:`.surrogate_optimization()` successive
     times until there are no more function evaluations available. The first
-    time :func:`surrogate_optimization()` is called with the given, if
+    time :func:`.surrogate_optimization()` is called with the given, if
     any, trained surrogate model. Other function calls use an empty
     surrogate model. This is done to enable truly different starting samples
     each time.
@@ -54,8 +54,9 @@ def multistart_msrs(
     :param bounds: List with the limits [x_min,x_max] of each direction x in the
         search space.
     :param maxeval: Maximum number of function evaluations.
-    :param surrogateModel: Surrogate model to be used. If None is provided, a
-        :class:`RbfModel` model with median low-pass filter is used.
+    :param surrogateModel: Surrogate model to be used. Only used as input, not
+        updated. If None is provided, :func:`.surrogate_optimization()` will
+        choose a default model.
     :param batchSize: Number of new sample points to be generated per iteration.
     :param disp: If True, print information about the optimization process.
     :param callback: If provided, the callback function will be called after

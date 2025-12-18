@@ -53,8 +53,8 @@ def fsapso(
         search space.
     :param maxeval: Maximum number of function evaluations.
     :param surrogateModel: Surrogate model to be used. If None is provided, a
-        :class:`RbfModel` model with cubic kernel is used. On exit, if provided,
-        the surrogate model will contain the points used during the
+        :class:`.RbfModel` model with cubic kernel is used. On exit, if
+        provided, the surrogate model will contain the points used during the
         optimization.
     :param callback: If provided, the callback function will be called after
         each iteration with the current optimization result. The default is

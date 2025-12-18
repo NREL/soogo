@@ -15,40 +15,20 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from typing import Optional
-
 from ..acquisition import MaximizeEI
 from ..model import GaussianProcess
-from ..model import Surrogate
 from .utils import OptimizeResult
 from .surrogate_optimization import surrogate_optimization
 
 
-def bayesian_optimization(
-    *args,
-    surrogateModel: Optional[Surrogate] = None,
-    acquisitionFunc: Optional[MaximizeEI] = None,
-    **kwargs,
-) -> OptimizeResult:
-    r"""Wrapper for surrogate_optimization() using a Gaussian Process surrogate
-    model and the Expected Improvement acquisition function.
-
-    :param *args: Positional arguments passed to surrogate_optimization().
-    :param surrogateModel: Gaussian Process surrogate model. The
-        default is GaussianProcess(). On exit, if provided, the surrogate
-        model the points used during the optimization.
-    :param acquisitionFunc: Acquisition function to be used.
-    :param **kwargs: Keyword arguments passed to surrogate_optimization().
+def bayesian_optimization(*args, **kwargs) -> OptimizeResult:
+    """Wrapper for :func:`.surrogate_optimization()` using a Gaussian Process
+    surrogate model and the Expected Improvement acquisition function.
     """
     # Initialize optional variables
-    if surrogateModel is None:
-        surrogateModel = GaussianProcess(normalize_y=True)
-    if acquisitionFunc is None:
-        acquisitionFunc = MaximizeEI()
+    if "surrogateModel" not in kwargs or kwargs["surrogateModel"] is None:
+        kwargs["surrogateModel"] = GaussianProcess(normalize_y=True)
+    if "acquisitionFunc" not in kwargs or kwargs["acquisitionFunc"] is None:
+        kwargs["acquisitionFunc"] = MaximizeEI()
 
-    return surrogate_optimization(
-        *args,
-        surrogateModel=surrogateModel,
-        acquisitionFunc=acquisitionFunc,
-        **kwargs,
-    )
+    return surrogate_optimization(*args, **kwargs)

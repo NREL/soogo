@@ -139,6 +139,9 @@ class Acquisition(ABC):
     def update(self, out: OptimizeResult, model: Surrogate) -> None:
         """Update the acquisition function knowledge about the optimization
         process.
+
+        :param out: Current optimization result containing evaluation history.
+        :param model: Updated surrogate model.
         """
         if self.termination is not None:
             self.termination.update(out, model)

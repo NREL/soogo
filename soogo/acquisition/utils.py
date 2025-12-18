@@ -49,11 +49,11 @@ def weighted_score(
     - :math:`w` is a weight.
     - :math:`s(x)` is the value for the surrogate model on x.
     - :math:`d(x,X)` is the minimum distance between x and the previously
-        selected evaluation points.
+    selected evaluation points.
     - :math:`s_{min}` is the minimum value of the surrogate model.
     - :math:`s_{max}` is the maximum value of the surrogate model.
     - :math:`d_{max}` is the maximum distance between a candidate point and
-        the set X of previously selected evaluation points.
+    the set X of previously selected evaluation points.
 
     In case :math:`s_{max} = s_{min}`, the score is computed as
 

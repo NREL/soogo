@@ -54,7 +54,7 @@ def socemo(
         x in the search space.
     :param maxeval: Maximum number of function evaluations.
     :param surrogateModel: Multi-target surrogate model to be used. If
-        None is provided, a :class:`RbfModel` model is used.
+        None is provided, a :class:`.RbfModel` model is used.
     :param acquisitionFunc: Acquisition function to be used in the CP
         step. The default is WeightedAcquisition(0).
     :param acquisitionFuncGlobal: Acquisition function to be used in the
