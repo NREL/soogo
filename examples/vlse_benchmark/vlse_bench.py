@@ -1,6 +1,6 @@
 """Run the optimization on the VLSE benchmark."""
 
-# Copyright (c) 2025 Alliance for Sustainable Energy, LLC
+# Copyright (c) 2025 Alliance for Energy Innovation, LLC
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -26,7 +26,27 @@ import os
 import numpy as np
 import pickle
 import time
-from benchmark import *
+from benchmark import (
+    Branin,
+    Hart3,
+    Hart6,
+    Shekel,
+    Ackley,
+    Levy,
+    Powell,
+    Michal,
+    Spheref,
+    Rastr,
+    Mccorm,
+    Bukin6,
+    Camel6,
+    Crossit,
+    Drop,
+    Egg,
+    Griewank,
+    Holder,
+    Levy13,
+)
 
 from soogo import optimize, acquisition, sampling, OptimizeResult
 from pathlib import Path
@@ -187,7 +207,8 @@ algorithms["GP"] = {
     "acquisition": acquisition.MaximizeEI(),
 }
 
-# Maximum number of evaluations per function. 100*n, where n is the input dimension
+# Maximum number of evaluations per function. 100*n, where n is the input
+# dimension
 maxEvals = {key: 100 * (len(f.domain()) + 1) for key, f in myFuncs.items()}
 
 # Program that runs the benchmark

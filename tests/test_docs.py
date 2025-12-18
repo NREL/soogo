@@ -1,6 +1,6 @@
 """Test documentation generation with Sphinx."""
 
-# Copyright (c) 2025 Alliance for Sustainable Energy, LLC
+# Copyright (c) 2025 Alliance for Energy Innovation, LLC
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -88,9 +88,9 @@ class TestSphinxDocumentation:
 
             for expected_file in expected_files:
                 file_path = build_dir / expected_file
-                assert (
-                    file_path.exists()
-                ), f"Expected file {expected_file} was not generated"
+                assert file_path.exists(), (
+                    f"Expected file {expected_file} was not generated"
+                )
 
     def test_sphinx_doctree_build(self):
         """Test that Sphinx can build doctrees without errors."""
@@ -251,14 +251,14 @@ class TestSphinxDocumentation:
 
         for file_name in essential_files:
             file_path = docs_dir / file_name
-            assert (
-                file_path.exists()
-            ), f"Documentation file {file_name} does not exist"
+            assert file_path.exists(), (
+                f"Documentation file {file_name} does not exist"
+            )
 
             # Check that the file is not empty
-            assert (
-                file_path.stat().st_size > 0
-            ), f"Documentation file {file_name} is empty"
+            assert file_path.stat().st_size > 0, (
+                f"Documentation file {file_name} is empty"
+            )
 
     def test_module_imports_in_docs(self):
         """Test that modules referenced in documentation can be imported."""

@@ -1,6 +1,6 @@
 """Target value acquisition function for RBF surrogate optimization."""
 
-# Copyright (c) 2025 Alliance for Sustainable Energy, LLC
+# Copyright (c) 2025 Alliance for Energy Innovation, LLC
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

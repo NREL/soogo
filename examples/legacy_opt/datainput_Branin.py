@@ -1,6 +1,6 @@
 """Data class for the Branin problem definition."""
 
-# Copyright (c) 2025 Alliance for Sustainable Energy, LLC
+# Copyright (c) 2025 Alliance for Energy Innovation, LLC
 # Copyright (C) 2013 Cornell University
 
 # This program is free software: you can redistribute it and/or modify
