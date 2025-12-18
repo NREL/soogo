@@ -627,11 +627,10 @@ model and an acquisition strategy.</p>
 <p>This is a more generic implementation of the RBF algorithm described in
 <a class="footnote-reference brackets" href="#id24" id="id21" role="doc-noteref"><span class="fn-bracket">[</span>8<span class="fn-bracket">]</span></a>, using multiple ideas from <a class="footnote-reference brackets" href="#id25" id="id22" role="doc-noteref"><span class="fn-bracket">[</span>9<span class="fn-bracket">]</span></a> especially in what concerns
 mixed-integer optimization. Briefly, the implementation works as follows:</p>
-<blockquote>
-<div><ol class="arabic simple">
-<li><p>If a surrogate model or initial sample points are not provided,
+<p>1. If a surrogate model or initial sample points are not provided,
 choose the initial sample using a Symmetric Latin Hypercube design.
-Evaluate the objective function at the initial sample points.</p></li>
+Evaluate the objective function at the initial sample points.</p>
+<ol class="arabic simple" start="2">
 <li><p>Repeat 3-8 until there are no function evaluations left.</p></li>
 <li><p>Update the surrogate model with the last sample.</p></li>
 <li><p>Acquire a new sample based on the provided acquisition function.</p></li>
@@ -640,7 +639,6 @@ Evaluate the objective function at the initial sample points.</p></li>
 <li><p>Determine if there is a significant improvement and update counters.</p></li>
 <li><p>Exit after <cite>nFailTol</cite> successive failures to improve the minimum.</p></li>
 </ol>
-</div></blockquote>
 <p>Mind that, when solving mixed-integer optimization, the algorithm may
 perform a continuous search whenever a significant improvement is found by
 updating an integer variable. In the continuous search mode, the algorithm

@@ -1299,19 +1299,13 @@ previously selected evaluation points.</p>
 <ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(w\)</span> is a weight.</p></li>
 <li><p><span class="math notranslate nohighlight">\(s(x)\)</span> is the value for the surrogate model on x.</p></li>
-<li><dl class="simple">
-<dt><span class="math notranslate nohighlight">\(d(x,X)\)</span> is the minimum distance between x and the previously</dt><dd><p>selected evaluation points.</p>
-</dd>
-</dl>
-</li>
-<li><p><span class="math notranslate nohighlight">\(s_{min}\)</span> is the minimum value of the surrogate model.</p></li>
-<li><p><span class="math notranslate nohighlight">\(s_{max}\)</span> is the maximum value of the surrogate model.</p></li>
-<li><dl class="simple">
-<dt><span class="math notranslate nohighlight">\(d_{max}\)</span> is the maximum distance between a candidate point and</dt><dd><p>the set X of previously selected evaluation points.</p>
-</dd>
-</dl>
-</li>
+<li><p><span class="math notranslate nohighlight">\(d(x,X)\)</span> is the minimum distance between x and the previously</p></li>
 </ul>
+<p>selected evaluation points.
+- <span class="math notranslate nohighlight">\(s_{min}\)</span> is the minimum value of the surrogate model.
+- <span class="math notranslate nohighlight">\(s_{max}\)</span> is the maximum value of the surrogate model.
+- <span class="math notranslate nohighlight">\(d_{max}\)</span> is the maximum distance between a candidate point and
+the set X of previously selected evaluation points.</p>
 <p>In case <span class="math notranslate nohighlight">\(s_{max} = s_{min}\)</span>, the score is computed as</p>
 <div class="math notranslate nohighlight">
 \[\frac{d_{max}-d(x,X)}{d_{max}}.\]</div>
