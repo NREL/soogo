@@ -1,0 +1,184 @@
+# Contributing guidelines
+
+Thank you for investing your precious time to contribute to this project. Please read the following guidelines before contributing.
+
+## Code style
+
+This project uses [Ruff](https://docs.astral.sh/ruff/) to enforce code style. Ruff is a wrapper around [Black](https://black.readthedocs.io/en/stable/) and [Flake8](https://flake8.pycqa.org/en/latest/). To use Ruff, run `ruff check` at the root of this repository to see if there are formatting fixes to be performed. Then run `ruff format` to format the code. Run `ruff --help` to see the available options.
+
+## Pre-commit hooks
+
+This project uses [pre-commit](https://pre-commit.com/) to automatically check code quality before commits. To set up pre-commit hooks:
+
+```bash
+pip install pre-commit
+pre-commit install
+```
+
+The pre-commit hooks will automatically:
+
+- Check for copyright headers in Python files
+- Remove trailing whitespace
+- Fix end-of-file issues
+- Validate YAML files
+- Check for large files
+- Run Ruff for code formatting
+
+## Copyright headers
+
+All Python source files must include a copyright header at the top of the file. The header should follow this format:
+
+```python
+"""Module docstring."""
+
+# Copyright (c) 2025 Alliance for Energy Innovation, LLC
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+__authors__ = ["Your Name"]
+```
+
+For files based on existing algorithms from academic papers, include the original authors in the `__credits__` variable at [soogo/\_\_init\_\_.py](../soogo/__init__.py).
+
+## Documentation standards
+
+### Docstring format
+
+This project uses **Sphinx-style** docstrings with reStructuredText (reST) markup. All public modules, classes, methods, and functions must have docstrings.
+
+#### Module docstrings
+
+Every Python module should start with a brief one-line description:
+
+```python
+"""Brief description of the module."""
+```
+
+#### Class docstrings
+
+Classes should document their purpose, attributes, and parameters:
+
+```python
+class MyClass:
+    """Brief one-line description.
+
+    Longer description if needed. Can span multiple paragraphs.
+
+    :param param1: Description of param1.
+    :param param2: Description of param2.
+
+    .. attribute:: attr1
+
+        Description of attribute attr1.
+
+    .. attribute:: attr2
+
+        Description of attribute attr2.
+
+    References
+    ----------
+    .. [#] Author. Title. Journal, Year. DOI or URL.
+    """
+```
+
+#### Function docstrings
+
+Functions should document parameters, return values, and include examples when helpful:
+
+```python
+def my_function(x, y, *, option=None):
+    """Brief one-line description.
+
+    Longer description if needed. Explain what the function does,
+    any important algorithms, or behaviors.
+
+    :param x: Description of parameter x.
+    :param y: Description of parameter y.
+    :param option: Description of optional keyword argument.
+        The default is None.
+    :return: Description of return value.
+
+    References
+    ----------
+    .. [#] Author. Title. Journal, Year. DOI or URL.
+    """
+```
+
+#### Key formatting rules
+
+- **Line length**: Docstrings must not exceed 80 characters per line (enforced by Ruff W505)
+- **Parameters**: Use `:param name: description` format
+- **Return values**: Use `:return: description` format
+- **Types**: Can be included inline with params (e.g., `:param int maxeval:`) or use type hints
+- **Attributes**: Use `.. attribute:: name` followed by indented description
+- **References**: Use numbered footnote style with `.. [#]` for academic citations
+- **Math**: Use inline math with `:math:\`expression\``or display math blocks with`.. math::`
+
+#### Example from the codebase
+
+```python
+def gosac(
+    fun,
+    gfun,
+    bounds,
+    maxeval: int,
+    *,
+    surrogateModel: Optional[Surrogate] = None,
+    disp: bool = False,
+    callback: Optional[Callable[[OptimizeResult], None]] = None,
+):
+    """Minimize a scalar function subject to constraints.
+
+    The surrogate models are used to approximate the constraints. The
+    objective function is assumed to be cheap to evaluate, while the
+    constraints are assumed to be expensive to evaluate.
+
+    This method is based on [#]_.
+
+    :param fun: The objective function to be minimized.
+    :param gfun: The constraint function to be minimized. The
+        constraints must be formulated as g(x) <= 0.
+    :param bounds: List with the limits [x_min,x_max] of each
+        direction x in the search space.
+    :param maxeval: Maximum number of function evaluations.
+    :param surrogateModel: Surrogate model to be used for the
+        constraints. If None is provided, a :class:`RbfModel` model
+        is used.
+    :param disp: If True, print information about the optimization
+        process. The default is False.
+    :param callback: If provided, the callback function will be
+        called after each iteration with the current optimization
+        result. The default is None.
+    :return: The optimization result.
+
+    References
+    ----------
+    .. [#] Juliane Müller and Joshua D. Woodbury. 2017. GOSAC: global
+        optimization with surrogate approximation of constraints.
+        J. of Global Optimization 69, 1 (September 2017), 117–136.
+        https://doi.org/10.1007/s10898-017-0496-y
+    """
+```
+
+### Building documentation
+
+To build the HTML documentation locally:
+
+```bash
+cd docs
+pip install -r requirements.txt
+sphinx-build . _build/html
+```
+
+The generated documentation will be in `docs/_build/html/`.
