@@ -130,22 +130,22 @@ sequence.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.acquisition.alternated_acquisition.AlternatedAcquisition.optimize">
 <span class="sig-name descname"><span class="pre">optimize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">surrogateModel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="soogo.model.html#soogo.model.rbf.RbfModel" title="soogo.model.rbf.RbfModel"><span class="pre">RbfModel</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#soogo.acquisition.alternated_acquisition.AlternatedAcquisition.optimize" title="Link to this definition"></a></dt>
-<dd><p>Propose a maximum of n new sample points to improve the surrogate.</p>
+<dd><p>Optimize using the current acquisition function in the sequence.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>surrogateModel</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="soogo.model.html#soogo.model.rbf.RbfModel" title="soogo.model.rbf.RbfModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">RbfModel</span></code></a></span>) – Surrogate model.</p></li>
-<li><p><strong>bounds</strong> (<em>sequence</em>) – List with the limits [x_min,x_max] of each
-direction x in the space.</p></li>
-<li><p><strong>n</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Number of requested points. Mind that the number of points
-returned may be smaller than n, depending on the implementation. (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
+<li><p><strong>bounds</strong> – List with the limits [x_min,x_max] of each direction.</p></li>
+<li><p><strong>n</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Number of points to acquire. (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
+<li><p><strong>kwargs</strong> – Additional arguments passed to the current acquisition
+function’s optimize method.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>m-by-dim matrix with the selected points, where m &lt;= n.</p>
+<dd class="field-odd"><p>Array of acquired points.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -156,8 +156,14 @@ returned may be smaller than n, depending on the implementation. (default: <code
 <dd><p>Update the acquisition function knowledge about the optimization
 process.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>out</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="soogo.optimize.html#soogo.optimize.result.OptimizeResult" title="soogo.optimize.result.OptimizeResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">OptimizeResult</span></code></a></span>) – Current optimization result containing evaluation history.</p></li>
+<li><p><strong>model</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="soogo.model.html#soogo.model.base.Surrogate" title="soogo.model.base.Surrogate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Surrogate</span></code></a></span>) – Updated surrogate model.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -275,8 +281,14 @@ direction x in the space.</p>
 <dd><p>Update the acquisition function knowledge about the optimization
 process.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>out</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="soogo.optimize.html#soogo.optimize.result.OptimizeResult" title="soogo.optimize.result.OptimizeResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">OptimizeResult</span></code></a></span>) – Current optimization result containing evaluation history.</p></li>
+<li><p><strong>model</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="soogo.model.html#soogo.model.base.Surrogate" title="soogo.model.base.Surrogate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Surrogate</span></code></a></span>) – Updated surrogate model.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -331,6 +343,8 @@ direction x in the space.</p></li>
 <li><p><strong>n</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Maximum number of points to be acquired. (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
 <li><p><strong>nondominated</strong> – Nondominated set in the objective space. (default: <code class="docutils literal notranslate"><span class="pre">()</span></code>)</p></li>
 <li><p><strong>paretoFront</strong> – Pareto front in the objective space. (default: <code class="docutils literal notranslate"><span class="pre">()</span></code>)</p></li>
+<li><p><strong>kwargs</strong> – Additional keyword arguments passed to the acquisition
+function.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -444,6 +458,7 @@ direction x in the space.</p></li>
 <li><p><strong>constr_fun</strong> – Constraint function to be applied to surrogate model
 predictions. If none is provided, use the surrogate model as
 the constraint function. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>kwargs</strong> – Additional keyword arguments (unused).</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -622,6 +637,7 @@ MixedVariableGA from pymoo with RankAndCrowding survival strategy.</p></li>
 direction x in the space.</p></li>
 <li><p><strong>n</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Maximum number of points to be acquired. If n is zero, use all
 points in the Pareto front. (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
+<li><p><strong>kwargs</strong> – Additional keyword arguments (unused).</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -698,6 +714,7 @@ Rinnooy Kan and Timmer (1987).</p>
 <li><p><strong>bounds</strong> (<em>sequence</em>) – List with the limits [x_min,x_max] of each
 direction x in the space.</p></li>
 <li><p><strong>n</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Max number of points to be acquired. (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
+<li><p><strong>kwargs</strong> – Additional keyword arguments (unused).</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -726,11 +743,9 @@ sequence, filtering candidates to ensure they are far enough apart.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>acquisitionFuncArray</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<a class="reference internal" href="#soogo.acquisition.base.Acquisition" title="soogo.acquisition.base.Acquisition"><code class="xref py py-class docutils literal notranslate"><span class="pre">Acquisition</span></code></a>]</span>) – Sequence of acquisition functions to
-apply in order.</p></li>
-<li><p><strong>**kwargs</strong> – <p>Additional arguments passed to the base Acquisition
-class.</p>
-</p></li>
+<li><p><strong>acquisitionFuncArray</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<a class="reference internal" href="#soogo.acquisition.base.Acquisition" title="soogo.acquisition.base.Acquisition"><code class="xref py py-class docutils literal notranslate"><span class="pre">Acquisition</span></code></a>]</span>) – Sequence of acquisition functions to apply in
+order.</p></li>
+<li><p><strong>kwargs</strong> – Additional arguments passed to the base Acquisition class.</p></li>
 </ul>
 </dd>
 </dl>
@@ -767,7 +782,7 @@ returned may be smaller than n, depending on the implementation. (default: <code
 <dt class="sig sig-object py" id="soogo.acquisition.pareto_front.ParetoFront">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">soogo.acquisition.pareto_front.</span></span><span class="sig-name descname"><span class="pre">ParetoFront</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oldTV</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#soogo.acquisition.pareto_front.ParetoFront" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#soogo.acquisition.base.Acquisition" title="soogo.acquisition.base.Acquisition"><code class="xref py py-class docutils literal notranslate"><span class="pre">Acquisition</span></code></a></p>
-<p>Obtain sample points that fill gaps in the Pareto front from <a class="footnote-reference brackets" href="#id24" id="id22" role="doc-noteref"><span class="fn-bracket">[</span>8<span class="fn-bracket">]</span></a>.</p>
+<p>Obtain sample points that fill gaps in the Pareto front from <a class="footnote-reference brackets" href="#id22" id="id20" role="doc-noteref"><span class="fn-bracket">[</span>8<span class="fn-bracket">]</span></a>.</p>
 <p>The algorithm proceeds as follows to find each new point:</p>
 <ol class="arabic simple">
 <li><p>Find a target value <span class="math notranslate nohighlight">\(\tau\)</span> that should fill a gap in the Pareto
@@ -798,11 +813,11 @@ Copied to <a class="reference internal" href="#soogo.acquisition.pareto_front.Pa
 <dd><p>Old target values to be avoided in the acquisition of step 1.</p>
 </dd></dl>
 
-<section id="id23">
-<h3>References<a class="headerlink" href="#id23" title="Link to this heading"></a></h3>
+<section id="id21">
+<h3>References<a class="headerlink" href="#id21" title="Link to this heading"></a></h3>
 <aside class="footnote-list brackets">
-<aside class="footnote brackets" id="id24" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id22">8</a><span class="fn-bracket">]</span></span>
+<aside class="footnote brackets" id="id22" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id20">8</a><span class="fn-bracket">]</span></span>
 <p>Juliane Mueller. SOCEMO: Surrogate Optimization of Computationally
 Expensive Multiobjective Problems.
 INFORMS Journal on Computing, 29(4):581-783, 2017.
@@ -869,8 +884,8 @@ value is projected in the d-dimensional space to obtain <span class="math notran
 <dt class="sig sig-object py" id="soogo.acquisition.target_value_acquisition.TargetValueAcquisition">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">soogo.acquisition.target_value_acquisition.</span></span><span class="sig-name descname"><span class="pre">TargetValueAcquisition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cycleLength</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">6</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#soogo.acquisition.target_value_acquisition.TargetValueAcquisition" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#soogo.acquisition.base.Acquisition" title="soogo.acquisition.base.Acquisition"><code class="xref py py-class docutils literal notranslate"><span class="pre">Acquisition</span></code></a></p>
-<p>Target value acquisition function for the RBF model based on <a class="footnote-reference brackets" href="#id30" id="id25" role="doc-noteref"><span class="fn-bracket">[</span>9<span class="fn-bracket">]</span></a>, <a class="footnote-reference brackets" href="#id31" id="id26" role="doc-noteref"><span class="fn-bracket">[</span>10<span class="fn-bracket">]</span></a>,
-and <a class="footnote-reference brackets" href="#id32" id="id27" role="doc-noteref"><span class="fn-bracket">[</span>11<span class="fn-bracket">]</span></a>.</p>
+<p>Target value acquisition function for the RBF model based on <a class="footnote-reference brackets" href="#id28" id="id23" role="doc-noteref"><span class="fn-bracket">[</span>9<span class="fn-bracket">]</span></a>, <a class="footnote-reference brackets" href="#id29" id="id24" role="doc-noteref"><span class="fn-bracket">[</span>10<span class="fn-bracket">]</span></a>,
+and <a class="footnote-reference brackets" href="#id30" id="id25" role="doc-noteref"><span class="fn-bracket">[</span>11<span class="fn-bracket">]</span></a>.</p>
 <p>Every iteration of the algorithm sequentially chooses a number from 0 to
 <a class="reference internal" href="#soogo.acquisition.target_value_acquisition.TargetValueAcquisition.cycleLength" title="soogo.acquisition.target_value_acquisition.TargetValueAcquisition.cycleLength"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cycleLength</span></code></a> + 1 (inclusive) and runs one of the procedures:</p>
 <ul class="simple">
@@ -890,7 +905,7 @@ the current minimum.</p></li>
 </ul>
 <p>After each sample point is chosen we verify how close it is from the current
 sample. If it is too close, we replace it by a random point in the domain
-drawn from an uniform distribution. This is strategy was proposed in <a class="footnote-reference brackets" href="#id33" id="id28" role="doc-noteref"><span class="fn-bracket">[</span>12<span class="fn-bracket">]</span></a>.</p>
+drawn from an uniform distribution. This is strategy was proposed in <a class="footnote-reference brackets" href="#id31" id="id26" role="doc-noteref"><span class="fn-bracket">[</span>12<span class="fn-bracket">]</span></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>cycleLength</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Length of the global search cycle. Stored in
@@ -910,29 +925,29 @@ drawn from an uniform distribution. This is strategy was proposed in <a class="f
 <a class="reference internal" href="#soogo.acquisition.target_value_acquisition.TargetValueAcquisition.optimize" title="soogo.acquisition.target_value_acquisition.TargetValueAcquisition.optimize"><code class="xref py py-meth docutils literal notranslate"><span class="pre">optimize()</span></code></a>.</p>
 </dd></dl>
 
-<section id="id29">
-<h3>References<a class="headerlink" href="#id29" title="Link to this heading"></a></h3>
+<section id="id27">
+<h3>References<a class="headerlink" href="#id27" title="Link to this heading"></a></h3>
 <aside class="footnote-list brackets">
-<aside class="footnote brackets" id="id30" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id25">9</a><span class="fn-bracket">]</span></span>
+<aside class="footnote brackets" id="id28" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id23">9</a><span class="fn-bracket">]</span></span>
 <p>Gutmann, HM. A Radial Basis Function Method for Global
 Optimization. Journal of Global Optimization 19, 201–227 (2001).
 <a class="reference external" href="https://doi.org/10.1023/A:1011255519438">https://doi.org/10.1023/A:1011255519438</a></p>
 </aside>
-<aside class="footnote brackets" id="id31" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id26">10</a><span class="fn-bracket">]</span></span>
+<aside class="footnote brackets" id="id29" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id24">10</a><span class="fn-bracket">]</span></span>
 <p>Björkman, M., Holmström, K. Global Optimization of Costly
 Nonconvex Functions Using Radial Basis Functions. Optimization and
 Engineering 1, 373–397 (2000). <a class="reference external" href="https://doi.org/10.1023/A:1011584207202">https://doi.org/10.1023/A:1011584207202</a></p>
 </aside>
-<aside class="footnote brackets" id="id32" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id27">11</a><span class="fn-bracket">]</span></span>
+<aside class="footnote brackets" id="id30" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id25">11</a><span class="fn-bracket">]</span></span>
 <p>Holmström, K. An adaptive radial basis algorithm (ARBF) for expensive
 black-box global optimization. J Glob Optim 41, 447–464 (2008).
 <a class="reference external" href="https://doi.org/10.1007/s10898-007-9256-8">https://doi.org/10.1007/s10898-007-9256-8</a></p>
 </aside>
-<aside class="footnote brackets" id="id33" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id28">12</a><span class="fn-bracket">]</span></span>
+<aside class="footnote brackets" id="id31" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id26">12</a><span class="fn-bracket">]</span></span>
 <p>Müller, J. MISO: mixed-integer surrogate optimization framework.
 Optim Eng 17, 177–203 (2016). <a class="reference external" href="https://doi.org/10.1007/s11081-015-9281-2">https://doi.org/10.1007/s11081-015-9281-2</a></p>
 </aside>
@@ -979,6 +994,7 @@ direction x in the space.</p></li>
 <li><p><strong>n</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Number of points to be acquired. (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
 <li><p><strong>sampleStage</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Stage of the sampling process. The default is -1,
 which means that the stage is not specified. (default: <code class="docutils literal notranslate"><span class="pre">-1</span></code>)</p></li>
+<li><p><strong>kwargs</strong> – Additional keyword arguments (unused).</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -1001,7 +1017,7 @@ which means that the stage is not specified. (default: <code class="docutils lit
 <dt class="sig sig-object py" id="soogo.acquisition.transition_search.TransitionSearch">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">soogo.acquisition.transition_search.</span></span><span class="sig-name descname"><span class="pre">TransitionSearch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#soogo.acquisition.transition_search.TransitionSearch" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#soogo.acquisition.base.Acquisition" title="soogo.acquisition.base.Acquisition"><code class="xref py py-class docutils literal notranslate"><span class="pre">Acquisition</span></code></a></p>
-<p>Transition search acquisition function as described in <a class="footnote-reference brackets" href="#id36" id="id34" role="doc-noteref"><span class="fn-bracket">[</span>13<span class="fn-bracket">]</span></a>.</p>
+<p>Transition search acquisition function as described in <a class="footnote-reference brackets" href="#id34" id="id32" role="doc-noteref"><span class="fn-bracket">[</span>13<span class="fn-bracket">]</span></a>.</p>
 <p>This acquisition function is used to find new sample points by perturbing
 the current best sample point and uniformly selecting points from the
 domain. The scoreWeight parameter can be used to control the transition
@@ -1016,11 +1032,11 @@ evaluable.</p>
 <p>The candidate points are scored using a weighted value of their predicted
 function value and the distance to previously sampled points. The candidate
 with the best total score is selected as the new sample point.</p>
-<section id="id35">
-<h3>References<a class="headerlink" href="#id35" title="Link to this heading"></a></h3>
+<section id="id33">
+<h3>References<a class="headerlink" href="#id33" title="Link to this heading"></a></h3>
 <aside class="footnote-list brackets">
-<aside class="footnote brackets" id="id36" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id34">13</a><span class="fn-bracket">]</span></span>
+<aside class="footnote brackets" id="id34" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id32">13</a><span class="fn-bracket">]</span></span>
 <p>Juliane Müller and Marcus Day. Surrogate Optimization of
 Computationally Expensive Black-Box Problems with Hidden Constraints.
 INFORMS Journal on Computing, 31(4):689-702, 2019.
@@ -1076,6 +1092,7 @@ probability. (default: <code class="docutils literal notranslate"><span class="p
 <li><p><strong>scoreWeight</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – Weight for the predicted function value and distance
 scores in the total score. The total score is computed as:
 <cite>scoreWeight * valueScore + (1 - scoreWeight) * distanceScore</cite>. (default: <code class="docutils literal notranslate"><span class="pre">0.5</span></code>)</p></li>
+<li><p><strong>kwargs</strong> – Additional keyword arguments (unused).</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -1328,7 +1345,7 @@ values are scaled to the interval [0, 1], based on the maximum and minimum
 values for the pool of candidates. The sampler generates the candidate
 points to be scored and then selected.</p>
 <p>This acquisition method is prepared deals with multi-objective optimization
-following the random perturbation strategy in <a class="footnote-reference brackets" href="#id40" id="id37" role="doc-noteref"><span class="fn-bracket">[</span>14<span class="fn-bracket">]</span></a> and <a class="footnote-reference brackets" href="#id41" id="id38" role="doc-noteref"><span class="fn-bracket">[</span>15<span class="fn-bracket">]</span></a>. More
+following the random perturbation strategy in <a class="footnote-reference brackets" href="#id38" id="id35" role="doc-noteref"><span class="fn-bracket">[</span>14<span class="fn-bracket">]</span></a> and <a class="footnote-reference brackets" href="#id39" id="id36" role="doc-noteref"><span class="fn-bracket">[</span>15<span class="fn-bracket">]</span></a>. More
 specificaly, the
 algorithm takes the average value among the predicted target values given by
 the surrogate. In other words, <span class="math notranslate nohighlight">\(f_s(x)\)</span> is the average value between
@@ -1372,19 +1389,19 @@ rotated every time <a class="reference internal" href="#soogo.acquisition.weight
 <dd><p>Maximum number of evaluations. A value 0 means there is no maximum.</p>
 </dd></dl>
 
-<section id="id39">
-<h3>References<a class="headerlink" href="#id39" title="Link to this heading"></a></h3>
+<section id="id37">
+<h3>References<a class="headerlink" href="#id37" title="Link to this heading"></a></h3>
 <aside class="footnote-list brackets">
-<aside class="footnote brackets" id="id40" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id37">14</a><span class="fn-bracket">]</span></span>
+<aside class="footnote brackets" id="id38" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id35">14</a><span class="fn-bracket">]</span></span>
 <p>Regis, R. G., &amp; Shoemaker, C. A. (2012). Combining radial basis
 function surrogates and dynamic coordinate search in
 high-dimensional expensive black-box optimization.
 Engineering Optimization, 45(5), 529–555.
 <a class="reference external" href="https://doi.org/10.1080/0305215X.2012.687731">https://doi.org/10.1080/0305215X.2012.687731</a></p>
 </aside>
-<aside class="footnote brackets" id="id41" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id38">15</a><span class="fn-bracket">]</span></span>
+<aside class="footnote brackets" id="id39" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id36">15</a><span class="fn-bracket">]</span></span>
 <p>Juliane Mueller. SOCEMO: Surrogate Optimization of Computationally
 Expensive Multiobjective Problems.
 INFORMS Journal on Computing, 29(4):581-783, 2017.
@@ -1408,8 +1425,13 @@ and Shoemaker (2012).</p>
 <li><p><strong>bounds</strong> (<em>sequence</em>) – List with the limits [x_min,x_max] of each
 direction x in the space.</p></li>
 <li><p><strong>n</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Number of points requested. (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
+<li><p><strong>constr_fun</strong> – Optional constraint function that returns True for
+feasible points. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>perturbation_probability</strong> – Probability for perturbing each
+coordinate when using DDS sampling. If None, computed dynamically
+based on iteration count. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 <li><p><strong>xbest</strong> – Best point so far. Used if <a class="reference internal" href="#soogo.acquisition.weighted_acquisition.WeightedAcquisition.sampler" title="soogo.acquisition.weighted_acquisition.WeightedAcquisition.sampler"><code class="xref py py-attr docutils literal notranslate"><span class="pre">sampler</span></code></a> is an instance
-of <a class="reference internal" href="soogo.html#soogo.sampling.NormalSampler" title="soogo.sampling.NormalSampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">soogo.sampling.NormalSampler</span></code></a>. If not provided,
+of <a class="reference internal" href="soogo.html#soogo.sampling.NormalSampler" title="soogo.sampling.NormalSampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">NormalSampler</span></code></a>. If not provided,
 compute it based on the training data for the surrogate.</p></li>
 </ul>
 </dd>
@@ -1446,8 +1468,14 @@ direction x in the space.</p>
 <dd><p>Update the acquisition function knowledge about the optimization
 process.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>out</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="soogo.optimize.html#soogo.optimize.result.OptimizeResult" title="soogo.optimize.result.OptimizeResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">OptimizeResult</span></code></a></span>) – Current optimization result containing evaluation history.</p></li>
+<li><p><strong>model</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="soogo.model.html#soogo.model.base.Surrogate" title="soogo.model.base.Surrogate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Surrogate</span></code></a></span>) – Updated surrogate model.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>

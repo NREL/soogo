@@ -436,7 +436,19 @@ but with optimized hyperparameters.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.gp.GaussianProcess.expected_improvement">
 <span class="sig-name descname"><span class="pre">expected_improvement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ybest</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.model.gp.GaussianProcess.expected_improvement" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Compute expected improvement at given points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Points at which to evaluate expected improvement.</p></li>
+<li><p><strong>ybest</strong> – Best observed function value so far.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Expected improvement values.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="soogo.model.gp.GaussianProcess.iindex">
@@ -597,7 +609,7 @@ is essential for the good performance of active learning processes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>kernel</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#soogo.model.rbf_kernel.RadialBasisFunction" title="soogo.model.rbf_kernel.RadialBasisFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">RadialBasisFunction</span></code></a></span>) – Kernel function <span class="math notranslate nohighlight">\(\phi\)</span> used in the RBF model. (default: <code class="docutils literal notranslate"><span class="pre">&lt;soogo.model.rbf_kernel.CubicRadialBasisFunction</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7fe61aea1fd0&gt;</span></code>)</p></li>
+<li><p><strong>kernel</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#soogo.model.rbf_kernel.RadialBasisFunction" title="soogo.model.rbf_kernel.RadialBasisFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">RadialBasisFunction</span></code></a></span>) – Kernel function <span class="math notranslate nohighlight">\(\phi\)</span> used in the RBF model. (default: <code class="docutils literal notranslate"><span class="pre">&lt;soogo.model.rbf_kernel.CubicRadialBasisFunction</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f43de29ef90&gt;</span></code>)</p></li>
 <li><p><strong>iindex</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>]</span>) – Indices of integer variables in the feature space. (default: <code class="docutils literal notranslate"><span class="pre">()</span></code>)</p></li>
 <li><p><strong>filter</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#soogo.model.rbf.RbfFilter" title="soogo.model.rbf.RbfFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">RbfFilter</span></code></a> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – Filter to be used in the target (image) space. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 </ul>
@@ -914,13 +926,29 @@ space.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.rbf_kernel.CubicRadialBasisFunction.__call__">
 <span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.model.rbf_kernel.CubicRadialBasisFunction.__call__" title="Link to this definition"></a></dt>
-<dd><p>Call self as a function.</p>
+<dd><p>Evaluate the radial basis function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>r</strong> – Radial distance value.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Function value at distance r.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.rbf_kernel.CubicRadialBasisFunction.grad_over_r">
 <span class="sig-name descname"><span class="pre">grad_over_r</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.model.rbf_kernel.CubicRadialBasisFunction.grad_over_r" title="Link to this definition"></a></dt>
-<dd><p>Gradient of the radial function.</p>
+<dd><p>Gradient of the radial function divided by r.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>r</strong> – Radial distance value.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Gradient divided by r.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -947,7 +975,15 @@ is present.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.rbf_kernel.LinearRadialBasisFunction.__call__">
 <span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.model.rbf_kernel.LinearRadialBasisFunction.__call__" title="Link to this definition"></a></dt>
-<dd><p>Call self as a function.</p>
+<dd><p>Evaluate the radial basis function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>r</strong> – Radial distance value.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Function value at distance r.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -975,25 +1011,57 @@ is present.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.rbf_kernel.RadialBasisFunction.__call__">
 <em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.model.rbf_kernel.RadialBasisFunction.__call__" title="Link to this definition"></a></dt>
-<dd><p>Call self as a function.</p>
+<dd><p>Evaluate the radial basis function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>r</strong> – Radial distance value.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Function value at distance r.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.rbf_kernel.RadialBasisFunction.grad">
 <span class="sig-name descname"><span class="pre">grad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.model.rbf_kernel.RadialBasisFunction.grad" title="Link to this definition"></a></dt>
 <dd><p>Gradient of the radial function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>r</strong> – Radial distance value.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Gradient value at distance r.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.rbf_kernel.RadialBasisFunction.grad_over_r">
 <span class="sig-name descname"><span class="pre">grad_over_r</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.model.rbf_kernel.RadialBasisFunction.grad_over_r" title="Link to this definition"></a></dt>
-<dd><p>Gradient of the radial function.</p>
+<dd><p>Gradient of the radial function divided by r.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>r</strong> – Radial distance value.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Gradient divided by r.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.rbf_kernel.RadialBasisFunction.hess">
 <span class="sig-name descname"><span class="pre">hess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.model.rbf_kernel.RadialBasisFunction.hess" title="Link to this definition"></a></dt>
 <dd><p>Hessian of the radial function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>r</strong> – Radial distance value.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Hessian value at distance r.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -1020,13 +1088,29 @@ is present.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.rbf_kernel.ThinPlateRadialBasisFunction.__call__">
 <span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.model.rbf_kernel.ThinPlateRadialBasisFunction.__call__" title="Link to this definition"></a></dt>
-<dd><p>Call self as a function.</p>
+<dd><p>Evaluate the radial basis function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>r</strong> – Radial distance value.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Function value at distance r.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.rbf_kernel.ThinPlateRadialBasisFunction.grad_over_r">
 <span class="sig-name descname"><span class="pre">grad_over_r</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.model.rbf_kernel.ThinPlateRadialBasisFunction.grad_over_r" title="Link to this definition"></a></dt>
-<dd><p>Gradient of the radial function.</p>
+<dd><p>Gradient of the radial function divided by r.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>r</strong> – Radial distance value.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Gradient divided by r.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">

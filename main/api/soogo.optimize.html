@@ -106,24 +106,12 @@
 <p>Bayesian optimization routine using Gaussian Processes.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="soogo.optimize.bayesian_optimization.bayesian_optimization">
-<span class="sig-prename descclassname"><span class="pre">soogo.optimize.bayesian_optimization.</span></span><span class="sig-name descname"><span class="pre">bayesian_optimization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">surrogateModel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="soogo.model.html#soogo.model.base.Surrogate" title="soogo.model.base.Surrogate"><span class="pre">Surrogate</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acquisitionFunc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.maximize_ei.MaximizeEI" title="soogo.acquisition.maximize_ei.MaximizeEI"><span class="pre">MaximizeEI</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#soogo.optimize.result.OptimizeResult" title="soogo.optimize.result.OptimizeResult"><span class="pre">OptimizeResult</span></a></span></span><a class="headerlink" href="#soogo.optimize.bayesian_optimization.bayesian_optimization" title="Link to this definition"></a></dt>
-<dd><p>Wrapper for surrogate_optimization() using a Gaussian Process surrogate
-model and the Expected Improvement acquisition function.</p>
+<span class="sig-prename descclassname"><span class="pre">soogo.optimize.bayesian_optimization.</span></span><span class="sig-name descname"><span class="pre">bayesian_optimization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#soogo.optimize.result.OptimizeResult" title="soogo.optimize.result.OptimizeResult"><span class="pre">OptimizeResult</span></a></span></span><a class="headerlink" href="#soogo.optimize.bayesian_optimization.bayesian_optimization" title="Link to this definition"></a></dt>
+<dd><p>Wrapper for <a class="reference internal" href="#soogo.optimize.surrogate_optimization.surrogate_optimization" title="soogo.optimize.surrogate_optimization.surrogate_optimization"><code class="xref py py-func docutils literal notranslate"><span class="pre">surrogate_optimization()</span></code></a> using a Gaussian Process
+surrogate model and the Expected Improvement acquisition function.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>*args</strong> – <p>Positional arguments passed to surrogate_optimization().</p>
-</p></li>
-<li><p><strong>surrogateModel</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="soogo.model.html#soogo.model.base.Surrogate" title="soogo.model.base.Surrogate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Surrogate</span></code></a> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – Gaussian Process surrogate model. The
-default is GaussianProcess(). On exit, if provided, the surrogate
-model the points used during the optimization. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
-<li><p><strong>acquisitionFunc</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.maximize_ei.MaximizeEI" title="soogo.acquisition.maximize_ei.MaximizeEI"><code class="xref py py-class docutils literal notranslate"><span class="pre">MaximizeEI</span></code></a> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – Acquisition function to be used. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
-<li><p><strong>**kwargs</strong> – <p>Keyword arguments passed to surrogate_optimization().</p>
-</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#soogo.optimize.result.OptimizeResult" title="soogo.optimize.result.OptimizeResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">OptimizeResult</span></code></a></span></p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#soogo.optimize.result.OptimizeResult" title="soogo.optimize.result.OptimizeResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">OptimizeResult</span></code></a></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -137,31 +125,20 @@ model the points used during the optimization. (default: <code class="docutils l
 <span class="sig-prename descclassname"><span class="pre">soogo.optimize.cptv.</span></span><span class="sig-name descname"><span class="pre">cptv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fun</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxeval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">surrogateModel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="soogo.model.html#soogo.model.rbf.RbfModel" title="soogo.model.rbf.RbfModel"><span class="pre">RbfModel</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acquisitionFunc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.weighted_acquisition.WeightedAcquisition" title="soogo.acquisition.weighted_acquisition.WeightedAcquisition"><span class="pre">WeightedAcquisition</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">improvementTol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">consecutiveQuickFailuresTol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">useLocalSearch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#soogo.optimize.result.OptimizeResult" title="soogo.optimize.result.OptimizeResult"><span class="pre">OptimizeResult</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#soogo.optimize.result.OptimizeResult" title="soogo.optimize.result.OptimizeResult"><span class="pre">OptimizeResult</span></a></span></span><a class="headerlink" href="#soogo.optimize.cptv.cptv" title="Link to this definition"></a></dt>
 <dd><p>Minimize a scalar function of one or more variables using the coordinate
 perturbation and target value strategy.</p>
-<p>This is an implementation of the algorithm desribed in <a class="footnote-reference brackets" href="#id6" id="id5" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>. The algorithm
+<p>This is an implementation of the algorithm desribed in <a class="footnote-reference brackets" href="#id2" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>. The algorithm
 uses a sequence of different acquisition functions as follows:</p>
-<blockquote>
-<div><ol class="arabic simple">
-<li><dl class="simple">
-<dt>CP step: <code class="xref py py-func docutils literal notranslate"><span class="pre">surrogate_optimization()</span></code> with</dt><dd><p><cite>acquisitionFunc</cite>. Ideally, this step would use a
-<code class="xref py py-class docutils literal notranslate"><span class="pre">WeightedAcquisition</span></code> object with a
-<code class="xref py py-class docutils literal notranslate"><span class="pre">NormalSampler</span></code> sampler. The implementation is configured to
-use the acquisition proposed by Müller (2016) by default.</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>TV step: <code class="xref py py-func docutils literal notranslate"><span class="pre">surrogate_optimization()</span></code> with a</dt><dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">TargetValueAcquisition</span></code> object.</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>Local step (only when <cite>useLocalSearch</cite> is True): Runs a local</dt><dd><p>continuous optimization with the true objective using the best point
-found so far as initial guess.</p>
-</dd>
-</dl>
-</li>
+<ol class="arabic simple">
+<li><p>CP step: <a class="reference internal" href="#soogo.optimize.surrogate_optimization.surrogate_optimization" title="soogo.optimize.surrogate_optimization.surrogate_optimization"><code class="xref py py-func docutils literal notranslate"><span class="pre">surrogate_optimization()</span></code></a> with
+<cite>acquisitionFunc</cite>. Ideally, this step would use a
+<a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.weighted_acquisition.WeightedAcquisition" title="soogo.acquisition.weighted_acquisition.WeightedAcquisition"><code class="xref py py-class docutils literal notranslate"><span class="pre">WeightedAcquisition</span></code></a> object with a
+<a class="reference internal" href="soogo.html#soogo.sampling.NormalSampler" title="soogo.sampling.NormalSampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">NormalSampler</span></code></a> sampler. The implementation is configured to
+use the acquisition proposed by Müller (2016) by default.</p></li>
+<li><p>TV step: <a class="reference internal" href="#soogo.optimize.surrogate_optimization.surrogate_optimization" title="soogo.optimize.surrogate_optimization.surrogate_optimization"><code class="xref py py-func docutils literal notranslate"><span class="pre">surrogate_optimization()</span></code></a> with a
+<a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.target_value_acquisition.TargetValueAcquisition" title="soogo.acquisition.target_value_acquisition.TargetValueAcquisition"><code class="xref py py-class docutils literal notranslate"><span class="pre">TargetValueAcquisition</span></code></a> object.</p></li>
+<li><p>Local step (only when <cite>useLocalSearch</cite> is True): Runs a local
+continuous optimization with the true objective using the best point
+found so far as initial guess.</p></li>
 </ol>
-</div></blockquote>
 <p>The stopping criteria of steps 1 and 2 is related to the number of
 consecutive attempts that fail to improve the best solution by at least
 <cite>improvementTol</cite>. The algorithm alternates between steps 1 and 2 until there
@@ -176,11 +153,11 @@ step 3. When the local step is finished, the algorithm goes back top step 1.</p>
 search space.</p></li>
 <li><p><strong>maxeval</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Maximum number of function evaluations.</p></li>
 <li><p><strong>surrogateModel</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="soogo.model.html#soogo.model.rbf.RbfModel" title="soogo.model.rbf.RbfModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">RbfModel</span></code></a> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – Surrogate model to be used. If None is provided, a
-<code class="xref py py-class docutils literal notranslate"><span class="pre">RbfModel</span></code> model with median low-pass filter is used.
+<a class="reference internal" href="soogo.model.html#soogo.model.rbf.RbfModel" title="soogo.model.rbf.RbfModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">RbfModel</span></code></a> model with median low-pass filter is used.
 On exit, if provided, the surrogate model the points used during the
 optimization. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 <li><p><strong>acquisitionFunc</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.weighted_acquisition.WeightedAcquisition" title="soogo.acquisition.weighted_acquisition.WeightedAcquisition"><code class="xref py py-class docutils literal notranslate"><span class="pre">WeightedAcquisition</span></code></a> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – Acquisition function to be used. If None is
-provided, a <code class="xref py py-class docutils literal notranslate"><span class="pre">WeightedAcquisition</span></code> is used following what is
+provided, a <a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.weighted_acquisition.WeightedAcquisition" title="soogo.acquisition.weighted_acquisition.WeightedAcquisition"><code class="xref py py-class docutils literal notranslate"><span class="pre">WeightedAcquisition</span></code></a> is used following what is
 described by Müller (2016). (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 <li><p><strong>improvementTol</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – Expected improvement in the global optimum per
 iteration. (default: <code class="docutils literal notranslate"><span class="pre">0.001</span></code>)</p></li>
@@ -208,8 +185,8 @@ each iteration with the current optimization result. (default: <code class="docu
 <section id="references">
 <h3>References<a class="headerlink" href="#references" title="Link to this heading"></a></h3>
 <aside class="footnote-list brackets">
-<aside class="footnote brackets" id="id6" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id5">1</a><span class="fn-bracket">]</span></span>
+<aside class="footnote brackets" id="id2" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
 <p>Müller, J. MISO: mixed-integer surrogate optimization framework.
 Optim Eng 17, 177–203 (2016). <a class="reference external" href="https://doi.org/10.1007/s11081-015-9281-2">https://doi.org/10.1007/s11081-015-9281-2</a></p>
 </aside>
@@ -234,40 +211,17 @@ Optim Eng 17, 177–203 (2016). <a class="reference external" href="https://doi.
 <p>DYCORS optimization wrapper.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="soogo.optimize.dycors.dycors">
-<span class="sig-prename descclassname"><span class="pre">soogo.optimize.dycors.</span></span><span class="sig-name descname"><span class="pre">dycors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fun</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxeval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">surrogateModel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="soogo.model.html#soogo.model.base.Surrogate" title="soogo.model.base.Surrogate"><span class="pre">Surrogate</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acquisitionFunc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.weighted_acquisition.WeightedAcquisition" title="soogo.acquisition.weighted_acquisition.WeightedAcquisition"><span class="pre">WeightedAcquisition</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batchSize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#soogo.optimize.result.OptimizeResult" title="soogo.optimize.result.OptimizeResult"><span class="pre">OptimizeResult</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.optimize.dycors.dycors" title="Link to this definition"></a></dt>
-<dd><p>DYCORS algorithm for single-objective optimization</p>
+<span class="sig-prename descclassname"><span class="pre">soogo.optimize.dycors.</span></span><span class="sig-name descname"><span class="pre">dycors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.optimize.dycors.dycors" title="Link to this definition"></a></dt>
+<dd><p>DYCORS algorithm for single-objective optimization implemented as a
+wrapper to <a class="reference internal" href="#soogo.optimize.surrogate_optimization.surrogate_optimization" title="soogo.optimize.surrogate_optimization.surrogate_optimization"><code class="xref py py-func docutils literal notranslate"><span class="pre">surrogate_optimization()</span></code></a>.</p>
 <p>Implementation of the DYCORS (DYnamic COordinate search using Response
-Surface models) algorithm proposed in <a class="footnote-reference brackets" href="#id9" id="id7" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>. That is a wrapper to
-<code class="xref py py-func docutils literal notranslate"><span class="pre">surrogate_optimization()</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>fun</strong> – The objective function to be minimized.</p></li>
-<li><p><strong>bounds</strong> – List with the limits [x_min,x_max] of each direction x in the
-search space.</p></li>
-<li><p><strong>maxeval</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Maximum number of function evaluations.</p></li>
-<li><p><strong>surrogateModel</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="soogo.model.html#soogo.model.base.Surrogate" title="soogo.model.base.Surrogate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Surrogate</span></code></a> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – Surrogate model to be used. If None is provided, a
-<code class="xref py py-class docutils literal notranslate"><span class="pre">RbfModel</span></code> model with median low-pass filter is used.
-On exit, if provided, the surrogate model the points used during the
-optimization. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
-<li><p><strong>acquisitionFunc</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.weighted_acquisition.WeightedAcquisition" title="soogo.acquisition.weighted_acquisition.WeightedAcquisition"><code class="xref py py-class docutils literal notranslate"><span class="pre">WeightedAcquisition</span></code></a> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – Acquisition function to be used. If None is
-provided, the acquisition function is the one used in DYCORS-LMSRBF from
-Regis and Shoemaker (2012). (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
-<li><p><strong>batchSize</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Number of new sample points to be generated per iteration. (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
-<li><p><strong>disp</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If True, print information about the optimization process. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
-<li><p><strong>callback</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<a class="reference internal" href="#soogo.optimize.result.OptimizeResult" title="soogo.optimize.result.OptimizeResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">OptimizeResult</span></code></a>], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>] | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – If provided, the callback function will be called after
-each iteration with the current optimization result. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The optimization result.</p>
-</dd>
-</dl>
-<section id="id8">
-<h3>References<a class="headerlink" href="#id8" title="Link to this heading"></a></h3>
+Surface models) algorithm proposed in <a class="footnote-reference brackets" href="#id5" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>. The acquisition function, if not
+provided, is the one used in DYCORS-LMSRBF from Regis and Shoemaker (2012).</p>
+<section id="id4">
+<h3>References<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
 <aside class="footnote-list brackets">
-<aside class="footnote brackets" id="id9" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id7">2</a><span class="fn-bracket">]</span></span>
+<aside class="footnote brackets" id="id5" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">2</a><span class="fn-bracket">]</span></span>
 <p>Regis, R. G., &amp; Shoemaker, C. A. (2012). Combining radial basis
 function surrogates and dynamic coordinate search in
 high-dimensional expensive black-box optimization.
@@ -287,7 +241,7 @@ Engineering Optimization, 45(5), 529–555.
 <span class="sig-prename descclassname"><span class="pre">soogo.optimize.fsapso.</span></span><span class="sig-name descname"><span class="pre">fsapso</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fun</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxeval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">surrogateModel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="soogo.model.html#soogo.model.base.Surrogate" title="soogo.model.base.Surrogate"><span class="pre">Surrogate</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#soogo.optimize.result.OptimizeResult" title="soogo.optimize.result.OptimizeResult"><span class="pre">OptimizeResult</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#soogo.optimize.result.OptimizeResult" title="soogo.optimize.result.OptimizeResult"><span class="pre">OptimizeResult</span></a></span></span><a class="headerlink" href="#soogo.optimize.fsapso.fsapso" title="Link to this definition"></a></dt>
 <dd><p>Minimize a scalar function of one or more variables using the fast
 surrogate-assisted particle swarm optimization (FSAPSO) algorithm
-presented in <a class="footnote-reference brackets" href="#id12" id="id10" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a>.</p>
+presented in <a class="footnote-reference brackets" href="#id8" id="id6" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -296,8 +250,8 @@ presented in <a class="footnote-reference brackets" href="#id12" id="id10" role=
 search space.</p></li>
 <li><p><strong>maxeval</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Maximum number of function evaluations.</p></li>
 <li><p><strong>surrogateModel</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="soogo.model.html#soogo.model.base.Surrogate" title="soogo.model.base.Surrogate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Surrogate</span></code></a> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – Surrogate model to be used. If None is provided, a
-<code class="xref py py-class docutils literal notranslate"><span class="pre">RbfModel</span></code> model with cubic kernel is used. On exit, if provided,
-the surrogate model will contain the points used during the
+<a class="reference internal" href="soogo.model.html#soogo.model.rbf.RbfModel" title="soogo.model.rbf.RbfModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">RbfModel</span></code></a> model with cubic kernel is used. On exit, if
+provided, the surrogate model will contain the points used during the
 optimization. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 <li><p><strong>callback</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<a class="reference internal" href="#soogo.optimize.result.OptimizeResult" title="soogo.optimize.result.OptimizeResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">OptimizeResult</span></code></a>], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>] | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – If provided, the callback function will be called after
 each iteration with the current optimization result. The default is
@@ -313,11 +267,11 @@ The default is False. (default: <code class="docutils literal notranslate"><span
 <dd class="field-odd"><p>The optimization result.</p>
 </dd>
 </dl>
-<section id="id11">
-<h3>References<a class="headerlink" href="#id11" title="Link to this heading"></a></h3>
+<section id="id7">
+<h3>References<a class="headerlink" href="#id7" title="Link to this heading"></a></h3>
 <aside class="footnote-list brackets">
-<aside class="footnote brackets" id="id12" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id10">3</a><span class="fn-bracket">]</span></span>
+<aside class="footnote brackets" id="id8" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id6">3</a><span class="fn-bracket">]</span></span>
 <p>Li, F., Shen, W., Cai, X., Gao, L., &amp; Gary Wang, G. 2020; A
 fast surrogate-assisted particle swarm optimization algorithm for
 computationally expensive problems. Applied Soft Computing, 92,
@@ -339,7 +293,7 @@ constraints.</p>
 <p>The surrogate models are used to approximate the constraints. The objective
 function is assumed to be cheap to evaluate, while the constraints are
 assumed to be expensive to evaluate.</p>
-<p>This method is based on <a class="footnote-reference brackets" href="#id15" id="id13" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a>.</p>
+<p>This method is based on <a class="footnote-reference brackets" href="#id11" id="id9" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -350,7 +304,7 @@ constraints must be formulated as g(x) &lt;= 0.</p></li>
 x in the search space.</p></li>
 <li><p><strong>maxeval</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Maximum number of function evaluations.</p></li>
 <li><p><strong>surrogateModel</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="soogo.model.html#soogo.model.base.Surrogate" title="soogo.model.base.Surrogate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Surrogate</span></code></a> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – Surrogate model to be used for the
-constraints. If None is provided, a <code class="xref py py-class docutils literal notranslate"><span class="pre">RbfModel</span></code> model is
+constraints. If None is provided, a <a class="reference internal" href="soogo.model.html#soogo.model.rbf.RbfModel" title="soogo.model.rbf.RbfModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">RbfModel</span></code></a> model is
 used. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 <li><p><strong>disp</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If True, print information about the optimization
 process. The default is False. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
@@ -363,11 +317,11 @@ default is None. (default: <code class="docutils literal notranslate"><span clas
 <dd class="field-even"><p>The optimization result.</p>
 </dd>
 </dl>
-<section id="id14">
-<h3>References<a class="headerlink" href="#id14" title="Link to this heading"></a></h3>
+<section id="id10">
+<h3>References<a class="headerlink" href="#id10" title="Link to this heading"></a></h3>
 <aside class="footnote-list brackets">
-<aside class="footnote brackets" id="id15" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id13">4</a><span class="fn-bracket">]</span></span>
+<aside class="footnote brackets" id="id11" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id9">4</a><span class="fn-bracket">]</span></span>
 <p>Juliane Müller and Joshua D. Woodbury. 2017. GOSAC: global
 optimization with surrogate approximation of constraints. J. of Global
 Optimization 69, 1 (September 2017), 117–136.
@@ -386,10 +340,10 @@ Optimization 69, 1 (September 2017), 117–136.
 <span class="sig-prename descclassname"><span class="pre">soogo.optimize.multistart_msrs.</span></span><span class="sig-name descname"><span class="pre">multistart_msrs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fun</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxeval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">surrogateModel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="soogo.model.html#soogo.model.base.Surrogate" title="soogo.model.base.Surrogate"><span class="pre">Surrogate</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batchSize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#soogo.optimize.result.OptimizeResult" title="soogo.optimize.result.OptimizeResult"><span class="pre">OptimizeResult</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#soogo.optimize.result.OptimizeResult" title="soogo.optimize.result.OptimizeResult"><span class="pre">OptimizeResult</span></a></span></span><a class="headerlink" href="#soogo.optimize.multistart_msrs.multistart_msrs" title="Link to this definition"></a></dt>
 <dd><p>Minimize a scalar function of one or more variables using a response
 surface model approach with restarts.</p>
-<p>This implementation generalizes the algorithms Multistart LMSRS from <a class="footnote-reference brackets" href="#id18" id="id16" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a>.
-The general algorithm calls <code class="xref py py-func docutils literal notranslate"><span class="pre">surrogate_optimization()</span></code> successive
+<p>This implementation generalizes the algorithms Multistart LMSRS from <a class="footnote-reference brackets" href="#id14" id="id12" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a>.
+The general algorithm calls <a class="reference internal" href="#soogo.optimize.surrogate_optimization.surrogate_optimization" title="soogo.optimize.surrogate_optimization.surrogate_optimization"><code class="xref py py-func docutils literal notranslate"><span class="pre">surrogate_optimization()</span></code></a> successive
 times until there are no more function evaluations available. The first
-time <code class="xref py py-func docutils literal notranslate"><span class="pre">surrogate_optimization()</span></code> is called with the given, if
+time <a class="reference internal" href="#soogo.optimize.surrogate_optimization.surrogate_optimization" title="soogo.optimize.surrogate_optimization.surrogate_optimization"><code class="xref py py-func docutils literal notranslate"><span class="pre">surrogate_optimization()</span></code></a> is called with the given, if
 any, trained surrogate model. Other function calls use an empty
 surrogate model. This is done to enable truly different starting samples
 each time.</p>
@@ -400,8 +354,9 @@ each time.</p>
 <li><p><strong>bounds</strong> – List with the limits [x_min,x_max] of each direction x in the
 search space.</p></li>
 <li><p><strong>maxeval</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Maximum number of function evaluations.</p></li>
-<li><p><strong>surrogateModel</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="soogo.model.html#soogo.model.base.Surrogate" title="soogo.model.base.Surrogate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Surrogate</span></code></a> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – Surrogate model to be used. If None is provided, a
-<code class="xref py py-class docutils literal notranslate"><span class="pre">RbfModel</span></code> model with median low-pass filter is used. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>surrogateModel</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="soogo.model.html#soogo.model.base.Surrogate" title="soogo.model.base.Surrogate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Surrogate</span></code></a> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – Surrogate model to be used. Only used as input, not
+updated. If None is provided, <a class="reference internal" href="#soogo.optimize.surrogate_optimization.surrogate_optimization" title="soogo.optimize.surrogate_optimization.surrogate_optimization"><code class="xref py py-func docutils literal notranslate"><span class="pre">surrogate_optimization()</span></code></a> will
+choose a default model. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 <li><p><strong>batchSize</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Number of new sample points to be generated per iteration. (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
 <li><p><strong>disp</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If True, print information about the optimization process. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
 <li><p><strong>callback</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<a class="reference internal" href="#soogo.optimize.result.OptimizeResult" title="soogo.optimize.result.OptimizeResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">OptimizeResult</span></code></a>], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>] | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – If provided, the callback function will be called after
@@ -415,11 +370,11 @@ each iteration with the current optimization result. (default: <code class="docu
 <dd class="field-odd"><p>The optimization result.</p>
 </dd>
 </dl>
-<section id="id17">
-<h3>References<a class="headerlink" href="#id17" title="Link to this heading"></a></h3>
+<section id="id13">
+<h3>References<a class="headerlink" href="#id13" title="Link to this heading"></a></h3>
 <aside class="footnote-list brackets">
-<aside class="footnote brackets" id="id18" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id16">5</a><span class="fn-bracket">]</span></span>
+<aside class="footnote brackets" id="id14" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id12">5</a><span class="fn-bracket">]</span></span>
 <p>Rommel G Regis and Christine A Shoemaker. A stochastic radial basis
 function method for the global optimization of expensive functions.
 INFORMS Journal on Computing, 19(4):497–509, 2007.</p>
@@ -561,7 +516,7 @@ dimensions are sampled. (default: <code class="docutils literal notranslate"><sp
 <dl class="py function">
 <dt class="sig sig-object py" id="soogo.optimize.shebo.shebo">
 <span class="sig-prename descclassname"><span class="pre">soogo.optimize.shebo.</span></span><span class="sig-name descname"><span class="pre">shebo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fun</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxeval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">objSurrogate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="soogo.model.html#soogo.model.rbf.RbfModel" title="soogo.model.rbf.RbfModel"><span class="pre">RbfModel</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">evalSurrogate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="soogo.model.html#soogo.model.base.Surrogate" title="soogo.model.base.Surrogate"><span class="pre">Surrogate</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acquisitionFunc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.base.Acquisition" title="soogo.acquisition.base.Acquisition"><span class="pre">Acquisition</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#soogo.optimize.result.OptimizeResult" title="soogo.optimize.result.OptimizeResult"><span class="pre">OptimizeResult</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#soogo.optimize.result.OptimizeResult" title="soogo.optimize.result.OptimizeResult"><span class="pre">OptimizeResult</span></a></span></span><a class="headerlink" href="#soogo.optimize.shebo.shebo" title="Link to this definition"></a></dt>
-<dd><p>Minimize a function using the SHEBO algorithm from <a class="footnote-reference brackets" href="#id21" id="id19" role="doc-noteref"><span class="fn-bracket">[</span>6<span class="fn-bracket">]</span></a>.</p>
+<dd><p>Minimize a function using the SHEBO algorithm from <a class="footnote-reference brackets" href="#id17" id="id15" role="doc-noteref"><span class="fn-bracket">[</span>6<span class="fn-bracket">]</span></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -570,13 +525,13 @@ dimensions are sampled. (default: <code class="docutils literal notranslate"><sp
 search space.</p></li>
 <li><p><strong>maxeval</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Maximum number of function evaluations.</p></li>
 <li><p><strong>objSurrogate</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="soogo.model.html#soogo.model.rbf.RbfModel" title="soogo.model.rbf.RbfModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">RbfModel</span></code></a> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – Surrogate model for the objective function. If None is
-provided, a <code class="xref py py-class docutils literal notranslate"><span class="pre">RbfModel</span></code> model with Cubic Radial Basis Function is
+provided, a <a class="reference internal" href="soogo.model.html#soogo.model.rbf.RbfModel" title="soogo.model.rbf.RbfModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">RbfModel</span></code></a> model with Cubic Radial Basis Function is
 used. On exit, if provided, the surrogate model will contain the points
 used during the optimization process. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 <li><p><strong>evalSurrogate</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="soogo.model.html#soogo.model.base.Surrogate" title="soogo.model.base.Surrogate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Surrogate</span></code></a> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – Surrogate model for the evaluation function. If None
-is provided, a <code class="xref py py-class docutils literal notranslate"><span class="pre">RbfModel</span></code> model with Linear Radial Basis Function
-is used. On exit, if provided, the surrogate model will contain the
-points used during the optimization process. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+is provided, a <a class="reference internal" href="soogo.model.html#soogo.model.rbf.RbfModel" title="soogo.model.rbf.RbfModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">RbfModel</span></code></a> model with Linear Radial Basis
+Function is used. On exit, if provided, the surrogate model will contain
+the points used during the optimization process. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 <li><p><strong>acquisitionFunc</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.base.Acquisition" title="soogo.acquisition.base.Acquisition"><code class="xref py py-class docutils literal notranslate"><span class="pre">Acquisition</span></code></a> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – Acquisition function to be used in the optimization
 loop. If None is provided, the acquisition cycle described by
 Müller and Day (2019) is used. Each call, the acquisition function is
@@ -598,11 +553,11 @@ None. (default: <code class="docutils literal notranslate"><span class="pre">Non
 <dd class="field-odd"><p>The optimization result.</p>
 </dd>
 </dl>
-<section id="id20">
-<h3>References<a class="headerlink" href="#id20" title="Link to this heading"></a></h3>
+<section id="id16">
+<h3>References<a class="headerlink" href="#id16" title="Link to this heading"></a></h3>
 <aside class="footnote-list brackets">
-<aside class="footnote brackets" id="id21" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id19">6</a><span class="fn-bracket">]</span></span>
+<aside class="footnote brackets" id="id17" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id15">6</a><span class="fn-bracket">]</span></span>
 <p>Juliane Müller and Marcus Day. Surrogate Optimization of
 Computationally Expensive Black-Box Problems with Hidden Constraints.
 INFORMS Journal on Computing, 31(4):689-702, 2019.
@@ -620,7 +575,7 @@ INFORMS Journal on Computing, 31(4):689-702, 2019.
 <dt class="sig sig-object py" id="soogo.optimize.socemo.socemo">
 <span class="sig-prename descclassname"><span class="pre">soogo.optimize.socemo.</span></span><span class="sig-name descname"><span class="pre">socemo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fun</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxeval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">surrogateModel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="soogo.model.html#soogo.model.base.Surrogate" title="soogo.model.base.Surrogate"><span class="pre">Surrogate</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acquisitionFunc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.weighted_acquisition.WeightedAcquisition" title="soogo.acquisition.weighted_acquisition.WeightedAcquisition"><span class="pre">WeightedAcquisition</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acquisitionFuncGlobal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.weighted_acquisition.WeightedAcquisition" title="soogo.acquisition.weighted_acquisition.WeightedAcquisition"><span class="pre">WeightedAcquisition</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#soogo.optimize.result.OptimizeResult" title="soogo.optimize.result.OptimizeResult"><span class="pre">OptimizeResult</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.optimize.socemo.socemo" title="Link to this definition"></a></dt>
 <dd><p>Minimize a multiobjective function using the surrogate model approach
-from <a class="footnote-reference brackets" href="#id24" id="id22" role="doc-noteref"><span class="fn-bracket">[</span>7<span class="fn-bracket">]</span></a>.</p>
+from <a class="footnote-reference brackets" href="#id20" id="id18" role="doc-noteref"><span class="fn-bracket">[</span>7<span class="fn-bracket">]</span></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -629,7 +584,7 @@ from <a class="footnote-reference brackets" href="#id24" id="id22" role="doc-not
 x in the search space.</p></li>
 <li><p><strong>maxeval</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Maximum number of function evaluations.</p></li>
 <li><p><strong>surrogateModel</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="soogo.model.html#soogo.model.base.Surrogate" title="soogo.model.base.Surrogate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Surrogate</span></code></a> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – Multi-target surrogate model to be used. If
-None is provided, a <code class="xref py py-class docutils literal notranslate"><span class="pre">RbfModel</span></code> model is used. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+None is provided, a <a class="reference internal" href="soogo.model.html#soogo.model.rbf.RbfModel" title="soogo.model.rbf.RbfModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">RbfModel</span></code></a> model is used. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 <li><p><strong>acquisitionFunc</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.weighted_acquisition.WeightedAcquisition" title="soogo.acquisition.weighted_acquisition.WeightedAcquisition"><code class="xref py py-class docutils literal notranslate"><span class="pre">WeightedAcquisition</span></code></a> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – Acquisition function to be used in the CP
 step. The default is WeightedAcquisition(0). (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 <li><p><strong>acquisitionFuncGlobal</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.weighted_acquisition.WeightedAcquisition" title="soogo.acquisition.weighted_acquisition.WeightedAcquisition"><code class="xref py py-class docutils literal notranslate"><span class="pre">WeightedAcquisition</span></code></a> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – Acquisition function to be used in the
@@ -646,11 +601,11 @@ default is None. (default: <code class="docutils literal notranslate"><span clas
 <dd class="field-even"><p>The optimization result.</p>
 </dd>
 </dl>
-<section id="id23">
-<h3>References<a class="headerlink" href="#id23" title="Link to this heading"></a></h3>
+<section id="id19">
+<h3>References<a class="headerlink" href="#id19" title="Link to this heading"></a></h3>
 <aside class="footnote-list brackets">
-<aside class="footnote brackets" id="id24" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id22">7</a><span class="fn-bracket">]</span></span>
+<aside class="footnote brackets" id="id20" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id18">7</a><span class="fn-bracket">]</span></span>
 <p>Juliane Mueller. SOCEMO: Surrogate Optimization of Computationally
 Expensive Multiobjective Problems.
 INFORMS Journal on Computing, 29(4):581-783, 2017.
@@ -670,7 +625,7 @@ INFORMS Journal on Computing, 29(4):581-783, 2017.
 <dd><p>Minimize a scalar function of one or more variables using a surrogate
 model and an acquisition strategy.</p>
 <p>This is a more generic implementation of the RBF algorithm described in
-<a class="footnote-reference brackets" href="#id28" id="id25" role="doc-noteref"><span class="fn-bracket">[</span>8<span class="fn-bracket">]</span></a>, using multiple ideas from <a class="footnote-reference brackets" href="#id29" id="id26" role="doc-noteref"><span class="fn-bracket">[</span>9<span class="fn-bracket">]</span></a> especially in what concerns
+<a class="footnote-reference brackets" href="#id24" id="id21" role="doc-noteref"><span class="fn-bracket">[</span>8<span class="fn-bracket">]</span></a>, using multiple ideas from <a class="footnote-reference brackets" href="#id25" id="id22" role="doc-noteref"><span class="fn-bracket">[</span>9<span class="fn-bracket">]</span></a> especially in what concerns
 mixed-integer optimization. Briefly, the implementation works as follows:</p>
 <blockquote>
 <div><ol class="arabic simple">
@@ -700,11 +655,11 @@ Müller (2016).</p>
 search space.</p></li>
 <li><p><strong>maxeval</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Maximum number of function evaluations.</p></li>
 <li><p><strong>surrogateModel</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="soogo.model.html#soogo.model.base.Surrogate" title="soogo.model.base.Surrogate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Surrogate</span></code></a> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – Surrogate model to be used. If None is provided, a
-<code class="xref py py-class docutils literal notranslate"><span class="pre">RbfModel</span></code> model with median low-pass filter is used.
+<a class="reference internal" href="soogo.model.html#soogo.model.rbf.RbfModel" title="soogo.model.rbf.RbfModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">RbfModel</span></code></a> model with median low-pass filter is used.
 On exit, if provided, the surrogate model the points used during the
 optimization. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 <li><p><strong>acquisitionFunc</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.base.Acquisition" title="soogo.acquisition.base.Acquisition"><code class="xref py py-class docutils literal notranslate"><span class="pre">Acquisition</span></code></a> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – Acquisition function to be used. If None is
-provided, the <code class="xref py py-class docutils literal notranslate"><span class="pre">TargetValueAcquisition</span></code> is used. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+provided, the <a class="reference internal" href="soogo.acquisition.html#soogo.acquisition.target_value_acquisition.TargetValueAcquisition" title="soogo.acquisition.target_value_acquisition.TargetValueAcquisition"><code class="xref py py-class docutils literal notranslate"><span class="pre">TargetValueAcquisition</span></code></a> is used. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 <li><p><strong>batchSize</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Number of new sample points to be generated per iteration. (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
 <li><p><strong>improvementTol</strong> – Expected improvement in the global optimum per
 iteration.</p></li>
@@ -731,17 +686,17 @@ each iteration with the current optimization result. (default: <code class="docu
 <dd class="field-odd"><p>The optimization result.</p>
 </dd>
 </dl>
-<section id="id27">
-<h3>References<a class="headerlink" href="#id27" title="Link to this heading"></a></h3>
+<section id="id23">
+<h3>References<a class="headerlink" href="#id23" title="Link to this heading"></a></h3>
 <aside class="footnote-list brackets">
-<aside class="footnote brackets" id="id28" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id25">8</a><span class="fn-bracket">]</span></span>
+<aside class="footnote brackets" id="id24" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id21">8</a><span class="fn-bracket">]</span></span>
 <p>Björkman, M., Holmström, K. Global Optimization of Costly
 Nonconvex Functions Using Radial Basis Functions. Optimization and
 Engineering 1, 373–397 (2000). <a class="reference external" href="https://doi.org/10.1023/A:1011584207202">https://doi.org/10.1023/A:1011584207202</a></p>
 </aside>
-<aside class="footnote brackets" id="id29" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id26">9</a><span class="fn-bracket">]</span></span>
+<aside class="footnote brackets" id="id25" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id22">9</a><span class="fn-bracket">]</span></span>
 <p>Müller, J. MISO: mixed-integer surrogate optimization framework.
 Optim Eng 17, 177–203 (2016). <a class="reference external" href="https://doi.org/10.1007/s11081-015-9281-2">https://doi.org/10.1007/s11081-015-9281-2</a></p>
 </aside>
@@ -778,7 +733,7 @@ Optim Eng 17, 177–203 (2016). <a class="reference external" href="https://doi.
 <dt class="sig sig-object py" id="soogo.optimize.utils.uncertainty_score">
 <span class="sig-prename descclassname"><span class="pre">soogo.optimize.utils.</span></span><span class="sig-name descname"><span class="pre">uncertainty_score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">candidates</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fvals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.optimize.utils.uncertainty_score" title="Link to this definition"></a></dt>
 <dd><p>Calculate the uncertainty (distance and fitness value criterion)
-score as defined in <a class="footnote-reference brackets" href="#id32" id="id30" role="doc-noteref"><span class="fn-bracket">[</span>10<span class="fn-bracket">]</span></a>.</p>
+score as defined in <a class="footnote-reference brackets" href="#id28" id="id26" role="doc-noteref"><span class="fn-bracket">[</span>10<span class="fn-bracket">]</span></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -793,11 +748,11 @@ the uncertainty calculation. Default is 3. (default: <code class="docutils liter
 <dd class="field-even"><p>The uncertainty score for each candidate point.</p>
 </dd>
 </dl>
-<section id="id31">
-<h3>References<a class="headerlink" href="#id31" title="Link to this heading"></a></h3>
+<section id="id27">
+<h3>References<a class="headerlink" href="#id27" title="Link to this heading"></a></h3>
 <aside class="footnote-list brackets">
-<aside class="footnote brackets" id="id32" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id30">10</a><span class="fn-bracket">]</span></span>
+<aside class="footnote brackets" id="id28" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id26">10</a><span class="fn-bracket">]</span></span>
 <p>Li, F., Shen, W., Cai, X., Gao, L., &amp; Gary Wang, G. 2020; A
 fast surrogate-assisted particle swarm optimization algorithm for
 computationally expensive problems. Applied Soft Computing, 92,
