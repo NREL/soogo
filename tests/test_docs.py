@@ -18,10 +18,12 @@
 __authors__ = ["Weslley S. Pereira"]
 
 import subprocess
+import pytest
 import tempfile
 import sys
 from pathlib import Path
-import pytest
+
+pytestmark = [pytest.mark.slow, pytest.mark.docs, pytest.mark.integration]
 
 
 class TestSphinxDocumentation:

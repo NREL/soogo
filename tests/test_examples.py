@@ -22,6 +22,8 @@ import json
 from pathlib import Path
 from contextlib import contextmanager
 
+pytestmark = [pytest.mark.slow, pytest.mark.examples, pytest.mark.integration]
+
 
 class TestExamples:
     """Test class to verify that all example files run successfully."""
