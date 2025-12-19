@@ -17,6 +17,7 @@
 
 __authors__ = ["Weslley S. Pereira"]
 
+from functools import partial
 import numpy as np
 from math import log
 from scipy.spatial import KDTree
@@ -28,6 +29,31 @@ from .base import Acquisition
 from ..model import Surrogate
 from ..sampling import Sampler
 from .utils import FarEnoughSampleFilter
+
+
+def _eval_with_replacement(fun, x: np.ndarray, i, xi):
+    """Helper function to evaluate fun at x with x[i] replaced by xi.
+
+    :param fun: Function to be evaluated.
+    :param x: Point where fun is evaluated.
+    :param i: Index(es) of x to be replaced.
+    :param xi: Value(s) to replace x[i].
+    :return: fun evaluated at x with x[i] replaced by xi.
+    """
+    _x = x.copy()
+    _x[i] = xi
+    return fun(_x)
+
+
+def _partial_return(fun, i, x):
+    """Helper function to return only the i-th component of fun(x).
+
+    :param fun: Function to be evaluated.
+    :param i: Index of the component to be returned.
+    :param x: Point where fun is evaluated.
+    :return: i-th component of fun(x).
+    """
+    return fun(x)[i]
 
 
 class MinimizeSurrogate(Acquisition):
@@ -99,6 +125,9 @@ class MinimizeSurrogate(Acquisition):
         critdist = (
             (gamma(1 + (dim / 2)) * volumeBounds * sigma) ** (1 / dim)
         ) / np.sqrt(np.pi)  # critical distance when 2 points are equal
+        has_jac = hasattr(surrogateModel, "jac") and callable(
+            getattr(surrogateModel, "jac")
+        )
 
         # Local space to store information
         candidates = np.empty((self.sampler.n * maxiter, dim))
@@ -168,29 +197,20 @@ class MinimizeSurrogate(Acquisition):
             for i in range(nSelected):
                 xi = candidates[chosenIds[i], :]
 
-                def func_continuous_search(x):
-                    x_ = xi.copy()
-                    x_[cindex] = x
-                    return surrogateModel(x_)
-
-                def dfunc_continuous_search(x):
-                    x_ = xi.copy()
-                    x_[cindex] = x
-                    return surrogateModel.jac(x_)[cindex]
-
-                # def hessp_continuous_search(x, p):
-                #     x_ = xi.copy()
-                #     x_[cindex] = x
-                #     p_ = np.zeros(dim)
-                #     p_[cindex] = p
-                #     return surrogateModel.hessp(x_, p_)[cindex]
-
                 res = minimize(
-                    func_continuous_search,
+                    partial(
+                        _eval_with_replacement, surrogateModel, xi, cindex
+                    ),
                     xi[cindex],
                     method="L-BFGS-B",
-                    jac=dfunc_continuous_search,
-                    # hessp=hessp_continuous_search,
+                    jac=partial(
+                        _eval_with_replacement,
+                        partial(_partial_return, surrogateModel.jac, cindex),
+                        xi,
+                        cindex,
+                    )
+                    if has_jac
+                    else None,
                     bounds=cbounds,
                     options={
                         "maxfun": remevals,
@@ -226,21 +246,3 @@ class MinimizeSurrogate(Acquisition):
             iter += 1
 
         return selected[0:k, :]
-
-        # if k > 0:
-        #     return selected[0:k, :]
-        # else:
-        #     # No new points found by the differential evolution method
-        #     singleCandSampler = Mitchel91Sampler(1)
-        #     selected = singleCandSampler.get_mitchel91_sample(
-        #         bounds,
-        #         iindex=surrogateModel.iindex,
-        #         current_sample=surrogateModel.X,
-        #     )
-        #     while tree.query(selected)[0] < atol:
-        #         selected = singleCandSampler.get_mitchel91_sample(
-        #             bounds,
-        #             iindex=surrogateModel.iindex,
-        #             current_sample=surrogateModel.X,
-        #         )
-        #     return selected.reshape(1, -1)

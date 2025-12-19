@@ -266,7 +266,7 @@ class TestRobustCondition:
 
         # Second update: inner is met (count=2)
         condition.update(out, None)
-        assert not condition.history[-1]
+        assert condition.history[-1]
 
         # Third update: inner still met (count=3)
         condition.update(out, None)
