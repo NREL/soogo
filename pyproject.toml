@@ -62,7 +62,7 @@ tag_filter = "v[0-9]*"
 
 [tool.pdm.build]
 includes = ["soogo"]
-source-includes = ["tests/*.py"]
+source-includes = ["tests/**/*.py"]
 
 [tool.ruff]
 line-length = 79
