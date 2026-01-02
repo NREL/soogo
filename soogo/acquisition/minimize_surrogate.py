@@ -17,7 +17,6 @@
 
 __authors__ = ["Weslley S. Pereira"]
 
-from functools import partial
 import numpy as np
 from math import log
 from scipy.spatial import KDTree
@@ -31,34 +30,33 @@ from ..sampling import Sampler
 from .utils import FarEnoughSampleFilter
 
 
-def _eval_with_replacement(fun, x: np.ndarray, i, xi):
-    """Helper function to evaluate fun at x with x[i] replaced by xi.
+class _SurrogateMinimizerWrapper:
+    """Helper class to wrap surrogate model for minimization.
 
-    :param fun: Function to be evaluated.
-    :param x: Point where fun is evaluated.
-    :param i: Index(es) of x to be replaced.
-    :param xi: Value(s) to replace x[i].
-    :return: fun evaluated at x with x[i] replaced by xi.
+    :param surrogateModel: Surrogate model to be minimized.
+    :param x: Base point in the space.
+    :param i: Index(s) that will be optimized.
     """
-    # Avoid creating a full copy of x on every call by modifying only the
-    # affected entries in place and restoring them afterwards.
-    old = np.array(x[i], copy=True)
-    try:
-        x[i] = xi
-        return fun(x)
-    finally:
-        x[i] = old
 
+    def __init__(self, surrogateModel, x, i):
+        self.surrogateModel = surrogateModel
+        self.x = x
+        self.i = i
 
-def _partial_return(fun, i, x):
-    """Helper function to return only the i-th component of fun(x).
+    def fun(self, xi):
+        """Evaluate surrogate model at modified point x[i] = xi."""
+        _x = self.x.copy()
+        _x[self.i] = xi
+        return self.surrogateModel(_x)
 
-    :param fun: Function to be evaluated.
-    :param i: Index of the component to be returned.
-    :param x: Point where fun is evaluated.
-    :return: i-th component of fun(x).
-    """
-    return fun(x)[i]
+    def jac(self, xi):
+        """Evaluate surrogate model Jacobian at modified point x[i] = xi.
+
+        Only the components corresponding to indices i are returned.
+        """
+        _x = self.x.copy()
+        _x[self.i] = xi
+        return self.surrogateModel.jac(_x)[self.i]
 
 
 class MinimizeSurrogate(Acquisition):
@@ -202,20 +200,14 @@ class MinimizeSurrogate(Acquisition):
             for i in range(nSelected):
                 xi = candidates[chosenIds[i], :]
 
+                wrapper = _SurrogateMinimizerWrapper(
+                    surrogateModel, xi, cindex
+                )
                 res = minimize(
-                    partial(
-                        _eval_with_replacement, surrogateModel, xi, cindex
-                    ),
+                    wrapper.fun,
                     xi[cindex],
                     method="L-BFGS-B",
-                    jac=partial(
-                        _eval_with_replacement,
-                        partial(_partial_return, surrogateModel.jac, cindex),
-                        xi,
-                        cindex,
-                    )
-                    if has_jac
-                    else None,
+                    jac=wrapper.jac if has_jac else None,
                     bounds=cbounds,
                     options={
                         "maxfun": remevals,

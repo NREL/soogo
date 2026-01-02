@@ -43,7 +43,7 @@ class TestAlternatedAcquisition:
         # Create mock acquisition functions
         class MockAcquisition(Acquisition):
             def __init__(self, n: int):
-                self.termination = IterateNTimes(n)
+                super().__init__(termination=IterateNTimes(n))
 
             def optimize(
                 self, model: Surrogate, bounds: np.ndarray, n: int = 1
