@@ -40,9 +40,14 @@ def _eval_with_replacement(fun, x: np.ndarray, i, xi):
     :param xi: Value(s) to replace x[i].
     :return: fun evaluated at x with x[i] replaced by xi.
     """
-    _x = x.copy()
-    _x[i] = xi
-    return fun(_x)
+    # Avoid creating a full copy of x on every call by modifying only the
+    # affected entries in place and restoring them afterwards.
+    old = np.array(x[i], copy=True)
+    try:
+        x[i] = xi
+        return fun(x)
+    finally:
+        x[i] = old
 
 
 def _partial_return(fun, i, x):
