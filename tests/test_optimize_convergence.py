@@ -18,8 +18,8 @@
 __authors__ = ["Weslley S. Pereira", "Byron Selvage"]
 
 import pygoblet
-import numpy as np
 import pytest
+import numpy as np
 
 from soogo import (
     surrogate_optimization,
@@ -31,6 +31,12 @@ from soogo import (
     bayesian_optimization,
     fsapso,
 )
+
+pytestmark = [
+    pytest.mark.slow,
+    pytest.mark.convergence,
+    pytest.mark.integration,
+]
 
 
 class ShiftedProblem:

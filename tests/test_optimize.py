@@ -19,6 +19,7 @@ __authors__ = ["Weslley S. Pereira"]
 
 import numpy as np
 import pytest
+
 from soogo import (
     OptimizeResult,
     bayesian_optimization,
@@ -32,6 +33,8 @@ from soogo import (
 )
 from soogo.sampling import Sampler
 from soogo.acquisition import MaximizeEI
+
+pytestmark = [pytest.mark.slow, pytest.mark.integration]
 
 
 @pytest.mark.parametrize(

@@ -30,6 +30,35 @@ from ..sampling import Sampler
 from .utils import FarEnoughSampleFilter
 
 
+class _SurrogateMinimizerWrapper:
+    """Helper class to wrap surrogate model for minimization.
+
+    :param surrogateModel: Surrogate model to be minimized.
+    :param x: Base point in the space.
+    :param i: Index(s) that will be optimized.
+    """
+
+    def __init__(self, surrogateModel, x, i):
+        self.surrogateModel = surrogateModel
+        self.x = x
+        self.i = i
+
+    def fun(self, xi):
+        """Evaluate surrogate model at modified point x[i] = xi."""
+        _x = self.x.copy()
+        _x[self.i] = xi
+        return self.surrogateModel(_x)
+
+    def jac(self, xi):
+        """Evaluate surrogate model Jacobian at modified point x[i] = xi.
+
+        Only the components corresponding to indices i are returned.
+        """
+        _x = self.x.copy()
+        _x[self.i] = xi
+        return self.surrogateModel.jac(_x)[self.i]
+
+
 class MinimizeSurrogate(Acquisition):
     """Obtain sample points that are local minima of the surrogate model.
 
@@ -99,6 +128,9 @@ class MinimizeSurrogate(Acquisition):
         critdist = (
             (gamma(1 + (dim / 2)) * volumeBounds * sigma) ** (1 / dim)
         ) / np.sqrt(np.pi)  # critical distance when 2 points are equal
+        has_jac = hasattr(surrogateModel, "jac") and callable(
+            getattr(surrogateModel, "jac")
+        )
 
         # Local space to store information
         candidates = np.empty((self.sampler.n * maxiter, dim))
@@ -168,29 +200,14 @@ class MinimizeSurrogate(Acquisition):
             for i in range(nSelected):
                 xi = candidates[chosenIds[i], :]
 
-                def func_continuous_search(x):
-                    x_ = xi.copy()
-                    x_[cindex] = x
-                    return surrogateModel(x_)
-
-                def dfunc_continuous_search(x):
-                    x_ = xi.copy()
-                    x_[cindex] = x
-                    return surrogateModel.jac(x_)[cindex]
-
-                # def hessp_continuous_search(x, p):
-                #     x_ = xi.copy()
-                #     x_[cindex] = x
-                #     p_ = np.zeros(dim)
-                #     p_[cindex] = p
-                #     return surrogateModel.hessp(x_, p_)[cindex]
-
+                wrapper = _SurrogateMinimizerWrapper(
+                    surrogateModel, xi, cindex
+                )
                 res = minimize(
-                    func_continuous_search,
+                    wrapper.fun,
                     xi[cindex],
                     method="L-BFGS-B",
-                    jac=dfunc_continuous_search,
-                    # hessp=hessp_continuous_search,
+                    jac=wrapper.jac if has_jac else None,
                     bounds=cbounds,
                     options={
                         "maxfun": remevals,
@@ -226,21 +243,3 @@ class MinimizeSurrogate(Acquisition):
             iter += 1
 
         return selected[0:k, :]
-
-        # if k > 0:
-        #     return selected[0:k, :]
-        # else:
-        #     # No new points found by the differential evolution method
-        #     singleCandSampler = Mitchel91Sampler(1)
-        #     selected = singleCandSampler.get_mitchel91_sample(
-        #         bounds,
-        #         iindex=surrogateModel.iindex,
-        #         current_sample=surrogateModel.X,
-        #     )
-        #     while tree.query(selected)[0] < atol:
-        #         selected = singleCandSampler.get_mitchel91_sample(
-        #             bounds,
-        #             iindex=surrogateModel.iindex,
-        #             current_sample=surrogateModel.X,
-        #         )
-        #     return selected.reshape(1, -1)
