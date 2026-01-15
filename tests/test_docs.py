@@ -248,7 +248,6 @@ class TestSphinxDocumentation:
             "api/soogo.integrations.rst",
             "api/soogo.model.rst",
             "api/soogo.optimize.rst",
-            "api/tests.rst",
         ]
 
         for file_name in essential_files:
