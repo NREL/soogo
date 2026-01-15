@@ -21,10 +21,9 @@ from typing import Callable, Optional
 
 import numpy as np
 
-from ..acquisition import WeightedAcquisition
+from ..acquisition import CoordinatePerturbation, BoundedParameter
 from ..model import Surrogate
 from .utils import OptimizeResult
-from ..sampling import NormalSampler, SamplingStrategy
 from ..termination import RobustCondition, UnsuccessfulImprovement
 from .surrogate_optimization import surrogate_optimization
 
@@ -38,6 +37,7 @@ def multistart_msrs(
     batchSize: int = 1,
     disp: bool = False,
     callback: Optional[Callable[[OptimizeResult], None]] = None,
+    seed=None,
 ) -> OptimizeResult:
     """Minimize a scalar function of one or more variables using a response
     surface model approach with restarts.
@@ -61,6 +61,7 @@ def multistart_msrs(
     :param disp: If True, print information about the optimization process.
     :param callback: If provided, the callback function will be called after
         each iteration with the current optimization result.
+    :param seed: Seed or random number generator.
     :return: The optimization result.
 
     References
@@ -73,30 +74,30 @@ def multistart_msrs(
     assert dim > 0
 
     # Initialize output
-    out = OptimizeResult(
-        x=np.empty(dim),
-        fx=np.inf,
-        nit=0,
-        nfev=0,
-        sample=np.zeros((maxeval, dim)),
-        fsample=np.zeros(maxeval),
-    )
+    out = OptimizeResult()
+    out.x = np.full(dim, np.nan)
+    out.fx = np.inf
+    out.sample = np.zeros((maxeval, dim))
+    out.fsample = np.zeros(maxeval)
 
     # Copy the surrogate model
     _surrogateModel = deepcopy(surrogateModel)
 
+    # Create random number generator
+    rng = np.random.default_rng(seed)
+
     # do until max number of f-evals reached
     while out.nfev < maxeval:
         # Acquisition function
-        acquisitionFunc = WeightedAcquisition(
-            NormalSampler(
-                min(1000 * dim, 10000), 0.1, strategy=SamplingStrategy.NORMAL
-            ),
+        acquisitionFunc = CoordinatePerturbation(
+            perturbation_probability=1.0,
+            pool_size=min(1000 * dim, 10000),
             weightpattern=(0.95,),
             termination=RobustCondition(
                 UnsuccessfulImprovement(), max(5, dim)
             ),
-            sigma_min=0.1 * 0.5**5,
+            sigma=BoundedParameter(0.1, 0.1 * 0.5**5, 0.1),
+            seed=rng.integers(np.iinfo(np.int32).max).item(),
         )
         acquisitionFunc.success_period = maxeval  # to never increase sigma
 
@@ -110,7 +111,10 @@ def multistart_msrs(
             batchSize=batchSize,
             disp=disp,
             callback=callback,
+            seed=rng.integers(np.iinfo(np.int32).max).item(),
         )
+        assert isinstance(out_local.x, np.ndarray)
+        assert isinstance(out_local.fx, float)
 
         # Update output
         if out_local.fx < out.fx:

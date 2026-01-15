@@ -28,13 +28,14 @@ class TestMinimizeSurrogate:
 
     def test_initialization(self):
         """Test that MinimizeSurrogate can be initialized."""
-        acq = MinimizeSurrogate(nCand=100)
+        acq = MinimizeSurrogate(pool_size=100)
         assert acq is not None
-        assert acq.sampler is not None
+        assert acq.pool_size == 100
+        assert hasattr(acq, "rng")
 
     def test_initialization_with_rtol(self):
         """Test initialization with custom rtol."""
-        acq = MinimizeSurrogate(nCand=100, rtol=1e-2)
+        acq = MinimizeSurrogate(pool_size=100, rtol=1e-2)
         assert acq.rtol == 1e-2
 
     def test_optimize_returns_array(self):
@@ -43,7 +44,7 @@ class TestMinimizeSurrogate:
         Y_train = np.array([0.5, 1.0, 1.5])
         model = MockSurrogateModel(X_train, Y_train)
 
-        acq = MinimizeSurrogate(nCand=50)
+        acq = MinimizeSurrogate(pool_size=50)
         bounds = [[0, 1], [0, 1]]
         result = acq.optimize(model, bounds, n=1)
 
@@ -56,7 +57,7 @@ class TestMinimizeSurrogate:
         Y_train = np.array([0.5, 1.0, 1.5])
         model = MockSurrogateModel(X_train, Y_train)
 
-        acq = MinimizeSurrogate(nCand=100)
+        acq = MinimizeSurrogate(pool_size=100)
         bounds = [[0, 1], [0, 1]]
         result = acq.optimize(model, bounds, n=3)
 
@@ -70,7 +71,7 @@ class TestMinimizeSurrogate:
         Y_train = np.array([2.0, 3.0, 4.0])
         model = MockSurrogateModel(X_train, Y_train)
 
-        acq = MinimizeSurrogate(nCand=50)
+        acq = MinimizeSurrogate(pool_size=50)
         bounds = [[0, 5], [4, 10]]
         result = acq.optimize(model, bounds, n=2)
 
@@ -83,7 +84,7 @@ class TestMinimizeSurrogate:
         Y_train = np.array([0.9, 1.6])
         model = MockSurrogateModel(X_train, Y_train)
 
-        acq = MinimizeSurrogate(nCand=100)
+        acq = MinimizeSurrogate(pool_size=100)
         bounds = [[0, 1], [0, 1], [0, 1]]
         result = acq.optimize(model, bounds, n=2)
 
@@ -97,7 +98,7 @@ class TestMinimizeSurrogate:
         iindex = np.array([1])  # Second dimension is integer
         model = MockSurrogateModel(X_train, Y_train, iindex=iindex)
 
-        acq = MinimizeSurrogate(nCand=50)
+        acq = MinimizeSurrogate(pool_size=50)
         bounds = [[0, 5], [0, 10]]
         result = acq.optimize(model, bounds, n=2)
 

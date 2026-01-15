@@ -39,6 +39,7 @@ class AlternatedAcquisition(Acquisition):
 
     :param acquisitionFuncArray: List of acquisition functions to be used in
         sequence.
+    :param kwargs: Additional arguments passed to the base class constructor.
     """
 
     def __init__(
@@ -54,20 +55,18 @@ class AlternatedAcquisition(Acquisition):
         self,
         surrogateModel: RbfModel,
         bounds,
-        n: int = 1,
         **kwargs,
     ) -> np.ndarray:
         """Optimize using the current acquisition function in the sequence.
 
         :param surrogateModel: Surrogate model.
         :param bounds: List with the limits [x_min,x_max] of each direction.
-        :param n: Number of points to acquire.
         :param kwargs: Additional arguments passed to the current acquisition
             function's optimize method.
         :return: Array of acquired points.
         """
         return self.acquisitionFuncArray[self.idx].optimize(
-            surrogateModel, bounds, n, **kwargs
+            surrogateModel, bounds, **kwargs
         )
 
     def update(self, out: OptimizeResult, model: Surrogate) -> None:

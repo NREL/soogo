@@ -22,19 +22,22 @@ from typing import Callable, Optional
 import numpy as np
 from scipy.spatial.distance import cdist
 
-from soogo.acquisition.base import Acquisition
-from soogo.model.rbf import MedianLpfFilter
-
 from ..acquisition import (
+    Acquisition,
     AlternatedAcquisition,
     GosacSample,
     MaximizeDistance,
-    WeightedAcquisition,
     MultipleAcquisition,
+    CoordinatePerturbation,
 )
-from ..sampling import NormalSampler, SamplingStrategy
 from ..acquisition.utils import FarEnoughSampleFilter
-from ..model import LinearRadialBasisFunction, RbfModel, Surrogate
+from ..model import (
+    LinearRadialBasisFunction,
+    RbfModel,
+    Surrogate,
+    MedianLpfFilter,
+)
+from ..sampling import dds_uniform_sample
 from .utils import OptimizeResult, evaluate_and_log_point
 from ..termination import IterateNTimes
 from ..integrations.nomad import NomadProblem
@@ -43,33 +46,6 @@ try:
     import PyNomad
 except ImportError:
     PyNomad = None
-
-
-class NormalAndUniformSampler(NormalSampler):
-    """Sampler that generates half normal and half uniform samples."""
-
-    def get_sample(
-        self, bounds, *, iindex: tuple[int, ...] = (), **kwargs
-    ) -> np.ndarray:
-        """Generate n samples, half from normal distribution and half from
-        uniform distribution.
-
-        :param bounds: List with the limits [x_min,x_max] of each direction x
-            in the space.
-        :param iindex: Indices of the dimensions to be sampled. If None, all
-            dimensions are sampled.
-        :return: Matrix with a sample point per line.
-        """
-        _n = self.n
-
-        self.n = _n // 2
-        x_normal = super().get_sample(bounds, iindex=iindex, **kwargs)
-
-        self.n = _n - self.n
-        x_uniform = self.get_uniform_sample(bounds, iindex=iindex)
-
-        self.n = _n
-        return np.vstack((x_normal, x_uniform))
 
 
 def shebo(
@@ -82,6 +58,7 @@ def shebo(
     acquisitionFunc: Optional[Acquisition] = None,
     disp: bool = False,
     callback: Optional[Callable[[OptimizeResult], None]] = None,
+    seed=None,
 ) -> OptimizeResult:
     """
     Minimize a function using the SHEBO algorithm from [#]_.
@@ -98,18 +75,19 @@ def shebo(
         is provided, a :class:`.RbfModel` model with Linear Radial Basis
         Function is used. On exit, if provided, the surrogate model will contain
         the points used during the optimization process.
-    :param acquisitionFunc: Acquisition function to be used in the optimization
-        loop. If None is provided, the acquisition cycle described by
-        Müller and Day (2019) is used. Each call, the acquisition function is
-        provided with the
-        surrogate objective model, bounds, and number of points to sample as
-        positional arguments and the keyword arguments points,
-        evaluabilitySurrogate, evaluabilityThreshold, and scoreWeight.
+    :param acquisitionFunc: Acquisition function used in the main optimization
+        loop. If ``None``, uses the cycle from Müller and Day (2019).
+        Each call provides the surrogate objective model, bounds, and the
+        requested number of points as positional arguments, and may pass
+        keywords such as ``points`` (existing sample), ``mu`` (best point),
+        ``constr_fun`` (feasibility function), and
+        ``perturbation_probability`` (for DDS-like samplers).
     :param disp: If True, print information about the optimization process. The
         default is False.
     :param callback: If provided, the callback function will be called after
         each iteration with the current optimization result. The default is
         None.
+    :param seed: Seed or random number generator.
     :return: The optimization result.
 
     References
@@ -126,12 +104,21 @@ def shebo(
         )
         return OptimizeResult()
 
+    # Random number generator
+    rng = np.random.default_rng(seed)
+
     dim = len(bounds)  # Dimension of the problem
     assert dim > 0
     rtol = 1e-3  # Relative tolerance for distance-based operations
     return_surrogate = (objSurrogate is not None) or (
         evalSurrogate is not None
     )  # Whether to return the surrogate models
+
+    # Acquisition function to maximize distance
+    maxDistAcq = MaximizeDistance(
+        seed=rng.integers(np.iinfo(np.int32).max).item(),
+        rtol=rtol,
+    )
 
     # Initialize optional variables
     if objSurrogate is None:
@@ -146,14 +133,15 @@ def shebo(
                         GosacSample(
                             objSurrogate,
                             rtol=rtol,
+                            seed=rng.integers(
+                                np.iinfo(np.int32).max, size=1
+                            ).item(),
                             termination=IterateNTimes(1),
                         ),
-                        WeightedAcquisition(
-                            sampler=NormalAndUniformSampler(
-                                1000 * dim,
-                                sigma=0.02,
-                                strategy=SamplingStrategy.DDS,
-                            ),
+                        CoordinatePerturbation(
+                            sampler=dds_uniform_sample,
+                            sigma=0.2,
+                            pool_size=min(1000 * dim, 5000),
                             weightpattern=[
                                 1.0,
                                 0.95,
@@ -165,17 +153,22 @@ def shebo(
                                 0.1,
                                 0.0,
                             ],
-                            sigma_min=0.02,
-                            sigma_max=0.02,
+                            seed=rng.integers(
+                                np.iinfo(np.int32).max, size=1
+                            ).item(),
                             rtol=rtol,
                             termination=IterateNTimes(9),
                         ),
                         MaximizeDistance(
-                            rtol=rtol, termination=IterateNTimes(1)
+                            seed=rng.integers(
+                                np.iinfo(np.int32).max, size=1
+                            ).item(),
+                            rtol=rtol,
+                            termination=IterateNTimes(1),
                         ),
                     ]
                 ),
-                MaximizeDistance(rtol=rtol),
+                maxDistAcq,
             ]
         )
 
@@ -215,7 +208,7 @@ def shebo(
     # - both evalSurrogate and objSurrogate are empty, or
     # - evalSurrogate is initialized.
     out = OptimizeResult()
-    out.init(fun, bounds, 1, maxeval, evalSurrogate)
+    out.init(fun, bounds, 1, maxeval, evalSurrogate, seed=seed)
 
     # Evaluate x_not_in_obj points and log results
     if len(x_not_in_obj) > 0:
@@ -223,6 +216,7 @@ def shebo(
 
     # Initialize best values in out
     out.init_best_values(objSurrogate)
+    assert isinstance(out.x, np.ndarray)
 
     # Call the callback function with the current optimization result
     if callback is not None:
@@ -254,8 +248,8 @@ def shebo(
                 print(f"Last sampled point: {out.sample[out.nfev - 1]}")
 
             # Acquire new sample point
-            xNew = MaximizeDistance(rtol=rtol).optimize(
-                objSurrogate, bounds, 1, points=out.sample[: out.nfev]
+            xNew = maxDistAcq.optimize(
+                objSurrogate, bounds, points=out.sample[: out.nfev]
             )
 
             # Compute f(xNew) and update out
@@ -312,6 +306,7 @@ def shebo(
             bounds,
             1,
             points=evalSurrogate.X,
+            mu=out.x,
             constr_fun=lambda x: threshold - evalSurrogate(x),
             perturbation_probability=perturbProbability,
         )
@@ -360,6 +355,7 @@ def shebo(
                     f"MAX_BB_EVAL {min(4 * dim, maxeval - out.nfev)}",
                     "DISPLAY_DEGREE 0",
                     "QUAD_MODEL_SEARCH 0",
+                    f"SEED {rng.integers(np.iinfo(np.int32).max).item()}",
                 ],
             )
 

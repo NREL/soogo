@@ -31,7 +31,6 @@ from soogo import (
     shebo,
     fsapso,
 )
-from soogo.sampling import Sampler
 from soogo.acquisition import MaximizeEI
 
 pytestmark = [pytest.mark.slow, pytest.mark.integration]
@@ -106,11 +105,10 @@ def test_multiple_calls(minimize):
 
     bounds = [[-32.768, 20], [-32.768, 32.768]]
 
-    np.random.seed(3)
-    res0 = minimize(lambda x: [ackley(x[0], 2)], bounds, maxeval=10)
-
-    np.random.seed(3)
-    res1 = minimize(lambda x: [ackley(x[0], 2)], bounds, maxeval=10)
+    np.random.seed(123)  # Still needed for some algorithms (e.g., FSAPSO)
+    res0 = minimize(lambda x: [ackley(x[0], 2)], bounds, maxeval=10, seed=123)
+    np.random.seed(123)  # Still needed for some algorithms (e.g., FSAPSO)
+    res1 = minimize(lambda x: [ackley(x[0], 2)], bounds, maxeval=10, seed=123)
 
     assert np.all(res0.x == res1.x)
     assert np.all(res0.fx == res1.fx)
@@ -142,6 +140,6 @@ def test_batched_sampling():
         bounds=bounds,
         maxeval=100,
         batchSize=10,
-        acquisitionFunc=MaximizeEI(Sampler(200), avoid_clusters=True),
+        acquisitionFunc=MaximizeEI(pool_size=200, avoid_clusters=True),
     )
     assert out.nfev == 100

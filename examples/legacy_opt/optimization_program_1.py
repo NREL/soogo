@@ -42,14 +42,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 import soogo
-from soogo import sampling, OptimizeResult
+from soogo import OptimizeResult
+from soogo.sampling import dds_uniform_sample
 from soogo.acquisition import (
-    WeightedAcquisition,
+    CoordinatePerturbation,
     TargetValueAcquisition,
     Acquisition,
     MinimizeSurrogate,
     MultipleAcquisition,
     MaximizeDistance,
+    BoundedParameter,
 )
 from soogo.model.rbf_kernel import RadialBasisFunction
 from soogo.model import (
@@ -71,7 +73,6 @@ def read_and_run(
     rbf_type: RadialBasisFunction = CubicRadialBasisFunction(),
     PlotResult: bool = True,
     optim_func=soogo.multistart_msrs,
-    seeds=None,
 ) -> list[OptimizeResult]:
     """Perform the optimization and plot the solution if asked.
 
@@ -96,20 +97,12 @@ def read_and_run(
         If True, plot the results. Default: False.
     optim_func : optional
         Optimizer to be used. Default :func:`soogo.multistart_msrs()`.
-    seeds: optional
-        Sequence of random seeds to be used. One per trial.
-        Default: None, defined inside this function.
 
     Returns
     -------
     optres : list[OptimizeResult]
         List of OptimizeResult objects with the optimization results.
     """
-    # Define seeds
-    if seeds is None:
-        np.random.seed(3)
-        seeds = [np.random.randint(9999) for _ in range(Ntrials)]
-
     ## Start input check
     data = read_check_data_file(data_file)
     maxeval, Ntrials, batchSize = check_set_parameters(
@@ -120,8 +113,6 @@ def read_and_run(
     ## Optimization
     optres = []
     for j in range(Ntrials):
-        np.random.seed(seeds[j])
-
         # Create empty RBF model
         rbfModel = RbfModel(rbf_type, data.iindex, filter=MedianLpfFilter())
         acquisitionFuncIter = deepcopy(acquisitionFunc)
@@ -307,18 +298,11 @@ def main(config: int) -> list[OptimizeResult]:
     if config == 1:
         optres = read_and_run(
             data_file="datainput_Branin",
-            acquisitionFunc=WeightedAcquisition(
-                sampling.NormalSampler(
-                    1000,
-                    sigma=0.2,
-                    strategy=sampling.SamplingStrategy.NORMAL,
-                ),
-                [
-                    0.95,
-                ],
-                maxeval=200,
-                sigma_min=0.2 * 0.5**5,
-                sigma_max=0.2,
+            acquisitionFunc=CoordinatePerturbation(
+                pool_size=1000,
+                weightpattern=[0.95],
+                sigma=BoundedParameter(0.2, 0.2 * 0.5**5, 0.2),
+                perturbation_probability=1.0,
             ),
             maxeval=200,
             Ntrials=3,
@@ -328,16 +312,10 @@ def main(config: int) -> list[OptimizeResult]:
     elif config == 2:
         optres = read_and_run(
             data_file="datainput_hartman3",
-            acquisitionFunc=WeightedAcquisition(
-                sampling.NormalSampler(
-                    300,
-                    sigma=0.2,
-                    strategy=sampling.SamplingStrategy.DDS,
-                ),
-                [0.3, 0.5, 0.8, 0.95],
-                maxeval=200,
-                sigma_min=0.2 * 0.5**6,
-                sigma_max=0.2,
+            acquisitionFunc=CoordinatePerturbation(
+                pool_size=300,
+                weightpattern=[0.3, 0.5, 0.8, 0.95],
+                sigma=BoundedParameter(0.2, 0.2 * 0.5**6, 0.2),
             ),
             maxeval=200,
             Ntrials=1,
@@ -358,16 +336,12 @@ def main(config: int) -> list[OptimizeResult]:
     elif config == 4:
         optres = read_and_run(
             data_file="datainput_BraninWithInteger",
-            acquisitionFunc=WeightedAcquisition(
-                sampling.NormalSampler(
-                    200,
-                    sigma=0.2,
-                    strategy=sampling.SamplingStrategy.DDS_UNIFORM,
-                ),
-                [0.3, 0.5, 0.8, 0.95],
-                maxeval=100,
-                sigma_min=0.2 * 0.5**5,
-                sigma_max=0.2,
+            acquisitionFunc=CoordinatePerturbation(
+                sampler=dds_uniform_sample,
+                pool_size=200,
+                weightpattern=[0.3, 0.5, 0.8, 0.95],
+                sigma=BoundedParameter(0.2, 0.2 * 0.5**5, 0.2),
+                n_continuous_search=4,
             ),
             maxeval=100,
             Ntrials=3,

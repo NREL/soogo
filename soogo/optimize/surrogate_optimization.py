@@ -41,6 +41,7 @@ def surrogate_optimization(
     batchSize: int = 1,
     disp: bool = False,
     callback: Optional[Callable[[OptimizeResult], None]] = None,
+    seed=None,
 ) -> OptimizeResult:
     """Minimize a scalar function of one or more variables using a surrogate
     model and an acquisition strategy.
@@ -101,6 +102,7 @@ def surrogate_optimization(
     :param disp: If True, print information about the optimization process.
     :param callback: If provided, the callback function will be called after
         each iteration with the current optimization result.
+    :param seed: Seed or random number generator.
     :return: The optimization result.
 
     References
@@ -114,6 +116,9 @@ def surrogate_optimization(
     dim = len(bounds)  # Dimension of the problem
     assert dim > 0
 
+    # Random number generator
+    rng = np.random.default_rng(seed)
+
     # Initialize optional variables
     return_surrogate = True
     if surrogateModel is None:
@@ -121,7 +126,14 @@ def surrogate_optimization(
         surrogateModel = RbfModel(filter=MedianLpfFilter())
     if acquisitionFunc is None:
         acquisitionFunc = MultipleAcquisition(
-            (TargetValueAcquisition(), MaximizeDistance())
+            (
+                TargetValueAcquisition(
+                    seed=rng.integers(np.iinfo(np.int32).max).item()
+                ),
+                MaximizeDistance(
+                    seed=rng.integers(np.iinfo(np.int32).max).item()
+                ),
+            )
         )
 
     # Reserve space for the surrogate model to avoid repeated allocations
@@ -129,8 +141,9 @@ def surrogate_optimization(
 
     # Initialize output
     out = OptimizeResult()
-    out.init(fun, bounds, batchSize, maxeval, surrogateModel)
+    out.init(fun, bounds, batchSize, maxeval, surrogateModel, seed=seed)
     out.init_best_values(surrogateModel)
+    assert isinstance(out.x, np.ndarray)
 
     # Call the callback function
     if callback is not None:

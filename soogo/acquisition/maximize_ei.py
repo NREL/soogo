@@ -24,36 +24,42 @@ from scipy.linalg import cholesky, solve_triangular
 
 from .base import Acquisition
 from ..model import GaussianProcess
-from ..sampling import Sampler, Mitchel91Sampler
+from ..sampling import SpaceFillingSampler
 
 
 class MaximizeEI(Acquisition):
-    """Acquisition by maximization of the expected improvement of a Gaussian
-    Process.
+    """Acquisition by maximizing the expected improvement (EI) of a
+    :class:`.GaussianProcess`.
 
-    It starts by running a
-    global optimization algorithm to find a point `xs` that maximizes the EI. If
-    this point is found and the sample size is 1, return this point. Else,
-    creates a pool of candidates using :attr:`sampler` and `xs`. From this pool,
-    select the set of points with that maximize the expected improvement. If
-    :attr:`avoid_clusters` is `True` avoid points that are too close to already
-    chosen ones inspired in the strategy from [#]_. Mind that the latter
-    strategy can slow down considerably the acquisition process, although is
-    advisable for a sample of good quality.
+    First, runs a global optimizer to find a point ``xs`` that maximizes EI.
+    If successful and ``n == 1``, returns ``xs``. Otherwise, builds a candidate
+    pool using :attr:`sampler` (optionally including ``xs`` and the surrogate
+    minimizer) and selects points that maximize EI. When
+    :attr:`avoid_clusters` is ``True``, it penalizes candidates too close to the
+    already selected ones, inspired by [#]_.
 
-    :param sampler: Sampler to generate candidate points. Stored in
-        :attr:`sampler`.
-    :param avoid_clusters: When `True`, use a strategy that avoids points too
-        close to already chosen ones. Stored in :attr:`avoid_clusters`.
+    :param sampler: Space-filling candidate generator. Defaults to
+        :class:`soogo.sampling.SpaceFillingSampler`.
+    :param int pool_size: Number of candidates generated per call.
+    :param avoid_clusters: Whether to avoid clustering within the selected
+        batch.
+    :param seed: Seed for random number generator.
 
     .. attribute:: sampler
 
-        Sampler to generate candidate points.
+        Space-filling candidate generator.
+
+    .. attribute:: pool_size
+
+        Number of candidates generated per :meth:`optimize()` call.
 
     .. attribute:: avoid_clusters
 
-        When `True`, use a strategy that avoids points too close to already
-        chosen ones.
+        When ``True``, discourages points close to those already selected.
+
+    .. attribute:: rng
+
+        Random number generator.
 
     References
     ----------
@@ -63,11 +69,22 @@ class MaximizeEI(Acquisition):
     """
 
     def __init__(
-        self, sampler=None, avoid_clusters: bool = True, **kwargs
+        self,
+        sampler=None,
+        pool_size: int = 100,
+        avoid_clusters: bool = True,
+        seed=None,
+        **kwargs,
     ) -> None:
         super().__init__(**kwargs)
-        self.sampler = Sampler(0) if sampler is None else sampler
+        self.pool_size = pool_size
         self.avoid_clusters = avoid_clusters
+        self.rng = np.random.default_rng(seed)
+        self.sampler = (
+            sampler
+            if sampler is not None
+            else SpaceFillingSampler(seed=self.rng)
+        )
 
     def optimize(
         self,
@@ -92,8 +109,8 @@ class MaximizeEI(Acquisition):
         :param sequence bounds: List with the limits [x_min,x_max] of each
             direction x in the space.
         :param n: Number of points to be acquired.
-        :param ybest: Best point so far. If not provided, find the minimum value
-            for the surrogate. Use it as a possible candidate.
+        :param ybest: Best objective value so far. If ``None``, approximately
+            minimize the surrogate and use its value.
         """
         # TODO: Extend this method to work with mixed-integer problems
         assert len(surrogateModel.iindex) == 0
@@ -105,7 +122,9 @@ class MaximizeEI(Acquisition):
         if ybest is None:
             # Compute an estimate for ybest using the surrogate.
             res = differential_evolution(
-                lambda x: surrogateModel(np.asarray([x])), bounds
+                lambda x: surrogateModel(np.asarray([x])),
+                bounds,
+                seed=self.rng,
             )
             ybest = res.fun
             if res.success:
@@ -117,6 +136,7 @@ class MaximizeEI(Acquisition):
                 np.asarray([x]), ybest
             ),
             bounds,
+            seed=self.rng,
         )
         xs = res.x if res.success else None
 
@@ -125,19 +145,21 @@ class MaximizeEI(Acquisition):
             return np.asarray([xs])
 
         # Generate the complete pool of candidates
-        if isinstance(self.sampler, Mitchel91Sampler):
-            current_sample = surrogateModel.X
-            if xs is not None:
-                current_sample = np.concatenate((current_sample, [xs]), axis=0)
-            if xbest is not None:
-                current_sample = np.concatenate(
-                    (current_sample, [xbest]), axis=0
-                )
-            x = self.sampler.get_mitchel91_sample(
-                bounds, current_sample=current_sample
+        pool_size = self.pool_size
+        current_sample = surrogateModel.X
+        if xs is not None:
+            current_sample = np.concatenate((current_sample, [xs]), axis=0)
+            pool_size -= 1
+        if xbest is not None:
+            current_sample = np.concatenate((current_sample, [xbest]), axis=0)
+            pool_size -= 1
+        x = (
+            self.sampler.generate(
+                self.pool_size, bounds, current_sample=current_sample
             )
-        else:
-            x = self.sampler.get_sample(bounds)
+            if pool_size > 0
+            else np.empty((0, len(bounds)))
+        )
 
         if xs is not None:
             x = np.concatenate(([xs], x), axis=0)

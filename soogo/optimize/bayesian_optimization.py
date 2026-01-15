@@ -15,20 +15,45 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from ..acquisition import MaximizeEI
+import numpy as np
+from typing import Optional
+
+from ..acquisition import MaximizeEI, Acquisition
 from ..model import GaussianProcess
 from .utils import OptimizeResult
 from .surrogate_optimization import surrogate_optimization
 
 
-def bayesian_optimization(*args, **kwargs) -> OptimizeResult:
+def bayesian_optimization(
+    *args,
+    surrogateModel: Optional[GaussianProcess] = None,
+    acquisitionFunc: Optional[Acquisition] = None,
+    seed=None,
+    **kwargs,
+) -> OptimizeResult:
     """Wrapper for :func:`.surrogate_optimization()` using a Gaussian Process
     surrogate model and the Expected Improvement acquisition function.
+
+    :param surrogateModel: Surrogate model to be used. If None, a Gaussian
+        Process model is used.
+    :param acquisitionFunc: Acquisition function to be used. If None, the
+        Expected Improvement acquisition function is used.
+    :param seed: Seed for random number generator.
     """
     # Initialize optional variables
-    if "surrogateModel" not in kwargs or kwargs["surrogateModel"] is None:
-        kwargs["surrogateModel"] = GaussianProcess(normalize_y=True)
-    if "acquisitionFunc" not in kwargs or kwargs["acquisitionFunc"] is None:
-        kwargs["acquisitionFunc"] = MaximizeEI()
+    rng = np.random.default_rng(seed)
+    if surrogateModel is None:
+        surrogateModel = GaussianProcess(
+            normalize_y=True,
+            random_state=rng.integers(np.iinfo(np.int32).max).item(),
+        )
+    if acquisitionFunc is None:
+        acquisitionFunc = MaximizeEI(seed=rng)
 
-    return surrogate_optimization(*args, **kwargs)
+    return surrogate_optimization(
+        *args,
+        surrogateModel=surrogateModel,
+        acquisitionFunc=acquisitionFunc,
+        seed=seed,
+        **kwargs,
+    )

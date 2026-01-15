@@ -38,10 +38,15 @@ class GosacSample(Acquisition):
     This acquisition function is only able to acquire 1 point at a time.
 
     :param fun: Objective function. Stored in :attr:`fun`.
+    :param seed: Seed for random number generator.
 
     .. attribute:: fun
 
         Objective function.
+
+    .. attribute:: rng
+
+        Random number generator.
 
     References
     ----------
@@ -51,15 +56,15 @@ class GosacSample(Acquisition):
         https://doi.org/10.1007/s10898-017-0496-y
     """
 
-    def __init__(self, fun, **kwargs) -> None:
+    def __init__(self, fun, seed=None, **kwargs) -> None:
         super().__init__(**kwargs)
         self.fun = fun
+        self.rng = np.random.default_rng(seed)
 
     def optimize(
         self,
         surrogateModel: Surrogate,
         bounds,
-        n: int = 1,
         constr_fun=None,
         **kwargs,
     ) -> np.ndarray:
@@ -68,7 +73,6 @@ class GosacSample(Acquisition):
         :param surrogateModel: Multi-target surrogate model for the constraints.
         :param sequence bounds: List with the limits [x_min,x_max] of each
             direction x in the space.
-        :param n: Unused.
         :param constr_fun: Constraint function to be applied to surrogate model
             predictions. If none is provided, use the surrogate model as
             the constraint function.
@@ -91,7 +95,7 @@ class GosacSample(Acquisition):
         res = pymoo_minimize(
             cheapProblem,
             optimizer,
-            seed=surrogateModel.ntrain,
+            seed=self.rng.integers(np.iinfo(np.int32).max).item(),
             verbose=False,
         )
         if res.X is not None:

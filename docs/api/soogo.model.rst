@@ -32,3 +32,11 @@ soogo.model.rbf\_kernel module
    :members:
    :undoc-members:
    :show-inheritance:
+
+soogo.model.utils module
+------------------------
+
+.. automodule:: soogo.model.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:

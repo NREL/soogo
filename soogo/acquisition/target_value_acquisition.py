@@ -57,6 +57,7 @@ class TargetValueAcquisition(Acquisition):
 
     :param cycleLength: Length of the global search cycle. Stored in
         :attr:`cycleLength`.
+    :param seed: Seed for random number generator.
 
     .. attribute:: cycleLength
 
@@ -66,6 +67,10 @@ class TargetValueAcquisition(Acquisition):
 
         Internal counter of cycles. The value to be used in the next call of
         :meth:`optimize()`.
+
+    .. attribute:: rng
+
+        Random number generator.
 
     References
     ----------
@@ -82,12 +87,13 @@ class TargetValueAcquisition(Acquisition):
         Optim Eng 17, 177–203 (2016). https://doi.org/10.1007/s11081-015-9281-2
     """
 
-    def __init__(self, cycleLength: int = 6, **kwargs) -> None:
+    def __init__(self, cycleLength: int = 6, seed=None, **kwargs) -> None:
         # Initialize cycle counter and cycle length
         self._cycle = 0
         self.cycleLength = cycleLength
 
         super().__init__(**kwargs)
+        self.rng = np.random.default_rng(seed)
 
         # Use termination criteria based on the relative tolerance. This is used
         # to reduce the time spent in the optimization process.
@@ -199,7 +205,9 @@ class TargetValueAcquisition(Acquisition):
                 res = pymoo_minimize(
                     problem,
                     optimizer,
-                    seed=surrogateModel.ntrain,
+                    seed=self.rng.integers(
+                        np.iinfo(np.int32).max, size=1
+                    ).item(),
                     verbose=False,
                 )
 
@@ -215,7 +223,9 @@ class TargetValueAcquisition(Acquisition):
                     res = pymoo_minimize(
                         problem,
                         optimizer,
-                        seed=surrogateModel.ntrain,
+                        seed=self.rng.integers(
+                            np.iinfo(np.int32).max, size=1
+                        ).item(),
                         verbose=False,
                     )
                     assert res.X is not None
@@ -246,7 +256,9 @@ class TargetValueAcquisition(Acquisition):
                 res = pymoo_minimize(
                     problem,
                     optimizer,
-                    seed=surrogateModel.ntrain,
+                    seed=self.rng.integers(
+                        np.iinfo(np.int32).max, size=1
+                    ).item(),
                     verbose=False,
                 )
 
@@ -259,7 +271,9 @@ class TargetValueAcquisition(Acquisition):
                     res = pymoo_minimize(
                         problem,
                         optimizer,
-                        seed=surrogateModel.ntrain,
+                        seed=self.rng.integers(
+                            np.iinfo(np.int32).max, size=1
+                        ).item(),
                         verbose=False,
                     )
                     assert res.X is not None
@@ -291,7 +305,9 @@ class TargetValueAcquisition(Acquisition):
                     res = pymoo_minimize(
                         problem,
                         optimizer,
-                        seed=surrogateModel.ntrain,
+                        seed=self.rng.integers(
+                            np.iinfo(np.int32).max, size=1
+                        ).item(),
                         verbose=False,
                     )
 

@@ -19,522 +19,416 @@
 __authors__ = ["Weslley S. Pereira"]
 
 import numpy as np
-from enum import Enum
+from typing import Optional
 
 from scipy.spatial.distance import cdist
 from scipy.spatial import KDTree
 from scipy.stats import truncnorm
+from scipy.stats.qmc import LatinHypercube, QMCEngine
 
 
-class SamplingStrategy(Enum):
-    """Sampling strategy tags to be used by :meth:`get_sample()` methods that
-    override :meth:`Sampler.get_sample()`.
+class SymmetricLatinHypercube(LatinHypercube):
+    """Symmetric Latin Hypercube Sampling (SLHD).
+
+    Subclass of `scipy.stats.qmc.LatinHypercube` that implements the
+    Symmetric Latin Hypercube Sampling (SLHD) algorithm.
+
+    .. attribute:: lhs_method
+
+        Method used to generate the Latin Hypercube samples. In this class,
+        it is set to :meth:`_random_symmetric_lhs()`.
     """
 
-    NORMAL = 1  #: Normal distribution
-    DDS = 2  #: DDS sampling. Used in the DYCORS algorithm
-    UNIFORM = 3  #: Uniform distribution
-    DDS_UNIFORM = 4  #: Sample half via DDS, then half via uniform distribution
-    SLHD = 5  #: Symmetric Latin Hypercube Design
-    MITCHEL91 = 6  #: Cover empty regions in the search space
+    def __init__(self, *args, **kwargs):
+        if "strength" in kwargs:
+            raise ValueError("Strength parameter is not supported.")
+
+        super().__init__(*args, **kwargs)
+
+        self.lhs_method = self._random_symmetric_lhs
+
+    def _random_symmetric_lhs(self, n: int = 1) -> np.ndarray:
+        """Symmetric LHS algorithm."""
+        k = n // 2
+
+        # Compute perturbations
+        if not self.scramble:
+            samples: np.ndarray | float = 0.5
+        else:
+            samples = np.full((n, self.d), 0.5)
+            samples[:k, :] = self.rng.uniform(size=(k, self.d))
+            samples[n - k :, :] = 1.0 - samples[k - 1 :: -1, :]
+
+        # Compute permutations
+        perms = np.tile(np.arange(1, n + 1), (self.d, 1))  # type: ignore[arg-type]
+        for i in range(1, self.d):
+            perms[i, :k] = self.rng.permutation(np.arange(1, k + 1))
+            for j in range(k):
+                if self.rng.random() < 0.5:
+                    perms[i, n - 1 - j] = n + 1 - perms[i, j]
+                else:
+                    perms[i, n - 1 - j] = perms[i, j]
+                    perms[i, j] = n + 1 - perms[i, j]
+        perms = perms.T
+
+        samples = (perms - samples) / n
+
+        return np.asarray(samples)
 
 
-def _slhd_permutation_matrix(m: int, d: int) -> np.ndarray:
-    """Generate permutation matrix for SLHD sampling.
+def random_sample(
+    n,
+    bounds,
+    iindex: tuple[int, ...] = (),
+    seed=None,
+    **kwargs,
+) -> np.ndarray:
+    """Generate random samples in the given bounds.
 
-    :param m: Number of samples.
-    :param d: Number of dimensions.
-    :return: m-by-d permutation matrix.
+    :param n: Number of sample points to generate.
+    :param sequence bounds: List with the limits [x_min,x_max] of each
+        direction x in the space.
+    :param tuple iindex: Indices of the input space that are integer.
+    :param seed: Seed, random number generator, or a
+        `scipy.stats.qmc.QMCEngine`.
+
+    :return: n-by-dim matrix with the sampled points.
     """
-    # Generate permutation matrix P
-    P = np.zeros((m, d), dtype=int)
-    P[:, 0] = np.arange(m)
-    if m % 2 == 0:
-        k = m // 2
+    if isinstance(seed, QMCEngine):
+        rng = seed
     else:
-        k = (m - 1) // 2
-        P[k, :] = k * np.ones((1, d))
-    for j in range(1, d):
-        P[0:k, j] = np.random.permutation(np.arange(k))
+        rng = np.random.default_rng(seed)
 
-        for i in range(k):
-            # Use numpy functions for better performance
-            if np.random.rand() < 0.5:
-                P[m - 1 - i, j] = m - 1 - P[i, j]
-            else:
-                P[m - 1 - i, j] = P[i, j]
-                P[i, j] = m - 1 - P[i, j]
+    # Extract bounds
+    l_bounds = np.array([b[0] for b in bounds])
+    u_bounds = np.array([b[1] for b in bounds])
+    u_bounds[list(iindex)] += 1  # For integer variables
 
-    return P
+    # Sample
+    dim = len(bounds)
+    if isinstance(rng, QMCEngine):
+        samples01 = rng.random(n)
+    else:
+        samples01 = rng.random((n, dim))
+    sample = l_bounds + samples01 * (u_bounds - l_bounds)
+
+    # Floor integer variables
+    sample[:, list(iindex)] = np.floor(sample[:, list(iindex)])
+
+    return sample
 
 
-class Sampler:
-    """Abstract base class for samplers.
+def truncnorm_sample(
+    n,
+    bounds,
+    mu,
+    sigma_ref=1.0,
+    iindex: tuple[int, ...] = (),
+    seed=None,
+    **kwargs,
+) -> np.ndarray:
+    """Truncated normal sample generator.
 
-    The main goal of a sampler is to draw samples from a d-dimensional box.
-    For that, one should use :meth:`get_sample()` or the specific
-    :meth:`get_[strategy]_sample()`. The former uses the information in
-    :attr:`strategy` to decide which specific sampler to use.
-
-    :param n: Number of sample points. Stored in :attr:`n`.
-    :param strategy: Sampling strategy. Stored in :attr:`strategy`.
-
-    .. attribute:: n
-
-        Number of sample points returned by :meth:`get_[strategy]_sample()`.
-
-    .. attribute:: strategy
-
-        Sampling strategy that will be used by :meth:`get_sample()` and
-        :meth:`get_[strategy]_sample()`.
-
+    :param n: Number of sample points to generate.
+    :param sequence bounds: List with the limits [x_min,x_max] of each
+        direction x in the space.
+    :param mu: Point around which the sample will be generated.
+    :param sigma_ref: Standard deviation of the truncated normal distribution,
+        relative to a unitary interval. Default is 1.0.
+    :param iindex: Indices of the input space that are integer.
+    :param seed: Seed to initialize the random number generator forwarded to
+        `scipy.stats.truncnorm`.
+    :return: n-by-dim matrix with the sampled points.
     """
+    dim = len(bounds)
+    l_bounds = np.array([b[0] for b in bounds])
+    u_bounds = np.array([b[1] for b in bounds])
+    u_bounds[list(iindex)] += 1  # For integer variables
+    sigma = sigma_ref * (u_bounds - l_bounds)
 
-    def __init__(
-        self,
-        n: int,
-        strategy: SamplingStrategy = SamplingStrategy.UNIFORM,
-    ) -> None:
-        self.strategy = strategy
-        self.n = n
+    # Distribution parameters
+    loc = mu
+    scale = sigma
+    a = (l_bounds - loc) / scale
+    b = (u_bounds - loc) / scale
 
-    def get_uniform_sample(
-        self, bounds, *, iindex: tuple[int, ...] = ()
-    ) -> np.ndarray:
-        """Generate a sample from a uniform distribution inside the bounds.
+    # Sample
+    sample = np.asarray(
+        truncnorm.rvs(a, b, loc, scale, size=(n, dim), random_state=seed)
+    )
 
-        :param sequence bounds: List with the limits [x_min,x_max] of each
-            direction x in the space.
-        :param iindex: Indices of the input space that are integer.
+    # Floor integer variables
+    sample[:, list(iindex)] = np.floor(sample[:, list(iindex)])
 
-        :return: Matrix with a sample point per line.
-        """
-        dim = len(bounds)
-
-        # Generate n sample points
-        xnew = np.empty((self.n, dim))
-        for i in range(dim):
-            b = bounds[i]
-            if i in iindex:
-                xnew[:, i] = np.random.randint(b[0], b[1] + 1, self.n)
-            else:
-                xnew[:, i] = b[0] + np.random.rand(self.n) * (b[1] - b[0])
-
-        return xnew
-
-    def get_slhd_sample(
-        self, bounds, *, iindex: tuple[int, ...] = ()
-    ) -> np.ndarray:
-        """Creates a Symmetric Latin Hypercube Design.
-
-        Note that, for integer variables, it may not be possible to generate
-        a SLHD. In this case, the algorithm will do its best to try not to
-        repeat values in the integer variables.
-
-        :param sequence bounds: List with the limits [x_min,x_max] of each
-            direction x in the space.
-        :param iindex: Indices of the input space that are integer.
-
-        :return: Matrix with a sample point per line.
-        """
-        d = len(bounds)
-        m = self.n
-
-        # Create the initial design
-        X = np.empty((m, d))
-        for j in range(d):
-            if j not in iindex:
-                delta = (bounds[j][1] - bounds[j][0]) / m
-                b0 = bounds[j][0] + 0.5 * delta
-                X[:, j] = [b0 + i * delta for i in range(m)]
-            else:
-                delta = (bounds[j][1] - bounds[j][0] + 1) / m
-                b0 = bounds[j][0] + 0.5 * (delta - 1)
-                X[:, j] = [round(b0 + i * delta) for i in range(m)]
-
-        if m > 1:
-            # Permute the initial design
-            P = _slhd_permutation_matrix(m, d)
-            for j in range(d):
-                X[:, j] = X[P[:, j], j]
-
-        return X
-
-    def get_sample(
-        self, bounds, *, iindex: tuple[int, ...] = (), **kwargs
-    ) -> np.ndarray:
-        """Generate a sample based on :attr:`Sampler.strategy`.
-
-        :param sequence bounds: List with the limits [x_min,x_max] of each
-            direction x in the space.
-        :param iindex: Indices of the input space that are integer.
-
-        :return: Matrix with a sample point per line.
-        """
-        if self.strategy == SamplingStrategy.UNIFORM:
-            return self.get_uniform_sample(bounds, iindex=iindex)
-        elif self.strategy == SamplingStrategy.SLHD:
-            return self.get_slhd_sample(bounds, iindex=iindex)
-        else:
-            raise ValueError("Invalid sampling strategy")
+    return sample
 
 
-class NormalSampler(Sampler):
-    """Sampler that generates sample points from a truncated normal
-    distribution.
+def dds_sample(
+    n,
+    bounds,
+    probability: float,
+    mu,
+    sigma_ref=1.0,
+    iindex: tuple[int, ...] = (),
+    seed=None,
+    **kwargs,
+) -> np.ndarray:
+    """Generate a sample based on the Dynamically Dimensioned Search (DDS)
+    algorithm described in [#]_.
 
-    :param sigma: Standard deviation of the truncated normal distribution,
-        relative to a unitary interval. Stored in :attr:`sigma`.
+    This algorithm generated a sample by perturbing a subset of the
+    coordinates of `mu`. The set of coordinates perturbed varies for each
+    sample point and is determined probabilistically. When a perturbation
+    occurs, it is guided by a normal distribution with mean zero and
+    standard deviation :attr:`sigma`.
 
-    .. attribute:: sigma
+    :param n: Number of sample points to generate.
+    :param sequence bounds: List with the limits [x_min,x_max] of each
+        direction x in the space.
+    :param probability: Perturbation probability.
+    :param mu: Point around which the sample will be generated.
+    :param sigma_ref: Standard deviation of the truncated normal distribution,
+        relative to a unitary interval. Default is 1.0.
+    :param iindex: Indices of the input space that are integer.
+    :param seed: Seed to initialize the random number generator.
 
-        Standard deviation of the truncated normal distribution, relative to a
-        unitary interval. Used by :meth:`get_normal_sample()` and
-        :meth:`get_dds_sample()`.
-    """
-
-    def __init__(
-        self,
-        n: int,
-        sigma: float,
-        *,
-        strategy: SamplingStrategy = SamplingStrategy.NORMAL,
-    ) -> None:
-        super().__init__(n, strategy=strategy)
-        self.sigma = sigma
-
-    def get_normal_sample(
-        self,
-        bounds,
-        mu,
-        *,
-        iindex=(),
-        coord=(),
-    ) -> np.ndarray:
-        """Generate a sample from a truncated normal distribution around a given
-        point mu.
-
-        :param sequence bounds: List with the limits [x_min,x_max] of each
-            direction x in the space.
-        :param mu: Point around which the sample will be generated.
-        :param iindex: Indices of the input space that are integer.
-        :param sequence coord:
-            Coordinates of the input space that will vary. If (), all
-            coordinates will vary.
-
-        :return: Matrix with a sample point per line.
-        """
-        dim = len(bounds)
-        sigma = np.array([self.sigma * (b[1] - b[0]) for b in bounds])
-
-        # Create xnew
-        xnew = np.tile(mu, (self.n, 1))
-        assert xnew.shape == (self.n, dim)
-
-        # By default all coordinates are perturbed
-        if len(coord) == 0:
-            coord = tuple(range(dim))
-
-        # generate n sample points
-        for i in coord:
-            loc = mu[i]
-            scale = sigma[i]
-            if i in iindex:
-                a = (bounds[i][0] - 0.5 - loc) / scale
-                b = (bounds[i][1] + 0.5 - loc) / scale
-                xnew[:, i] = np.round(
-                    truncnorm.rvs(a, b, loc=loc, scale=scale, size=self.n)
-                )
-                xnew[:, i] = np.maximum(
-                    bounds[i][0], np.minimum(xnew[:, i], bounds[i][1])
-                )
-            else:
-                a = (bounds[i][0] - loc) / scale
-                b = (bounds[i][1] - loc) / scale
-                xnew[:, i] = truncnorm.rvs(
-                    a, b, loc=loc, scale=scale, size=self.n
-                )
-
-        return xnew
-
-    def get_dds_sample(
-        self,
-        bounds,
-        mu,
-        probability: float,
-        *,
-        iindex: tuple[int, ...] = (),
-        coord=(),
-    ) -> np.ndarray:
-        """Generate a sample based on the Dynamically Dimensioned Search (DDS)
-        algorithm described in [#]_.
-
-        This algorithm generated a sample by perturbing a subset of the
-        coordinates of `mu`. The set of coordinates perturbed varies for each
-        sample point and is determined probabilistically. When a perturbation
-        occurs, it is guided by a normal distribution with mean zero and
-        standard deviation :attr:`sigma`.
-
-        :param sequence bounds: List with the limits [x_min,x_max] of each
-            direction x in the space.
-        :param mu: Point around which the sample will be generated.
-        :param probability: Perturbation probability.
-        :param iindex: Indices of the input space that are integer.
-        :param coord:
-            Coordinates of the input space that will vary.  If (), all
-            coordinates will vary.
-
-        :return: Matrix with a sample point per line.
-
-        References
-        ----------
-        .. [#] Tolson, B. A., and C. A. Shoemaker (2007), Dynamically
-            dimensioned search algorithm for computationally efficient watershed
-            model calibration, Water Resour. Res., 43, W01413,
-            https://doi.org/10.1029/2005WR004723.
-        """
-        # Check if probability is valid
-        if not (0 <= probability <= 1):
-            raise ValueError("Probability must be between 0 and 1")
-
-        # Redirect if probability is 1
-        if probability == 1:
-            return self.get_normal_sample(
-                bounds, mu, coord=coord, iindex=iindex
-            )
-
-        dim = len(bounds)
-        sigma = np.array([self.sigma * (b[1] - b[0]) for b in bounds])
-
-        # Create xnew
-        xnew = np.tile(mu, (self.n, 1))
-        assert xnew.shape == (self.n, dim)
-
-        # By default all coordinates are perturbed
-        if len(coord) == 0:
-            coord = tuple(range(dim))
-
-        # Generate perturbation matrix
-        cdim = len(coord)
-        ar = np.zeros((self.n, dim), dtype=bool)
-        ar[:, coord] = np.random.rand(self.n, cdim) < probability
-        for i in range(self.n):
-            if not (any(ar[i, coord])):
-                ar[i, np.random.randint(cdim)] = True
-
-        # generate n sample points
-        for i in coord:
-            loc = mu[i]
-            scale = sigma[i]
-            perturbIdx = np.argwhere(ar[:, i]).flatten()
-            nperturb = len(perturbIdx)
-            if i in iindex:
-                a = (bounds[i][0] - 0.5 - loc) / scale
-                b = (bounds[i][1] + 0.5 - loc) / scale
-                xnew[perturbIdx, i] = truncnorm.rvs(
-                    a, b, loc=loc, scale=scale, size=nperturb
-                )
-                for j in perturbIdx:
-                    xj = xnew[j, i]
-                    if xj <= bounds[i][0]:
-                        xnew[j, i] = bounds[i][0]
-                    elif xj > bounds[i][0] and xj < loc:
-                        xnew[j, i] = min(round(xj), loc - 1)
-                    elif xj == loc:
-                        sgn = +1 if np.random.randint(2) == 1 else -1
-                        xnew[j, i] = loc + sgn
-                    elif xj < bounds[i][1] and xj > loc:
-                        xnew[j, i] = max(round(xj), loc + 1)
-                    else:
-                        xnew[j, i] = bounds[i][1]
-            else:
-                a = (bounds[i][0] - loc) / scale
-                b = (bounds[i][1] - loc) / scale
-                xnew[perturbIdx, i] = truncnorm.rvs(
-                    a, b, loc=loc, scale=scale, size=nperturb
-                )
-        return xnew
-
-    def get_sample(
-        self, bounds, *, iindex: tuple[int, ...] = (), **kwargs
-    ) -> np.ndarray:
-        """Generate a sample.
-
-        :param sequence bounds: List with the limits [x_min,x_max] of each
-            direction x in the space.
-        :param iindex: Indices of the input space that are integer.
-        :param mu: Point around which the sample will be generated. Used by:
-
-            * :attr:`SamplingStrategy.NORMAL`
-            * :attr:`SamplingStrategy.DDS`
-            * :attr:`SamplingStrategy.DDS_UNIFORM`
-
-        :param coord:
-            Coordinates of the input space that will vary.  If (), all
-            coordinates will vary. Used by:
-
-            * :attr:`SamplingStrategy.NORMAL`
-            * :attr:`SamplingStrategy.DDS`
-            * :attr:`SamplingStrategy.DDS_UNIFORM`
-
-        :param probability: Perturbation probability. Used by:
-
-            * :attr:`SamplingStrategy.DDS`
-            * :attr:`SamplingStrategy.DDS_UNIFORM`
-
-        :return: Matrix with a sample point per line.
-        """
-        if self.strategy == SamplingStrategy.NORMAL:
-            mu = kwargs["mu"]
-            coord = kwargs["coord"] if "coord" in kwargs else ()
-            return self.get_normal_sample(
-                bounds, mu, iindex=iindex, coord=coord
-            )
-        elif self.strategy == SamplingStrategy.DDS:
-            mu = kwargs["mu"]
-            probability = (
-                kwargs["probability"] if "probability" in kwargs else 1
-            )
-            coord = kwargs["coord"] if "coord" in kwargs else ()
-            return self.get_dds_sample(
-                bounds, mu, probability, iindex=iindex, coord=coord
-            )
-        elif self.strategy == SamplingStrategy.DDS_UNIFORM:
-            nTotal = self.n
-            mu = kwargs["mu"]
-            probability = (
-                kwargs["probability"] if "probability" in kwargs else 1
-            )
-            coord = kwargs["coord"] if "coord" in kwargs else ()
-
-            self.n = self.n // 2
-            sample0 = self.get_dds_sample(
-                bounds,
-                mu,
-                probability,
-                iindex=iindex,
-                coord=coord,
-            )
-
-            self.n = nTotal - self.n
-            sample1 = self.get_uniform_sample(bounds, iindex=iindex)
-
-            self.n = nTotal
-            return np.concatenate((sample0, sample1), axis=0)
-        else:
-            return super().get_sample(bounds, iindex=iindex)
-
-
-class Mitchel91Sampler(Sampler):
-    """Sampler based from [#]_ that fills gaps in the search space.
-
-    :param maxCand: The maximum number of random candidates from which each
-        sample points is selected. If None it receives the value `10*n` instead.
-        Stored in :attr:`maxCand`.
-    :param scale: A scaling factor proportional to the number of candidates used
-        to select each sample point. Stored in :attr:`scale`.
-
-    .. attribute:: maxCand
-
-        The maximum number of random candidates from which each
-        sample points is selected. Used by :meth:`get_mitchel91_sample()`.
-
-    .. attribute:: scale
-
-        Scaling factor that controls the number of candidates in the pool used
-        to select a sample point. The pool has size
-        `scale * [# current points]`. Used by :meth:`get_mitchel91_sample()`.
+    :return: n-by-dim matrix with the sampled points.
 
     References
     ----------
-    .. [#] Mitchell, D. P. (1991). Spectrally optimal sampling for distribution
-        ray tracing. Computer Graphics, 25, 157–164.
+    .. [#] Tolson, B. A., and C. A. Shoemaker (2007), Dynamically
+        dimensioned search algorithm for computationally efficient watershed
+        model calibration, Water Resour. Res., 43, W01413,
+        https://doi.org/10.1029/2005WR004723.
+    """
+    if len(iindex) == len(bounds):
+        raise ValueError(
+            "DDS sampling requires at least one continuous variable."
+        )
+    if not (0 <= probability <= 1):
+        raise ValueError("Probability must be in the interval [0, 1].")
+    if probability == 1:
+        return truncnorm_sample(
+            n,
+            bounds,
+            mu,
+            sigma_ref=sigma_ref,
+            iindex=iindex,
+            seed=seed,
+        )
+
+    # Initialize random number generator
+    rng = np.random.default_rng(seed)
+
+    # Extract bounds
+    dim = len(bounds)
+    l_bounds = np.array([b[0] for b in bounds])
+    u_bounds = np.array([b[1] for b in bounds])
+    u_bounds[list(iindex)] += 1  # For integer variables
+    sigma = sigma_ref * (u_bounds - l_bounds)
+
+    # Distribution parameters
+    loc = mu
+    scale = sigma
+    a = (l_bounds - loc) / scale
+    b = (u_bounds - loc) / scale
+
+    # Generate perturbation matrix
+    ar = rng.random((n, dim)) < probability
+
+    # Ensure at least one dimension is perturbed in each sample
+    _idx = ar.sum(axis=1) == 0
+    ar[_idx, rng.integers(dim, size=np.sum(_idx))] = True
+
+    # Generate perturbations
+    nperturb = max([np.sum(ar[:, i]) for i in range(dim)])
+    _sample = np.asarray(
+        truncnorm.rvs(
+            a,
+            b,
+            loc,
+            scale,
+            size=(nperturb, dim),
+            random_state=rng.integers(np.iinfo(np.int32).max).item(),
+        )
+    )
+    _sample[:, list(iindex)] = np.floor(_sample[:, list(iindex)])
+
+    # Assemble final sample
+    sample = np.tile(mu, (n, 1))
+    for i in range(dim):
+        mask = ar[:, i]
+        count = int(np.sum(mask))
+        if count > 0:
+            sample[mask, i] = _sample[:count, i]
+
+    # Perturb all coordinates of points equal to mu
+    _idx = np.all(sample == mu, axis=1)
+    sample[_idx, :] = truncnorm_sample(
+        np.sum(_idx),
+        bounds,
+        mu,
+        sigma_ref=sigma_ref,
+        iindex=iindex,
+        seed=rng.integers(np.iinfo(np.int32).max).item(),
+    )
+
+    return sample
+
+
+def dds_uniform_sample(
+    n,
+    bounds,
+    probability: float,
+    mu,
+    sigma_ref=1.0,
+    iindex: tuple[int, ...] = (),
+    seed=None,
+    **kwargs,
+) -> np.ndarray:
+    """Generate a sample based on the Dynamically Dimensioned Search (DDS)
+    algorithm and uniform perturbations.
+
+    `n // 2` points are generated using the DDS algorithm with normal
+    perturbations, and the other half using uniform perturbations within the
+    variable bounds.
+
+    :param n: Number of sample points to generate.
+    :param sequence bounds: List with the limits [x_min,x_max] of each
+        direction x in the space.
+    :param probability: Perturbation probability.
+    :param mu: Point around which the sample will be generated.
+    :param sigma_ref: Standard deviation of the truncated normal distribution,
+        relative to a unitary interval. Default is 1.0.
+    :param iindex: Indices of the input space that are integer.
+    :param seed: Seed to initialize the random number generator.
+
+    :return: n-by-dim matrix with the sampled points.
+    """
+    rng = np.random.default_rng(seed)
+
+    x0 = dds_sample(
+        n // 2,
+        bounds,
+        probability,
+        mu,
+        sigma_ref=sigma_ref,
+        iindex=iindex,
+        seed=rng.integers(np.iinfo(np.int32).max).item(),
+    )
+    x1 = random_sample(
+        n - n // 2,
+        bounds,
+        iindex=iindex,
+        seed=rng.integers(np.iinfo(np.int32).max).item(),
+    )
+
+    return np.vstack((x0, x1))
+
+
+class SpaceFillingSampler:
+    """Sampler that generates samples that fill gaps in the search space.
+
+    :param dim: Dimension of the input space.
+    :param max_cand: Maximum number of candidates to be generated in each
+        iteration.
+    :param scale: Scale factor to determine the number of candidates in each
+        iteration.
+    :param seed: Seed to initialize the random number generator, or random
+        number generator.
+
+    .. attribute:: dim
+
+        Dimension of the input space.
+
+    .. attribute:: max_cand
+
+        Maximum number of candidates to be generated in each iteration.
+
+    .. attribute:: scale
+
+        Scale factor to determine the number of candidates in each iteration.
+
+    .. attribute:: rng
+
+        Random number generator used in sampling.
     """
 
     def __init__(
         self,
-        n: int,
-        strategy: SamplingStrategy = SamplingStrategy.MITCHEL91,
-        *,
-        maxCand: int = 10000,
-        scale: float = 10,
-    ) -> None:
-        super().__init__(n, strategy)
-        self.maxCand = maxCand
+        max_cand: int = 10000,
+        scale: float = 10.0,
+        seed=None,
+    ):
+        self.max_cand = max_cand
         self.scale = scale
+        self.rng = np.random.default_rng(seed)
 
-    def get_mitchel91_sample(
-        self, bounds, *, iindex: tuple[int, ...] = (), current_sample=()
+    def generate(
+        self,
+        n,
+        bounds,
+        current_sample: Optional[np.ndarray] = None,
+        iindex: tuple[int, ...] = (),
+        **kwargs,
     ) -> np.ndarray:
         """Generate a sample that aims to fill gaps in the search space.
 
         This algorithm generates a sample that fills gaps in the search space.
         In each iteration, it generates a pool of candidates, and selects the
         point that is farthest from current sample points to integrate the new
-        sample. This algorithm was proposed by Mitchel (1991).
+        sample. Algorithm proposed by [#]_.
 
+        When no current sample points are provided, the algorithm falls back to
+        generating random samples using the Latin Hypercube Sampling method.
+
+        :param n: Number of sample points to generate.
         :param sequence bounds: List with the limits [x_min,x_max] of each
             direction x in the space.
-        :param iindex: Indices of the input space that are integer.
         :param current_sample: Sample points already drawn.
+        :param iindex: Indices of the input space that are integer.
 
-        :return: Matrix with a sample point per line.
+        :return: n-by-dim matrix with the selected points.
+
+        References
+        ----------
+        .. [#] Mitchell, D. P. (1991). Spectrally optimal sampling for
+            distribution ray tracing. Computer Graphics, 25, 157–164.
         """
         dim = len(bounds)
+
+        if current_sample is None or len(current_sample) == 0:
+            return random_sample(
+                n,
+                bounds,
+                iindex=iindex,
+                seed=LatinHypercube(d=dim, seed=self.rng),
+                **kwargs,
+            )
+
         ncurrent = len(current_sample)
-        cand = np.empty((self.n, dim))
-
-        if ncurrent == 0:
-            # Select the first sample randomly in the domain
-            cand[0, :] = self.get_uniform_sample(bounds, iindex=iindex)[0]
-            i0 = 1
-        else:
-            i0 = 0
-
-        if ncurrent > 0:
-            tree = KDTree(current_sample)
+        sample = np.empty((n, dim))
+        tree = KDTree(current_sample)
 
         # Choose candidates that are far from current sample and each other
-        for i in range(i0, self.n):
-            npool = int(min(self.scale * (i + ncurrent), self.maxCand))
+        for i in range(n):
+            npool = int(min(self.scale * (i + ncurrent), self.max_cand))
 
             # Pool of candidates in iteration i
-            candPool = Sampler(npool).get_uniform_sample(bounds, iindex=iindex)
+            candPool = random_sample(
+                npool, bounds, iindex=iindex, seed=self.rng, **kwargs
+            )
 
             # Compute distance to current sample
-            minDist = tree.query(candPool)[0] if ncurrent > 0 else 0
+            minDist, _ = tree.query(candPool)
 
             # Now, consider distance to candidates selected up to iteration i-1
             if i > 0:
                 minDist = np.minimum(
-                    minDist, np.min(cdist(candPool, cand[0:i, :]), axis=1)
+                    minDist, np.min(cdist(candPool, sample[0:i]), axis=1)
                 )
 
             # Choose the farthest point
-            cand[i, :] = candPool[np.argmax(minDist), :]
+            sample[i] = candPool[np.argmax(minDist)]
 
-        return cand
-
-    def get_sample(
-        self, bounds, *, iindex: tuple[int, ...] = (), **kwargs
-    ) -> np.ndarray:
-        """Generates a sample.
-
-        :param sequence bounds: List with the limits [x_min,x_max] of each
-            direction x in the space.
-        :param iindex: Indices of the input space that are integer.
-        :param current_sample:
-            Sample points already drawn. Used by
-            :attr:`SamplingStrategy.MITCHEL91`.
-
-        :return: Matrix with a sample point per line.
-        """
-        if self.strategy == SamplingStrategy.MITCHEL91:
-            current_sample = (
-                kwargs["current_sample"] if "current_sample" in kwargs else []
-            )
-            return self.get_mitchel91_sample(
-                bounds, iindex=iindex, current_sample=current_sample
-            )
-        else:
-            return super().get_sample(bounds, iindex=iindex)
+        return sample

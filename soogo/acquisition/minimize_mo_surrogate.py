@@ -38,21 +38,29 @@ class MinimizeMOSurrogate(Acquisition):
         NSGA2 from pymoo.
     :param mi_optimizer: Mixed-integer multi-objective optimizer. If None, use
         MixedVariableGA from pymoo with RankAndCrowding survival strategy.
+    :param seed: Seed for random number generator.
+
+    .. attribute:: rng
+
+        Random number generator.
 
     """
 
-    def __init__(self, **kwargs) -> None:
-        if "optimizer" not in kwargs:
-            kwargs["optimizer"] = NSGA2()
-        if "mi_optimizer" not in kwargs:
-            kwargs["mi_optimizer"] = MixedVariableGA(
+    def __init__(
+        self, optimizer=None, mi_optimizer=None, seed=None, **kwargs
+    ) -> None:
+        if optimizer is None:
+            optimizer = NSGA2()
+        if mi_optimizer is None:
+            mi_optimizer = MixedVariableGA(
                 eliminate_duplicates=ListDuplicateElimination(),
                 mating=MixedVariableMating(
                     eliminate_duplicates=ListDuplicateElimination()
                 ),
                 survival=RankAndCrowding(),
             )
-        super().__init__(**kwargs)
+        super().__init__(optimizer, mi_optimizer, **kwargs)
+        self.rng = np.random.default_rng(seed)
 
     def optimize(
         self,
@@ -83,7 +91,7 @@ class MinimizeMOSurrogate(Acquisition):
         res = pymoo_minimize(
             multiobjSurrogateProblem,
             optimizer,
-            seed=surrogateModel.ntrain,
+            seed=self.rng.integers(np.iinfo(np.int32).max).item(),
             verbose=False,
         )
 

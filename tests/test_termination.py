@@ -49,12 +49,11 @@ class TestUnsuccessfulImprovement:
         condition = UnsuccessfulImprovement(threshold=0.001)
 
         # First evaluation
-        out1 = OptimizeResult(
-            nfev=5,
-            fx=np.array([10.0]),
-            fsample=np.array([10.0, 11.0, 12.0, 13.0, 14.0]),
-            nobj=1,
-        )
+        out1 = OptimizeResult()
+        out1.nfev = 5
+        out1.fx = np.array([10.0])
+        out1.fsample = np.array([10.0, 11.0, 12.0, 13.0, 14.0])
+        out1.nobj = 1
         condition.update(out1)
         # After first update, value_range should be 4.0 (14-10)
         # lowest_value should be 10.0
@@ -64,14 +63,13 @@ class TestUnsuccessfulImprovement:
         assert not condition.is_met()
 
         # Second evaluation with significant improvement
-        out2 = OptimizeResult(
-            nfev=10,
-            fx=np.array([5.0]),
-            fsample=np.array(
-                [10.0, 11.0, 12.0, 13.0, 14.0, 5.0, 6.0, 7.0, 8.0, 9.0]
-            ),
-            nobj=1,
+        out2 = OptimizeResult()
+        out2.nfev = 10
+        out2.fx = np.array([5.0])
+        out2.fsample = np.array(
+            [10.0, 11.0, 12.0, 13.0, 14.0, 5.0, 6.0, 7.0, 8.0, 9.0]
         )
+        out2.nobj = 1
         condition.update(out2)
         # value_range should now be 9.0 (14-5)
         # improvement from 10 to 5 is 5, which is > 0.001 * 9 = 0.009
@@ -84,23 +82,21 @@ class TestUnsuccessfulImprovement:
         condition = UnsuccessfulImprovement(threshold=0.1)
 
         # Setup initial state
-        out1 = OptimizeResult(
-            nfev=3,
-            fx=np.array([10.0]),
-            fsample=np.array([10.0, 12.0, 14.0]),
-            nobj=1,
-        )
+        out1 = OptimizeResult()
+        out1.nfev = 3
+        out1.fx = np.array([10.0])
+        out1.fsample = np.array([10.0, 12.0, 14.0])
+        out1.nobj = 1
         condition.update(out1)
         assert condition.value_range == 4.0
         assert condition.lowest_value == 10.0
 
         # Small improvement that's below threshold
-        out2 = OptimizeResult(
-            nfev=5,
-            fx=np.array([9.9]),
-            fsample=np.array([10.0, 12.0, 14.0, 9.9, 11.0]),
-            nobj=1,
-        )
+        out2 = OptimizeResult()
+        out2.nfev = 5
+        out2.fx = np.array([9.9])
+        out2.fsample = np.array([10.0, 12.0, 14.0, 9.9, 11.0])
+        out2.nobj = 1
         condition.update(out2)
         # improvement is 10.0 - 9.9 = 0.1
         # threshold * value_range = 0.1 * 4.0 = 0.4
@@ -112,12 +108,11 @@ class TestUnsuccessfulImprovement:
         condition = UnsuccessfulImprovement()
 
         # Setup some state
-        out = OptimizeResult(
-            nfev=3,
-            fx=np.array([5.0]),
-            fsample=np.array([5.0, 10.0, 15.0]),
-            nobj=1,
-        )
+        out = OptimizeResult()
+        out.nfev = 3
+        out.fx = np.array([5.0])
+        out.fsample = np.array([5.0, 10.0, 15.0])
+        out.nobj = 1
         condition.update(out)
         assert condition.value_range > 0
         assert condition.lowest_value < float("inf")
@@ -133,12 +128,11 @@ class TestUnsuccessfulImprovement:
         condition = UnsuccessfulImprovement()
 
         # Setup some state
-        out = OptimizeResult(
-            nfev=3,
-            fx=np.array([5.0]),
-            fsample=np.array([5.0, 10.0, 15.0]),
-            nobj=1,
-        )
+        out = OptimizeResult()
+        out.nfev = 3
+        out.fx = np.array([5.0])
+        out.fsample = np.array([5.0, 10.0, 15.0])
+        out.nobj = 1
         condition.update(out)
         old_value_range = condition.value_range
         old_lowest = condition.lowest_value
@@ -160,12 +154,11 @@ class TestUnsuccessfulImprovement:
         Y_train = np.array([3.0, 20.0])
         model = MockSurrogateModel(X_train, Y_train)
 
-        out = OptimizeResult(
-            nfev=2,
-            fx=np.array([10.0]),
-            fsample=np.array([10.0, 12.0]),
-            nobj=1,
-        )
+        out = OptimizeResult()
+        out.nfev = 2
+        out.fx = np.array([10.0])
+        out.fsample = np.array([10.0, 12.0])
+        out.nobj = 1
         condition.update(out, model)
 
         # value_range should consider model.Y as well
@@ -179,12 +172,11 @@ class TestUnsuccessfulImprovement:
         """Should raise error for multiple objectives."""
         condition = UnsuccessfulImprovement()
 
-        out = OptimizeResult(
-            nfev=2,
-            fx=np.array([[5.0, 6.0]]),
-            fsample=np.array([[5.0, 6.0], [7.0, 8.0]]),
-            nobj=2,
-        )
+        out = OptimizeResult()
+        out.nfev = 2
+        out.fx = np.array([[5.0, 6.0]])
+        out.fsample = np.array([[5.0, 6.0], [7.0, 8.0]])
+        out.nobj = 2
 
         with pytest.raises(AssertionError, match="single objective"):
             condition.update(out)
@@ -193,7 +185,10 @@ class TestUnsuccessfulImprovement:
         """Test update with zero evaluations does nothing."""
         condition = UnsuccessfulImprovement()
 
-        out = OptimizeResult(nfev=0, fx=None, fsample=None, nobj=1)
+        out = OptimizeResult()
+        out.nfev = 0
+        out.fx = None
+        out.nobj = 1
         condition.update(out)
 
         # State should remain unchanged
@@ -220,9 +215,11 @@ class TestRobustCondition:
         inner = IterateNTimes(1)  # Always met after 1 iteration
         condition = RobustCondition(inner, period=3)
 
-        out = OptimizeResult(
-            nfev=1, fx=np.array([1.0]), fsample=np.array([1.0]), nobj=1
-        )
+        out = OptimizeResult()
+        out.nfev = 1
+        out.fx = np.array([1.0])
+        out.fsample = np.array([1.0])
+        out.nobj = 1
 
         # First update - history has 1 True
         condition.update(out, None)
@@ -239,9 +236,11 @@ class TestRobustCondition:
         inner = IterateNTimes(1)
         condition = RobustCondition(inner, period=3)
 
-        out = OptimizeResult(
-            nfev=1, fx=np.array([1.0]), fsample=np.array([1.0]), nobj=1
-        )
+        out = OptimizeResult()
+        out.nfev = 1
+        out.fx = np.array([1.0])
+        out.fsample = np.array([1.0])
+        out.nobj = 1
 
         # Fill history with True values
         for _ in range(3):
@@ -256,9 +255,11 @@ class TestRobustCondition:
         inner = IterateNTimes(2)  # Met after 2 iterations
         condition = RobustCondition(inner, period=3)
 
-        out = OptimizeResult(
-            nfev=1, fx=np.array([1.0]), fsample=np.array([1.0]), nobj=1
-        )
+        out = OptimizeResult()
+        out.nfev = 1
+        out.fx = np.array([1.0])
+        out.fsample = np.array([1.0])
+        out.nobj = 1
 
         # First update: inner not met (count=1)
         condition.update(out, None)
@@ -279,9 +280,11 @@ class TestRobustCondition:
         inner = IterateNTimes(5)
         condition = RobustCondition(inner, period=3)
 
-        out = OptimizeResult(
-            nfev=1, fx=np.array([1.0]), fsample=np.array([1.0]), nobj=1
-        )
+        out = OptimizeResult()
+        out.nfev = 1
+        out.fx = np.array([1.0])
+        out.fsample = np.array([1.0])
+        out.nobj = 1
 
         # Add some history
         for _ in range(3):
@@ -299,9 +302,11 @@ class TestRobustCondition:
         inner = IterateNTimes(1)
         condition = RobustCondition(inner, period=3)
 
-        out = OptimizeResult(
-            nfev=1, fx=np.array([1.0]), fsample=np.array([1.0]), nobj=1
-        )
+        out = OptimizeResult()
+        out.nfev = 1
+        out.fx = np.array([1.0])
+        out.fsample = np.array([1.0])
+        out.nobj = 1
 
         # Fill beyond period
         for _ in range(5):
@@ -369,9 +374,11 @@ class TestIterateNTimes:
         """Update should work with any arguments (they're ignored)."""
         condition = IterateNTimes(2)
 
-        out = OptimizeResult(
-            nfev=1, fx=np.array([1.0]), fsample=np.array([1.0]), nobj=1
-        )
+        out = OptimizeResult()
+        out.nfev = 1
+        out.fx = np.array([1.0])
+        out.fsample = np.array([1.0])
+        out.nobj = 1
 
         condition.update(out, None)
         assert condition.iterationCount == 1

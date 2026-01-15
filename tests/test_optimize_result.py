@@ -34,39 +34,9 @@ class TestOptimizeResultInitialization:
         assert result.fx is None
         assert result.nit == 0
         assert result.nfev == 0
-        assert result.sample is None
-        assert result.fsample is None
+        assert len(result.sample) == 0
+        assert len(result.sample) == 0
         assert result.nobj == 1
-
-    def test_initialization_with_values(self):
-        """Test initialization with provided values."""
-        x = np.array([1.0, 2.0])
-        fx = np.array([3.0])
-        sample = np.array([[1.0, 2.0], [3.0, 4.0]])
-        fsample = np.array([3.0, 5.0])
-
-        result = OptimizeResult(
-            x=x, fx=fx, nit=5, nfev=10, sample=sample, fsample=fsample, nobj=1
-        )
-
-        assert np.array_equal(result.x, x)
-        assert np.array_equal(result.fx, fx)
-        assert result.nit == 5
-        assert result.nfev == 10
-        assert np.array_equal(result.sample, sample)
-        assert np.array_equal(result.fsample, fsample)
-        assert result.nobj == 1
-
-    def test_multi_objective_initialization(self):
-        """Test initialization for multi-objective problems."""
-        x = np.array([[1.0, 2.0], [3.0, 4.0]])
-        fx = np.array([[3.0, 4.0], [5.0, 6.0]])
-
-        result = OptimizeResult(x=x, fx=fx, nobj=2)
-
-        assert np.array_equal(result.x, x)
-        assert np.array_equal(result.fx, fx)
-        assert result.nobj == 2
 
 
 class TestOptimizeResultInit:

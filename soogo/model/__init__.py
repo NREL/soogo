@@ -20,6 +20,8 @@ from .base import Surrogate
 from .gp import GaussianProcess
 from .rbf import RbfModel, MedianLpfFilter
 
+from .utils import create_initial_design
+
 # Surrogate model kernels
 from .rbf_kernel import (
     LinearRadialBasisFunction,
@@ -35,4 +37,5 @@ __all__ = [
     "LinearRadialBasisFunction",
     "CubicRadialBasisFunction",
     "ThinPlateRadialBasisFunction",
+    "create_initial_design",
 ]

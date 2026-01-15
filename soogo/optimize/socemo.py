@@ -28,10 +28,11 @@ from ..acquisition import (
     MinimizeMOSurrogate,
     ParetoFront,
     WeightedAcquisition,
+    CoordinatePerturbation,
+    BoundedParameter,
 )
 from ..model import RbfModel, Surrogate
 from .utils import OptimizeResult
-from ..sampling import NormalSampler, Sampler
 from ..utils import find_pareto_front
 
 
@@ -41,10 +42,11 @@ def socemo(
     maxeval: int,
     *,
     surrogateModel: Optional[Surrogate] = None,
-    acquisitionFunc: Optional[WeightedAcquisition] = None,
+    acquisitionFunc: Optional[CoordinatePerturbation] = None,
     acquisitionFuncGlobal: Optional[WeightedAcquisition] = None,
     disp: bool = False,
     callback: Optional[Callable[[OptimizeResult], None]] = None,
+    seed=None,
 ):
     """Minimize a multiobjective function using the surrogate model approach
     from [#]_.
@@ -55,16 +57,17 @@ def socemo(
     :param maxeval: Maximum number of function evaluations.
     :param surrogateModel: Multi-target surrogate model to be used. If
         None is provided, a :class:`.RbfModel` model is used.
-    :param acquisitionFunc: Acquisition function to be used in the CP
-        step. The default is WeightedAcquisition(0).
-    :param acquisitionFuncGlobal: Acquisition function to be used in the
-        global step. The default is WeightedAcquisition(Sampler(0),
-        0.95).
+    :param acquisitionFunc: Acquisition used in the CP (coordinate perturbation)
+        step. Defaults to :class:`.CoordinatePerturbation`.
+    :param acquisitionFuncGlobal: Acquisition used in the global exploration
+        step. Defaults to :class:`.WeightedAcquisition` with a space-filling
+        sampler and weight pattern of ``0.95``.
     :param disp: If True, print information about the optimization
         process. The default is False.
     :param callback: If provided, the callback function will be called
         after each iteration with the current optimization result. The
         default is None.
+    :param seed: Seed or random number generator.
     :return: The optimization result.
 
     References
@@ -77,26 +80,33 @@ def socemo(
     dim = len(bounds)  # Dimension of the problem
     assert dim > 0
 
+    # Random number generator
+    rng = np.random.default_rng(seed)
+
     # Initialize optional variables
     return_surrogate = True
     if surrogateModel is None:
         return_surrogate = False
         surrogateModel = RbfModel()
     if acquisitionFunc is None:
-        acquisitionFunc = WeightedAcquisition(NormalSampler(0, 0.1))
+        acquisitionFunc = CoordinatePerturbation(
+            pool_size=min(500 * dim, 5000),
+            sigma=BoundedParameter(0.1, 0.1 * 0.5**5, 0.1),
+            perturbation_probability=1.0,
+            seed=rng.integers(np.iinfo(np.int32).max).item(),
+        )
     if acquisitionFuncGlobal is None:
-        acquisitionFuncGlobal = WeightedAcquisition(Sampler(0), 0.95)
-
-    # Use a number of candidates that is greater than 1
-    if acquisitionFunc.sampler.n <= 1:
-        acquisitionFunc.sampler.n = min(500 * dim, 5000)
-    if acquisitionFuncGlobal.sampler.n <= 1:
-        acquisitionFuncGlobal.sampler.n = min(500 * dim, 5000)
+        acquisitionFuncGlobal = WeightedAcquisition(
+            pool_size=min(500 * dim, 5000),
+            weight_pattern=0.95,
+            seed=rng.integers(np.iinfo(np.int32).max).item(),
+        )
 
     # Initialize output
     out = OptimizeResult()
-    out.init(fun, bounds, 0, maxeval, surrogateModel)
+    out.init(fun, bounds, 0, maxeval, surrogateModel, seed=seed)
     out.init_best_values(surrogateModel)
+    assert isinstance(out.x, np.ndarray)
     assert isinstance(out.fx, np.ndarray)
 
     # Reserve space for the surrogate model to avoid repeated allocations
@@ -106,11 +116,22 @@ def socemo(
 
     # Define acquisition functions
     tol = acquisitionFunc.tol(bounds)
-    step1acquisition = ParetoFront()
+    step1acquisition = ParetoFront(
+        seed=rng.integers(np.iinfo(np.int32).max).item(),
+    )
     step2acquisition = CoordinatePerturbationOverNondominated(acquisitionFunc)
-    step3acquisition = EndPointsParetoFront(rtol=acquisitionFunc.rtol)
-    step5acquisition = MinimizeMOSurrogate(rtol=acquisitionFunc.rtol)
-    maximizeDistance = MaximizeDistance(rtol=acquisitionFunc.rtol)
+    step3acquisition = EndPointsParetoFront(
+        seed=rng.integers(np.iinfo(np.int32).max).item(),
+        rtol=acquisitionFunc.rtol,
+    )
+    step5acquisition = MinimizeMOSurrogate(
+        seed=rng.integers(np.iinfo(np.int32).max).item(),
+        rtol=acquisitionFunc.rtol,
+    )
+    maximizeDistance = MaximizeDistance(
+        seed=rng.integers(np.iinfo(np.int32).max).item(),
+        rtol=acquisitionFunc.rtol,
+    )
 
     # do until max number of f-evals reached or local min found
     xselected = np.array(out.sample[0 : out.nfev, :], copy=True)
@@ -128,13 +149,6 @@ def socemo(
         tf = time.time()
         if disp:
             print("Time to update surrogate model: %f s" % (tf - t0))
-
-        #
-        # 0. Adjust parameters in the acquisition
-        #
-        acquisitionFunc.neval = max(
-            acquisitionFunc.maxeval - (maxeval - out.nfev), 0
-        )
 
         #
         # 1. Define target values to fill gaps in the Pareto front

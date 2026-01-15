@@ -16,18 +16,26 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from ..acquisition import WeightedAcquisition
-from ..sampling import NormalSampler, SamplingStrategy
+import numpy as np
+from typing import Optional
+
+from ..acquisition import CoordinatePerturbation, Acquisition, BoundedParameter
 from .surrogate_optimization import surrogate_optimization
 
 
-def dycors(*args, **kwargs):
+def dycors(
+    *args, acquisitionFunc: Optional[Acquisition] = None, seed=None, **kwargs
+):
     """DYCORS algorithm for single-objective optimization implemented as a
     wrapper to :func:`.surrogate_optimization()`.
 
     Implementation of the DYCORS (DYnamic COordinate search using Response
     Surface models) algorithm proposed in [#]_. The acquisition function, if not
     provided, is the one used in DYCORS-LMSRBF from Regis and Shoemaker (2012).
+
+    :param acquisitionFunc: Acquisition function to be used. If None, the
+        DYCORS acquisition function is used.
+    :param seed: Seed for random number generator.
 
     References
     ----------
@@ -38,21 +46,21 @@ def dycors(*args, **kwargs):
         https://doi.org/10.1080/0305215X.2012.687731
     """
     bounds = args[1] if len(args) > 1 else kwargs["bounds"]
-    maxeval = args[2] if len(args) > 2 else kwargs["maxeval"]
 
     dim = len(bounds)  # Dimension of the problem
     assert dim > 0
 
     # Initialize acquisition function
-    if "acquisitionFunc" not in kwargs or kwargs["acquisitionFunc"] is None:
-        kwargs["acquisitionFunc"] = WeightedAcquisition(
-            NormalSampler(
-                min(100 * dim, 5000), 0.2, strategy=SamplingStrategy.DDS
-            ),
+    if acquisitionFunc is None:
+        rng = np.random.default_rng(seed)
+        acquisitionFunc = CoordinatePerturbation(
+            pool_size=min(100 * dim, 5000),
             weightpattern=(0.3, 0.5, 0.8, 0.95),
-            maxeval=maxeval,
-            sigma_min=0.2 * 0.5**6,
-            sigma_max=0.2,
+            sigma=BoundedParameter(0.2, 0.2 * 0.5**6, 0.2),
+            n_continuous_search=4,
+            seed=rng.integers(np.iinfo(np.int32).max).item(),
         )
 
-    return surrogate_optimization(*args, **kwargs)
+    return surrogate_optimization(
+        *args, acquisitionFunc=acquisitionFunc, seed=seed, **kwargs
+    )

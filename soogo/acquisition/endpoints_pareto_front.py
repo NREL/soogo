@@ -40,6 +40,12 @@ class EndPointsParetoFront(Acquisition):
     consider the whole variable domain and sample at the point that maximizes
     the minimum distance to training sample points.
 
+    :param seed: Seed for random number generator.
+
+    .. attribute:: rng
+
+        Random number generator.
+
     References
     ----------
     .. [#] Juliane Mueller. SOCEMO: Surrogate Optimization of Computationally
@@ -48,22 +54,21 @@ class EndPointsParetoFront(Acquisition):
         https://doi.org/10.1287/ijoc.2017.0749
     """
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, seed=None, **kwargs) -> None:
         super().__init__(**kwargs)
+        self.rng = np.random.default_rng(seed)
 
     def optimize(
         self,
         surrogateModel: Surrogate,
         bounds,
-        n: int = 1,
         **kwargs,
     ) -> np.ndarray:
-        """Acquire k points at most, where k <= n.
+        """Acquire k points at most, where k <= objdim.
 
         :param surrogateModel: Multi-target surrogate model.
         :param sequence bounds: List with the limits [x_min,x_max] of each
             direction x in the space.
-        :param n: Maximum number of points to be acquired.
         :return: k-by-dim matrix with the selected points.
         """
         dim = len(bounds)
@@ -81,7 +86,7 @@ class EndPointsParetoFront(Acquisition):
             res = pymoo_minimize(
                 minimumPointProblem,
                 optimizer,
-                seed=surrogateModel.ntrain,
+                seed=self.rng.integers(np.iinfo(np.int32).max).item(),
                 verbose=False,
             )
             if res.X is not None:

@@ -20,7 +20,12 @@ from typing import Callable, Optional
 
 import numpy as np
 
-from ..acquisition import GosacSample, MaximizeDistance, MinimizeMOSurrogate
+from ..acquisition import (
+    GosacSample,
+    MaximizeDistance,
+    MinimizeMOSurrogate,
+    MultipleAcquisition,
+)
 from ..model import RbfModel, Surrogate
 from .utils import OptimizeResult
 
@@ -34,6 +39,7 @@ def gosac(
     surrogateModel: Optional[Surrogate] = None,
     disp: bool = False,
     callback: Optional[Callable[[OptimizeResult], None]] = None,
+    seed=None,
 ):
     """Minimize a scalar function of one or more variables subject to
     constraints.
@@ -58,6 +64,7 @@ def gosac(
     :param callback: If provided, the callback function will be called
         after each iteration with the current optimization result. The
         default is None.
+    :param seed: Seed or random number generator.
     :return: The optimization result.
 
     References
@@ -69,6 +76,9 @@ def gosac(
     """
     dim = len(bounds)  # Dimension of the problem
     assert dim > 0
+
+    # Random number generator
+    rng = np.random.default_rng(seed)
 
     # Initialize optional variables
     return_surrogate = True
@@ -84,10 +94,21 @@ def gosac(
         0,
         maxeval,
         surrogateModel,
-        ntarget=1 + surrogateModel.ntarget,
+        seed=seed,
     )
+
+    # Fix nobj and fsample to account for constraints
     out.nobj = 1
+    if out.nfev == 0:
+        if out.fsample.ndim == 1:
+            out.fsample = out.fsample.reshape(-1, 1)
+        out.fsample = np.hstack(
+            (np.full((len(out.fsample), 1), np.nan), out.fsample)
+        )
+
+    # Initialize best values
     out.init_best_values()
+    assert isinstance(out.x, np.ndarray)
     assert isinstance(out.fx, np.ndarray)
 
     # Reserve space for the surrogate model to avoid repeated allocations
@@ -97,11 +118,22 @@ def gosac(
 
     # Acquisition functions
     rtol = 1e-3
-    acquisition1 = MinimizeMOSurrogate(rtol=rtol)
-    acquisition2 = GosacSample(fun, rtol=rtol)
-    maximizeDistance = MaximizeDistance(
-        rtol=rtol
-    )  # fallback if no point is found in step 2
+    acquisition1 = MinimizeMOSurrogate(
+        rtol=rtol, seed=rng.integers(np.iinfo(np.int32).max).item()
+    )
+    acquisition2 = MultipleAcquisition(
+        (
+            GosacSample(
+                fun,
+                rtol=rtol,
+                seed=rng.integers(np.iinfo(np.int32).max).item(),
+            ),
+            MaximizeDistance(
+                rtol=rtol,
+                seed=rng.integers(np.iinfo(np.int32).max).item(),
+            ),
+        )
+    )
 
     xselected = np.array(out.sample[0 : out.nfev, :], copy=True)
     ySelected = np.array(out.fsample[0 : out.nfev, 1:], copy=True)
@@ -212,9 +244,7 @@ def gosac(
 
         # Solve cheap problem with multiple constraints
         t0 = time.time()
-        xselected = acquisition2.optimize(surrogateModel, bounds)
-        if len(xselected) == 0:
-            xselected = maximizeDistance.optimize(surrogateModel, bounds, n=1)
+        xselected = acquisition2.optimize(surrogateModel, bounds, n=1)
         tf = time.time()
         if disp:
             print(

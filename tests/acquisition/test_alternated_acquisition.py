@@ -22,7 +22,7 @@ import numpy as np
 from soogo.model import Surrogate
 from soogo.acquisition import (
     Acquisition,
-    TransitionSearch,
+    CoordinatePerturbation,
     MaximizeDistance,
     AlternatedAcquisition,
 )
@@ -61,9 +61,11 @@ class TestAlternatedAcquisition:
         alternated_acq = AlternatedAcquisition(acquisition_funcs)
 
         # Simulate an optimization result
-        out = OptimizeResult(
-            nfev=1, fx=np.array([0.1]), fsample=np.array([[0.1]]), nobj=1
-        )
+        out = OptimizeResult()
+        out.nfev = 1
+        out.fx = np.array([0.1])
+        out.fsample = np.array([[0.1]])
+        out.nobj = 1
 
         for i in range(12):
             # Check that it alternates in the pattern: 1st, 2nd, 2nd, 3rd
@@ -82,29 +84,33 @@ class TestAlternatedAcquisition:
         correct shape and within bounds while alternating between acquisition
         functions.
         """
-        # Use transition search and maximize distance as acquisition functions
-        transitionSearch = TransitionSearch(termination=IterateNTimes(1))
+        # Use coordinate perturbation search and maximize distance as
+        # acquisition functions
+        cpAcquisition = CoordinatePerturbation(termination=IterateNTimes(1))
         maximizeDistance = MaximizeDistance(termination=IterateNTimes(2))
 
         # Create a list of mock acquisition functions
-        acquisition_funcs = [transitionSearch, maximizeDistance]
+        acquisition_funcs = [cpAcquisition, maximizeDistance]
 
         # Initialize the AlternatedAcquisition with the mock functions
         alternated_acq = AlternatedAcquisition(acquisition_funcs)
 
         # Mock optimization result
-        out = OptimizeResult(
-            nfev=1, fx=np.array([0.1]), fsample=np.array([[0.1]]), nobj=1
-        )
+        out = OptimizeResult()
+        out.nfev = 1
+        out.fx = np.array([0.1])
+        out.fsample = np.array([[0.1]])
+        out.nobj = 1
 
         for dim in dims:
+            out.x = np.array([0.1 for _ in range(dim)])
             bounds = np.array([[0, 1] for _ in range(dim)])
             X_train = np.array([[0.5 for _ in range(dim)]])
             Y_train = np.array([0.0])
             mock_surrogate = MockSurrogateModel(X_train, Y_train)
 
             result = alternated_acq.optimize(
-                mock_surrogate, bounds, n=1, scoreWeight=0.5
+                mock_surrogate, bounds, n=1, weightpattern=0.5
             )
             assert result.shape == (1, dim)
             assert np.all(result >= bounds[:, 0]) and np.all(

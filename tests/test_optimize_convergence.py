@@ -133,8 +133,15 @@ def test_unconstrained_algorithms(
         run_vals = []
         soogo_objective = make_soogo_objective(prob_instance)
         for run in range(n_runs):
-            np.random.seed(run + 42)
-            out = alg(soogo_objective, prob_instance.bounds(), maxevals)
+            np.random.seed(
+                run + 42
+            )  # Still needed for some algorithms (e.g., FSAPSO)
+            out = alg(
+                soogo_objective,
+                prob_instance.bounds(),
+                maxevals,
+                seed=run + 42,
+            )
             if out.fx is None:
                 raise ValueError("Algorithm did not return a function value.")
             run_vals.append(out.fx)
@@ -206,12 +213,12 @@ def test_constrained_algorithms(
         soogo_objective = make_soogo_objective(prob_instance)
         soogo_constraint = make_soogo_constraint(prob_instance)
         for run in range(n_runs):
-            np.random.seed(run + 142)
             out = alg(
                 soogo_objective,
                 soogo_constraint,
                 prob_instance.bounds(),
                 maxevals,
+                seed=run + 142,
             )
             assert -prob_instance.constraint1(out.x) <= 0, (
                 "Returned solution does not satisfy constraint"

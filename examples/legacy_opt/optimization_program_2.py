@@ -32,13 +32,10 @@ import numpy as np
 
 from optimization_program_1 import read_check_data_file
 from soogo import RbfModel, MedianLpfFilter, surrogate_optimization
-from soogo.sampling import NormalSampler, Sampler, SamplingStrategy
-from soogo.acquisition import WeightedAcquisition
+from soogo.acquisition import CoordinatePerturbation, BoundedParameter
 from soogo.termination import RobustCondition, UnsuccessfulImprovement
 
 if __name__ == "__main__":
-    np.random.seed(3)
-
     print("This is the test for LocalStochRBFstop")
 
     data_file = "datainput_hartman3"
@@ -65,11 +62,7 @@ if __name__ == "__main__":
         (data.xlow[2], data.xup[2]),
     )
 
-    rank_P = 0
-    while rank_P != data.dim + 1:
-        sample = Sampler(m).get_slhd_sample(bounds)
-        P = np.concatenate((np.ones((m, 1)), sample), axis=1)
-        rank_P = np.linalg.matrix_rank(P)
+    # Generate an initial design (predefined SLHD points)
     sample = np.array(
         [
             [0.0625, 0.3125, 0.0625],
@@ -100,20 +93,17 @@ if __name__ == "__main__":
         bounds=bounds,
         maxeval=maxeval - numevals,
         surrogateModel=rbfModel,
-        acquisitionFunc=WeightedAcquisition(
-            NormalSampler(
-                nCand,
-                sigma=0.2,
-                strategy=SamplingStrategy.NORMAL,
-            ),
+        acquisitionFunc=CoordinatePerturbation(
+            pool_size=nCand,
             weightpattern=[0.3, 0.5],
             rtol=1e-3,
-            maxeval=maxeval - numevals,
-            sigma_min=0.2 * 0.5**5,
-            sigma_max=0.2,
+            sigma=BoundedParameter(0.2, 0.2 * 0.5**5, 0.2),
+            perturbation_probability=1.0,
             termination=RobustCondition(UnsuccessfulImprovement(0.001), 5),
+            seed=3,
         ),
         batchSize=batchSize,
+        seed=42,
     )
 
     print("Results")

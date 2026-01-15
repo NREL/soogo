@@ -35,6 +35,12 @@ class MaximizeDistance(Acquisition):
     This acquisition function is used to find new sample points that maximize
     the minimum distance to previously sampled points.
 
+    :param seed: Seed for random number generator.
+
+    .. attribute:: rng
+
+        Random number generator.
+
     References
     ----------
     .. [#] Juliane Müller and Marcus Day. Surrogate Optimization of
@@ -43,14 +49,14 @@ class MaximizeDistance(Acquisition):
         https://doi.org/10.1287/ijoc.2018.0864
     """
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, seed=None, **kwargs) -> None:
         super().__init__(**kwargs)
+        self.rng = np.random.default_rng(seed)
 
     def optimize(
         self,
         surrogateModel: Surrogate,
         bounds,
-        n: int = 1,
         points: Optional[np.ndarray] = None,
         **kwargs,
     ) -> np.ndarray:
@@ -84,7 +90,7 @@ class MaximizeDistance(Acquisition):
         res = pymoo_minimize(
             problem,
             optimizer,
-            seed=surrogateModel.ntrain + 1,
+            seed=self.rng.integers(np.iinfo(np.int32).max).item(),
             verbose=False,
         )
         if res.X is not None:

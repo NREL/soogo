@@ -17,6 +17,14 @@ soogo.acquisition.base module
    :undoc-members:
    :show-inheritance:
 
+soogo.acquisition.coordinate\_perturbation module
+-------------------------------------------------
+
+.. automodule:: soogo.acquisition.coordinate_perturbation
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 soogo.acquisition.coordinate\_perturbation\_over\_nondominated module
 ---------------------------------------------------------------------
 
@@ -93,14 +101,6 @@ soogo.acquisition.target\_value\_acquisition module
 ---------------------------------------------------
 
 .. automodule:: soogo.acquisition.target_value_acquisition
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-soogo.acquisition.transition\_search module
--------------------------------------------
-
-.. automodule:: soogo.acquisition.transition_search
    :members:
    :undoc-members:
    :show-inheritance:

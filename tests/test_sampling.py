@@ -19,27 +19,35 @@ __authors__ = ["Weslley S. Pereira"]
 
 import numpy as np
 import pytest
+from scipy.stats.qmc import LatinHypercube
+
 from soogo.sampling import (
-    Mitchel91Sampler,
-    NormalSampler,
-    Sampler,
-    SamplingStrategy,
+    random_sample,
+    SymmetricLatinHypercube,
+    SpaceFillingSampler,
+    truncnorm_sample,
+    dds_sample,
+    dds_uniform_sample,
 )
 
 
 @pytest.mark.parametrize("dim", [1, 2, 3, 10])
-@pytest.mark.parametrize(
-    "strategy", [SamplingStrategy.UNIFORM, SamplingStrategy.SLHD]
-)
-def test_sampler(dim: int, strategy: SamplingStrategy):
+@pytest.mark.parametrize("rng_tag", ["", "default", "lhd", "slhd"])
+def test_sampler(dim: int, rng_tag: str):
     n = 2 * (dim + 1)
     bounds = [(-1, 1)] * dim
 
-    # Set seed to 5 for reproducibility
-    np.random.seed(5)
+    if rng_tag == "default":
+        rng = np.random.default_rng()
+    elif rng_tag == "lhd":
+        rng = LatinHypercube(d=dim)
+    elif rng_tag == "slhd":
+        rng = SymmetricLatinHypercube(d=dim)
+    else:
+        rng = None
 
     for i in range(3):
-        sample = Sampler(n, strategy=strategy).get_sample(bounds)
+        sample = random_sample(n, bounds, seed=rng)
 
         # Check if the shape is correct
         assert sample.shape == (n, dim)
@@ -50,7 +58,7 @@ def test_sampler(dim: int, strategy: SamplingStrategy):
             assert np.all(sample[:, j] <= 1)
 
         # Check that the values do not repeat in the slhd case
-        if strategy == SamplingStrategy.SLHD:
+        if rng_tag == "lhd" or rng_tag == "slhd":
             for j in range(dim):
                 u, c = np.unique(sample[:, j], return_counts=True)
                 assert u[c > 1].size == 0
@@ -58,16 +66,9 @@ def test_sampler(dim: int, strategy: SamplingStrategy):
 
 @pytest.mark.parametrize("dim", [1, 2, 3, 10])
 @pytest.mark.parametrize(
-    "strategy",
-    [
-        SamplingStrategy.UNIFORM,
-        SamplingStrategy.SLHD,
-        SamplingStrategy.NORMAL,
-        SamplingStrategy.DDS,
-        SamplingStrategy.DDS_UNIFORM,
-    ],
+    "normal_sampler", [truncnorm_sample, dds_sample, dds_uniform_sample]
 )
-def test_normal_sampler(dim: int, strategy: SamplingStrategy):
+def test_normal_sampler(dim: int, normal_sampler):
     n = 2 * (dim + 1)
     bounds = [(-1, 1)] * dim
     sigma = 0.1
@@ -75,11 +76,11 @@ def test_normal_sampler(dim: int, strategy: SamplingStrategy):
     mu = np.array([b[0] + (b[1] - b[0]) / 2 for b in bounds])
 
     # Set seed to 5 for reproducibility
-    np.random.seed(5)
+    rng = np.random.default_rng(5)
 
     for i in range(3):
-        sample = NormalSampler(n, sigma, strategy=strategy).get_sample(
-            bounds, mu=mu, probability=probability
+        sample = normal_sampler(
+            n, bounds, mu=mu, sigma_ref=sigma, probability=probability, rng=rng
         )
 
         # Check if the shape is correct
@@ -98,11 +99,10 @@ def test_mitchel91_sampler(dim: int, n0: int):
     bounds = [(-1, 1)] * dim
     sample0 = np.random.rand(n0, dim)
 
-    # Set seed to 5 for reproducibility
-    np.random.seed(5)
-
     for i in range(3):
-        sample = Mitchel91Sampler(n).get_sample(bounds, current_sample=sample0)
+        sample = SpaceFillingSampler().generate(
+            n, bounds, current_sample=sample0
+        )
 
         # Check if the shape is correct
         assert sample.shape == (n, dim)
@@ -115,15 +115,9 @@ def test_mitchel91_sampler(dim: int, n0: int):
 
 @pytest.mark.parametrize("boundx", [(0, 1), (-1, 1), (-6, 5)])
 @pytest.mark.parametrize(
-    "strategy",
-    [
-        SamplingStrategy.UNIFORM,
-        SamplingStrategy.SLHD,
-        SamplingStrategy.DDS,
-        SamplingStrategy.DDS_UNIFORM,
-    ],
+    "normal_sampler", [truncnorm_sample, dds_sample, dds_uniform_sample]
 )
-def test_iindex_sampler(boundx, strategy: SamplingStrategy):
+def test_iindex_sampler(boundx, normal_sampler):
     dim = 10
     n = 2 * (dim + 1)
     bounds = [boundx] * dim
@@ -131,15 +125,21 @@ def test_iindex_sampler(boundx, strategy: SamplingStrategy):
     probability = 0.5
 
     # Set seed to 5 for reproducibility
-    np.random.seed(5)
+    rng = np.random.default_rng(5)
 
     for i in range(3):
         iindex = np.random.choice(dim, size=dim // 2)
         mu = np.array([b[0] + (b[1] - b[0]) / 2 for b in bounds])
         mu[iindex] = np.round(mu[iindex])
 
-        sample = NormalSampler(n, sigma, strategy=strategy).get_sample(
-            bounds, iindex=iindex, mu=mu, probability=probability
+        sample = normal_sampler(
+            n,
+            bounds,
+            mu=mu,
+            sigma_ref=sigma,
+            probability=probability,
+            rng=rng,
+            iindex=iindex,
         )
 
         # Check if the sample has integer values in the iindex
@@ -148,20 +148,21 @@ def test_iindex_sampler(boundx, strategy: SamplingStrategy):
 
 
 @pytest.mark.parametrize("boundx", [(0, 1), (-1, 1), (0, 10)])
-def test_slhd(boundx):
+@pytest.mark.parametrize("rng_tag", ["lhd", "slhd"])
+def test_slhd(boundx, rng_tag: str):
     dim = 10
     bounds = [boundx] * dim
 
-    # Set seed to 5 for reproducibility
-    np.random.seed(5)
+    if rng_tag == "lhd":
+        rng = LatinHypercube(d=dim, scramble=False)
+    else:
+        rng = SymmetricLatinHypercube(d=dim, scramble=False)
 
     for i in range(3):
-        iindex = np.random.choice(dim, size=dim // 2)
+        iindex = np.random.choice(dim, size=dim // 2).tolist()
 
         for n in (boundx[1] - boundx[0], boundx[1] - boundx[0] + 1):
-            sample = Sampler(
-                n, strategy=SamplingStrategy.SLHD
-            ).get_slhd_sample(bounds, iindex=iindex)
+            sample = random_sample(n, bounds, seed=rng, iindex=iindex)
 
             # Check if the sample has integer values in the iindex
             for i in iindex:
@@ -170,7 +171,7 @@ def test_slhd(boundx):
             # Check if the sample has repeated values
             for i in range(dim):
                 u, c = np.unique(sample[:, i], return_counts=True)
-                assert u[c > 1].size == 0
+                assert u[c > 1].size == 0, f"{n}: {sample[:, i]}"
 
 
 @pytest.mark.parametrize("boundx", [(0, 1), (-1, 1), (-6, 5)])
@@ -181,14 +182,11 @@ def test_iindex_mitchel91_sampler(boundx, n0: int):
     bounds = [boundx] * dim
     sample0 = np.random.rand(n0, dim)
 
-    # Set seed to 5 for reproducibility
-    np.random.seed(5)
-
     for i in range(3):
-        iindex = np.random.choice(dim, size=dim // 2)
+        iindex = np.random.choice(dim, size=dim // 2).tolist()
 
-        sample = Mitchel91Sampler(n).get_sample(
-            bounds, iindex=iindex, current_sample=sample0
+        sample = SpaceFillingSampler().generate(
+            n, bounds, iindex=iindex, current_sample=sample0
         )
 
         # Check if the sample has integer values in the iindex

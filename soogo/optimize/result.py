@@ -17,27 +17,55 @@
 
 __authors__ = ["Weslley S. Pereira"]
 
-from dataclasses import dataclass
-from typing import Optional, Union
+from typing import Optional
 import numpy as np
 
-from ..sampling import Sampler
-from ..model import Surrogate
+from ..model import Surrogate, create_initial_design
 from ..utils import find_pareto_front
 
 
-@dataclass
 class OptimizeResult:
     """Optimization result for the global optimizers provided by this
-    package."""
+    package.
 
-    x: Optional[np.ndarray] = None  #: Best sample point found so far
-    fx: Union[float, np.ndarray, None] = None  #: Best objective function value
-    nit: int = 0  #: Number of active learning iterations
-    nfev: int = 0  #: Number of function evaluations taken
-    sample: Optional[np.ndarray] = None  #: n-by-dim matrix with all n samples
-    fsample: Optional[np.ndarray] = None  #: Vector with all n objective values
-    nobj: int = 1  #: Number of objective function targets
+    .. attribute:: x
+
+        Best sample point found so far.
+
+    .. attribute:: fx
+
+        Best objective function value.
+
+    .. attribute:: nit
+
+        Number of active learning iterations.
+
+    .. attribute:: nfev
+
+        Number of function evaluations taken.
+
+    .. attribute:: sample
+
+        n-by-dim matrix with all n samples.
+
+    .. attribute:: fsample
+
+        Vector with all n objective values.
+
+    .. attribute:: nobj
+
+        Number of objective function targets.
+
+    """
+
+    def __init__(self) -> None:
+        self.x = None
+        self.fx = None
+        self.nit = 0
+        self.nfev = 0
+        self.sample = np.array([])
+        self.fsample = np.array([])
+        self.nobj = 1
 
     def init(
         self,
@@ -46,7 +74,7 @@ class OptimizeResult:
         mineval: int,
         maxeval: int,
         surrogateModel: Surrogate,
-        ntarget: int = 1,
+        seed=None,
     ) -> None:
         """Initialize :attr:`nfev` and :attr:`sample` and :attr:`fsample` with
         data about the optimization that is starting.
@@ -63,62 +91,48 @@ class OptimizeResult:
             surrogate model.
         :param maxeval: Maximum number of function evaluations.
         :param surrogateModel: Surrogate model to be used.
-        :param ntarget: Number of target dimensions. Default is 1.
+
+            This is only used to initialize :attr:`nobj` when the surrogate
+            model is empty.
+
+        :param seed: Seed, random number generator, or a
+            `scipy.stats.qmc.QMCEngine`.
         """
         dim = len(bounds)  # Dimension of the problem
         assert dim > 0
-
-        # Local variables
-        m0 = surrogateModel.ntrain  # Number of initial sample points
-        m_for_surrogate = surrogateModel.min_design_space_size(
-            dim
-        )  # Smallest sample for a valid surrogate
-        iindex = surrogateModel.iindex  # Integer design variables
 
         # Initialize sample array in this object
         self.sample = np.empty((maxeval, dim))
         self.sample[:] = np.nan
 
         # If the surrogate is empty and no initial sample was given
-        m = 0
-        if m0 == 0:
-            # Create a new sample with SLHD
-            m = min(maxeval, max(mineval, 2 * m_for_surrogate))
-            self.sample[0:m] = Sampler(m).get_slhd_sample(
-                bounds, iindex=iindex
+        if surrogateModel.ntrain == 0:
+            # Create initial design
+            sample = create_initial_design(
+                surrogateModel, bounds, mineval, maxeval, seed=seed
             )
-            if m >= 2 * m_for_surrogate:
-                count = 0
-                while not surrogateModel.check_initial_design(
-                    self.sample[0:m]
-                ):
-                    self.sample[0:m] = Sampler(m).get_slhd_sample(
-                        bounds, iindex=iindex
-                    )
-                    count += 1
-                    if count > 100:
-                        raise RuntimeError(
-                            "Cannot create valid initial design"
-                        )
+            if sample is None:
+                raise RuntimeError("Cannot create valid initial design")
 
-        # Initialize fsample and nobj
-        if m0 == 0:
             # Compute f(sample)
-            fsample = np.array(fun(self.sample[0:m]))
-            self.nfev += m
-            self.nobj = fsample.shape[1] if fsample.ndim > 1 else 1
+            fsample = np.array(fun(sample))
 
-            # Store the function values
+            # Initialize nfev, sample, nobj and fsample
+            self.nfev = len(sample)
+            self.sample[0 : self.nfev] = sample
+            self.nobj = fsample.shape[1] if fsample.ndim > 1 else 1
             self.fsample = np.empty(
                 maxeval if self.nobj <= 1 else (maxeval, self.nobj)
             )
-            self.fsample[0:m] = fsample
+            self.fsample[0 : self.nfev] = fsample
+            self.fsample[self.nfev :] = np.nan
         else:
-            self.nobj = max(ntarget, surrogateModel.ntarget)
+            # Initialize nobj and fsample
+            self.nobj = surrogateModel.ntarget
             self.fsample = np.empty(
                 maxeval if self.nobj <= 1 else (maxeval, self.nobj)
             )
-        self.fsample[m:] = np.nan
+            self.fsample[:] = np.nan
 
     def init_best_values(
         self, surrogateModel: Optional[Surrogate] = None

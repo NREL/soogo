@@ -57,10 +57,15 @@ class ParetoFront(Acquisition):
         MixedVariableGA from pymoo with RankAndCrowding survival strategy.
     :param oldTV: Old target values to be avoided in the acquisition.
         Copied to :attr:`oldTV`.
+    :param seed: Seed for random number generator.
 
     .. attribute:: oldTV
 
         Old target values to be avoided in the acquisition of step 1.
+
+    .. attribute:: rng
+
+        Random number generator.
 
     References
     ----------
@@ -70,20 +75,23 @@ class ParetoFront(Acquisition):
         https://doi.org/10.1287/ijoc.2017.0749
     """
 
-    def __init__(self, oldTV=(), **kwargs) -> None:
+    def __init__(
+        self, optimizer=None, mi_optimizer=None, oldTV=(), seed=None, **kwargs
+    ) -> None:
         self.oldTV = np.array(oldTV)
 
-        if "optimizer" not in kwargs:
-            kwargs["optimizer"] = NSGA2()
-        if "mi_optimizer" not in kwargs:
-            kwargs["mi_optimizer"] = MixedVariableGA(
+        if optimizer is None:
+            optimizer = NSGA2()
+        if mi_optimizer is None:
+            mi_optimizer = MixedVariableGA(
                 eliminate_duplicates=ListDuplicateElimination(),
                 mating=MixedVariableMating(
                     eliminate_duplicates=ListDuplicateElimination()
                 ),
                 survival=RankAndCrowding(),
             )
-        super().__init__(**kwargs)
+        super().__init__(optimizer, mi_optimizer, **kwargs)
+        self.rng = np.random.default_rng(seed)
 
     def pareto_front_target(self, paretoFront: np.ndarray) -> np.ndarray:
         """Find a target value that should fill a gap in the Pareto front.
@@ -132,7 +140,11 @@ class ParetoFront(Acquisition):
             return -tree.query(_tau)[0]
 
         # Minimize delta_f
-        res = differential_evolution(delta_f, boundsPareto)
+        res = differential_evolution(
+            delta_f,
+            boundsPareto,
+            seed=self.rng.integers(np.iinfo(np.int32).max).item(),
+        )
         tauk = paretoModel(res.x)
         tau = np.concatenate((res.x[0:k], tauk, res.x[k:]))
 
@@ -215,7 +227,7 @@ class ParetoFront(Acquisition):
             res = pymoo_minimize(
                 multiobjTVProblem,
                 optimizer,
-                seed=len(paretoFront),
+                seed=self.rng.integers(np.iinfo(np.int32).max).item(),
                 verbose=False,
             )
 
@@ -225,8 +237,8 @@ class ParetoFront(Acquisition):
                 # Save X into an array
                 newX = np.array([[x[i] for i in range(dim)] for x in res.X])
 
-                # Eliminate points that are too close to previously
-                # sampled points
+                # Eliminate points that are too close to previously samples
+                # and to each other
                 newX = filter(newX)
 
                 # Transform the values of the optimization into a matrix

@@ -94,17 +94,14 @@ class Acquisition(ABC):
         self,
         surrogateModel: Surrogate,
         bounds,
-        n: int = 1,
         **kwargs,
     ) -> np.ndarray:
-        """Propose a maximum of n new sample points to improve the surrogate.
+        """Get n sample points that optimize the acquisition function.
 
         :param surrogateModel: Surrogate model.
         :param sequence bounds: List with the limits [x_min,x_max] of each
             direction x in the space.
-        :param n: Number of requested points. Mind that the number of points
-            returned may be smaller than n, depending on the implementation.
-        :return: m-by-dim matrix with the selected points, where m <= n.
+        :return: n-by-dim matrix with the selected points.
         """
         pass
 

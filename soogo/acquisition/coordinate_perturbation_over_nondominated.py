@@ -21,9 +21,8 @@ import numpy as np
 from scipy.spatial.distance import cdist
 
 from .base import Acquisition
-from .weighted_acquisition import WeightedAcquisition
+from .coordinate_perturbation import CoordinatePerturbation
 from ..model import Surrogate
-from ..sampling import NormalSampler
 from ..utils import find_pareto_front
 
 
@@ -34,12 +33,14 @@ class CoordinatePerturbationOverNondominated(Acquisition):
     the non-dominated sample points to find new sample points. The perturbation
     is performed by :attr:`acquisitionFunc`.
 
-    :param acquisitionFunc: Weighted acquisition function with a normal sampler.
-        Stored in :attr:`acquisitionFunc`.
+    :param acquisitionFunc: A :class:`.CoordinatePerturbation` instance used to
+        perform local perturbations around nondominated points. Stored in
+        :attr:`acquisitionFunc`.
 
     .. attribute:: acquisitionFunc
 
-        Weighted acquisition function with a normal sampler.
+        Coordinate-perturbation acquisition used for local exploration of the
+        nondominated set.
 
     References
     ----------
@@ -49,9 +50,10 @@ class CoordinatePerturbationOverNondominated(Acquisition):
         https://doi.org/10.1287/ijoc.2017.0749
     """
 
-    def __init__(self, acquisitionFunc: WeightedAcquisition, **kwargs) -> None:
+    def __init__(
+        self, acquisitionFunc: CoordinatePerturbation, **kwargs
+    ) -> None:
         self.acquisitionFunc = acquisitionFunc
-        assert isinstance(self.acquisitionFunc.sampler, NormalSampler)
         super().__init__(**kwargs)
 
     def optimize(

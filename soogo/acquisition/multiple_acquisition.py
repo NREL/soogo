@@ -1,4 +1,4 @@
-"""Acquisition that uses multiple methods as needed."""
+"""Acquisition that uses multiple methods."""
 
 # Copyright (c) 2025 Alliance for Energy Innovation, LLC
 
@@ -21,41 +21,64 @@ import numpy as np
 from typing import Sequence
 
 from .base import Acquisition
-from ..model import RbfModel
+from ..model import Surrogate
 from .utils import FarEnoughSampleFilter
 
 
 class MultipleAcquisition(Acquisition):
-    """Apply multiple acquisition functions sequentially.
+    """Use multiple acquisition functions.
 
-    This acquisition function runs multiple acquisition strategies in
-    sequence, filtering candidates to ensure they are far enough apart.
+    This acquisition function runs multiple acquisition strategies, filtering
+    candidates to ensure they are far enough apart.
 
     :param acquisitionFuncArray: Sequence of acquisition functions to apply in
         order.
+    :param strategy: Strategy to acquire points. Defaults to fallback behavior.
     :param kwargs: Additional arguments passed to the base Acquisition class.
+
+    .. attribute:: strategy
+
+        Strategy to acquire points. Currently supported strategies are:
+
+        - ``None`` (default): Fallback behavior. Each acquisition function is
+          called in sequence with the full number of points to acquire.
+        - ``"equal"``: Equal distribution. The number of points to acquire is
+          divided equally among the acquisition functions.
     """
 
     def __init__(
         self,
         acquisitionFuncArray: Sequence[Acquisition],
+        strategy=None,
         **kwargs,
     ) -> None:
         super().__init__(**kwargs)
         self.acquisitionFuncArray = acquisitionFuncArray
+        self.strategy = strategy
 
     def optimize(
         self,
-        surrogateModel: RbfModel,
+        surrogateModel: Surrogate,
         bounds,
         n: int = 1,
         **kwargs,
     ) -> np.ndarray:
-        filter = FarEnoughSampleFilter(surrogateModel.X, self.tol(bounds))
-        x = np.empty((0, len(bounds)))
+        dim = len(bounds)
+        filter = FarEnoughSampleFilter(np.empty((0, dim)), self.tol(bounds))
+        x = np.empty((0, dim))
         for i, acq in enumerate(self.acquisitionFuncArray):
-            new_x = acq.optimize(surrogateModel, bounds, n, **kwargs)
+            if self.strategy == "equal":
+                n_to_acquire = (n - x.shape[0]) // (
+                    len(self.acquisitionFuncArray) - i
+                )
+                new_x = acq.optimize(
+                    surrogateModel, bounds, n=n_to_acquire, **kwargs
+                )
+            else:
+                new_x = acq.optimize(surrogateModel, bounds, n=n, **kwargs)
+
             x = filter(np.vstack((x, new_x)))
+
             if x.shape[0] >= n:
                 return x[:n, :]
 

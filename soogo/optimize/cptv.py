@@ -24,11 +24,11 @@ from ..acquisition import (
     MaximizeDistance,
     MultipleAcquisition,
     TargetValueAcquisition,
-    WeightedAcquisition,
+    CoordinatePerturbation,
+    BoundedParameter,
 )
 from ..model import MedianLpfFilter, RbfModel
 from .utils import OptimizeResult
-from ..sampling import NormalSampler, SamplingStrategy
 from ..termination import RobustCondition, UnsuccessfulImprovement
 from .surrogate_optimization import surrogate_optimization
 
@@ -39,12 +39,12 @@ def cptv(
     maxeval: int,
     *,
     surrogateModel: Optional[RbfModel] = None,
-    acquisitionFunc: Optional[WeightedAcquisition] = None,
+    acquisitionFunc: Optional[CoordinatePerturbation] = None,
     improvementTol: float = 1e-3,
-    consecutiveQuickFailuresTol: int = 0,
     useLocalSearch: bool = False,
     disp: bool = False,
     callback: Optional[Callable[[OptimizeResult], None]] = None,
+    seed=None,
 ) -> OptimizeResult:
     """Minimize a scalar function of one or more variables using the coordinate
     perturbation and target value strategy.
@@ -52,11 +52,10 @@ def cptv(
     This is an implementation of the algorithm desribed in [#]_. The algorithm
     uses a sequence of different acquisition functions as follows:
 
-    1. CP step: :func:`.surrogate_optimization()` with
-       `acquisitionFunc`. Ideally, this step would use a
-       :class:`.WeightedAcquisition` object with a
-       :class:`.NormalSampler` sampler. The implementation is configured to
-       use the acquisition proposed by Müller (2016) by default.
+     1. CP step: :func:`.surrogate_optimization()` with ``acquisitionFunc``.
+         This step uses a coordinate-perturbation acquisition
+         (:class:`.CoordinatePerturbation`) that adapts the perturbation scale
+         and explores locally around promising points.
 
     2. TV step: :func:`.surrogate_optimization()` with a
        :class:`.TargetValueAcquisition` object.
@@ -80,23 +79,17 @@ def cptv(
         :class:`.RbfModel` model with median low-pass filter is used.
         On exit, if provided, the surrogate model the points used during the
         optimization.
-    :param acquisitionFunc: Acquisition function to be used. If None is
-        provided, a :class:`.WeightedAcquisition` is used following what is
-        described by Müller (2016).
+    :param acquisitionFunc: Acquisition function for the CP step. If ``None``,
+        uses :class:`.CoordinatePerturbation` configured as in Müller (2016).
     :param improvementTol: Expected improvement in the global optimum per
         iteration.
-    :param consecutiveQuickFailuresTol: Number of times that the CP step or the
-        TV step fails quickly before the
-        algorithm stops. The default is 0, which means the algorithm will stop
-        after ``maxeval`` function evaluations. A quick failure is when the
-        acquisition function in the CP or TV step does not find any significant
-        improvement.
     :param useLocalSearch: If True, the algorithm will perform a continuous
         local search when a significant improvement is not found in a sequence
         of (CP,TV,CP) steps.
     :param disp: If True, print information about the optimization process.
     :param callback: If provided, the callback function will be called after
         each iteration with the current optimization result.
+    :param seed: Seed or random number generator.
     :return: The optimization result.
 
     References
@@ -107,29 +100,23 @@ def cptv(
     dim = len(bounds)  # Dimension of the problem
     assert dim > 0
 
-    # Tolerance parameters
-    nFailTol = max(5, dim)  # Fail tolerance for the CP step
+    # Random number generator
+    rng = np.random.default_rng(seed)
 
     # Initialize optional variables
     if surrogateModel is None:
         surrogateModel = RbfModel(filter=MedianLpfFilter())
-    if consecutiveQuickFailuresTol == 0:
-        consecutiveQuickFailuresTol = maxeval
     if acquisitionFunc is None:
-        acquisitionFunc = WeightedAcquisition(
-            NormalSampler(
-                min(500 * dim, 5000),
-                0.2,
-                strategy=SamplingStrategy.DDS,
-            ),
+        acquisitionFunc = CoordinatePerturbation(
+            pool_size=min(500 * dim, 5000),
             weightpattern=(0.3, 0.5, 0.8, 0.95),
             rtol=1e-6,
-            maxeval=maxeval,
-            sigma_min=0.2 * 0.5**6,
-            sigma_max=0.2,
+            sigma=BoundedParameter(0.2, 0.2 * 0.5**6, 0.2),
             termination=RobustCondition(
-                UnsuccessfulImprovement(improvementTol), nFailTol
+                UnsuccessfulImprovement(improvementTol), max(5, dim)
             ),
+            n_continuous_search=0 if useLocalSearch else 4,
+            seed=rng.integers(np.iinfo(np.int32).max).item(),
         )
 
     tv_acquisition = MultipleAcquisition(
@@ -137,8 +124,12 @@ def cptv(
             TargetValueAcquisition(
                 cycleLength=10,
                 rtol=acquisitionFunc.rtol,
+                seed=rng.integers(np.iinfo(np.int32).max).item(),
             ),
-            MaximizeDistance(rtol=acquisitionFunc.rtol),
+            MaximizeDistance(
+                rtol=acquisitionFunc.rtol,
+                seed=rng.integers(np.iinfo(np.int32).max).item(),
+            ),
         ),
         termination=RobustCondition(
             UnsuccessfulImprovement(improvementTol), 12
@@ -150,33 +141,45 @@ def cptv(
     cbounds = [bounds[i] for i in cindex]
 
     # Initialize output
-    out = OptimizeResult(
-        x=np.empty(dim),
-        fx=np.inf,
-        nit=0,
-        nfev=0,
-        sample=np.zeros((maxeval, dim)),
-        fsample=np.zeros(maxeval),
-    )
+    out = OptimizeResult()
+    out.x = np.full(dim, np.nan)
+    out.fx = np.inf
+    out.sample = np.zeros((maxeval, dim))
+    out.fsample = np.zeros(maxeval)
 
     # do until max number of f-evals reached
     method = 0
-    consecutiveQuickFailures = 0
     localSearchCounter = 0
     k = 0
-    while (
-        out.nfev < maxeval
-        and consecutiveQuickFailures < consecutiveQuickFailuresTol
-    ):
+    while out.nfev < maxeval:
         if method == 0:
-            # Reset acquisition parameters
-            acquisitionFunc.sampler.neval = out.nfev
-            acquisitionFunc.sampler.sigma = acquisitionFunc.sigma_max
-            acquisitionFunc.best_known_x = np.copy(out.x)
-            acquisitionFunc.success_count = 0
-            acquisitionFunc.failure_count = 0
-            acquisitionFunc.termination.update(out, surrogateModel)
-            acquisitionFunc.termination.reset(keep_data_knowledge=True)
+            if out.nfev > 0:
+                # DDS params
+                acquisitionFunc.sigma.value = acquisitionFunc.sigma.max
+                if acquisitionFunc.dynamic_perturbation_probability:
+                    acquisitionFunc.perturbation_probability = 1.0
+
+                # Local search params
+                acquisitionFunc.remainingCountinuousSearch = 0
+
+                # Improvement state
+                acquisitionFunc.unsuccessful_improvement.update(
+                    out, surrogateModel
+                )
+                acquisitionFunc.unsuccessful_improvement.reset(
+                    keep_data_knowledge=True
+                )
+                acquisitionFunc.success_count = 0
+                acquisitionFunc.failure_count = 0
+
+                # Best known point
+                acquisitionFunc.best_known_x = np.copy(out.x)
+
+                # Reset termination parameters
+                termination = acquisitionFunc.termination
+                if termination is not None:
+                    termination.update(out, surrogateModel)
+                    termination.reset(keep_data_knowledge=True)
 
             # Run the CP step
             out_local = surrogate_optimization(
@@ -186,13 +189,9 @@ def cptv(
                 surrogateModel=surrogateModel,
                 acquisitionFunc=acquisitionFunc,
                 disp=disp,
+                seed=rng.integers(np.iinfo(np.int32).max).item(),
             )
-
-            # Check for quick failure
-            if out_local.nit <= nFailTol:
-                consecutiveQuickFailures += 1
-            else:
-                consecutiveQuickFailures = 0
+            assert isinstance(out_local.fx, float)
 
             if disp:
                 print("CP step ended after ", out_local.nfev, "f evals.")
@@ -215,9 +214,12 @@ def cptv(
                 method = 1
         elif method == 1:
             # Reset acquisition parameters
-            tv_acquisition.termination.update(out, surrogateModel)
-            tv_acquisition.termination.reset(keep_data_knowledge=True)
+            termination = tv_acquisition.termination
+            if termination is not None:
+                termination.update(out, surrogateModel)
+                termination.reset(keep_data_knowledge=True)
 
+            # Run the TV step
             out_local = surrogate_optimization(
                 fun,
                 bounds,
@@ -225,12 +227,9 @@ def cptv(
                 surrogateModel=surrogateModel,
                 acquisitionFunc=tv_acquisition,
                 disp=disp,
+                seed=rng.integers(np.iinfo(np.int32).max).item(),
             )
-
-            if out_local.nit <= 12:
-                consecutiveQuickFailures += 1
-            else:
-                consecutiveQuickFailures = 0
+            assert isinstance(out_local.fx, float)
 
             if disp:
                 print("TV step ended after ", out_local.nfev, "f evals.")
@@ -262,13 +261,16 @@ def cptv(
                 f"Sanity check, {out_local_.nfev} <= ({maxeval} - {out.nfev}). We should adjust either `maxfun` or change the `method`"
             )
 
-            out_local = OptimizeResult(
-                x=out.x.copy(),
-                fx=out_local_.fun,
-                nit=out_local_.nit,
-                nfev=out_local_.nfev,
-                sample=np.array([out.x for i in range(out_local_.nfev)]),
-                fsample=np.array([out.fx for i in range(out_local_.nfev)]),
+            out_local = OptimizeResult()
+            out_local.x = out.x.copy()
+            out_local.fx = out_local_.fun
+            out_local.nit = out_local_.nit
+            out_local.nfev = out_local_.nfev
+            out_local.sample = np.array(
+                [out.x for i in range(out_local_.nfev)]
+            )
+            out_local.fsample = np.array(
+                [out.fx for i in range(out_local_.nfev)]
             )
             out_local.x[cindex] = out_local_.x
             out_local.sample[-1, cindex] = out_local_.x

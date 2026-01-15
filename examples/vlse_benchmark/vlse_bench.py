@@ -99,18 +99,21 @@ def run_optimizer(
 
     # Update acquisition strategy, using maxEval and nArgs for the problem
     acquisitionFunc = deepcopy(algo["acquisition"])
-    if hasattr(acquisitionFunc, "maxeval"):
-        acquisitionFunc.maxeval = maxEval
-    if hasattr(acquisitionFunc, "sampler"):
-        acquisitionFunc.sampler.n = min(100 * nArgs, 5000)
+    if hasattr(acquisitionFunc, "pool_size"):
+        acquisitionFunc.pool_size = min(100 * nArgs, 5000)
 
     # Find the minimum
     optimizer = algo["optimizer"]
     optres = []
     for i in range(nRuns):
         # Create initial sample
-        np.random.seed(i)
-        sample0 = sampling.Sampler(2 * (nArgs + 1)).get_slhd_sample(bounds)
+        # sample0 = sampling.Sampler(2 * (nArgs + 1)).get_slhd_sample(bounds)
+        sample0 = sampling.random_sample(
+            2 * (nArgs + 1),
+            bounds,
+            iindex=model.iindex,
+            seed=sampling.SymmetricLatinHypercube(d=nArgs, seed=i),
+        )
         fsample0 = objf(sample0)
 
         # Create initial surrogate
@@ -129,6 +132,7 @@ def run_optimizer(
                 surrogateModel=modelIter,
                 acquisitionFunc=acquisitionFuncIter,
                 disp=disp,
+                seed=1,  # Shouldn't be needed, but just in case
             )
         else:
             res = optimizer(
@@ -137,6 +141,7 @@ def run_optimizer(
                 maxeval=maxEval - 2 * (nArgs + 1),
                 surrogateModel=modelIter,
                 disp=disp,
+                seed=1,  # Shouldn't be needed, but just in case
             )
         optres.append(res)
 
@@ -196,15 +201,15 @@ algorithms["MLSL"] = {
     "optimizer": optimize.surrogate_optimization,
     "acquisition": acquisition.MultipleAcquisition(
         (
-            acquisition.MinimizeSurrogate(1, 0.005 * np.sqrt(2)),
-            acquisition.MaximizeDistance(rtol=0.005 * np.sqrt(2)),
+            acquisition.MinimizeSurrogate(1, 0.005 * np.sqrt(2), seed=42),
+            acquisition.MaximizeDistance(rtol=0.005 * np.sqrt(2), seed=42),
         )
     ),
 }
 algorithms["GP"] = {
-    "model": gp.GaussianProcess(normalize_y=True),
+    "model": gp.GaussianProcess(normalize_y=True, random_state=42),
     "optimizer": optimize.bayesian_optimization,
-    "acquisition": acquisition.MaximizeEI(),
+    "acquisition": acquisition.MaximizeEI(seed=42),
 }
 
 # Maximum number of evaluations per function. 100*n, where n is the input

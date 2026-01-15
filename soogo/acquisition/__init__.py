@@ -20,8 +20,10 @@ from .utils import (
     weighted_score,
     argmin_weighted_score,
     select_weighted_candidates,
+    FarEnoughSampleFilter,
 )
 from .weighted_acquisition import WeightedAcquisition
+from .coordinate_perturbation import CoordinatePerturbation, BoundedParameter
 from .target_value_acquisition import TargetValueAcquisition
 from .minimize_surrogate import MinimizeSurrogate
 from .pareto_front import ParetoFront
@@ -32,7 +34,6 @@ from .coordinate_perturbation_over_nondominated import (
 )
 from .gosac_sample import GosacSample
 from .maximize_ei import MaximizeEI
-from .transition_search import TransitionSearch
 from .maximize_distance import MaximizeDistance
 from .alternated_acquisition import AlternatedAcquisition
 from .multiple_acquisition import MultipleAcquisition
@@ -43,6 +44,7 @@ __all__ = [
     "argmin_weighted_score",
     "select_weighted_candidates",
     "WeightedAcquisition",
+    "CoordinatePerturbation",
     "TargetValueAcquisition",
     "MinimizeSurrogate",
     "ParetoFront",
@@ -51,8 +53,9 @@ __all__ = [
     "CoordinatePerturbationOverNondominated",
     "GosacSample",
     "MaximizeEI",
-    "TransitionSearch",
     "MaximizeDistance",
     "AlternatedAcquisition",
     "MultipleAcquisition",
+    "FarEnoughSampleFilter",
+    "BoundedParameter",
 ]
