@@ -79,9 +79,23 @@ def test_normal_sampler(dim: int, normal_sampler):
     rng = np.random.default_rng(5)
 
     for i in range(3):
-        sample = normal_sampler(
-            n, bounds, mu=mu, sigma_ref=sigma, probability=probability, rng=rng
-        )
+        if normal_sampler == truncnorm_sample:
+            sample = normal_sampler(
+                n,
+                bounds,
+                mu=mu,
+                sigma_ref=sigma,
+                seed=rng,
+            )
+        else:
+            sample = normal_sampler(
+                n,
+                bounds,
+                mu=mu,
+                sigma_ref=sigma,
+                probability=probability,
+                seed=rng,
+            )
 
         # Check if the shape is correct
         assert sample.shape == (n, dim)
@@ -132,15 +146,25 @@ def test_iindex_sampler(boundx, normal_sampler):
         mu = np.array([b[0] + (b[1] - b[0]) / 2 for b in bounds])
         mu[iindex] = np.round(mu[iindex])
 
-        sample = normal_sampler(
-            n,
-            bounds,
-            mu=mu,
-            sigma_ref=sigma,
-            probability=probability,
-            rng=rng,
-            iindex=iindex,
-        )
+        if normal_sampler == truncnorm_sample:
+            sample = normal_sampler(
+                n,
+                bounds,
+                mu=mu,
+                sigma_ref=sigma,
+                seed=rng,
+                iindex=iindex,
+            )
+        else:
+            sample = normal_sampler(
+                n,
+                bounds,
+                mu=mu,
+                sigma_ref=sigma,
+                probability=probability,
+                seed=rng,
+                iindex=iindex,
+            )
 
         # Check if the sample has integer values in the iindex
         for i in iindex:

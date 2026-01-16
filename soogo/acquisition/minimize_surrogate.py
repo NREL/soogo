@@ -119,11 +119,13 @@ class MinimizeSurrogate(Acquisition):
         :param sequence bounds: List with the limits [x_min,x_max] of each
             direction x in the space.
         :param n: Max number of points to be acquired.
-        :param kwargs: Additional keyword arguments (unused).
         :return: n-by-dim matrix with the selected points.
         """
         dim = len(bounds)
         volumeBounds = np.prod([b[1] - b[0] for b in bounds])
+
+        # Report unused kwargs
+        super().report_unused_kwargs(kwargs)
 
         # Get index and bounds of the continuous variables
         cindex = [i for i in range(dim) if i not in surrogateModel.iindex]

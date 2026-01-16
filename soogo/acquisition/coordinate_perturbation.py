@@ -25,7 +25,7 @@ from typing import Union
 from .weighted_acquisition import WeightedAcquisition
 from .utils import select_weighted_candidates
 from ..model import Surrogate
-from ..sampling import dds_sample
+from ..sampling import dds_sample, dds_uniform_sample
 from ..optimize.result import OptimizeResult
 from ..termination import UnsuccessfulImprovement
 from ..utils import find_pareto_front
@@ -89,19 +89,19 @@ class CoordinatePerturbation(WeightedAcquisition):
     For multi-objective surrogates, the score uses the average predicted value
     across targets as :math:`f_s(x)`. See [#]_ for details.
 
-    :param sampler: Candidate generator. Defaults to :func:`.dds_sample`.
+    :param sampling_strategy: Sampling strategy for candidate generation.
+        Currently, only ``"dds"`` (default) and ``"dds_uniform"`` are supported.
     :param sigma: Initial perturbation scale; can be a float or a
         :class:`.BoundedParameter`. Default is ``0.25`` in the range
         [0.0, 0.25].
-    :param seed: Seed or random number generator.
     :param perturbation_probability: Initial probability to perturb a
         coordinate; if ``None``, a dynamic schedule (as in DYCORS) is used.
     :param int n_continuous_search: Number of iterations to remain in
         continuous-search mode after an improvement in integer variables.
 
-    .. attribute:: sampler
+    .. attribute:: sampling_strategy
 
-        Candidate generator used in :meth:`optimize()`.
+        Sampling strategy for candidate generation.
 
     .. attribute:: sigma
 
@@ -145,10 +145,6 @@ class CoordinatePerturbation(WeightedAcquisition):
 
         Best point found so far.
 
-    .. attribute:: rng
-
-        Random number generator used in sampling.
-
     References
     ----------
     .. [#] Regis, R. G., & Shoemaker, C. A. (2012). Combining radial basis
@@ -164,15 +160,14 @@ class CoordinatePerturbation(WeightedAcquisition):
 
     def __init__(
         self,
-        sampler=None,
+        sampling_strategy: str = "dds",
         sigma: Union[float, BoundedParameter, None] = None,
         perturbation_probability=None,
         n_continuous_search: int = 0,
-        seed=None,
         **kwargs,
     ) -> None:
         super().__init__(**kwargs)
-        self.sampler = dds_sample if sampler is None else sampler
+        self.sampling_strategy = sampling_strategy
 
         # Sigma
         self.sigma = (
@@ -202,9 +197,6 @@ class CoordinatePerturbation(WeightedAcquisition):
         # Best point found so far
         self.best_known_x = None
 
-        # Random number generator
-        self.rng = np.random.default_rng(seed)
-
     def tol(self, bounds) -> float:
         """Compute tolerance used to eliminate points that are too close to
         previously selected ones.
@@ -229,22 +221,37 @@ class CoordinatePerturbation(WeightedAcquisition):
         if prob is None:
             prob = self.perturbation_probability
 
-        return self.sampler(
-            self.pool_size,
-            bounds,
-            probability=prob,
-            mu=mu,
-            sigma_ref=self.sigma.value,
-            iindex=iindex,
-            seed=self.rng,
-        )
+        if self.sampling_strategy == "dds":
+            return dds_sample(
+                self.pool_size,
+                bounds,
+                probability=prob,
+                mu=mu,
+                sigma_ref=self.sigma.value,
+                iindex=iindex,
+                seed=self.rng,
+            )
+        elif self.sampling_strategy == "dds_uniform":
+            return dds_uniform_sample(
+                self.pool_size,
+                bounds,
+                probability=prob,
+                mu=mu,
+                sigma_ref=self.sigma.value,
+                iindex=iindex,
+                seed=self.rng,
+            )
+        else:
+            raise ValueError(
+                f"Unsupported sampling strategy '{self.sampling_strategy}'."
+                " Supported strategies are 'dds' and 'dds_uniform'."
+            )
 
     def optimize(
         self,
         surrogateModel: Surrogate,
         bounds,
         n: int = 1,
-        *,
         constr_fun=None,
         perturbation_probability=None,
         xbest=None,
@@ -269,6 +276,9 @@ class CoordinatePerturbation(WeightedAcquisition):
         dim = len(bounds)  # Dimension of the problem
         objdim = surrogateModel.ntarget
         iindex = surrogateModel.iindex
+
+        # Report unused kwargs
+        super().report_unused_kwargs(kwargs)
 
         # Choose best point if not provided
         if xbest is None:

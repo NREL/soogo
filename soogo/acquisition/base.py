@@ -18,7 +18,7 @@
 __authors__ = ["Weslley S. Pereira"]
 
 import numpy as np
-from abc import ABC, abstractmethod
+from abc import ABC
 from typing import Optional
 
 # Pymoo imports
@@ -89,7 +89,23 @@ class Acquisition(ABC):
         self.rtol = rtol
         self.termination = termination
 
-    @abstractmethod
+    @classmethod
+    def report_unused_kwargs(cls, kwargs) -> None:
+        """Report any unused keyword arguments passed to the acquisition
+        function.
+
+        :param kwargs: Dictionary of keyword arguments.
+        """
+        if len(kwargs) > 0:
+            import warnings
+
+            warnings.warn(
+                f"The acquisition function '{cls.__name__}' received unused "
+                "keyword arguments: "
+                f"{', '.join(list(kwargs.keys()))}.",
+                UserWarning,
+            )
+
     def optimize(
         self,
         surrogateModel: Surrogate,
@@ -101,9 +117,15 @@ class Acquisition(ABC):
         :param surrogateModel: Surrogate model.
         :param sequence bounds: List with the limits [x_min,x_max] of each
             direction x in the space.
+        :param kwargs: Additional keyword arguments. Each acquisition function
+            may define its own set of keyword arguments. Look documented in the
+            respective subclass.
         :return: n-by-dim matrix with the selected points.
         """
-        pass
+        # Report non-used kwargs
+        self.report_unused_kwargs(kwargs)
+
+        return np.empty((0, len(bounds)))
 
     def tol(self, bounds) -> float:
         """Compute tolerance used to eliminate points that are too close to

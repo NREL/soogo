@@ -75,6 +75,9 @@ class MaximizeDistance(Acquisition):
         iindex = surrogateModel.iindex
         optimizer = self.optimizer if len(iindex) == 0 else self.mi_optimizer
 
+        # Report unused kwargs
+        super().report_unused_kwargs(kwargs)
+
         if points is None:
             currentPoints = surrogateModel.X.copy()
         else:

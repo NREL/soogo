@@ -23,7 +23,7 @@ from scipy.spatial.distance import cdist
 from .base import Acquisition
 from .utils import select_weighted_candidates
 from ..model import Surrogate
-from ..sampling import SpaceFillingSampler
+from ..sampling import random_sample
 
 
 class WeightedAcquisition(Acquisition):
@@ -40,17 +40,15 @@ class WeightedAcquisition(Acquisition):
     This acquisition also supports multi-objective surrogates by scoring with
     the average predicted target value across objectives. See [#]_.
 
-    :param sampler: Candidate generator. Defaults to
-        :class:`soogo.sampling.SpaceFillingSampler`.
     :param int pool_size: Number of candidates generated per call.
     :param float|sequence weightpattern: Weight(s) :math:`w` used in the score.
         The list is rotated after each call so subsequent selections consider
         different trade-offs. Defaults to ``[0.2, 0.4, 0.6, 0.9, 0.95, 1]``.
     :param seed: Seed or random number generator.
 
-    .. attribute:: sampler
+    .. attribute:: rng
 
-        Space-filling candidate generator used in :meth:`optimize()`.
+        Random number generator.
 
     .. attribute:: weightpattern
 
@@ -75,16 +73,13 @@ class WeightedAcquisition(Acquisition):
 
     def __init__(
         self,
-        sampler=None,
         pool_size: int = 100,
         weightpattern=None,
         seed=None,
         **kwargs,
     ) -> None:
         super().__init__(**kwargs)
-        self.sampler = (
-            sampler if sampler is not None else SpaceFillingSampler(seed=seed)
-        )
+        self.rng = np.random.default_rng(seed)
         self.pool_size = pool_size
         if weightpattern is None:
             self.weightpattern = [0.2, 0.4, 0.6, 0.9, 0.95, 1]
@@ -116,14 +111,11 @@ class WeightedAcquisition(Acquisition):
         dim = len(bounds)  # Dimension of the problem
         iindex = surrogateModel.iindex
 
+        # Report unused kwargs
+        super().report_unused_kwargs(kwargs)
+
         # Generate the complete pool of candidates
-        x = self.sampler.generate(
-            self.pool_size,
-            bounds,
-            current_sample=surrogateModel.X,
-            iindex=iindex,
-            **kwargs,
-        )
+        x = random_sample(self.pool_size, bounds, iindex, self.rng)
 
         if constr_fun is not None:
             # Filter out candidates that do not satisfy the constraints

@@ -150,7 +150,6 @@ class TargetValueAcquisition(Acquisition):
         surrogateModel: RbfModel,
         bounds,
         n: int = 1,
-        *,
         sampleStage: int = -1,
         **kwargs,
     ) -> np.ndarray:
@@ -162,11 +161,13 @@ class TargetValueAcquisition(Acquisition):
         :param n: Number of points to be acquired.
         :param sampleStage: Stage of the sampling process. The default is -1,
             which means that the stage is not specified.
-        :param kwargs: Additional keyword arguments (unused).
         :return: n-by-dim matrix with the selected points.
         """
         dim = len(bounds)  # Dimension of the problem
         assert n <= self.cycleLength + 2
+
+        # Report unused kwargs
+        super().report_unused_kwargs(kwargs)
 
         iindex = surrogateModel.iindex
         optimizer = self.optimizer if len(iindex) == 0 else self.mi_optimizer

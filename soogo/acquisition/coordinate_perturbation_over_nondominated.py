@@ -61,7 +61,6 @@ class CoordinatePerturbationOverNondominated(Acquisition):
         surrogateModel: Surrogate,
         bounds,
         n: int = 1,
-        *,
         nondominated=(),
         paretoFront=(),
         **kwargs,
@@ -74,11 +73,12 @@ class CoordinatePerturbationOverNondominated(Acquisition):
         :param n: Maximum number of points to be acquired.
         :param nondominated: Nondominated set in the objective space.
         :param paretoFront: Pareto front in the objective space.
-        :param kwargs: Additional keyword arguments passed to the acquisition
-            function.
         """
         dim = len(bounds)
         atol = self.acquisitionFunc.tol(bounds)
+
+        # Report unused kwargs
+        super().report_unused_kwargs(kwargs)
 
         # Find a collection of points that are close to the Pareto front
         bestCandidates = np.empty((0, dim))

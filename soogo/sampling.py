@@ -77,11 +77,7 @@ class SymmetricLatinHypercube(LatinHypercube):
 
 
 def random_sample(
-    n,
-    bounds,
-    iindex: tuple[int, ...] = (),
-    seed=None,
-    **kwargs,
+    n, bounds, iindex: tuple[int, ...] = (), seed=None
 ) -> np.ndarray:
     """Generate random samples in the given bounds.
 
@@ -119,13 +115,7 @@ def random_sample(
 
 
 def truncnorm_sample(
-    n,
-    bounds,
-    mu,
-    sigma_ref=1.0,
-    iindex: tuple[int, ...] = (),
-    seed=None,
-    **kwargs,
+    n, bounds, mu, sigma_ref=1.0, iindex: tuple[int, ...] = (), seed=None
 ) -> np.ndarray:
     """Truncated normal sample generator.
 
@@ -171,7 +161,6 @@ def dds_sample(
     sigma_ref=1.0,
     iindex: tuple[int, ...] = (),
     seed=None,
-    **kwargs,
 ) -> np.ndarray:
     """Generate a sample based on the Dynamically Dimensioned Search (DDS)
     algorithm described in [#]_.
@@ -284,7 +273,6 @@ def dds_uniform_sample(
     sigma_ref=1.0,
     iindex: tuple[int, ...] = (),
     seed=None,
-    **kwargs,
 ) -> np.ndarray:
     """Generate a sample based on the Dynamically Dimensioned Search (DDS)
     algorithm and uniform perturbations.
@@ -370,7 +358,6 @@ class SpaceFillingSampler:
         bounds,
         current_sample: Optional[np.ndarray] = None,
         iindex: tuple[int, ...] = (),
-        **kwargs,
     ) -> np.ndarray:
         """Generate a sample that aims to fill gaps in the search space.
 
@@ -403,7 +390,6 @@ class SpaceFillingSampler:
                 bounds,
                 iindex=iindex,
                 seed=LatinHypercube(d=dim, seed=self.rng),
-                **kwargs,
             )
 
         ncurrent = len(current_sample)
@@ -416,7 +402,7 @@ class SpaceFillingSampler:
 
             # Pool of candidates in iteration i
             candPool = random_sample(
-                npool, bounds, iindex=iindex, seed=self.rng, **kwargs
+                npool, bounds, iindex=iindex, seed=self.rng
             )
 
             # Compute distance to current sample

@@ -336,11 +336,11 @@ class TestIterateNTimes:
         condition = IterateNTimes(5)
 
         for i in range(4):
-            condition.update()
+            condition.update(OptimizeResult())
             assert not condition.is_met()
             assert condition.iterationCount == i + 1
 
-        condition.update()
+        condition.update(OptimizeResult())
         assert condition.is_met()
         assert condition.iterationCount == 5
 
@@ -348,12 +348,12 @@ class TestIterateNTimes:
         """Should stay met after reaching n iterations."""
         condition = IterateNTimes(2)
 
-        condition.update()
-        condition.update()
+        condition.update(OptimizeResult())
+        condition.update(OptimizeResult())
         assert condition.is_met()
 
         # Continue updating
-        condition.update()
+        condition.update(OptimizeResult())
         assert condition.is_met()
         assert condition.iterationCount == 3
 
@@ -361,8 +361,8 @@ class TestIterateNTimes:
         """Reset should restart counter."""
         condition = IterateNTimes(3)
 
-        condition.update()
-        condition.update()
+        condition.update(OptimizeResult())
+        condition.update(OptimizeResult())
         assert condition.iterationCount == 2
         assert not condition.is_met()
 

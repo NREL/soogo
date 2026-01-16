@@ -37,7 +37,6 @@ from ..model import (
     Surrogate,
     MedianLpfFilter,
 )
-from ..sampling import dds_uniform_sample
 from .utils import OptimizeResult, evaluate_and_log_point
 from ..termination import IterateNTimes
 from ..integrations.nomad import NomadProblem
@@ -139,7 +138,7 @@ def shebo(
                             termination=IterateNTimes(1),
                         ),
                         CoordinatePerturbation(
-                            sampler=dds_uniform_sample,
+                            sampling_strategy="dds_uniform",
                             sigma=0.2,
                             pool_size=min(1000 * dim, 5000),
                             weightpattern=[

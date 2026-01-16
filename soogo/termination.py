@@ -58,8 +58,12 @@ class TerminationCondition(ABC):
         """
         pass
 
-    def reset(self, **kwargs) -> None:
-        """Reset the internal state of the condition."""
+    def reset(self, keep_data_knowledge: bool = False) -> None:
+        """Reset the internal state of the condition.
+
+        :param keep_data_knowledge: If True, retains knowledge about the
+            optimization problem; otherwise, resets all internal state.
+        """
         return None
 
 
@@ -132,7 +136,7 @@ class UnsuccessfulImprovement(TerminationCondition):
         self.value_range = max(self.value_range, maxf - minf)
         self.lowest_value = min(self.lowest_value, minf)
 
-    def reset(self, keep_data_knowledge: bool = False, **kwargs) -> None:
+    def reset(self, keep_data_knowledge: bool = False) -> None:
         self._is_met = False
         if not keep_data_knowledge:
             self.value_range = 0.0
@@ -161,9 +165,9 @@ class RobustCondition(TerminationCondition):
         self.termination.update(out, model)
         self.history.append(self.termination.is_met())
 
-    def reset(self, **kwargs) -> None:
+    def reset(self, keep_data_knowledge: bool = False) -> None:
         self.history.clear()
-        self.termination.reset(**kwargs)
+        self.termination.reset(keep_data_knowledge)
 
 
 class IterateNTimes(TerminationCondition):
@@ -181,8 +185,10 @@ class IterateNTimes(TerminationCondition):
     def is_met(self) -> bool:
         return self.iterationCount >= self.nTimes
 
-    def update(self, *args, **kwargs) -> None:
+    def update(
+        self, out: OptimizeResult, model: Optional[Surrogate] = None
+    ) -> None:
         self.iterationCount += 1
 
-    def reset(self, **kwargs) -> None:
+    def reset(self, keep_data_knowledge: bool = False) -> None:
         self.iterationCount = 0

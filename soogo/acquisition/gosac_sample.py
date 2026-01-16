@@ -76,11 +76,13 @@ class GosacSample(Acquisition):
         :param constr_fun: Constraint function to be applied to surrogate model
             predictions. If none is provided, use the surrogate model as
             the constraint function.
-        :param kwargs: Additional keyword arguments (unused).
         :return: 1-by-dim matrix with the selected points.
         """
         dim = len(bounds)
         gdim = surrogateModel.ntarget
+
+        # Report unused kwargs
+        super().report_unused_kwargs(kwargs)
 
         iindex = surrogateModel.iindex
         optimizer = self.optimizer if len(iindex) == 0 else self.mi_optimizer

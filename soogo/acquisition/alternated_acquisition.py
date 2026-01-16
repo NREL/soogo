@@ -39,7 +39,6 @@ class AlternatedAcquisition(Acquisition):
 
     :param acquisitionFuncArray: List of acquisition functions to be used in
         sequence.
-    :param kwargs: Additional arguments passed to the base class constructor.
     """
 
     def __init__(

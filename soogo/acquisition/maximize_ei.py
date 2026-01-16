@@ -91,7 +91,6 @@ class MaximizeEI(Acquisition):
         surrogateModel: GaussianProcess,
         bounds,
         n: int = 1,
-        *,
         ybest=None,
         **kwargs,
     ) -> np.ndarray:
@@ -114,6 +113,9 @@ class MaximizeEI(Acquisition):
         """
         # TODO: Extend this method to work with mixed-integer problems
         assert len(surrogateModel.iindex) == 0
+
+        # Report unused kwargs
+        super().report_unused_kwargs(kwargs)
 
         if n == 0:
             return np.empty((0, len(bounds)))

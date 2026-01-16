@@ -34,7 +34,6 @@ class MultipleAcquisition(Acquisition):
     :param acquisitionFuncArray: Sequence of acquisition functions to apply in
         order.
     :param strategy: Strategy to acquire points. Defaults to fallback behavior.
-    :param kwargs: Additional arguments passed to the base Acquisition class.
 
     .. attribute:: strategy
 
@@ -63,6 +62,14 @@ class MultipleAcquisition(Acquisition):
         n: int = 1,
         **kwargs,
     ) -> np.ndarray:
+        """Acquire at most n points using multiple acquisition functions.
+
+        :param surrogateModel: The surrogate model.
+        :param sequence bounds: List with the limits [x_min,x_max] of each
+            direction x in the space.
+        :param n: Maximum number of points to be acquired.
+        :return: k-by-dim matrix with the selected points, where k <= n.
+        """
         dim = len(bounds)
         filter = FarEnoughSampleFilter(np.empty((0, dim)), self.tol(bounds))
         x = np.empty((0, dim))

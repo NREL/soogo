@@ -46,7 +46,7 @@ class Surrogate(ABC):
 
     @abstractmethod
     def __call__(
-        self, x: np.ndarray, i: int = -1, **kwargs
+        self, x: np.ndarray, i: int = -1
     ) -> Union[np.ndarray, Tuple[np.ndarray, ...]]:
         """Evaluate the surrogate model at given points.
 

@@ -74,6 +74,9 @@ class EndPointsParetoFront(Acquisition):
         dim = len(bounds)
         objdim = surrogateModel.ntarget
 
+        # Report unused kwargs
+        super().report_unused_kwargs(kwargs)
+
         iindex = surrogateModel.iindex
         optimizer = self.optimizer if len(iindex) == 0 else self.mi_optimizer
 
