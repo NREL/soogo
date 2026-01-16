@@ -1,6 +1,6 @@
-sphinx
+sphinx<7
 sphinx-rtd-theme
 sphinx-autodoc-typehints
 myst-parser
-sphinx-multiversion
+sphinx-multiversion==0.2.4
 pytest
