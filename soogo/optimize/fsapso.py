@@ -156,6 +156,7 @@ def fsapso(
         c2=1.491,
         max_velocity_rate=vMax,
         adaptive=False,
+        seed=rng.integers(np.iinfo(np.int32).max).item(),
     )
     pso.setup(surrogateProblem)
 

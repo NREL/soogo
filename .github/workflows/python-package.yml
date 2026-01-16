@@ -47,7 +47,14 @@ jobs:
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
       - name: Install test dependencies
         run: |
-          python -m pip install pytest pytest-timeout PyNomadBBO pygoblet
+          python -m pip install pytest pytest-timeout pygoblet
+          # Skip PyNomadBBO when running locally with act
+          if [ -z "${ACT}" ]; then
+            python -m pip install PyNomadBBO
+          else
+            echo "ACT detected: skipping PyNomadBBO install"
+          fi
+          python -m pip list
       - name: Test with pytest (fast tests)
         run: |
           pytest -m "not slow" -v

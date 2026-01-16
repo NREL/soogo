@@ -105,9 +105,7 @@ def test_multiple_calls(minimize):
 
     bounds = [[-32.768, 20], [-32.768, 32.768]]
 
-    np.random.seed(123)  # Still needed for some algorithms (e.g., FSAPSO)
     res0 = minimize(lambda x: [ackley(x[0], 2)], bounds, maxeval=10, seed=123)
-    np.random.seed(123)  # Still needed for some algorithms (e.g., FSAPSO)
     res1 = minimize(lambda x: [ackley(x[0], 2)], bounds, maxeval=10, seed=123)
 
     assert np.all(res0.x == res1.x)
