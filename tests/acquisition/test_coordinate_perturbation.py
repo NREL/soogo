@@ -45,9 +45,7 @@ class TestTransitionSearch:
                 mock_surrogate = MockSurrogateModel(X_train, Y_train)
                 cp_search = CoordinatePerturbation()
 
-                result = cp_search.optimize(
-                    mock_surrogate, bounds, n=n, weightpattern=0.5
-                )
+                result = cp_search.optimize(mock_surrogate, bounds, n=n)
                 assert result.shape == (n, dim)
                 assert np.all(result >= bounds[:, 0]) and np.all(
                     result <= bounds[:, 1]

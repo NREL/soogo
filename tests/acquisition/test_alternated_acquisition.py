@@ -109,9 +109,7 @@ class TestAlternatedAcquisition:
             Y_train = np.array([0.0])
             mock_surrogate = MockSurrogateModel(X_train, Y_train)
 
-            result = alternated_acq.optimize(
-                mock_surrogate, bounds, n=1, weightpattern=0.5
-            )
+            result = alternated_acq.optimize(mock_surrogate, bounds, n=1)
             assert result.shape == (1, dim)
             assert np.all(result >= bounds[:, 0]) and np.all(
                 result <= bounds[:, 1]
