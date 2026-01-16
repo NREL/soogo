@@ -1,21 +1,21 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="./">
+<html class="writer-html5" lang="en">
 <head>
-  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>blackboxoptim.problem module &mdash; soogo (Surrogate-based 0-th Order Global Optimization) 1.1.0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css" />
 
   
-      <script src="_static/jquery.js?v=5d32c60e"></script>
-      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=fc837d61"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/jquery.js"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+      <script src="_static/doctools.js"></script>
+      <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -93,11 +93,11 @@
            <div itemprop="articleBody">
              
   <section id="blackboxoptim-problem-module">
-<h1>blackboxoptim.problem module<a class="headerlink" href="#blackboxoptim-problem-module" title="Link to this heading"></a></h1>
-<p id="module-blackboxoptim.problem">Problem definitions for interfacing with pymoo.</p>
+<h1>blackboxoptim.problem module<a class="headerlink" href="#blackboxoptim-problem-module" title="Permalink to this heading"></a></h1>
+<span class="target" id="module-blackboxoptim.problem"></span><p>Problem definitions for interfacing with pymoo.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="blackboxoptim.problem.BBOptDuplicateElimination">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blackboxoptim.problem.</span></span><span class="sig-name descname"><span class="pre">BBOptDuplicateElimination</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#blackboxoptim.problem.BBOptDuplicateElimination" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blackboxoptim.problem.</span></span><span class="sig-name descname"><span class="pre">BBOptDuplicateElimination</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#blackboxoptim.problem.BBOptDuplicateElimination" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">DefaultDuplicateElimination</span></code></p>
 <p>Specialization of DefaultDuplicateElimination for better performance
 in the problems we have.</p>
@@ -106,7 +106,7 @@ always go from 0 to n-1, so we can rely on that information to using
 ElementwiseDuplicateElimination.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="blackboxoptim.problem.BBOptDuplicateElimination.calc_dist">
-<span class="sig-name descname"><span class="pre">calc_dist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#blackboxoptim.problem.BBOptDuplicateElimination.calc_dist" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">calc_dist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#blackboxoptim.problem.BBOptDuplicateElimination.calc_dist" title="Permalink to this definition"></a></dt>
 <dd><p>Compute the distances between the members of two populations.</p>
 <p>If <cite>other</cite> is None, compute the distance between <cite>pop</cite> with itself.</p>
 <p>This implementation uses the built-in Python <code class="xref py py-func docutils literal notranslate"><span class="pre">sorted()</span></code>
@@ -129,7 +129,7 @@ using the runtime <code class="xref py py-attr docutils literal notranslate"><sp
 
 <dl class="py class">
 <dt class="sig sig-object py" id="blackboxoptim.problem.MultiobjSurrogateProblem">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blackboxoptim.problem.</span></span><span class="sig-name descname"><span class="pre">MultiobjSurrogateProblem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">surrogateModels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#blackboxoptim.problem.MultiobjSurrogateProblem" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blackboxoptim.problem.</span></span><span class="sig-name descname"><span class="pre">MultiobjSurrogateProblem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">surrogateModels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#blackboxoptim.problem.MultiobjSurrogateProblem" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Problem</span></code></p>
 <p>Mixed-integer multi-objective problem whose objective functions is the
 evaluation function of the surrogate models.</p>
@@ -145,7 +145,7 @@ the search space.</p></li>
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="blackboxoptim.problem.MultiobjSurrogateProblem.surrogateModels">
-<span class="sig-name descname"><span class="pre">surrogateModels</span></span><a class="headerlink" href="#blackboxoptim.problem.MultiobjSurrogateProblem.surrogateModels" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">surrogateModels</span></span><a class="headerlink" href="#blackboxoptim.problem.MultiobjSurrogateProblem.surrogateModels" title="Permalink to this definition"></a></dt>
 <dd><p>List of surrogate models.</p>
 </dd></dl>
 
@@ -153,7 +153,7 @@ the search space.</p></li>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="blackboxoptim.problem.MultiobjTVProblem">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blackboxoptim.problem.</span></span><span class="sig-name descname"><span class="pre">MultiobjTVProblem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">surrogateModels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#blackboxoptim.problem.MultiobjTVProblem" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blackboxoptim.problem.</span></span><span class="sig-name descname"><span class="pre">MultiobjTVProblem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">surrogateModels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#blackboxoptim.problem.MultiobjTVProblem" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Problem</span></code></p>
 <p>Mixed-integer multi-objective problem whose objective functions is the
 entry-wise absolute difference between the surrogate models and the target
@@ -171,13 +171,13 @@ the search space.</p></li>
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="blackboxoptim.problem.MultiobjTVProblem.surrogateModels">
-<span class="sig-name descname"><span class="pre">surrogateModels</span></span><a class="headerlink" href="#blackboxoptim.problem.MultiobjTVProblem.surrogateModels" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">surrogateModels</span></span><a class="headerlink" href="#blackboxoptim.problem.MultiobjTVProblem.surrogateModels" title="Permalink to this definition"></a></dt>
 <dd><p>List of surrogate models.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="blackboxoptim.problem.MultiobjTVProblem.tau">
-<span class="sig-name descname"><span class="pre">tau</span></span><a class="headerlink" href="#blackboxoptim.problem.MultiobjTVProblem.tau" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">tau</span></span><a class="headerlink" href="#blackboxoptim.problem.MultiobjTVProblem.tau" title="Permalink to this definition"></a></dt>
 <dd><p>List of target values.</p>
 </dd></dl>
 
@@ -185,7 +185,7 @@ the search space.</p></li>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="blackboxoptim.problem.ProblemNoConstraint">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blackboxoptim.problem.</span></span><span class="sig-name descname"><span class="pre">ProblemNoConstraint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">objfunc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iindex</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#blackboxoptim.problem.ProblemNoConstraint" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blackboxoptim.problem.</span></span><span class="sig-name descname"><span class="pre">ProblemNoConstraint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">objfunc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iindex</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#blackboxoptim.problem.ProblemNoConstraint" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Problem</span></code></p>
 <p>Mixed-integer problem with no constraints for pymoo.</p>
 <dl class="field-list simple">
@@ -200,7 +200,7 @@ the search space.</p></li>
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="blackboxoptim.problem.ProblemNoConstraint.objfunc">
-<span class="sig-name descname"><span class="pre">objfunc</span></span><a class="headerlink" href="#blackboxoptim.problem.ProblemNoConstraint.objfunc" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">objfunc</span></span><a class="headerlink" href="#blackboxoptim.problem.ProblemNoConstraint.objfunc" title="Permalink to this definition"></a></dt>
 <dd><p>Objective function.</p>
 </dd></dl>
 
@@ -208,7 +208,7 @@ the search space.</p></li>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="blackboxoptim.problem.ProblemWithConstraint">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blackboxoptim.problem.</span></span><span class="sig-name descname"><span class="pre">ProblemWithConstraint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">objfunc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gfunc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iindex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_ieq_constr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#blackboxoptim.problem.ProblemWithConstraint" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blackboxoptim.problem.</span></span><span class="sig-name descname"><span class="pre">ProblemWithConstraint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">objfunc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gfunc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iindex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_ieq_constr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#blackboxoptim.problem.ProblemWithConstraint" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Problem</span></code></p>
 <p>Mixed-integer problem with constraints for pymoo.</p>
 <dl class="field-list simple">
@@ -219,19 +219,19 @@ the search space.</p></li>
 <li><p><strong>bounds</strong> – List with the limits [x_min,x_max] of each direction x in
 the search space.</p></li>
 <li><p><strong>iindex</strong> – Indices of the input space that are integer.</p></li>
-<li><p><strong>n_ieq_constr</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Number of inequality constraints. (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
+<li><p><strong>n_ieq_constr</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Number of inequality constraints. (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="blackboxoptim.problem.ProblemWithConstraint.objfunc">
-<span class="sig-name descname"><span class="pre">objfunc</span></span><a class="headerlink" href="#blackboxoptim.problem.ProblemWithConstraint.objfunc" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">objfunc</span></span><a class="headerlink" href="#blackboxoptim.problem.ProblemWithConstraint.objfunc" title="Permalink to this definition"></a></dt>
 <dd><p>Objective function.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="blackboxoptim.problem.ProblemWithConstraint.gfunc">
-<span class="sig-name descname"><span class="pre">gfunc</span></span><a class="headerlink" href="#blackboxoptim.problem.ProblemWithConstraint.gfunc" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">gfunc</span></span><a class="headerlink" href="#blackboxoptim.problem.ProblemWithConstraint.gfunc" title="Permalink to this definition"></a></dt>
 <dd><p>Constraint function.</p>
 </dd></dl>
 

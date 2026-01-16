@@ -1,21 +1,21 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="../">
+<html class="writer-html5" lang="en">
 <head>
-  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>soogo.model package &mdash; soogo (Surrogate-based 0-th Order Global Optimization)  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css" />
 
   
-      <script src="../_static/jquery.js?v=5d32c60e"></script>
-      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
-      <script src="../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/jquery.js"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+      <script src="../_static/doctools.js"></script>
+      <script src="../_static/sphinx_highlight.js"></script>
       <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -55,6 +55,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#module-soogo.model.gp">soogo.model.gp module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-soogo.model.rbf">soogo.model.rbf module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-soogo.model.rbf_kernel">soogo.model.rbf_kernel module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-soogo.model.utils">soogo.model.utils module</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="soogo.optimize.html">soogo.optimize package</a></li>
@@ -65,7 +66,6 @@
 <li class="toctree-l2"><a class="reference internal" href="soogo.html#module-soogo.utils">soogo.utils module</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="tests.html">Tests documentation</a></li>
 </ul>
 
         </div>
@@ -94,13 +94,13 @@
            <div itemprop="articleBody">
              
   <section id="soogo-model-package">
-<h1>soogo.model package<a class="headerlink" href="#soogo-model-package" title="Link to this heading"></a></h1>
+<h1>soogo.model package<a class="headerlink" href="#soogo-model-package" title="Permalink to this heading"></a></h1>
 <section id="module-soogo.model.base">
-<span id="soogo-model-base-module"></span><h2>soogo.model.base module<a class="headerlink" href="#module-soogo.model.base" title="Link to this heading"></a></h2>
+<span id="soogo-model-base-module"></span><h2>soogo.model.base module<a class="headerlink" href="#module-soogo.model.base" title="Permalink to this heading"></a></h2>
 <p>Surrogate model abstract base class.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="soogo.model.base.Surrogate">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">soogo.model.base.</span></span><span class="sig-name descname"><span class="pre">Surrogate</span></span><a class="headerlink" href="#soogo.model.base.Surrogate" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">soogo.model.base.</span></span><span class="sig-name descname"><span class="pre">Surrogate</span></span><a class="headerlink" href="#soogo.model.base.Surrogate" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
 <p>Abstract base class for surrogate models.</p>
 <p>This class provides a common interface for different types of surrogate
@@ -111,7 +111,7 @@ abstract methods.</p>
 surrogate models for approximating expensive objective functions.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="soogo.model.base.Surrogate.X">
-<em class="property"><span class="k"><span class="pre">abstract</span></span><span class="w"> </span><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">X</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#soogo.model.base.Surrogate.X" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">X</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#soogo.model.base.Surrogate.X" title="Permalink to this definition"></a></dt>
 <dd><p>Get the training input points.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -122,7 +122,7 @@ surrogate models for approximating expensive objective functions.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="soogo.model.base.Surrogate.Y">
-<em class="property"><span class="k"><span class="pre">abstract</span></span><span class="w"> </span><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Y</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#soogo.model.base.Surrogate.Y" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Y</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#soogo.model.base.Surrogate.Y" title="Permalink to this definition"></a></dt>
 <dd><p>Get the training output values.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -133,19 +133,19 @@ surrogate models for approximating expensive objective functions.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.base.Surrogate.__call__">
-<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#soogo.model.base.Surrogate.__call__" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#soogo.model.base.Surrogate.__call__" title="Permalink to this definition"></a></dt>
 <dd><p>Evaluate the surrogate model at given points.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – m-by-d matrix with m point coordinates in a d-dimensional
+<li><p><strong>x</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – m-by-d matrix with m point coordinates in a d-dimensional
 space.</p></li>
-<li><p><strong>i</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Index of the target dimension to evaluate. If -1,
-evaluate all. (default: <code class="docutils literal notranslate"><span class="pre">-1</span></code>)</p></li>
+<li><p><strong>i</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Index of the target dimension to evaluate. If -1, (default: <code class="docutils literal notranslate"><span class="pre">-1</span></code>)
+evaluate all.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code> | <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>]</span></p>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>]]</p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Model predictions at the input points. Some models may return
@@ -156,15 +156,15 @@ additional information such as uncertainty estimates.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.base.Surrogate.check_initial_design">
-<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">check_initial_design</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#soogo.model.base.Surrogate.check_initial_design" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">check_initial_design</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#soogo.model.base.Surrogate.check_initial_design" title="Permalink to this definition"></a></dt>
 <dd><p>Check if the sample is able to generate a valid surrogate.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>sample</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – m-by-d matrix with m training points in a
+<dd class="field-odd"><p><strong>sample</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – m-by-d matrix with m training points in a
 d-dimensional space.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>True if the sample is valid for building the surrogate model.</p>
@@ -174,7 +174,7 @@ d-dimensional space.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="soogo.model.base.Surrogate.dim">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dim</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#soogo.model.base.Surrogate.dim" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dim</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#soogo.model.base.Surrogate.dim" title="Permalink to this definition"></a></dt>
 <dd><p>Get the dimension (d) of the input space.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -185,19 +185,19 @@ d-dimensional space.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.base.Surrogate.eval_kernel">
-<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">eval_kernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#soogo.model.base.Surrogate.eval_kernel" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">eval_kernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#soogo.model.base.Surrogate.eval_kernel" title="Permalink to this definition"></a></dt>
 <dd><p>Evaluate the kernel function at a pair (x,y).</p>
 <p>The structure of the kernel is the same as the one passed as parameter
 but with optimized hyperparameters.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – First entry in the tuple (x,y).</p></li>
-<li><p><strong>y</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – Second entry in the tuple (x,y). If None, use x. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>x</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – First entry in the tuple (x,y).</p></li>
+<li><p><strong>y</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]) – Second entry in the tuple (x,y). If None, use x. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Kernel evaluation result.</p>
@@ -207,7 +207,7 @@ but with optimized hyperparameters.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="soogo.model.base.Surrogate.iindex">
-<em class="property"><span class="k"><span class="pre">abstract</span></span><span class="w"> </span><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">iindex</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#soogo.model.base.Surrogate.iindex" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">iindex</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#soogo.model.base.Surrogate.iindex" title="Permalink to this definition"></a></dt>
 <dd><p>Return the indices of integer variables in the feature space.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -218,14 +218,14 @@ but with optimized hyperparameters.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.base.Surrogate.min_design_space_size">
-<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">min_design_space_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#soogo.model.base.Surrogate.min_design_space_size" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">min_design_space_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#soogo.model.base.Surrogate.min_design_space_size" title="Permalink to this definition"></a></dt>
 <dd><p>Return the minimum design space size for a given space dimension.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>dim</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Dimension of the space.</p>
+<dd class="field-odd"><p><strong>dim</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Dimension of the space.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Minimum number of points needed to build the surrogate model.</p>
@@ -235,7 +235,7 @@ but with optimized hyperparameters.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="soogo.model.base.Surrogate.ntarget">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ntarget</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#soogo.model.base.Surrogate.ntarget" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ntarget</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#soogo.model.base.Surrogate.ntarget" title="Permalink to this definition"></a></dt>
 <dd><p>Get the dimension (n) of the target space.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -246,7 +246,7 @@ but with optimized hyperparameters.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="soogo.model.base.Surrogate.ntrain">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ntrain</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#soogo.model.base.Surrogate.ntrain" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ntrain</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#soogo.model.base.Surrogate.ntrain" title="Permalink to this definition"></a></dt>
 <dd><p>Get the number of training points (m).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -257,50 +257,50 @@ but with optimized hyperparameters.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.base.Surrogate.reserve">
-<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">reserve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ntarget</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#soogo.model.base.Surrogate.reserve" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">reserve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ntarget</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#soogo.model.base.Surrogate.reserve" title="Permalink to this definition"></a></dt>
 <dd><p>Reserve space for training data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>n</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Number of training points to reserve.</p></li>
-<li><p><strong>dim</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Dimension of the input space.</p></li>
-<li><p><strong>ntarget</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Dimension of the target space. (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
+<li><p><strong>n</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Number of training points to reserve.</p></li>
+<li><p><strong>dim</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Dimension of the input space.</p></li>
+<li><p><strong>ntarget</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Dimension of the target space. (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.base.Surrogate.reset_data">
-<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">reset_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#soogo.model.base.Surrogate.reset_data" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">reset_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#soogo.model.base.Surrogate.reset_data" title="Permalink to this definition"></a></dt>
 <dd><p>Reset the surrogate model training data.</p>
 <p>This method is used to clear the training data of the surrogate model,
 allowing it to be reused for a new optimization run.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.base.Surrogate.update">
-<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#soogo.model.base.Surrogate.update" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#soogo.model.base.Surrogate.update" title="Permalink to this definition"></a></dt>
 <dd><p>Update the surrogate model with new training data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – m-by-d matrix with m new point coordinates in a
+<li><p><strong>x</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – m-by-d matrix with m new point coordinates in a
 d-dimensional space.</p></li>
-<li><p><strong>y</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – m-by-n matrix with m new function values and n target
+<li><p><strong>y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – m-by-n matrix with m new function values and n target
 dimensions.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -309,11 +309,11 @@ dimensions.</p></li>
 
 </section>
 <section id="module-soogo.model.gp">
-<span id="soogo-model-gp-module"></span><h2>soogo.model.gp module<a class="headerlink" href="#module-soogo.model.gp" title="Link to this heading"></a></h2>
+<span id="soogo-model-gp-module"></span><h2>soogo.model.gp module<a class="headerlink" href="#module-soogo.model.gp" title="Permalink to this heading"></a></h2>
 <p>Gaussian process module.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="soogo.model.gp.GaussianProcess">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">soogo.model.gp.</span></span><span class="sig-name descname"><span class="pre">GaussianProcess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scaler</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#soogo.model.gp.GaussianProcess" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">soogo.model.gp.</span></span><span class="sig-name descname"><span class="pre">GaussianProcess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scaler</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#soogo.model.gp.GaussianProcess" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#soogo.model.base.Surrogate" title="soogo.model.base.Surrogate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Surrogate</span></code></a></p>
 <p>Gaussian Process model.</p>
 <p>This model uses default attributes and parameters from
@@ -328,19 +328,19 @@ GaussianProcessRegressor with the following exceptions:</p>
 <a class="reference external" href="https://scikit-learn.org/dev/modules/generated/sklearn.gaussian_process.GaussianProcessRegressor.html">https://scikit-learn.org/dev/modules/generated/sklearn.gaussian_process.GaussianProcessRegressor.html</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>scaler</strong> – Scaler for the input data. For details, see
-<a class="reference external" href="https://scikit-learn.org/stable/modules/preprocessing.html">https://scikit-learn.org/stable/modules/preprocessing.html</a>. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p>
+<dd class="field-odd"><p><strong>scaler</strong> – Scaler for the input data. For details, see (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+<a class="reference external" href="https://scikit-learn.org/stable/modules/preprocessing.html">https://scikit-learn.org/stable/modules/preprocessing.html</a>.</p>
 </dd>
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="soogo.model.gp.GaussianProcess.scaler">
-<span class="sig-name descname"><span class="pre">scaler</span></span><a class="headerlink" href="#soogo.model.gp.GaussianProcess.scaler" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">scaler</span></span><a class="headerlink" href="#soogo.model.gp.GaussianProcess.scaler" title="Permalink to this definition"></a></dt>
 <dd><p>Scaler used to preprocess input data.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="soogo.model.gp.GaussianProcess.model">
-<span class="sig-name descname"><span class="pre">model</span></span><a class="headerlink" href="#soogo.model.gp.GaussianProcess.model" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">model</span></span><a class="headerlink" href="#soogo.model.gp.GaussianProcess.model" title="Permalink to this definition"></a></dt>
 <dd><p>The underlying GaussianProcessRegressor model instance.
 This is initialized with the provided parameters and can be accessed
 for further customization or inspection.</p>
@@ -348,7 +348,7 @@ for further customization or inspection.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="soogo.model.gp.GaussianProcess.X">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">X</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#soogo.model.gp.GaussianProcess.X" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">X</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#soogo.model.gp.GaussianProcess.X" title="Permalink to this definition"></a></dt>
 <dd><p>Get the training data points.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -359,24 +359,24 @@ for further customization or inspection.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="soogo.model.gp.GaussianProcess.Y">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Y</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#soogo.model.gp.GaussianProcess.Y" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Y</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#soogo.model.gp.GaussianProcess.Y" title="Permalink to this definition"></a></dt>
 <dd><p>Get f(x) for the sampled points.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.gp.GaussianProcess.__call__">
-<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_std</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_cov</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.model.gp.GaussianProcess.__call__" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_std</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_cov</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.model.gp.GaussianProcess.__call__" title="Permalink to this definition"></a></dt>
 <dd><p>Evaluates the model at one or multiple points.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – m-by-d matrix with m point coordinates in a d-dimensional
+<li><p><strong>x</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – m-by-d matrix with m point coordinates in a d-dimensional
 space.</p></li>
-<li><p><strong>i</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Index of the target dimension to evaluate. If -1,
-evaluate all. (default: <code class="docutils literal notranslate"><span class="pre">-1</span></code>)</p></li>
-<li><p><strong>return_std</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If <cite>True</cite>, returns the standard deviation of the
-predictions. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
-<li><p><strong>return_cov</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If <cite>True</cite>, returns the covariance of the predictions. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
+<li><p><strong>i</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Index of the target dimension to evaluate. If -1, (default: <code class="docutils literal notranslate"><span class="pre">-1</span></code>)
+evaluate all.</p></li>
+<li><p><strong>return_std</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If <cite>True</cite>, returns the standard deviation of the (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
+predictions.</p></li>
+<li><p><strong>return_cov</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If <cite>True</cite>, returns the covariance of the predictions. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -401,22 +401,22 @@ m-by-m-by-n matrix.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.gp.GaussianProcess.check_initial_design">
-<span class="sig-name descname"><span class="pre">check_initial_design</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#soogo.model.gp.GaussianProcess.check_initial_design" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">check_initial_design</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#soogo.model.gp.GaussianProcess.check_initial_design" title="Permalink to this definition"></a></dt>
 <dd><p>Check if the sample is able to generate a valid surrogate.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>sample</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – m-by-d matrix with m training points in a d-dimensional
+<dd class="field-odd"><p><strong>sample</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – m-by-d matrix with m training points in a d-dimensional
 space.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.gp.GaussianProcess.eval_kernel">
-<span class="sig-name descname"><span class="pre">eval_kernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.model.gp.GaussianProcess.eval_kernel" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">eval_kernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.model.gp.GaussianProcess.eval_kernel" title="Permalink to this definition"></a></dt>
 <dd><p>Evaluate the kernel function at a pair (x,y).</p>
 <p>The structure of the kernel is the same as the one passed as parameter
 but with optimized hyperparameters.</p>
@@ -435,7 +435,7 @@ but with optimized hyperparameters.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.gp.GaussianProcess.expected_improvement">
-<span class="sig-name descname"><span class="pre">expected_improvement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ybest</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.model.gp.GaussianProcess.expected_improvement" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">expected_improvement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ybest</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.model.gp.GaussianProcess.expected_improvement" title="Permalink to this definition"></a></dt>
 <dd><p>Compute expected improvement at given points.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -452,55 +452,55 @@ but with optimized hyperparameters.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="soogo.model.gp.GaussianProcess.iindex">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">iindex</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#soogo.model.gp.GaussianProcess.iindex" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">iindex</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#soogo.model.gp.GaussianProcess.iindex" title="Permalink to this definition"></a></dt>
 <dd><p>Return iindex, the sequence of integer variable indexes.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.gp.GaussianProcess.min_design_space_size">
-<span class="sig-name descname"><span class="pre">min_design_space_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#soogo.model.gp.GaussianProcess.min_design_space_size" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">min_design_space_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#soogo.model.gp.GaussianProcess.min_design_space_size" title="Permalink to this definition"></a></dt>
 <dd><p>Return the minimum design space size for a given space dimension.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span></p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.gp.GaussianProcess.reserve">
-<span class="sig-name descname"><span class="pre">reserve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ntarget</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#soogo.model.gp.GaussianProcess.reserve" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">reserve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ntarget</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#soogo.model.gp.GaussianProcess.reserve" title="Permalink to this definition"></a></dt>
 <dd><p>Reserve space for training data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>n</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Number of training points to reserve.</p></li>
-<li><p><strong>dim</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Dimension of the input space.</p></li>
-<li><p><strong>ntarget</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Dimension of the target space. (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
+<li><p><strong>n</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Number of training points to reserve.</p></li>
+<li><p><strong>dim</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Dimension of the input space.</p></li>
+<li><p><strong>ntarget</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Dimension of the target space. (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.gp.GaussianProcess.reset_data">
-<span class="sig-name descname"><span class="pre">reset_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#soogo.model.gp.GaussianProcess.reset_data" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">reset_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#soogo.model.gp.GaussianProcess.reset_data" title="Permalink to this definition"></a></dt>
 <dd><p>Reset the surrogate model training data.</p>
 <p>This method is used to clear the training data of the surrogate model,
 allowing it to be reused for a new optimization run.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.gp.GaussianProcess.update">
-<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Xnew</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ynew</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#soogo.model.gp.GaussianProcess.update" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Xnew</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ynew</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#soogo.model.gp.GaussianProcess.update" title="Permalink to this definition"></a></dt>
 <dd><p>Updates the model with new pairs of data (x,y).</p>
 <p>When the default optimizer method, <code class="xref py py-meth docutils literal notranslate"><span class="pre">_optimizer()</span></code>, is used as
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">optimizer</span></code>, this routine reports different warnings compared to
@@ -518,7 +518,7 @@ space.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -527,11 +527,11 @@ space.</p></li>
 
 </section>
 <section id="module-soogo.model.rbf">
-<span id="soogo-model-rbf-module"></span><h2>soogo.model.rbf module<a class="headerlink" href="#module-soogo.model.rbf" title="Link to this heading"></a></h2>
+<span id="soogo-model-rbf-module"></span><h2>soogo.model.rbf module<a class="headerlink" href="#module-soogo.model.rbf" title="Permalink to this heading"></a></h2>
 <p>Radial Basis Function model.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="soogo.model.rbf.MedianLpfFilter">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">soogo.model.rbf.</span></span><span class="sig-name descname"><span class="pre">MedianLpfFilter</span></span><a class="headerlink" href="#soogo.model.rbf.MedianLpfFilter" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">soogo.model.rbf.</span></span><span class="sig-name descname"><span class="pre">MedianLpfFilter</span></span><a class="headerlink" href="#soogo.model.rbf.MedianLpfFilter" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#soogo.model.rbf.RbfFilter" title="soogo.model.rbf.RbfFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">RbfFilter</span></code></a></p>
 <p>Filter values by replacing large function values by the median of all.</p>
 <p>This strategy was proposed by <a class="footnote-reference brackets" href="#id3" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> based on results from <a class="footnote-reference brackets" href="#id4" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>. Use this
@@ -539,15 +539,15 @@ strategy to reduce oscillations of the interpolator, especially if the range
 target function is large. This filter may reduce the quality of the
 approximation by the surrogate.</p>
 <section id="references">
-<h3>References<a class="headerlink" href="#references" title="Link to this heading"></a></h3>
+<h3>References<a class="headerlink" href="#references" title="Permalink to this heading"></a></h3>
 <aside class="footnote-list brackets">
-<aside class="footnote brackets" id="id3" role="doc-footnote">
+<aside class="footnote brackets" id="id3" role="note">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
 <p>Gutmann, HM. A Radial Basis Function Method for Global Optimization.
 Journal of Global Optimization 19, 201–227 (2001).
 <a class="reference external" href="https://doi.org/10.1023/A:1011255519438">https://doi.org/10.1023/A:1011255519438</a></p>
 </aside>
-<aside class="footnote brackets" id="id4" role="doc-footnote">
+<aside class="footnote brackets" id="id4" role="note">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">2</a><span class="fn-bracket">]</span></span>
 <p>Björkman, M., Holmström, K. Global Optimization of Costly Nonconvex
 Functions Using Radial Basis Functions. Optimization and Engineering 1,
@@ -556,11 +556,11 @@ Functions Using Radial Basis Functions. Optimization and Engineering 1,
 </aside>
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.rbf.MedianLpfFilter.__call__">
-<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#soogo.model.rbf.MedianLpfFilter.__call__" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#soogo.model.rbf.MedianLpfFilter.__call__" title="Permalink to this definition"></a></dt>
 <dd><p>Call self as a function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -570,17 +570,17 @@ Functions Using Radial Basis Functions. Optimization and Engineering 1,
 
 <dl class="py class">
 <dt class="sig sig-object py" id="soogo.model.rbf.RbfFilter">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">soogo.model.rbf.</span></span><span class="sig-name descname"><span class="pre">RbfFilter</span></span><a class="headerlink" href="#soogo.model.rbf.RbfFilter" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">soogo.model.rbf.</span></span><span class="sig-name descname"><span class="pre">RbfFilter</span></span><a class="headerlink" href="#soogo.model.rbf.RbfFilter" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Base filter class for the RBF target training set. Trivial identity
 filter.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.rbf.RbfFilter.__call__">
-<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#soogo.model.rbf.RbfFilter.__call__" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#soogo.model.rbf.RbfFilter.__call__" title="Permalink to this definition"></a></dt>
 <dd><p>Call self as a function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -589,7 +589,7 @@ filter.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="soogo.model.rbf.RbfModel">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">soogo.model.rbf.</span></span><span class="sig-name descname"><span class="pre">RbfModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel:</span> <span class="pre">~soogo.model.rbf_kernel.RadialBasisFunction</span> <span class="pre">=</span> <span class="pre">&lt;soogo.model.rbf_kernel.CubicRadialBasisFunction</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iindex:</span> <span class="pre">tuple[int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">...]</span> <span class="pre">=</span> <span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter:</span> <span class="pre">~soogo.model.rbf.RbfFilter</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.model.rbf.RbfModel" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">soogo.model.rbf.</span></span><span class="sig-name descname"><span class="pre">RbfModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel:</span> <span class="pre">soogo.model.rbf_kernel.RadialBasisFunction</span> <span class="pre">=</span> <span class="pre">&lt;soogo.model.rbf_kernel.CubicRadialBasisFunction</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iindex:</span> <span class="pre">tuple[int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">...]</span> <span class="pre">=</span> <span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter:</span> <span class="pre">soogo.model.rbf.RbfFilter</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.model.rbf.RbfModel" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#soogo.model.base.Surrogate" title="soogo.model.base.Surrogate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Surrogate</span></code></a></p>
 <p>Radial Basis Function model.</p>
 <div class="math notranslate nohighlight">
@@ -609,27 +609,27 @@ is essential for the good performance of active learning processes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>kernel</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#soogo.model.rbf_kernel.RadialBasisFunction" title="soogo.model.rbf_kernel.RadialBasisFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">RadialBasisFunction</span></code></a></span>) – Kernel function <span class="math notranslate nohighlight">\(\phi\)</span> used in the RBF model. (default: <code class="docutils literal notranslate"><span class="pre">&lt;soogo.model.rbf_kernel.CubicRadialBasisFunction</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7faaff4a1940&gt;</span></code>)</p></li>
-<li><p><strong>iindex</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>]</span>) – Indices of integer variables in the feature space. (default: <code class="docutils literal notranslate"><span class="pre">()</span></code>)</p></li>
-<li><p><strong>filter</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#soogo.model.rbf.RbfFilter" title="soogo.model.rbf.RbfFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">RbfFilter</span></code></a> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – Filter to be used in the target (image) space. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>kernel</strong> (<a class="reference internal" href="#soogo.model.rbf_kernel.RadialBasisFunction" title="soogo.model.rbf_kernel.RadialBasisFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">RadialBasisFunction</span></code></a>) – Kernel function <span class="math notranslate nohighlight">\(\phi\)</span> used in the RBF model. (default: <code class="docutils literal notranslate"><span class="pre">&lt;soogo.model.rbf_kernel.CubicRadialBasisFunction</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f5e201e4c20&gt;</span></code>)</p></li>
+<li><p><strong>iindex</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>]) – Indices of integer variables in the feature space. (default: <code class="docutils literal notranslate"><span class="pre">()</span></code>)</p></li>
+<li><p><strong>filter</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="#soogo.model.rbf.RbfFilter" title="soogo.model.rbf.RbfFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">RbfFilter</span></code></a>]) – Filter to be used in the target (image) space. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="soogo.model.rbf.RbfModel.kernel">
-<span class="sig-name descname"><span class="pre">kernel</span></span><a class="headerlink" href="#soogo.model.rbf.RbfModel.kernel" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">kernel</span></span><a class="headerlink" href="#soogo.model.rbf.RbfModel.kernel" title="Permalink to this definition"></a></dt>
 <dd><p>Kernel function <span class="math notranslate nohighlight">\(\phi\)</span> used in the RBF model.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="soogo.model.rbf.RbfModel.filter">
-<span class="sig-name descname"><span class="pre">filter</span></span><a class="headerlink" href="#soogo.model.rbf.RbfModel.filter" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">filter</span></span><a class="headerlink" href="#soogo.model.rbf.RbfModel.filter" title="Permalink to this definition"></a></dt>
 <dd><p>Filter to be used in the target (image) space.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="soogo.model.rbf.RbfModel.X">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">X</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#soogo.model.rbf.RbfModel.X" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">X</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#soogo.model.rbf.RbfModel.X" title="Permalink to this definition"></a></dt>
 <dd><p>Get the training data points.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -640,27 +640,27 @@ is essential for the good performance of active learning processes.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="soogo.model.rbf.RbfModel.Y">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Y</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#soogo.model.rbf.RbfModel.Y" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Y</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#soogo.model.rbf.RbfModel.Y" title="Permalink to this definition"></a></dt>
 <dd><p>Get f(x) for the sampled points.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.rbf.RbfModel.__call__">
-<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_dist</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#soogo.model.rbf.RbfModel.__call__" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_dist</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#soogo.model.rbf.RbfModel.__call__" title="Permalink to this definition"></a></dt>
 <dd><p>Evaluates the model at one or multiple points.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – m-by-d matrix with m point coordinates in a d-dimensional
+<li><p><strong>x</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – m-by-d matrix with m point coordinates in a d-dimensional
 space.</p></li>
-<li><p><strong>i</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Index of the target dimension to evaluate. If -1,
-evaluate all. (default: <code class="docutils literal notranslate"><span class="pre">-1</span></code>)</p></li>
-<li><p><strong>return_dist</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If <cite>True</cite>, returns the distance matrix between the
-input points and the training points. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
+<li><p><strong>i</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Index of the target dimension to evaluate. If -1, (default: <code class="docutils literal notranslate"><span class="pre">-1</span></code>)
+evaluate all.</p></li>
+<li><p><strong>return_dist</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If <cite>True</cite>, returns the distance matrix between the (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
+input points and the training points.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code> | <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]</span></p>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]]</p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><ul class="simple">
@@ -678,30 +678,30 @@ input points and the training points. (default: <code class="docutils literal no
 
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.rbf.RbfModel.check_initial_design">
-<span class="sig-name descname"><span class="pre">check_initial_design</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#soogo.model.rbf.RbfModel.check_initial_design" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">check_initial_design</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#soogo.model.rbf.RbfModel.check_initial_design" title="Permalink to this definition"></a></dt>
 <dd><p>Check if the sample is able to generate a valid surrogate.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>sample</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – m-by-d matrix with m training points in a d-dimensional
+<dd class="field-odd"><p><strong>sample</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – m-by-d matrix with m training points in a d-dimensional
 space.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.rbf.RbfModel.eval_kernel">
-<span class="sig-name descname"><span class="pre">eval_kernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.model.rbf.RbfModel.eval_kernel" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">eval_kernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.model.rbf.RbfModel.eval_kernel" title="Permalink to this definition"></a></dt>
 <dd><p>Evaluate the RBF kernel between points.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> – m-by-d matrix with m point coordinates in a d-dimensional
 space.</p></li>
-<li><p><strong>y</strong> – n-by-d matrix with n point coordinates in a d-dimensional
-space. If None, use x. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>y</strong> – n-by-d matrix with n point coordinates in a d-dimensional (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+space. If None, use x.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -712,7 +712,7 @@ space. If None, use x. (default: <code class="docutils literal notranslate"><spa
 
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.rbf.RbfModel.hessp">
-<span class="sig-name descname"><span class="pre">hessp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#soogo.model.rbf.RbfModel.hessp" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">hessp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#soogo.model.rbf.RbfModel.hessp" title="Permalink to this definition"></a></dt>
 <dd><p>Evaluates the Hessian of the model at x in the direction of v.</p>
 <div class="math notranslate nohighlight">
 \[H(f)(x) v   = \sum_{i=1}^{m} \beta_i \left(
@@ -725,25 +725,25 @@ space. If None, use x. (default: <code class="docutils literal notranslate"><spa
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Point in a d-dimensional space.</p></li>
-<li><p><strong>v</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Direction in which the Hessian is evaluated.</p></li>
+<li><p><strong>x</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – Point in a d-dimensional space.</p></li>
+<li><p><strong>v</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – Direction in which the Hessian is evaluated.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="soogo.model.rbf.RbfModel.iindex">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">iindex</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#soogo.model.rbf.RbfModel.iindex" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">iindex</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#soogo.model.rbf.RbfModel.iindex" title="Permalink to this definition"></a></dt>
 <dd><p>Return iindex, the sequence of integer variable indexes.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.rbf.RbfModel.jac">
-<span class="sig-name descname"><span class="pre">jac</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#soogo.model.rbf.RbfModel.jac" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">jac</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#soogo.model.rbf.RbfModel.jac" title="Permalink to this definition"></a></dt>
 <dd><p>Evaluates the derivative of the model at one point.</p>
 <div class="math notranslate nohighlight">
 \[\nabla f(x) = \sum_{i=1}^{m} \beta_i \frac{\phi'(r_i)}{r_i} x
@@ -751,28 +751,28 @@ space. If None, use x. (default: <code class="docutils literal notranslate"><spa
 <p>where <span class="math notranslate nohighlight">\(r_i = \|x - x_i\|\)</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Point in a d-dimensional space.</p>
+<dd class="field-odd"><p><strong>x</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – Point in a d-dimensional space.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.rbf.RbfModel.min_design_space_size">
-<span class="sig-name descname"><span class="pre">min_design_space_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#soogo.model.rbf.RbfModel.min_design_space_size" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">min_design_space_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#soogo.model.rbf.RbfModel.min_design_space_size" title="Permalink to this definition"></a></dt>
 <dd><p>Return the minimum design space size for a given space dimension.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span></p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.rbf.RbfModel.mu_measure">
-<span class="sig-name descname"><span class="pre">mu_measure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#soogo.model.rbf.RbfModel.mu_measure" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">mu_measure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#soogo.model.rbf.RbfModel.mu_measure" title="Permalink to this definition"></a></dt>
 <dd><p>Compute the value of abs(mu) for an RBF model.</p>
 <p>The mu measure was first defined in <a class="footnote-reference brackets" href="#id8" id="id5" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a> with suggestions of usage for
 global optimization with RBF functions. In <a class="footnote-reference brackets" href="#id9" id="id6" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a>, the authors detail the
@@ -792,26 +792,26 @@ at once.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – m-by-d matrix with m point coordinates in a d-dimensional
+<dd class="field-odd"><p><strong>x</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – m-by-d matrix with m point coordinates in a d-dimensional
 space.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The value of abs(mu) for every point in <cite>x</cite>.</p>
 </dd>
 </dl>
 <section id="id7">
-<h3>References<a class="headerlink" href="#id7" title="Link to this heading"></a></h3>
+<h3>References<a class="headerlink" href="#id7" title="Permalink to this heading"></a></h3>
 <aside class="footnote-list brackets">
-<aside class="footnote brackets" id="id8" role="doc-footnote">
+<aside class="footnote brackets" id="id8" role="note">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id5">3</a><span class="fn-bracket">]</span></span>
 <p>Gutmann, HM. A Radial Basis Function Method for Global
 Optimization. Journal of Global Optimization 19, 201–227 (2001).
 <a class="reference external" href="https://doi.org/10.1023/A:1011255519438">https://doi.org/10.1023/A:1011255519438</a></p>
 </aside>
-<aside class="footnote brackets" id="id9" role="doc-footnote">
+<aside class="footnote brackets" id="id9" role="note">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id6">4</a><span class="fn-bracket">]</span></span>
 <p>Björkman, M., Holmström, K. Global Optimization of Costly
 Nonconvex Functions Using Radial Basis Functions. Optimization and
@@ -823,47 +823,47 @@ Engineering 1, 373–397 (2000). <a class="reference external" href="https://doi
 
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.rbf.RbfModel.polynomial_tail">
-<span class="sig-name descname"><span class="pre">polynomial_tail</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#soogo.model.rbf.RbfModel.polynomial_tail" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">polynomial_tail</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#soogo.model.rbf.RbfModel.polynomial_tail" title="Permalink to this definition"></a></dt>
 <dd><p>Computes the polynomial tail matrix for a given set of points.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – m-by-d matrix with m point coordinates in a d-dimensional
+<dd class="field-odd"><p><strong>x</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – m-by-d matrix with m point coordinates in a d-dimensional
 space.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.rbf.RbfModel.polynomial_tail_size">
-<span class="sig-name descname"><span class="pre">polynomial_tail_size</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#soogo.model.rbf.RbfModel.polynomial_tail_size" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">polynomial_tail_size</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#soogo.model.rbf.RbfModel.polynomial_tail_size" title="Permalink to this definition"></a></dt>
 <dd><p>Get the dimension of the polynomial tail.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span></p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.rbf.RbfModel.prepare_mu_measure">
-<span class="sig-name descname"><span class="pre">prepare_mu_measure</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#soogo.model.rbf.RbfModel.prepare_mu_measure" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">prepare_mu_measure</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#soogo.model.rbf.RbfModel.prepare_mu_measure" title="Permalink to this definition"></a></dt>
 <dd><p>Prepare the model for mu measure computation.</p>
 <p>This routine computes the LDLt factorization of the matrix A, which is
 used to compute the mu measure. The factorization is computed only once
 and can be reused for multiple calls to <a class="reference internal" href="#soogo.model.rbf.RbfModel.mu_measure" title="soogo.model.rbf.RbfModel.mu_measure"><code class="xref py py-meth docutils literal notranslate"><span class="pre">mu_measure()</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.rbf.RbfModel.reserve">
-<span class="sig-name descname"><span class="pre">reserve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maxeval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ntarget</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#soogo.model.rbf.RbfModel.reserve" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">reserve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maxeval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ntarget</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#soogo.model.rbf.RbfModel.reserve" title="Permalink to this definition"></a></dt>
 <dd><p>Reserve space for the RBF model.</p>
 <p>This routine avoids successive dynamic memory allocations with
 successive calls of <a class="reference internal" href="#soogo.model.rbf.RbfModel.update" title="soogo.model.rbf.RbfModel.update"><code class="xref py py-meth docutils literal notranslate"><span class="pre">update()</span></code></a>. If the input <cite>maxeval</cite> is smaller
@@ -871,44 +871,44 @@ than the current number of sample points, nothing is done.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>maxeval</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Maximum number of function evaluations.</p></li>
-<li><p><strong>dim</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Dimension of the domain space.</p></li>
-<li><p><strong>ntarget</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Dimension of the target space. (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
+<li><p><strong>maxeval</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Maximum number of function evaluations.</p></li>
+<li><p><strong>dim</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Dimension of the domain space.</p></li>
+<li><p><strong>ntarget</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Dimension of the target space. (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.rbf.RbfModel.reset_data">
-<span class="sig-name descname"><span class="pre">reset_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#soogo.model.rbf.RbfModel.reset_data" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">reset_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#soogo.model.rbf.RbfModel.reset_data" title="Permalink to this definition"></a></dt>
 <dd><p>Reset the surrogate model training data.</p>
 <p>This method is used to clear the training data of the surrogate model,
 allowing it to be reused for a new optimization run.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.rbf.RbfModel.update">
-<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xNew</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fx</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#soogo.model.rbf.RbfModel.update" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xNew</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fx</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#soogo.model.rbf.RbfModel.update" title="Permalink to this definition"></a></dt>
 <dd><p>Updates the model with new pairs of data (x,y).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>xNew</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – m-by-d matrix with m point coordinates in a d-dimensional
+<li><p><strong>xNew</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – m-by-d matrix with m point coordinates in a d-dimensional
 space.</p></li>
 <li><p><strong>fx</strong> – Function values on the sampled points.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -917,15 +917,15 @@ space.</p></li>
 
 </section>
 <section id="module-soogo.model.rbf_kernel">
-<span id="soogo-model-rbf-kernel-module"></span><h2>soogo.model.rbf_kernel module<a class="headerlink" href="#module-soogo.model.rbf_kernel" title="Link to this heading"></a></h2>
+<span id="soogo-model-rbf-kernel-module"></span><h2>soogo.model.rbf_kernel module<a class="headerlink" href="#module-soogo.model.rbf_kernel" title="Permalink to this heading"></a></h2>
 <p>Radial Basis Kernel Functions.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="soogo.model.rbf_kernel.CubicRadialBasisFunction">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">soogo.model.rbf_kernel.</span></span><span class="sig-name descname"><span class="pre">CubicRadialBasisFunction</span></span><a class="headerlink" href="#soogo.model.rbf_kernel.CubicRadialBasisFunction" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">soogo.model.rbf_kernel.</span></span><span class="sig-name descname"><span class="pre">CubicRadialBasisFunction</span></span><a class="headerlink" href="#soogo.model.rbf_kernel.CubicRadialBasisFunction" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#soogo.model.rbf_kernel.RadialBasisFunction" title="soogo.model.rbf_kernel.RadialBasisFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">RadialBasisFunction</span></code></a></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.rbf_kernel.CubicRadialBasisFunction.__call__">
-<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.model.rbf_kernel.CubicRadialBasisFunction.__call__" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.model.rbf_kernel.CubicRadialBasisFunction.__call__" title="Permalink to this definition"></a></dt>
 <dd><p>Evaluate the radial basis function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -939,7 +939,7 @@ space.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.rbf_kernel.CubicRadialBasisFunction.grad_over_r">
-<span class="sig-name descname"><span class="pre">grad_over_r</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.model.rbf_kernel.CubicRadialBasisFunction.grad_over_r" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">grad_over_r</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.model.rbf_kernel.CubicRadialBasisFunction.grad_over_r" title="Permalink to this definition"></a></dt>
 <dd><p>Gradient of the radial function divided by r.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -953,11 +953,11 @@ space.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.rbf_kernel.CubicRadialBasisFunction.polynomial_tail_order">
-<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">polynomial_tail_order</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#soogo.model.rbf_kernel.CubicRadialBasisFunction.polynomial_tail_order" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">polynomial_tail_order</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#soogo.model.rbf_kernel.CubicRadialBasisFunction.polynomial_tail_order" title="Permalink to this definition"></a></dt>
 <dd><p>Return the order of the polynomial tail.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span></p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Order of the polynomial tail, or -1 if no polynomial tail
@@ -970,11 +970,11 @@ is present.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="soogo.model.rbf_kernel.LinearRadialBasisFunction">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">soogo.model.rbf_kernel.</span></span><span class="sig-name descname"><span class="pre">LinearRadialBasisFunction</span></span><a class="headerlink" href="#soogo.model.rbf_kernel.LinearRadialBasisFunction" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">soogo.model.rbf_kernel.</span></span><span class="sig-name descname"><span class="pre">LinearRadialBasisFunction</span></span><a class="headerlink" href="#soogo.model.rbf_kernel.LinearRadialBasisFunction" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#soogo.model.rbf_kernel.RadialBasisFunction" title="soogo.model.rbf_kernel.RadialBasisFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">RadialBasisFunction</span></code></a></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.rbf_kernel.LinearRadialBasisFunction.__call__">
-<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.model.rbf_kernel.LinearRadialBasisFunction.__call__" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.model.rbf_kernel.LinearRadialBasisFunction.__call__" title="Permalink to this definition"></a></dt>
 <dd><p>Evaluate the radial basis function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -988,11 +988,11 @@ is present.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.rbf_kernel.LinearRadialBasisFunction.polynomial_tail_order">
-<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">polynomial_tail_order</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#soogo.model.rbf_kernel.LinearRadialBasisFunction.polynomial_tail_order" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">polynomial_tail_order</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#soogo.model.rbf_kernel.LinearRadialBasisFunction.polynomial_tail_order" title="Permalink to this definition"></a></dt>
 <dd><p>Return the order of the polynomial tail.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span></p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Order of the polynomial tail, or -1 if no polynomial tail
@@ -1005,12 +1005,12 @@ is present.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="soogo.model.rbf_kernel.RadialBasisFunction">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">soogo.model.rbf_kernel.</span></span><span class="sig-name descname"><span class="pre">RadialBasisFunction</span></span><a class="headerlink" href="#soogo.model.rbf_kernel.RadialBasisFunction" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">soogo.model.rbf_kernel.</span></span><span class="sig-name descname"><span class="pre">RadialBasisFunction</span></span><a class="headerlink" href="#soogo.model.rbf_kernel.RadialBasisFunction" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
 <p>Base class for radial basis functions used in RBF models.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.rbf_kernel.RadialBasisFunction.__call__">
-<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.model.rbf_kernel.RadialBasisFunction.__call__" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.model.rbf_kernel.RadialBasisFunction.__call__" title="Permalink to this definition"></a></dt>
 <dd><p>Evaluate the radial basis function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1024,7 +1024,7 @@ is present.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.rbf_kernel.RadialBasisFunction.grad">
-<span class="sig-name descname"><span class="pre">grad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.model.rbf_kernel.RadialBasisFunction.grad" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">grad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.model.rbf_kernel.RadialBasisFunction.grad" title="Permalink to this definition"></a></dt>
 <dd><p>Gradient of the radial function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1038,7 +1038,7 @@ is present.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.rbf_kernel.RadialBasisFunction.grad_over_r">
-<span class="sig-name descname"><span class="pre">grad_over_r</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.model.rbf_kernel.RadialBasisFunction.grad_over_r" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">grad_over_r</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.model.rbf_kernel.RadialBasisFunction.grad_over_r" title="Permalink to this definition"></a></dt>
 <dd><p>Gradient of the radial function divided by r.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1052,7 +1052,7 @@ is present.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.rbf_kernel.RadialBasisFunction.hess">
-<span class="sig-name descname"><span class="pre">hess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.model.rbf_kernel.RadialBasisFunction.hess" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">hess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.model.rbf_kernel.RadialBasisFunction.hess" title="Permalink to this definition"></a></dt>
 <dd><p>Hessian of the radial function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1066,11 +1066,11 @@ is present.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.rbf_kernel.RadialBasisFunction.polynomial_tail_order">
-<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">polynomial_tail_order</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#soogo.model.rbf_kernel.RadialBasisFunction.polynomial_tail_order" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">polynomial_tail_order</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#soogo.model.rbf_kernel.RadialBasisFunction.polynomial_tail_order" title="Permalink to this definition"></a></dt>
 <dd><p>Return the order of the polynomial tail.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span></p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Order of the polynomial tail, or -1 if no polynomial tail
@@ -1083,11 +1083,11 @@ is present.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="soogo.model.rbf_kernel.ThinPlateRadialBasisFunction">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">soogo.model.rbf_kernel.</span></span><span class="sig-name descname"><span class="pre">ThinPlateRadialBasisFunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">safe_r</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.2250738585072014e-308</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.model.rbf_kernel.ThinPlateRadialBasisFunction" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">soogo.model.rbf_kernel.</span></span><span class="sig-name descname"><span class="pre">ThinPlateRadialBasisFunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">safe_r</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.2250738585072014e-308</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.model.rbf_kernel.ThinPlateRadialBasisFunction" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#soogo.model.rbf_kernel.RadialBasisFunction" title="soogo.model.rbf_kernel.RadialBasisFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">RadialBasisFunction</span></code></a></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.rbf_kernel.ThinPlateRadialBasisFunction.__call__">
-<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.model.rbf_kernel.ThinPlateRadialBasisFunction.__call__" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.model.rbf_kernel.ThinPlateRadialBasisFunction.__call__" title="Permalink to this definition"></a></dt>
 <dd><p>Evaluate the radial basis function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1101,7 +1101,7 @@ is present.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.rbf_kernel.ThinPlateRadialBasisFunction.grad_over_r">
-<span class="sig-name descname"><span class="pre">grad_over_r</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.model.rbf_kernel.ThinPlateRadialBasisFunction.grad_over_r" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">grad_over_r</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.model.rbf_kernel.ThinPlateRadialBasisFunction.grad_over_r" title="Permalink to this definition"></a></dt>
 <dd><p>Gradient of the radial function divided by r.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1115,11 +1115,11 @@ is present.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.model.rbf_kernel.ThinPlateRadialBasisFunction.polynomial_tail_order">
-<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">polynomial_tail_order</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#soogo.model.rbf_kernel.ThinPlateRadialBasisFunction.polynomial_tail_order" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">polynomial_tail_order</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#soogo.model.rbf_kernel.ThinPlateRadialBasisFunction.polynomial_tail_order" title="Permalink to this definition"></a></dt>
 <dd><p>Return the order of the polynomial tail.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span></p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Order of the polynomial tail, or -1 if no polynomial tail
@@ -1128,6 +1128,32 @@ is present.</p>
 </dl>
 </dd></dl>
 
+</dd></dl>
+
+</section>
+<section id="module-soogo.model.utils">
+<span id="soogo-model-utils-module"></span><h2>soogo.model.utils module<a class="headerlink" href="#module-soogo.model.utils" title="Permalink to this heading"></a></h2>
+<p>Optimization result dataclass for soogo optimizers.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="soogo.model.utils.create_initial_design">
+<span class="sig-prename descclassname"><span class="pre">soogo.model.utils.</span></span><span class="sig-name descname"><span class="pre">create_initial_design</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">surrogate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#soogo.model.base.Surrogate" title="soogo.model.base.Surrogate"><span class="pre">soogo.model.base.Surrogate</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mineval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxeval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_trials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.model.utils.create_initial_design" title="Permalink to this definition"></a></dt>
+<dd><p>Create an initial design for a surrogate model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>surrogate</strong> (<a class="reference internal" href="#soogo.model.base.Surrogate" title="soogo.model.base.Surrogate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Surrogate</span></code></a>) – Surrogate model.</p></li>
+<li><p><strong>bounds</strong> – Bounds of the design space.</p></li>
+<li><p><strong>mineval</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Minimum number of evaluations.</p></li>
+<li><p><strong>maxeval</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Maximum number of evaluations.</p></li>
+<li><p><strong>n_trials</strong> – Number of trials to create a valid initial design. (default: <code class="docutils literal notranslate"><span class="pre">100</span></code>)</p></li>
+<li><p><strong>seed</strong> – Seed, random number generator, or a (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+<cite>scipy.stats.qmc.QMCEngine</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Initial design sample or None if a valid design cannot be created.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>

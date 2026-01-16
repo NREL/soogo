@@ -1,21 +1,21 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="./">
+<html class="writer-html5" lang="en">
 <head>
-  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>blackboxopt.rbf module &mdash; soogo (Surrogate-based 0-th Order Global Optimization) 0.5.1 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css" />
 
   
-      <script src="_static/jquery.js?v=5d32c60e"></script>
-      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=b9afe91b"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/jquery.js"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+      <script src="_static/doctools.js"></script>
+      <script src="_static/sphinx_highlight.js"></script>
       <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -93,11 +93,11 @@
            <div itemprop="articleBody">
              
   <section id="module-blackboxopt.rbf">
-<span id="blackboxopt-rbf-module"></span><h1>blackboxopt.rbf module<a class="headerlink" href="#module-blackboxopt.rbf" title="Link to this heading"></a></h1>
+<span id="blackboxopt-rbf-module"></span><h1>blackboxopt.rbf module<a class="headerlink" href="#module-blackboxopt.rbf" title="Permalink to this heading"></a></h1>
 <p>Radial Basis Function model.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="blackboxopt.rbf.MedianLpfFilter">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blackboxopt.rbf.</span></span><span class="sig-name descname"><span class="pre">MedianLpfFilter</span></span><a class="headerlink" href="#blackboxopt.rbf.MedianLpfFilter" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blackboxopt.rbf.</span></span><span class="sig-name descname"><span class="pre">MedianLpfFilter</span></span><a class="headerlink" href="#blackboxopt.rbf.MedianLpfFilter" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#blackboxopt.rbf.RbfFilter" title="blackboxopt.rbf.RbfFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">RbfFilter</span></code></a></p>
 <p>Filter values by replacing large function values by the median of all.</p>
 <p>This strategy was proposed by <a class="footnote-reference brackets" href="#id3" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> based on results from <a class="footnote-reference brackets" href="#id4" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>. Use this
@@ -105,15 +105,15 @@ strategy to reduce oscillations of the interpolator, especially if the range
 target function is large. This filter may reduce the quality of the
 approximation by the surrogate.</p>
 <section id="references">
-<h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
+<h2>References<a class="headerlink" href="#references" title="Permalink to this heading"></a></h2>
 <aside class="footnote-list brackets">
-<aside class="footnote brackets" id="id3" role="doc-footnote">
+<aside class="footnote brackets" id="id3" role="note">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
 <p>Gutmann, HM. A Radial Basis Function Method for Global Optimization.
 Journal of Global Optimization 19, 201–227 (2001).
 <a class="reference external" href="https://doi.org/10.1023/A:1011255519438">https://doi.org/10.1023/A:1011255519438</a></p>
 </aside>
-<aside class="footnote brackets" id="id4" role="doc-footnote">
+<aside class="footnote brackets" id="id4" role="note">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">2</a><span class="fn-bracket">]</span></span>
 <p>Björkman, M., Holmström, K. Global Optimization of Costly Nonconvex
 Functions Using Radial Basis Functions. Optimization and Engineering 1,
@@ -122,11 +122,11 @@ Functions Using Radial Basis Functions. Optimization and Engineering 1,
 </aside>
 <dl class="py method">
 <dt class="sig sig-object py" id="blackboxopt.rbf.MedianLpfFilter.__call__">
-<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#blackboxopt.rbf.MedianLpfFilter.__call__" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#blackboxopt.rbf.MedianLpfFilter.__call__" title="Permalink to this definition"></a></dt>
 <dd><p>Call self as a function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -136,17 +136,17 @@ Functions Using Radial Basis Functions. Optimization and Engineering 1,
 
 <dl class="py class">
 <dt class="sig sig-object py" id="blackboxopt.rbf.RbfFilter">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blackboxopt.rbf.</span></span><span class="sig-name descname"><span class="pre">RbfFilter</span></span><a class="headerlink" href="#blackboxopt.rbf.RbfFilter" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blackboxopt.rbf.</span></span><span class="sig-name descname"><span class="pre">RbfFilter</span></span><a class="headerlink" href="#blackboxopt.rbf.RbfFilter" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Base filter class for the RBF target training set. Trivial identity
 filter.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="blackboxopt.rbf.RbfFilter.__call__">
-<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#blackboxopt.rbf.RbfFilter.__call__" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#blackboxopt.rbf.RbfFilter.__call__" title="Permalink to this definition"></a></dt>
 <dd><p>Call self as a function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -155,24 +155,24 @@ filter.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="blackboxopt.rbf.RbfKernel">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blackboxopt.rbf.</span></span><span class="sig-name descname"><span class="pre">RbfKernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#blackboxopt.rbf.RbfKernel" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blackboxopt.rbf.</span></span><span class="sig-name descname"><span class="pre">RbfKernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#blackboxopt.rbf.RbfKernel" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
 <p>RBF kernel tags.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="blackboxopt.rbf.RbfKernel.CUBIC">
-<span class="sig-name descname"><span class="pre">CUBIC</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#blackboxopt.rbf.RbfKernel.CUBIC" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">CUBIC</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#blackboxopt.rbf.RbfKernel.CUBIC" title="Permalink to this definition"></a></dt>
 <dd><p>Cubic kernel, i.e., <span class="math notranslate nohighlight">\(\phi(r) = r^3\)</span></p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="blackboxopt.rbf.RbfKernel.LINEAR">
-<span class="sig-name descname"><span class="pre">LINEAR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#blackboxopt.rbf.RbfKernel.LINEAR" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">LINEAR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#blackboxopt.rbf.RbfKernel.LINEAR" title="Permalink to this definition"></a></dt>
 <dd><p>Linear kernel, i.e., <span class="math notranslate nohighlight">\(\phi(r) = r\)</span></p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="blackboxopt.rbf.RbfKernel.THINPLATE">
-<span class="sig-name descname"><span class="pre">THINPLATE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#blackboxopt.rbf.RbfKernel.THINPLATE" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">THINPLATE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#blackboxopt.rbf.RbfKernel.THINPLATE" title="Permalink to this definition"></a></dt>
 <dd><p>Thinplate spline: <span class="math notranslate nohighlight">\(\phi(r) = r^2 \log(r)\)</span></p>
 </dd></dl>
 
@@ -180,7 +180,7 @@ filter.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="blackboxopt.rbf.RbfModel">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blackboxopt.rbf.</span></span><span class="sig-name descname"><span class="pre">RbfModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#blackboxopt.rbf.RbfKernel" title="blackboxopt.rbf.RbfKernel"><span class="pre">RbfKernel</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">RbfKernel.CUBIC</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iindex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#blackboxopt.rbf.RbfFilter" title="blackboxopt.rbf.RbfFilter"><span class="pre">RbfFilter</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#blackboxopt.rbf.RbfModel" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blackboxopt.rbf.</span></span><span class="sig-name descname"><span class="pre">RbfModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#blackboxopt.rbf.RbfKernel" title="blackboxopt.rbf.RbfKernel"><span class="pre">blackboxopt.rbf.RbfKernel</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">RbfKernel.CUBIC</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iindex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#blackboxopt.rbf.RbfFilter" title="blackboxopt.rbf.RbfFilter"><span class="pre">blackboxopt.rbf.RbfFilter</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#blackboxopt.rbf.RbfModel" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Radial Basis Function model.</p>
 <div class="math notranslate nohighlight">
@@ -200,41 +200,41 @@ is essential for the good performance of active learning processes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>kernel</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#blackboxopt.rbf.RbfKernel" title="blackboxopt.rbf.RbfKernel"><code class="xref py py-class docutils literal notranslate"><span class="pre">RbfKernel</span></code></a></span>) – Kernel function <span class="math notranslate nohighlight">\(\phi\)</span> used in the RBF model. (default: <code class="docutils literal notranslate"><span class="pre">&lt;RbfKernel.CUBIC:</span> <span class="pre">3&gt;</span></code>)</p></li>
-<li><p><strong>iindex</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>]</span>) – Indices of integer variables in the feature space. (default: <code class="docutils literal notranslate"><span class="pre">()</span></code>)</p></li>
-<li><p><strong>filter</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#blackboxopt.rbf.RbfFilter" title="blackboxopt.rbf.RbfFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">RbfFilter</span></code></a> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – Filter to be used in the target (image) space. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>kernel</strong> (<a class="reference internal" href="#blackboxopt.rbf.RbfKernel" title="blackboxopt.rbf.RbfKernel"><code class="xref py py-class docutils literal notranslate"><span class="pre">RbfKernel</span></code></a>) – Kernel function <span class="math notranslate nohighlight">\(\phi\)</span> used in the RBF model. (default: <code class="docutils literal notranslate"><span class="pre">&lt;RbfKernel.CUBIC:</span> <span class="pre">3&gt;</span></code>)</p></li>
+<li><p><strong>iindex</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>]) – Indices of integer variables in the feature space. (default: <code class="docutils literal notranslate"><span class="pre">()</span></code>)</p></li>
+<li><p><strong>filter</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="#blackboxopt.rbf.RbfFilter" title="blackboxopt.rbf.RbfFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">RbfFilter</span></code></a>]) – Filter to be used in the target (image) space. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="blackboxopt.rbf.RbfModel.kernel">
-<span class="sig-name descname"><span class="pre">kernel</span></span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.kernel" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">kernel</span></span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.kernel" title="Permalink to this definition"></a></dt>
 <dd><p>Kernel function <span class="math notranslate nohighlight">\(\phi\)</span> used in the RBF model.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="blackboxopt.rbf.RbfModel.iindex">
-<span class="sig-name descname"><span class="pre">iindex</span></span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.iindex" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">iindex</span></span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.iindex" title="Permalink to this definition"></a></dt>
 <dd><p>Indices of integer variables in the feature (domain) space.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="blackboxopt.rbf.RbfModel.filter">
-<span class="sig-name descname"><span class="pre">filter</span></span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.filter" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">filter</span></span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.filter" title="Permalink to this definition"></a></dt>
 <dd><p>Filter to be used in the target (image) space.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="blackboxopt.rbf.RbfModel.__call__">
-<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.__call__" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.__call__" title="Permalink to this definition"></a></dt>
 <dd><p>Evaluates the model at one or multiple points.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – m-by-d matrix with m point coordinates in a d-dimensional
+<dd class="field-odd"><p><strong>x</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – m-by-d matrix with m point coordinates in a d-dimensional
 space.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]</span></p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]</p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><ul class="simple">
@@ -252,40 +252,40 @@ space.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="blackboxopt.rbf.RbfModel.check_initial_design">
-<span class="sig-name descname"><span class="pre">check_initial_design</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.check_initial_design" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">check_initial_design</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.check_initial_design" title="Permalink to this definition"></a></dt>
 <dd><p>Check if the sample is able to generate a valid surrogate.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>sample</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – m-by-d matrix with m training points in a d-dimensional
+<dd class="field-odd"><p><strong>sample</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – m-by-d matrix with m training points in a d-dimensional
 space.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="blackboxopt.rbf.RbfModel.ddpbasis">
-<span class="sig-name descname"><span class="pre">ddpbasis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.ddpbasis" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">ddpbasis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.ddpbasis" title="Permalink to this definition"></a></dt>
 <dd><p>Computes the second derivative of the polynomial tail matrix for a
 given x and direction p.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Point in a d-dimensional space.</p></li>
-<li><p><strong>p</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Direction in which the second derivative is evaluated.</p></li>
+<li><p><strong>x</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – Point in a d-dimensional space.</p></li>
+<li><p><strong>p</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – Direction in which the second derivative is evaluated.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="blackboxopt.rbf.RbfModel.ddphi">
-<span class="sig-name descname"><span class="pre">ddphi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.ddphi" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">ddphi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.ddphi" title="Permalink to this definition"></a></dt>
 <dd><p>Second derivative of the kernel function phi at the distance(s) r.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -296,32 +296,32 @@ given x and direction p.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="blackboxopt.rbf.RbfModel.dim">
-<span class="sig-name descname"><span class="pre">dim</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.dim" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">dim</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.dim" title="Permalink to this definition"></a></dt>
 <dd><p>Get the dimension of the domain space.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span></p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="blackboxopt.rbf.RbfModel.dpbasis">
-<span class="sig-name descname"><span class="pre">dpbasis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.dpbasis" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">dpbasis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.dpbasis" title="Permalink to this definition"></a></dt>
 <dd><p>Computes the derivative of the polynomial tail matrix for a given x.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Point in a d-dimensional space.</p>
+<dd class="field-odd"><p><strong>x</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – Point in a d-dimensional space.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="blackboxopt.rbf.RbfModel.dphi">
-<span class="sig-name descname"><span class="pre">dphi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.dphi" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">dphi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.dphi" title="Permalink to this definition"></a></dt>
 <dd><p>Derivative of the kernel function phi at the distance(s) r.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -332,7 +332,7 @@ given x and direction p.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="blackboxopt.rbf.RbfModel.dphiOverR">
-<span class="sig-name descname"><span class="pre">dphiOverR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.dphiOverR" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">dphiOverR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.dphiOverR" title="Permalink to this definition"></a></dt>
 <dd><p>Derivative of the kernel function phi divided by r at the distance(s)
 r.</p>
 <p>This routine may avoid excessive numerical accumulation errors when
@@ -346,14 +346,14 @@ phi(r)/r is needed.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="blackboxopt.rbf.RbfModel.get_RBFmatrix">
-<span class="sig-name descname"><span class="pre">get_RBFmatrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.get_RBFmatrix" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_RBFmatrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.get_RBFmatrix" title="Permalink to this definition"></a></dt>
 <dd><p>Get the complete matrix used to compute the RBF weights.</p>
 <p>This is a blocked matrix <span class="math notranslate nohighlight">\([[\Phi, P],[P^T, 0]]\)</span>, where
 <span class="math notranslate nohighlight">\(\Phi\)</span> is the kernel matrix, and
 <span class="math notranslate nohighlight">\(P\)</span> is the polynomial tail basis matrix.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>(m+pdim)-by-(m+pdim) matrix used to compute the RBF weights.</p>
@@ -363,29 +363,29 @@ phi(r)/r is needed.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="blackboxopt.rbf.RbfModel.get_iindex">
-<span class="sig-name descname"><span class="pre">get_iindex</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.get_iindex" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_iindex</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.get_iindex" title="Permalink to this definition"></a></dt>
 <dd><p>Return iindex, the sequence of integer variable indexes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>]</span></p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>]</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="blackboxopt.rbf.RbfModel.get_matrixP">
-<span class="sig-name descname"><span class="pre">get_matrixP</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.get_matrixP" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_matrixP</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.get_matrixP" title="Permalink to this definition"></a></dt>
 <dd><p>Get the m-by-pdim matrix with the polynomial tail.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="blackboxopt.rbf.RbfModel.hessp">
-<span class="sig-name descname"><span class="pre">hessp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.hessp" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">hessp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.hessp" title="Permalink to this definition"></a></dt>
 <dd><p>Evaluates the Hessian of the model at x in the direction of p.</p>
 <div class="math notranslate nohighlight">
 \[H(f)(x) v   = \sum_{i=1}^{m} \beta_i \left(
@@ -397,84 +397,84 @@ phi(r)/r is needed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Point in a d-dimensional space.</p></li>
-<li><p><strong>p</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Direction in which the Hessian is evaluated.</p></li>
+<li><p><strong>x</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – Point in a d-dimensional space.</p></li>
+<li><p><strong>p</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – Direction in which the Hessian is evaluated.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="blackboxopt.rbf.RbfModel.jac">
-<span class="sig-name descname"><span class="pre">jac</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.jac" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">jac</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.jac" title="Permalink to this definition"></a></dt>
 <dd><p>Evaluates the derivative of the model at one point.</p>
 <div class="math notranslate nohighlight">
 \[\nabla f(x) = \sum_{i=1}^{m} \beta_i \frac{\phi'(\|x - x_i\|)}{\|x - x_i\|} x
             + \sum_{i=1}^{n} \beta_{m+i} \nabla p_i(x).\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Point in a d-dimensional space.</p>
+<dd class="field-odd"><p><strong>x</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – Point in a d-dimensional space.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="blackboxopt.rbf.RbfModel.min_design_space_size">
-<span class="sig-name descname"><span class="pre">min_design_space_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.min_design_space_size" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">min_design_space_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.min_design_space_size" title="Permalink to this definition"></a></dt>
 <dd><p>Return the minimum design space size for a given space dimension.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span></p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="blackboxopt.rbf.RbfModel.ntrain">
-<span class="sig-name descname"><span class="pre">ntrain</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.ntrain" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">ntrain</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.ntrain" title="Permalink to this definition"></a></dt>
 <dd><p>Get the number of sampled points.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span></p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="blackboxopt.rbf.RbfModel.pbasis">
-<span class="sig-name descname"><span class="pre">pbasis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.pbasis" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">pbasis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.pbasis" title="Permalink to this definition"></a></dt>
 <dd><p>Computes the polynomial tail matrix for a given set of points.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – m-by-d matrix with m point coordinates in a d-dimensional
+<dd class="field-odd"><p><strong>x</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – m-by-d matrix with m point coordinates in a d-dimensional
 space.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="blackboxopt.rbf.RbfModel.pdim">
-<span class="sig-name descname"><span class="pre">pdim</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.pdim" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">pdim</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.pdim" title="Permalink to this definition"></a></dt>
 <dd><p>Get the dimension of the polynomial tail.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span></p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="blackboxopt.rbf.RbfModel.phi">
-<span class="sig-name descname"><span class="pre">phi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.phi" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">phi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.phi" title="Permalink to this definition"></a></dt>
 <dd><p>Applies the kernel function phi to the distance(s) r.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -485,7 +485,7 @@ space.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="blackboxopt.rbf.RbfModel.reserve">
-<span class="sig-name descname"><span class="pre">reserve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maxeval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.reserve" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">reserve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maxeval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.reserve" title="Permalink to this definition"></a></dt>
 <dd><p>Reserve space for the RBF model.</p>
 <p>This routine avoids successive dynamic memory allocations with
 successive calls of <a class="reference internal" href="#blackboxopt.rbf.RbfModel.update" title="blackboxopt.rbf.RbfModel.update"><code class="xref py py-meth docutils literal notranslate"><span class="pre">update()</span></code></a>. If the input <cite>maxeval</cite> is smaller
@@ -493,66 +493,66 @@ than the current number of sample points, nothing is done.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>maxeval</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Maximum number of function evaluations.</p></li>
-<li><p><strong>dim</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Dimension of the domain space.</p></li>
+<li><p><strong>maxeval</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Maximum number of function evaluations.</p></li>
+<li><p><strong>dim</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Dimension of the domain space.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="blackboxopt.rbf.RbfModel.reset">
-<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.reset" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.reset" title="Permalink to this definition"></a></dt>
 <dd><p>Resets the RBF model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="blackboxopt.rbf.RbfModel.sample">
-<span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.sample" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.sample" title="Permalink to this definition"></a></dt>
 <dd><p>Get the i-th sampled point.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>i</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Index of the sampled point.</p>
+<dd class="field-odd"><p><strong>i</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Index of the sampled point.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="blackboxopt.rbf.RbfModel.update">
-<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xNew</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fx</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.update" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xNew</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fx</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.update" title="Permalink to this definition"></a></dt>
 <dd><p>Updates the model with new pairs of data (x,y).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>xNew</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – m-by-d matrix with m point coordinates in a d-dimensional
+<li><p><strong>xNew</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – m-by-d matrix with m point coordinates in a d-dimensional
 space.</p></li>
 <li><p><strong>fx</strong> – Function values on the sampled points.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="blackboxopt.rbf.RbfModel.xtrain">
-<span class="sig-name descname"><span class="pre">xtrain</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.xtrain" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">xtrain</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.xtrain" title="Permalink to this definition"></a></dt>
 <dd><p>Get the training data points.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>m-by-d matrix with m training points in a d-dimensional space.</p>
@@ -562,11 +562,11 @@ space.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="blackboxopt.rbf.RbfModel.ytrain">
-<span class="sig-name descname"><span class="pre">ytrain</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.ytrain" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">ytrain</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#blackboxopt.rbf.RbfModel.ytrain" title="Permalink to this definition"></a></dt>
 <dd><p>Get f(x) for the sampled points.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
 </dd>
 </dl>
 </dd></dl>

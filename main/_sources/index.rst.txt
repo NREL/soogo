@@ -7,7 +7,6 @@ Welcome to soogo's documentation!
    README.md
    CONTRIBUTING.md
    api/soogo
-   api/tests
 
 Indices and tables
 ==================

@@ -1,21 +1,21 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="./">
+<html class="writer-html5" lang="en">
 <head>
-  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>blackboxopt.sampling module &mdash; soogo (Surrogate-based 0-th Order Global Optimization) 0.5.1 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css" />
 
   
-      <script src="_static/jquery.js?v=5d32c60e"></script>
-      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=b9afe91b"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/jquery.js"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+      <script src="_static/doctools.js"></script>
+      <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -92,43 +92,43 @@
            <div itemprop="articleBody">
              
   <section id="module-blackboxopt.sampling">
-<span id="blackboxopt-sampling-module"></span><h1>blackboxopt.sampling module<a class="headerlink" href="#module-blackboxopt.sampling" title="Link to this heading"></a></h1>
+<span id="blackboxopt-sampling-module"></span><h1>blackboxopt.sampling module<a class="headerlink" href="#module-blackboxopt.sampling" title="Permalink to this heading"></a></h1>
 <p>Sampling strategies for the optimization algorithms.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="blackboxopt.sampling.Mitchel91Sampler">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blackboxopt.sampling.</span></span><span class="sig-name descname"><span class="pre">Mitchel91Sampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strategy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#blackboxopt.sampling.SamplingStrategy" title="blackboxopt.sampling.SamplingStrategy"><span class="pre">SamplingStrategy</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">SamplingStrategy.MITCHEL91</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxCand</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#blackboxopt.sampling.Mitchel91Sampler" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blackboxopt.sampling.</span></span><span class="sig-name descname"><span class="pre">Mitchel91Sampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strategy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#blackboxopt.sampling.SamplingStrategy" title="blackboxopt.sampling.SamplingStrategy"><span class="pre">blackboxopt.sampling.SamplingStrategy</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">SamplingStrategy.MITCHEL91</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxCand</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#blackboxopt.sampling.Mitchel91Sampler" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#blackboxopt.sampling.Sampler" title="blackboxopt.sampling.Sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></a></p>
 <p>Sampler based from <a class="footnote-reference brackets" href="#id2" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> that fills gaps in the search space.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>maxCand</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – The maximum number of random candidates from which each
+<li><p><strong>maxCand</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The maximum number of random candidates from which each (default: <code class="docutils literal notranslate"><span class="pre">10000</span></code>)
 sample points is selected. If None it receives the value <cite>10*n</cite> instead.
-Stored in <a class="reference internal" href="#blackboxopt.sampling.Mitchel91Sampler.maxCand" title="blackboxopt.sampling.Mitchel91Sampler.maxCand"><code class="xref py py-attr docutils literal notranslate"><span class="pre">maxCand</span></code></a>. (default: <code class="docutils literal notranslate"><span class="pre">10000</span></code>)</p></li>
-<li><p><strong>scale</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – A scaling factor proportional to the number of candidates used
-to select each sample point. Stored in <a class="reference internal" href="#blackboxopt.sampling.Mitchel91Sampler.scale" title="blackboxopt.sampling.Mitchel91Sampler.scale"><code class="xref py py-attr docutils literal notranslate"><span class="pre">scale</span></code></a>. (default: <code class="docutils literal notranslate"><span class="pre">10</span></code>)</p></li>
+Stored in <a class="reference internal" href="#blackboxopt.sampling.Mitchel91Sampler.maxCand" title="blackboxopt.sampling.Mitchel91Sampler.maxCand"><code class="xref py py-attr docutils literal notranslate"><span class="pre">maxCand</span></code></a>.</p></li>
+<li><p><strong>scale</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – A scaling factor proportional to the number of candidates used (default: <code class="docutils literal notranslate"><span class="pre">10</span></code>)
+to select each sample point. Stored in <a class="reference internal" href="#blackboxopt.sampling.Mitchel91Sampler.scale" title="blackboxopt.sampling.Mitchel91Sampler.scale"><code class="xref py py-attr docutils literal notranslate"><span class="pre">scale</span></code></a>.</p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="blackboxopt.sampling.Mitchel91Sampler.maxCand">
-<span class="sig-name descname"><span class="pre">maxCand</span></span><a class="headerlink" href="#blackboxopt.sampling.Mitchel91Sampler.maxCand" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">maxCand</span></span><a class="headerlink" href="#blackboxopt.sampling.Mitchel91Sampler.maxCand" title="Permalink to this definition"></a></dt>
 <dd><p>The maximum number of random candidates from which each
 sample points is selected. Used by <a class="reference internal" href="#blackboxopt.sampling.Mitchel91Sampler.get_mitchel91_sample" title="blackboxopt.sampling.Mitchel91Sampler.get_mitchel91_sample"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_mitchel91_sample()</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="blackboxopt.sampling.Mitchel91Sampler.scale">
-<span class="sig-name descname"><span class="pre">scale</span></span><a class="headerlink" href="#blackboxopt.sampling.Mitchel91Sampler.scale" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">scale</span></span><a class="headerlink" href="#blackboxopt.sampling.Mitchel91Sampler.scale" title="Permalink to this definition"></a></dt>
 <dd><p>Scaling factor that controls the number of candidates in the pool used
 to select a sample point. The pool has size
 <cite>scale * [# current points]</cite>. Used by <a class="reference internal" href="#blackboxopt.sampling.Mitchel91Sampler.get_mitchel91_sample" title="blackboxopt.sampling.Mitchel91Sampler.get_mitchel91_sample"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_mitchel91_sample()</span></code></a>.</p>
 </dd></dl>
 
 <section id="references">
-<h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
+<h2>References<a class="headerlink" href="#references" title="Permalink to this heading"></a></h2>
 <aside class="footnote-list brackets">
-<aside class="footnote brackets" id="id2" role="doc-footnote">
+<aside class="footnote brackets" id="id2" role="note">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
 <p>Mitchell, D. P. (1991). Spectrally optimal sampling for distribution
 ray tracing. Computer Graphics, 25, 157–164.</p>
@@ -136,7 +136,7 @@ ray tracing. Computer Graphics, 25, 157–164.</p>
 </aside>
 <dl class="py method">
 <dt class="sig sig-object py" id="blackboxopt.sampling.Mitchel91Sampler.get_mitchel91_sample">
-<span class="sig-name descname"><span class="pre">get_mitchel91_sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">iindex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_sample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#blackboxopt.sampling.Mitchel91Sampler.get_mitchel91_sample" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_mitchel91_sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iindex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_sample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#blackboxopt.sampling.Mitchel91Sampler.get_mitchel91_sample" title="Permalink to this definition"></a></dt>
 <dd><p>Generate a sample that aims to fill gaps in the search space.</p>
 <p>This algorithm generates a sample that fills gaps in the search space.
 In each iteration, it generates a pool of candidates, and selects the
@@ -147,12 +147,12 @@ sample. This algorithm was proposed by Mitchel (1991).</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>bounds</strong> (<em>sequence</em>) – List with the limits [x_min,x_max] of each
 direction x in the space.</p></li>
-<li><p><strong>iindex</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>]</span>) – Indices of the input space that are integer. (default: <code class="docutils literal notranslate"><span class="pre">()</span></code>)</p></li>
+<li><p><strong>iindex</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>]) – Indices of the input space that are integer. (default: <code class="docutils literal notranslate"><span class="pre">()</span></code>)</p></li>
 <li><p><strong>current_sample</strong> – Sample points already drawn. (default: <code class="docutils literal notranslate"><span class="pre">()</span></code>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Matrix with a sample point per line.</p>
@@ -162,20 +162,20 @@ direction x in the space.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="blackboxopt.sampling.Mitchel91Sampler.get_sample">
-<span class="sig-name descname"><span class="pre">get_sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">iindex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#blackboxopt.sampling.Mitchel91Sampler.get_sample" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iindex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#blackboxopt.sampling.Mitchel91Sampler.get_sample" title="Permalink to this definition"></a></dt>
 <dd><p>Generates a sample.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>bounds</strong> (<em>sequence</em>) – List with the limits [x_min,x_max] of each
 direction x in the space.</p></li>
-<li><p><strong>iindex</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>]</span>) – Indices of the input space that are integer. (default: <code class="docutils literal notranslate"><span class="pre">()</span></code>)</p></li>
+<li><p><strong>iindex</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>]) – Indices of the input space that are integer. (default: <code class="docutils literal notranslate"><span class="pre">()</span></code>)</p></li>
 <li><p><strong>current_sample</strong> – Sample points already drawn. Used by
 <a class="reference internal" href="#blackboxopt.sampling.SamplingStrategy.MITCHEL91" title="blackboxopt.sampling.SamplingStrategy.MITCHEL91"><code class="xref py py-attr docutils literal notranslate"><span class="pre">SamplingStrategy.MITCHEL91</span></code></a>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Matrix with a sample point per line.</p>
@@ -188,30 +188,30 @@ direction x in the space.</p></li>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="blackboxopt.sampling.NormalSampler">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blackboxopt.sampling.</span></span><span class="sig-name descname"><span class="pre">NormalSampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_min</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strategy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#blackboxopt.sampling.SamplingStrategy" title="blackboxopt.sampling.SamplingStrategy"><span class="pre">SamplingStrategy</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">SamplingStrategy.NORMAL</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#blackboxopt.sampling.NormalSampler" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blackboxopt.sampling.</span></span><span class="sig-name descname"><span class="pre">NormalSampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_min</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strategy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#blackboxopt.sampling.SamplingStrategy" title="blackboxopt.sampling.SamplingStrategy"><span class="pre">blackboxopt.sampling.SamplingStrategy</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">SamplingStrategy.NORMAL</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#blackboxopt.sampling.NormalSampler" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#blackboxopt.sampling.Sampler" title="blackboxopt.sampling.Sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></a></p>
 <p>Sampler that generates sample points from a truncated normal
 distribution.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>sigma</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – Standard deviation of the truncated normal distribution,</p>
+<dd class="field-odd"><p><strong>sigma</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Standard deviation of the truncated normal distribution,</p>
 </dd>
 </dl>
 <p>relative to a unitary interval. Stored in <a class="reference internal" href="#blackboxopt.sampling.NormalSampler.sigma" title="blackboxopt.sampling.NormalSampler.sigma"><code class="xref py py-attr docutils literal notranslate"><span class="pre">sigma</span></code></a>.
-:type sigma_min: <span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>
-:param sigma_min: Minimum limit for the standard deviation, relative to</p>
+:type sigma_min: <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>
+:param sigma_min: Minimum limit for the standard deviation, relative to (default: <code class="docutils literal notranslate"><span class="pre">0</span></code>)</p>
 <blockquote>
-<div><p>a unitary interval. Stored in <a class="reference internal" href="#blackboxopt.sampling.NormalSampler.sigma_min" title="blackboxopt.sampling.NormalSampler.sigma_min"><code class="xref py py-attr docutils literal notranslate"><span class="pre">sigma_min</span></code></a>. (default: <code class="docutils literal notranslate"><span class="pre">0</span></code>)</p>
+<div><p>a unitary interval. Stored in <a class="reference internal" href="#blackboxopt.sampling.NormalSampler.sigma_min" title="blackboxopt.sampling.NormalSampler.sigma_min"><code class="xref py py-attr docutils literal notranslate"><span class="pre">sigma_min</span></code></a>.</p>
 </div></blockquote>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>sigma_max</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – Maximum limit for the standard deviation, relative to
-a unitary interval. Stored in <a class="reference internal" href="#blackboxopt.sampling.NormalSampler.sigma_max" title="blackboxopt.sampling.NormalSampler.sigma_max"><code class="xref py py-attr docutils literal notranslate"><span class="pre">sigma_max</span></code></a>. (default: <code class="docutils literal notranslate"><span class="pre">0.25</span></code>)</p>
+<dd class="field-odd"><p><strong>sigma_max</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Maximum limit for the standard deviation, relative to (default: <code class="docutils literal notranslate"><span class="pre">0.25</span></code>)
+a unitary interval. Stored in <a class="reference internal" href="#blackboxopt.sampling.NormalSampler.sigma_max" title="blackboxopt.sampling.NormalSampler.sigma_max"><code class="xref py py-attr docutils literal notranslate"><span class="pre">sigma_max</span></code></a>.</p>
 </dd>
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="blackboxopt.sampling.NormalSampler.sigma">
-<span class="sig-name descname"><span class="pre">sigma</span></span><a class="headerlink" href="#blackboxopt.sampling.NormalSampler.sigma" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">sigma</span></span><a class="headerlink" href="#blackboxopt.sampling.NormalSampler.sigma" title="Permalink to this definition"></a></dt>
 <dd><p>Standard deviation of the truncated normal distribution, relative to a
 unitary interval. Used by <a class="reference internal" href="#blackboxopt.sampling.NormalSampler.get_normal_sample" title="blackboxopt.sampling.NormalSampler.get_normal_sample"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_normal_sample()</span></code></a> and
 <a class="reference internal" href="#blackboxopt.sampling.NormalSampler.get_dds_sample" title="blackboxopt.sampling.NormalSampler.get_dds_sample"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_dds_sample()</span></code></a>.</p>
@@ -219,21 +219,21 @@ unitary interval. Used by <a class="reference internal" href="#blackboxopt.sampl
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="blackboxopt.sampling.NormalSampler.sigma_min">
-<span class="sig-name descname"><span class="pre">sigma_min</span></span><a class="headerlink" href="#blackboxopt.sampling.NormalSampler.sigma_min" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">sigma_min</span></span><a class="headerlink" href="#blackboxopt.sampling.NormalSampler.sigma_min" title="Permalink to this definition"></a></dt>
 <dd><p>Minimum standard deviation of the truncated normal distribution,
 relative to a unitary interval.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="blackboxopt.sampling.NormalSampler.sigma_max">
-<span class="sig-name descname"><span class="pre">sigma_max</span></span><a class="headerlink" href="#blackboxopt.sampling.NormalSampler.sigma_max" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">sigma_max</span></span><a class="headerlink" href="#blackboxopt.sampling.NormalSampler.sigma_max" title="Permalink to this definition"></a></dt>
 <dd><p>Maximum standard deviation of the truncated normal distribution,
 relative to a unitary interval.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="blackboxopt.sampling.NormalSampler.get_dds_sample">
-<span class="sig-name descname"><span class="pre">get_dds_sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">probability</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">iindex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#blackboxopt.sampling.NormalSampler.get_dds_sample" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_dds_sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">probability</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iindex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#blackboxopt.sampling.NormalSampler.get_dds_sample" title="Permalink to this definition"></a></dt>
 <dd><p>Generate a sample based on the Dynamically Dimensioned Search (DDS)
 algorithm described in <a class="footnote-reference brackets" href="#id5" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>.</p>
 <p>This algorithm generated a sample by perturbing a subset of the
@@ -247,23 +247,24 @@ standard deviation <a class="reference internal" href="#blackboxopt.sampling.Nor
 <li><p><strong>bounds</strong> (<em>sequence</em>) – List with the limits [x_min,x_max] of each
 direction x in the space.</p></li>
 <li><p><strong>mu</strong> – Point around which the sample will be generated.</p></li>
-<li><p><strong>probability</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – Perturbation probability.</p></li>
-<li><p><strong>iindex</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>]</span>) – Indices of the input space that are integer. (default: <code class="docutils literal notranslate"><span class="pre">()</span></code>)</p></li>
-<li><p><strong>coord</strong> – Coordinates of the input space that will vary.  If (), all
-coordinates will vary. (default: <code class="docutils literal notranslate"><span class="pre">()</span></code>)</p></li>
+<li><p><strong>probability</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Perturbation probability.</p></li>
+<li><p><strong>iindex</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>]) – Indices of the input space that are integer. (default: <code class="docutils literal notranslate"><span class="pre">()</span></code>)</p></li>
+<li><p><strong>coord</strong> – (default: <code class="docutils literal notranslate"><span class="pre">()</span></code>)
+Coordinates of the input space that will vary.  If (), all
+coordinates will vary.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Matrix with a sample point per line.</p>
 </dd>
 </dl>
 <section id="id4">
-<h2>References<a class="headerlink" href="#id4" title="Link to this heading"></a></h2>
+<h2>References<a class="headerlink" href="#id4" title="Permalink to this heading"></a></h2>
 <aside class="footnote-list brackets">
-<aside class="footnote brackets" id="id5" role="doc-footnote">
+<aside class="footnote brackets" id="id5" role="note">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">2</a><span class="fn-bracket">]</span></span>
 <p>Tolson, B. A., and C. A. Shoemaker (2007), Dynamically
 dimensioned search algorithm for computationally efficient watershed
@@ -276,7 +277,7 @@ model calibration, Water Resour. Res., 43, W01413,
 
 <dl class="py method">
 <dt class="sig sig-object py" id="blackboxopt.sampling.NormalSampler.get_normal_sample">
-<span class="sig-name descname"><span class="pre">get_normal_sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">iindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#blackboxopt.sampling.NormalSampler.get_normal_sample" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_normal_sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#blackboxopt.sampling.NormalSampler.get_normal_sample" title="Permalink to this definition"></a></dt>
 <dd><p>Generate a sample from a truncated normal distribution around a given
 point mu.</p>
 <dl class="field-list simple">
@@ -291,7 +292,7 @@ coordinates will vary.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Matrix with a sample point per line.</p>
@@ -301,14 +302,14 @@ coordinates will vary.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="blackboxopt.sampling.NormalSampler.get_sample">
-<span class="sig-name descname"><span class="pre">get_sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">iindex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#blackboxopt.sampling.NormalSampler.get_sample" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iindex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#blackboxopt.sampling.NormalSampler.get_sample" title="Permalink to this definition"></a></dt>
 <dd><p>Generate a sample.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>bounds</strong> (<em>sequence</em>) – List with the limits [x_min,x_max] of each
 direction x in the space.</p></li>
-<li><p><strong>iindex</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>]</span>) – Indices of the input space that are integer. (default: <code class="docutils literal notranslate"><span class="pre">()</span></code>)</p></li>
+<li><p><strong>iindex</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>]) – Indices of the input space that are integer. (default: <code class="docutils literal notranslate"><span class="pre">()</span></code>)</p></li>
 <li><p><strong>mu</strong> – <p>Point around which the sample will be generated. Used by:</p>
 <ul>
 <li><p><a class="reference internal" href="#blackboxopt.sampling.SamplingStrategy.NORMAL" title="blackboxopt.sampling.SamplingStrategy.NORMAL"><code class="xref py py-attr docutils literal notranslate"><span class="pre">SamplingStrategy.NORMAL</span></code></a></p></li>
@@ -333,7 +334,7 @@ coordinates will vary. Used by:</p>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Matrix with a sample point per line.</p>
@@ -345,7 +346,7 @@ coordinates will vary. Used by:</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="blackboxopt.sampling.Sampler">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blackboxopt.sampling.</span></span><span class="sig-name descname"><span class="pre">Sampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strategy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#blackboxopt.sampling.SamplingStrategy" title="blackboxopt.sampling.SamplingStrategy"><span class="pre">SamplingStrategy</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">SamplingStrategy.UNIFORM</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#blackboxopt.sampling.Sampler" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blackboxopt.sampling.</span></span><span class="sig-name descname"><span class="pre">Sampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strategy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#blackboxopt.sampling.SamplingStrategy" title="blackboxopt.sampling.SamplingStrategy"><span class="pre">blackboxopt.sampling.SamplingStrategy</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">SamplingStrategy.UNIFORM</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#blackboxopt.sampling.Sampler" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Abstract base class for samplers.</p>
 <p>The main goal of a sampler is to draw samples from a d-dimensional box.
@@ -355,38 +356,38 @@ For that, one should use <a class="reference internal" href="#blackboxopt.sampli
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>n</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Number of sample points. Stored in <a class="reference internal" href="#blackboxopt.sampling.Sampler.n" title="blackboxopt.sampling.Sampler.n"><code class="xref py py-attr docutils literal notranslate"><span class="pre">n</span></code></a>.</p></li>
-<li><p><strong>strategy</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#blackboxopt.sampling.SamplingStrategy" title="blackboxopt.sampling.SamplingStrategy"><code class="xref py py-class docutils literal notranslate"><span class="pre">SamplingStrategy</span></code></a></span>) – Sampling strategy. Stored in <a class="reference internal" href="#blackboxopt.sampling.Sampler.strategy" title="blackboxopt.sampling.Sampler.strategy"><code class="xref py py-attr docutils literal notranslate"><span class="pre">strategy</span></code></a>. (default: <code class="docutils literal notranslate"><span class="pre">&lt;SamplingStrategy.UNIFORM:</span> <span class="pre">3&gt;</span></code>)</p></li>
+<li><p><strong>n</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Number of sample points. Stored in <a class="reference internal" href="#blackboxopt.sampling.Sampler.n" title="blackboxopt.sampling.Sampler.n"><code class="xref py py-attr docutils literal notranslate"><span class="pre">n</span></code></a>.</p></li>
+<li><p><strong>strategy</strong> (<a class="reference internal" href="#blackboxopt.sampling.SamplingStrategy" title="blackboxopt.sampling.SamplingStrategy"><code class="xref py py-class docutils literal notranslate"><span class="pre">SamplingStrategy</span></code></a>) – Sampling strategy. Stored in <a class="reference internal" href="#blackboxopt.sampling.Sampler.strategy" title="blackboxopt.sampling.Sampler.strategy"><code class="xref py py-attr docutils literal notranslate"><span class="pre">strategy</span></code></a>. (default: <code class="docutils literal notranslate"><span class="pre">&lt;SamplingStrategy.UNIFORM:</span> <span class="pre">3&gt;</span></code>)</p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="blackboxopt.sampling.Sampler.n">
-<span class="sig-name descname"><span class="pre">n</span></span><a class="headerlink" href="#blackboxopt.sampling.Sampler.n" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">n</span></span><a class="headerlink" href="#blackboxopt.sampling.Sampler.n" title="Permalink to this definition"></a></dt>
 <dd><p>Number of sample points returned by <code class="xref py py-meth docutils literal notranslate"><span class="pre">get_[strategy]_sample()</span></code>.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="blackboxopt.sampling.Sampler.strategy">
-<span class="sig-name descname"><span class="pre">strategy</span></span><a class="headerlink" href="#blackboxopt.sampling.Sampler.strategy" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">strategy</span></span><a class="headerlink" href="#blackboxopt.sampling.Sampler.strategy" title="Permalink to this definition"></a></dt>
 <dd><p>Sampling strategy that will be used by <a class="reference internal" href="#blackboxopt.sampling.Sampler.get_sample" title="blackboxopt.sampling.Sampler.get_sample"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_sample()</span></code></a> and
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">get_[strategy]_sample()</span></code>.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="blackboxopt.sampling.Sampler.get_sample">
-<span class="sig-name descname"><span class="pre">get_sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">iindex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#blackboxopt.sampling.Sampler.get_sample" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iindex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#blackboxopt.sampling.Sampler.get_sample" title="Permalink to this definition"></a></dt>
 <dd><p>Generate a sample based on <a class="reference internal" href="#blackboxopt.sampling.Sampler.strategy" title="blackboxopt.sampling.Sampler.strategy"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.strategy</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>bounds</strong> (<em>sequence</em>) – List with the limits [x_min,x_max] of each
 direction x in the space.</p></li>
-<li><p><strong>iindex</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>]</span>) – Indices of the input space that are integer. (default: <code class="docutils literal notranslate"><span class="pre">()</span></code>)</p></li>
+<li><p><strong>iindex</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>]) – Indices of the input space that are integer. (default: <code class="docutils literal notranslate"><span class="pre">()</span></code>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Matrix with a sample point per line.</p>
@@ -396,7 +397,7 @@ direction x in the space.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="blackboxopt.sampling.Sampler.get_slhd_sample">
-<span class="sig-name descname"><span class="pre">get_slhd_sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">iindex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#blackboxopt.sampling.Sampler.get_slhd_sample" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_slhd_sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iindex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#blackboxopt.sampling.Sampler.get_slhd_sample" title="Permalink to this definition"></a></dt>
 <dd><p>Creates a Symmetric Latin Hypercube Design.</p>
 <p>Note that, for integer variables, it may not be possible to generate
 a SLHD. In this case, the algorithm will do its best to try not to
@@ -406,11 +407,11 @@ repeat values in the integer variables.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>bounds</strong> (<em>sequence</em>) – List with the limits [x_min,x_max] of each
 direction x in the space.</p></li>
-<li><p><strong>iindex</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>]</span>) – Indices of the input space that are integer. (default: <code class="docutils literal notranslate"><span class="pre">()</span></code>)</p></li>
+<li><p><strong>iindex</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>]) – Indices of the input space that are integer. (default: <code class="docutils literal notranslate"><span class="pre">()</span></code>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Matrix with a sample point per line.</p>
@@ -420,18 +421,18 @@ direction x in the space.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="blackboxopt.sampling.Sampler.get_uniform_sample">
-<span class="sig-name descname"><span class="pre">get_uniform_sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">iindex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#blackboxopt.sampling.Sampler.get_uniform_sample" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_uniform_sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iindex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#blackboxopt.sampling.Sampler.get_uniform_sample" title="Permalink to this definition"></a></dt>
 <dd><p>Generate a sample from a uniform distribution inside the bounds.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>bounds</strong> (<em>sequence</em>) – List with the limits [x_min,x_max] of each
 direction x in the space.</p></li>
-<li><p><strong>iindex</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>]</span>) – Indices of the input space that are integer. (default: <code class="docutils literal notranslate"><span class="pre">()</span></code>)</p></li>
+<li><p><strong>iindex</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>]) – Indices of the input space that are integer. (default: <code class="docutils literal notranslate"><span class="pre">()</span></code>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Matrix with a sample point per line.</p>
@@ -443,43 +444,43 @@ direction x in the space.</p></li>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="blackboxopt.sampling.SamplingStrategy">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blackboxopt.sampling.</span></span><span class="sig-name descname"><span class="pre">SamplingStrategy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#blackboxopt.sampling.SamplingStrategy" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blackboxopt.sampling.</span></span><span class="sig-name descname"><span class="pre">SamplingStrategy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#blackboxopt.sampling.SamplingStrategy" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
 <p>Sampling strategy tags to be used by <code class="xref py py-meth docutils literal notranslate"><span class="pre">get_sample()</span></code> methods that
 override <a class="reference internal" href="#blackboxopt.sampling.Sampler.get_sample" title="blackboxopt.sampling.Sampler.get_sample"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Sampler.get_sample()</span></code></a>.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="blackboxopt.sampling.SamplingStrategy.DDS">
-<span class="sig-name descname"><span class="pre">DDS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#blackboxopt.sampling.SamplingStrategy.DDS" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">DDS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#blackboxopt.sampling.SamplingStrategy.DDS" title="Permalink to this definition"></a></dt>
 <dd><p>DDS sampling. Used in the DYCORS algorithm</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="blackboxopt.sampling.SamplingStrategy.DDS_UNIFORM">
-<span class="sig-name descname"><span class="pre">DDS_UNIFORM</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#blackboxopt.sampling.SamplingStrategy.DDS_UNIFORM" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">DDS_UNIFORM</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#blackboxopt.sampling.SamplingStrategy.DDS_UNIFORM" title="Permalink to this definition"></a></dt>
 <dd><p>Sample half via DDS, then half via uniform distribution</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="blackboxopt.sampling.SamplingStrategy.MITCHEL91">
-<span class="sig-name descname"><span class="pre">MITCHEL91</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">6</span></em><a class="headerlink" href="#blackboxopt.sampling.SamplingStrategy.MITCHEL91" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">MITCHEL91</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">6</span></em><a class="headerlink" href="#blackboxopt.sampling.SamplingStrategy.MITCHEL91" title="Permalink to this definition"></a></dt>
 <dd><p>Cover empty regions in the search space</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="blackboxopt.sampling.SamplingStrategy.NORMAL">
-<span class="sig-name descname"><span class="pre">NORMAL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#blackboxopt.sampling.SamplingStrategy.NORMAL" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">NORMAL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#blackboxopt.sampling.SamplingStrategy.NORMAL" title="Permalink to this definition"></a></dt>
 <dd><p>Normal distribution</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="blackboxopt.sampling.SamplingStrategy.SLHD">
-<span class="sig-name descname"><span class="pre">SLHD</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></em><a class="headerlink" href="#blackboxopt.sampling.SamplingStrategy.SLHD" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">SLHD</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></em><a class="headerlink" href="#blackboxopt.sampling.SamplingStrategy.SLHD" title="Permalink to this definition"></a></dt>
 <dd><p>Symmetric Latin Hypercube Design</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="blackboxopt.sampling.SamplingStrategy.UNIFORM">
-<span class="sig-name descname"><span class="pre">UNIFORM</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#blackboxopt.sampling.SamplingStrategy.UNIFORM" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">UNIFORM</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#blackboxopt.sampling.SamplingStrategy.UNIFORM" title="Permalink to this definition"></a></dt>
 <dd><p>Uniform distribution</p>
 </dd></dl>
 

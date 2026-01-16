@@ -1,21 +1,21 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="../">
+<html class="writer-html5" lang="en">
 <head>
-  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>soogo.integrations package &mdash; soogo (Surrogate-based 0-th Order Global Optimization)  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css" />
 
   
-      <script src="../_static/jquery.js?v=5d32c60e"></script>
-      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
-      <script src="../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/jquery.js"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+      <script src="../_static/doctools.js"></script>
+      <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -62,7 +62,6 @@
 <li class="toctree-l2"><a class="reference internal" href="soogo.html#module-soogo.utils">soogo.utils module</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="tests.html">Tests documentation</a></li>
 </ul>
 
         </div>
@@ -91,27 +90,27 @@
            <div itemprop="articleBody">
              
   <section id="soogo-integrations-package">
-<h1>soogo.integrations package<a class="headerlink" href="#soogo-integrations-package" title="Link to this heading"></a></h1>
+<h1>soogo.integrations package<a class="headerlink" href="#soogo-integrations-package" title="Permalink to this heading"></a></h1>
 <section id="module-soogo.integrations.nomad">
-<span id="soogo-integrations-nomad-module"></span><h2>soogo.integrations.nomad module<a class="headerlink" href="#module-soogo.integrations.nomad" title="Link to this heading"></a></h2>
+<span id="soogo-integrations-nomad-module"></span><h2>soogo.integrations.nomad module<a class="headerlink" href="#module-soogo.integrations.nomad" title="Permalink to this heading"></a></h2>
 <p>Problem definitions for interfacing with PyNomad.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="soogo.integrations.nomad.NomadProblem">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">soogo.integrations.nomad.</span></span><span class="sig-name descname"><span class="pre">NomadProblem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="soogo.optimize.html#soogo.optimize.result.OptimizeResult" title="soogo.optimize.result.OptimizeResult"><span class="pre">OptimizeResult</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.integrations.nomad.NomadProblem" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">soogo.integrations.nomad.</span></span><span class="sig-name descname"><span class="pre">NomadProblem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">collections.abc.Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="soogo.optimize.html#soogo.optimize.result.OptimizeResult" title="soogo.optimize.result.OptimizeResult"><span class="pre">soogo.optimize.result.OptimizeResult</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.integrations.nomad.NomadProblem" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Function wrapper that handles the input and output for optimization with
 NOMAD via the PyNomad library.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>func</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Callable</span></code></span>) – The objective function to evaluate</p></li>
-<li><p><strong>out</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="soogo.optimize.html#soogo.optimize.result.OptimizeResult" title="soogo.optimize.result.OptimizeResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">OptimizeResult</span></code></a></span>) – OptimizeResult object to store results</p></li>
+<li><p><strong>func</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Callable</span></code>) – The objective function to evaluate</p></li>
+<li><p><strong>out</strong> (<a class="reference internal" href="soogo.optimize.html#soogo.optimize.result.OptimizeResult" title="soogo.optimize.result.OptimizeResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">OptimizeResult</span></code></a>) – OptimizeResult object to store results</p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.integrations.nomad.NomadProblem.__call__">
-<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.integrations.nomad.NomadProblem.__call__" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.integrations.nomad.NomadProblem.__call__" title="Permalink to this definition"></a></dt>
 <dd><p>Wrapper for the objective function to be used with NOMAD.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -125,19 +124,19 @@ NOMAD via the PyNomad library.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.integrations.nomad.NomadProblem.get_f_history">
-<span class="sig-name descname"><span class="pre">get_f_history</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#soogo.integrations.nomad.NomadProblem.get_f_history" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_f_history</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#soogo.integrations.nomad.NomadProblem.get_f_history" title="Permalink to this definition"></a></dt>
 <dd><p>Get the history of function values.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.integrations.nomad.NomadProblem.get_x_history">
-<span class="sig-name descname"><span class="pre">get_x_history</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#soogo.integrations.nomad.NomadProblem.get_x_history" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_x_history</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#soogo.integrations.nomad.NomadProblem.get_x_history" title="Permalink to this definition"></a></dt>
 <dd><p>Get the history of input points.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.integrations.nomad.NomadProblem.reset">
-<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#soogo.integrations.nomad.NomadProblem.reset" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#soogo.integrations.nomad.NomadProblem.reset" title="Permalink to this definition"></a></dt>
 <dd><p>Reset the optimization history.</p>
 </dd></dl>
 
@@ -145,11 +144,11 @@ NOMAD via the PyNomad library.</p>
 
 </section>
 <section id="module-soogo.integrations.pymoo">
-<span id="soogo-integrations-pymoo-module"></span><h2>soogo.integrations.pymoo module<a class="headerlink" href="#module-soogo.integrations.pymoo" title="Link to this heading"></a></h2>
+<span id="soogo-integrations-pymoo-module"></span><h2>soogo.integrations.pymoo module<a class="headerlink" href="#module-soogo.integrations.pymoo" title="Permalink to this heading"></a></h2>
 <p>Problem definitions for interfacing with pymoo.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="soogo.integrations.pymoo.ListDuplicateElimination">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">soogo.integrations.pymoo.</span></span><span class="sig-name descname"><span class="pre">ListDuplicateElimination</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#soogo.integrations.pymoo.ListDuplicateElimination" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">soogo.integrations.pymoo.</span></span><span class="sig-name descname"><span class="pre">ListDuplicateElimination</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#soogo.integrations.pymoo.ListDuplicateElimination" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">DefaultDuplicateElimination</span></code></p>
 <p>Specialization of DefaultDuplicateElimination for better performance
 in the problems we have.</p>
@@ -158,7 +157,7 @@ always go from 0 to n-1, so we can rely on that information to using
 ElementwiseDuplicateElimination.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="soogo.integrations.pymoo.ListDuplicateElimination.calc_dist">
-<span class="sig-name descname"><span class="pre">calc_dist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.integrations.pymoo.ListDuplicateElimination.calc_dist" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">calc_dist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.integrations.pymoo.ListDuplicateElimination.calc_dist" title="Permalink to this definition"></a></dt>
 <dd><p>Compute the distances between the members of two populations.</p>
 <p>If <cite>other</cite> is None, compute the distance between <cite>pop</cite> with itself.</p>
 <p>This implementation uses the built-in Python <code class="xref py py-func docutils literal notranslate"><span class="pre">sorted()</span></code>
@@ -181,7 +180,7 @@ using the runtime <code class="xref py py-attr docutils literal notranslate"><sp
 
 <dl class="py class">
 <dt class="sig sig-object py" id="soogo.integrations.pymoo.PymooProblem">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">soogo.integrations.pymoo.</span></span><span class="sig-name descname"><span class="pre">PymooProblem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">objfunc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_obj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gfunc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_ieq_constr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.integrations.pymoo.PymooProblem" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">soogo.integrations.pymoo.</span></span><span class="sig-name descname"><span class="pre">PymooProblem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">objfunc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_obj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gfunc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_ieq_constr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#soogo.integrations.pymoo.PymooProblem" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Problem</span></code></p>
 <p>Mixed-integer problem with constraints for pymoo.</p>
 <dl class="field-list simple">
@@ -191,28 +190,28 @@ using the runtime <code class="xref py py-attr docutils literal notranslate"><sp
 <li><p><strong>bounds</strong> – List with the limits [x_min,x_max] of each direction x in
 the search space.</p></li>
 <li><p><strong>iindex</strong> – Indices of the input space that are integer. Default is (). (default: <code class="docutils literal notranslate"><span class="pre">()</span></code>)</p></li>
-<li><p><strong>n_obj</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Number of objective functions. Default is 1. (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
-<li><p><strong>gfunc</strong> – Constraint function. Stored in <a class="reference internal" href="#soogo.integrations.pymoo.PymooProblem.gfunc" title="soogo.integrations.pymoo.PymooProblem.gfunc"><code class="xref py py-attr docutils literal notranslate"><span class="pre">gfunc</span></code></a>. If None, no
-constraints are defined. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
-<li><p><strong>n_ieq_constr</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Number of inequality constraints. Default is 0. (default: <code class="docutils literal notranslate"><span class="pre">0</span></code>)</p></li>
+<li><p><strong>n_obj</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Number of objective functions. Default is 1. (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
+<li><p><strong>gfunc</strong> – Constraint function. Stored in <a class="reference internal" href="#soogo.integrations.pymoo.PymooProblem.gfunc" title="soogo.integrations.pymoo.PymooProblem.gfunc"><code class="xref py py-attr docutils literal notranslate"><span class="pre">gfunc</span></code></a>. If None, no (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+constraints are defined.</p></li>
+<li><p><strong>n_ieq_constr</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Number of inequality constraints. Default is 0. (default: <code class="docutils literal notranslate"><span class="pre">0</span></code>)</p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="soogo.integrations.pymoo.PymooProblem.objfunc">
-<span class="sig-name descname"><span class="pre">objfunc</span></span><a class="headerlink" href="#soogo.integrations.pymoo.PymooProblem.objfunc" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">objfunc</span></span><a class="headerlink" href="#soogo.integrations.pymoo.PymooProblem.objfunc" title="Permalink to this definition"></a></dt>
 <dd><p>Objective function.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="soogo.integrations.pymoo.PymooProblem.gfunc">
-<span class="sig-name descname"><span class="pre">gfunc</span></span><a class="headerlink" href="#soogo.integrations.pymoo.PymooProblem.gfunc" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">gfunc</span></span><a class="headerlink" href="#soogo.integrations.pymoo.PymooProblem.gfunc" title="Permalink to this definition"></a></dt>
 <dd><p>Constraint function.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="soogo.integrations.pymoo.PymooProblem.is_mixed_integer">
-<span class="sig-name descname"><span class="pre">is_mixed_integer</span></span><a class="headerlink" href="#soogo.integrations.pymoo.PymooProblem.is_mixed_integer" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">is_mixed_integer</span></span><a class="headerlink" href="#soogo.integrations.pymoo.PymooProblem.is_mixed_integer" title="Permalink to this definition"></a></dt>
 <dd><p>Indicates whether the problem is a mixed-integer problem.</p>
 </dd></dl>
 

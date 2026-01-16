@@ -1,20 +1,20 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="./">
+<html class="writer-html5" lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Index &mdash; soogo (Surrogate-based 0-th Order Global Optimization)  documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css" />
 
   
-      <script src="_static/jquery.js?v=5d32c60e"></script>
-      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=5929fcd5"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/jquery.js"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+      <script src="_static/doctools.js"></script>
+      <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="#" />
     <link rel="search" title="Search" href="search.html" /> 
@@ -43,7 +43,6 @@
 <li class="toctree-l1"><a class="reference internal" href="README.html">soogo</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing guidelines</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/soogo.html">API Documentation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api/tests.html">Tests documentation</a></li>
 </ul>
 
         </div>
@@ -158,9 +157,11 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/soogo.optimize.html#soogo.optimize.bayesian_optimization.bayesian_optimization">bayesian_optimization() (in module soogo.optimize.bayesian_optimization)</a>
 </li>
+      <li><a href="api/soogo.acquisition.html#soogo.acquisition.coordinate_perturbation.CoordinatePerturbation.best_known_x">best_known_x (soogo.acquisition.coordinate_perturbation.CoordinatePerturbation attribute)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/tests.html#tests.gosac_benchmark.Problem.bounds">bounds (tests.gosac_benchmark.Problem attribute)</a>
+      <li><a href="api/soogo.acquisition.html#soogo.acquisition.coordinate_perturbation.BoundedParameter">BoundedParameter (class in soogo.acquisition.coordinate_perturbation)</a>
 </li>
       <li><a href="api/soogo.acquisition.html#soogo.acquisition.target_value_acquisition.TargetValueAcquisition.bumpiness_measure">bumpiness_measure() (soogo.acquisition.target_value_acquisition.TargetValueAcquisition static method)</a>
 </li>
@@ -180,6 +181,8 @@
         <li><a href="api/soogo.model.html#soogo.model.rbf.RbfModel.check_initial_design">(soogo.model.rbf.RbfModel method)</a>
 </li>
       </ul></li>
+      <li><a href="api/soogo.acquisition.html#soogo.acquisition.coordinate_perturbation.CoordinatePerturbation">CoordinatePerturbation (class in soogo.acquisition.coordinate_perturbation)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/soogo.acquisition.html#soogo.acquisition.coordinate_perturbation_over_nondominated.CoordinatePerturbationOverNondominated">CoordinatePerturbationOverNondominated (class in soogo.acquisition.coordinate_perturbation_over_nondominated)</a>
@@ -187,6 +190,8 @@
       <li><a href="api/soogo.optimize.html#soogo.optimize.cptv.cptv">cptv() (in module soogo.optimize.cptv)</a>
 </li>
       <li><a href="api/soogo.optimize.html#soogo.optimize.cptv.cptvl">cptvl() (in module soogo.optimize.cptv)</a>
+</li>
+      <li><a href="api/soogo.model.html#soogo.model.utils.create_initial_design">create_initial_design() (in module soogo.model.utils)</a>
 </li>
       <li><a href="api/soogo.model.html#soogo.model.rbf_kernel.CubicRadialBasisFunction">CubicRadialBasisFunction (class in soogo.model.rbf_kernel)</a>
 </li>
@@ -198,15 +203,23 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/soogo.html#soogo.sampling.SamplingStrategy.DDS">DDS (soogo.sampling.SamplingStrategy attribute)</a>
+      <li><a href="api/soogo.html#soogo.sampling.dds_sample">dds_sample() (in module soogo.sampling)</a>
 </li>
-      <li><a href="api/soogo.html#soogo.sampling.SamplingStrategy.DDS_UNIFORM">DDS_UNIFORM (soogo.sampling.SamplingStrategy attribute)</a>
+      <li><a href="api/soogo.html#soogo.sampling.dds_uniform_sample">dds_uniform_sample() (in module soogo.sampling)</a>
+</li>
+      <li><a href="api/soogo.acquisition.html#soogo.acquisition.coordinate_perturbation.BoundedParameter.decrease">decrease() (soogo.acquisition.coordinate_perturbation.BoundedParameter method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/soogo.model.html#soogo.model.base.Surrogate.dim">dim (soogo.model.base.Surrogate property)</a>
+
+      <ul>
+        <li><a href="api/soogo.html#soogo.sampling.SpaceFillingSampler.dim">(soogo.sampling.SpaceFillingSampler attribute)</a>
 </li>
+      </ul></li>
       <li><a href="api/soogo.optimize.html#soogo.optimize.dycors.dycors">dycors() (in module soogo.optimize.dycors)</a>
+</li>
+      <li><a href="api/soogo.acquisition.html#soogo.acquisition.coordinate_perturbation.CoordinatePerturbation.dynamic_perturbation_probability">dynamic_perturbation_probability (soogo.acquisition.coordinate_perturbation.CoordinatePerturbation attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -236,15 +249,13 @@
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/soogo.acquisition.html#soogo.acquisition.coordinate_perturbation.CoordinatePerturbation.failure_count">failure_count (soogo.acquisition.coordinate_perturbation.CoordinatePerturbation attribute)</a>
+</li>
       <li><a href="api/soogo.acquisition.html#soogo.acquisition.utils.FarEnoughSampleFilter">FarEnoughSampleFilter (class in soogo.acquisition.utils)</a>
 </li>
       <li><a href="api/soogo.model.html#soogo.model.rbf.RbfModel.filter">filter (soogo.model.rbf.RbfModel attribute)</a>
 </li>
       <li><a href="api/soogo.html#soogo.utils.find_pareto_front">find_pareto_front() (in module soogo.utils)</a>
-</li>
-      <li><a href="api/tests.html#tests.gosac_benchmark.Problem.fmin">fmin (tests.gosac_benchmark.Problem attribute)</a>
-</li>
-      <li><a href="api/tests.html#tests.gosac_benchmark.fRana">fRana() (in module tests.gosac_benchmark)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -253,8 +264,6 @@
       <li><a href="api/soogo.optimize.html#soogo.optimize.fsapso.fsapso">fsapso() (in module soogo.optimize.fsapso)</a>
 </li>
       <li><a href="api/soogo.acquisition.html#soogo.acquisition.gosac_sample.GosacSample.fun">fun (soogo.acquisition.gosac_sample.GosacSample attribute)</a>
-</li>
-      <li><a href="api/tests.html#tests.gosac_benchmark.fWeierstrass">fWeierstrass() (in module tests.gosac_benchmark)</a>
 </li>
       <li><a href="api/soogo.optimize.html#soogo.optimize.result.OptimizeResult.fx">fx (soogo.optimize.result.OptimizeResult attribute)</a>
 </li>
@@ -266,38 +275,18 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/soogo.model.html#soogo.model.gp.GaussianProcess">GaussianProcess (class in soogo.model.gp)</a>
 </li>
-      <li><a href="api/soogo.acquisition.html#soogo.acquisition.transition_search.TransitionSearch.generate_candidates">generate_candidates() (soogo.acquisition.transition_search.TransitionSearch method)</a>
+      <li><a href="api/soogo.html#soogo.sampling.SpaceFillingSampler.generate">generate() (soogo.sampling.SpaceFillingSampler method)</a>
 </li>
-      <li><a href="api/soogo.html#soogo.sampling.NormalSampler.get_dds_sample">get_dds_sample() (soogo.sampling.NormalSampler method)</a>
+      <li><a href="api/soogo.acquisition.html#soogo.acquisition.coordinate_perturbation.CoordinatePerturbation.generate_candidates">generate_candidates() (soogo.acquisition.coordinate_perturbation.CoordinatePerturbation method)</a>
 </li>
       <li><a href="api/soogo.integrations.html#soogo.integrations.nomad.NomadProblem.get_f_history">get_f_history() (soogo.integrations.nomad.NomadProblem method)</a>
 </li>
-      <li><a href="api/soogo.html#soogo.sampling.Mitchel91Sampler.get_mitchel91_sample">get_mitchel91_sample() (soogo.sampling.Mitchel91Sampler method)</a>
-</li>
-      <li><a href="api/soogo.html#soogo.sampling.NormalSampler.get_normal_sample">get_normal_sample() (soogo.sampling.NormalSampler method)</a>
-</li>
-      <li><a href="api/soogo.optimize.html#soogo.optimize.shebo.NormalAndUniformSampler.get_sample">get_sample() (soogo.optimize.shebo.NormalAndUniformSampler method)</a>
-
-      <ul>
-        <li><a href="api/soogo.html#soogo.sampling.Mitchel91Sampler.get_sample">(soogo.sampling.Mitchel91Sampler method)</a>
-</li>
-        <li><a href="api/soogo.html#soogo.sampling.NormalSampler.get_sample">(soogo.sampling.NormalSampler method)</a>
-</li>
-        <li><a href="api/soogo.html#soogo.sampling.Sampler.get_sample">(soogo.sampling.Sampler method)</a>
-</li>
-      </ul></li>
-      <li><a href="api/soogo.html#soogo.sampling.Sampler.get_slhd_sample">get_slhd_sample() (soogo.sampling.Sampler method)</a>
-</li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/soogo.html#soogo.sampling.Sampler.get_uniform_sample">get_uniform_sample() (soogo.sampling.Sampler method)</a>
-</li>
       <li><a href="api/soogo.integrations.html#soogo.integrations.nomad.NomadProblem.get_x_history">get_x_history() (soogo.integrations.nomad.NomadProblem method)</a>
-</li>
-      <li><a href="api/tests.html#tests.gosac_benchmark.Problem.gfun">gfun (tests.gosac_benchmark.Problem attribute)</a>
 </li>
       <li><a href="api/soogo.integrations.html#soogo.integrations.pymoo.PymooProblem.gfunc">gfunc (soogo.integrations.pymoo.PymooProblem attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/soogo.optimize.html#soogo.optimize.gosac.gosac">gosac() (in module soogo.optimize.gosac)</a>
 </li>
       <li><a href="api/soogo.acquisition.html#soogo.acquisition.gosac_sample.GosacSample">GosacSample (class in soogo.acquisition.gosac_sample)</a>
@@ -341,9 +330,9 @@
 </li>
         <li><a href="api/soogo.model.html#soogo.model.rbf.RbfModel.iindex">(soogo.model.rbf.RbfModel property)</a>
 </li>
-        <li><a href="api/tests.html#tests.gosac_benchmark.Problem.iindex">(tests.gosac_benchmark.Problem attribute)</a>
-</li>
       </ul></li>
+      <li><a href="api/soogo.acquisition.html#soogo.acquisition.coordinate_perturbation.BoundedParameter.increase">increase() (soogo.acquisition.coordinate_perturbation.BoundedParameter method)</a>
+</li>
       <li><a href="api/soogo.acquisition.html#soogo.acquisition.utils.FarEnoughSampleFilter.indices">indices() (soogo.acquisition.utils.FarEnoughSampleFilter method)</a>
 </li>
       <li><a href="api/soogo.optimize.html#soogo.optimize.result.OptimizeResult.init">init() (soogo.optimize.result.OptimizeResult method)</a>
@@ -390,6 +379,8 @@
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/soogo.html#soogo.sampling.SymmetricLatinHypercube.lhs_method">lhs_method (soogo.sampling.SymmetricLatinHypercube attribute)</a>
+</li>
       <li><a href="api/soogo.model.html#soogo.model.rbf_kernel.LinearRadialBasisFunction">LinearRadialBasisFunction (class in soogo.model.rbf_kernel)</a>
 </li>
   </ul></td>
@@ -404,9 +395,9 @@
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/soogo.html#soogo.sampling.Mitchel91Sampler.maxCand">maxCand (soogo.sampling.Mitchel91Sampler attribute)</a>
+      <li><a href="api/soogo.acquisition.html#soogo.acquisition.coordinate_perturbation.BoundedParameter.max">max (soogo.acquisition.coordinate_perturbation.BoundedParameter attribute)</a>
 </li>
-      <li><a href="api/soogo.acquisition.html#soogo.acquisition.weighted_acquisition.WeightedAcquisition.maxeval">maxeval (soogo.acquisition.weighted_acquisition.WeightedAcquisition attribute)</a>
+      <li><a href="api/soogo.html#soogo.sampling.SpaceFillingSampler.max_cand">max_cand (soogo.sampling.SpaceFillingSampler attribute)</a>
 </li>
       <li><a href="api/soogo.acquisition.html#soogo.acquisition.maximize_distance.MaximizeDistance">MaximizeDistance (class in soogo.acquisition.maximize_distance)</a>
 </li>
@@ -415,6 +406,8 @@
       <li><a href="api/soogo.model.html#soogo.model.rbf.MedianLpfFilter">MedianLpfFilter (class in soogo.model.rbf)</a>
 </li>
       <li><a href="api/soogo.acquisition.html#soogo.acquisition.base.Acquisition.mi_optimizer">mi_optimizer (soogo.acquisition.base.Acquisition attribute)</a>
+</li>
+      <li><a href="api/soogo.acquisition.html#soogo.acquisition.coordinate_perturbation.BoundedParameter.min">min (soogo.acquisition.coordinate_perturbation.BoundedParameter attribute)</a>
 </li>
       <li><a href="api/soogo.model.html#soogo.model.base.Surrogate.min_design_space_size">min_design_space_size() (soogo.model.base.Surrogate method)</a>
 
@@ -428,10 +421,6 @@
 </li>
       <li><a href="api/soogo.acquisition.html#soogo.acquisition.minimize_surrogate.MinimizeSurrogate">MinimizeSurrogate (class in soogo.acquisition.minimize_surrogate)</a>
 </li>
-      <li><a href="api/soogo.html#soogo.sampling.SamplingStrategy.MITCHEL91">MITCHEL91 (soogo.sampling.SamplingStrategy attribute)</a>
-</li>
-      <li><a href="api/soogo.html#soogo.sampling.Mitchel91Sampler">Mitchel91Sampler (class in soogo.sampling)</a>
-</li>
       <li><a href="api/soogo.model.html#soogo.model.gp.GaussianProcess.model">model (soogo.model.gp.GaussianProcess attribute)</a>
 </li>
       <li>
@@ -441,6 +430,8 @@
         <li><a href="api/soogo.acquisition.html#module-soogo.acquisition.alternated_acquisition">soogo.acquisition.alternated_acquisition</a>
 </li>
         <li><a href="api/soogo.acquisition.html#module-soogo.acquisition.base">soogo.acquisition.base</a>
+</li>
+        <li><a href="api/soogo.acquisition.html#module-soogo.acquisition.coordinate_perturbation">soogo.acquisition.coordinate_perturbation</a>
 </li>
         <li><a href="api/soogo.acquisition.html#module-soogo.acquisition.coordinate_perturbation_over_nondominated">soogo.acquisition.coordinate_perturbation_over_nondominated</a>
 </li>
@@ -462,8 +453,6 @@
 </li>
         <li><a href="api/soogo.acquisition.html#module-soogo.acquisition.target_value_acquisition">soogo.acquisition.target_value_acquisition</a>
 </li>
-        <li><a href="api/soogo.acquisition.html#module-soogo.acquisition.transition_search">soogo.acquisition.transition_search</a>
-</li>
         <li><a href="api/soogo.acquisition.html#module-soogo.acquisition.utils">soogo.acquisition.utils</a>
 </li>
         <li><a href="api/soogo.acquisition.html#module-soogo.acquisition.weighted_acquisition">soogo.acquisition.weighted_acquisition</a>
@@ -479,6 +468,8 @@
         <li><a href="api/soogo.model.html#module-soogo.model.rbf">soogo.model.rbf</a>
 </li>
         <li><a href="api/soogo.model.html#module-soogo.model.rbf_kernel">soogo.model.rbf_kernel</a>
+</li>
+        <li><a href="api/soogo.model.html#module-soogo.model.utils">soogo.model.utils</a>
 </li>
         <li><a href="api/soogo.optimize.html#module-soogo.optimize.bayesian_optimization">soogo.optimize.bayesian_optimization</a>
 </li>
@@ -508,18 +499,6 @@
 </li>
         <li><a href="api/soogo.html#module-soogo.utils">soogo.utils</a>
 </li>
-        <li><a href="api/tests.html#module-tests.gosac_benchmark">tests.gosac_benchmark</a>
-</li>
-        <li><a href="api/tests.html#module-tests.test_docs">tests.test_docs</a>
-</li>
-        <li><a href="api/tests.html#module-tests.test_examples">tests.test_examples</a>
-</li>
-        <li><a href="api/tests.html#module-tests.test_gosac_bench">tests.test_gosac_bench</a>
-</li>
-        <li><a href="api/tests.html#module-tests.test_optimize">tests.test_optimize</a>
-</li>
-        <li><a href="api/tests.html#module-tests.test_sampling">tests.test_sampling</a>
-</li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -535,25 +514,17 @@
 <h2 id="N">N</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/soogo.html#soogo.sampling.Sampler.n">n (soogo.sampling.Sampler attribute)</a>
-</li>
-      <li><a href="api/soogo.acquisition.html#soogo.acquisition.weighted_acquisition.WeightedAcquisition.neval">neval (soogo.acquisition.weighted_acquisition.WeightedAcquisition attribute)</a>
+      <li><a href="api/soogo.acquisition.html#soogo.acquisition.coordinate_perturbation.CoordinatePerturbation.n_continuous_search">n_continuous_search (soogo.acquisition.coordinate_perturbation.CoordinatePerturbation attribute)</a>
 </li>
       <li><a href="api/soogo.optimize.html#soogo.optimize.result.OptimizeResult.nfev">nfev (soogo.optimize.result.OptimizeResult attribute)</a>
 </li>
       <li><a href="api/soogo.optimize.html#soogo.optimize.result.OptimizeResult.nit">nit (soogo.optimize.result.OptimizeResult attribute)</a>
 </li>
-      <li><a href="api/soogo.optimize.html#soogo.optimize.result.OptimizeResult.nobj">nobj (soogo.optimize.result.OptimizeResult attribute)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/soogo.optimize.html#soogo.optimize.result.OptimizeResult.nobj">nobj (soogo.optimize.result.OptimizeResult attribute)</a>
+</li>
       <li><a href="api/soogo.integrations.html#soogo.integrations.nomad.NomadProblem">NomadProblem (class in soogo.integrations.nomad)</a>
-</li>
-      <li><a href="api/soogo.html#soogo.sampling.SamplingStrategy.NORMAL">NORMAL (soogo.sampling.SamplingStrategy attribute)</a>
-</li>
-      <li><a href="api/soogo.optimize.html#soogo.optimize.shebo.NormalAndUniformSampler">NormalAndUniformSampler (class in soogo.optimize.shebo)</a>
-</li>
-      <li><a href="api/soogo.html#soogo.sampling.NormalSampler">NormalSampler (class in soogo.sampling)</a>
 </li>
       <li><a href="api/soogo.model.html#soogo.model.base.Surrogate.ntarget">ntarget (soogo.model.base.Surrogate property)</a>
 </li>
@@ -565,8 +536,6 @@
 <h2 id="O">O</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/tests.html#tests.gosac_benchmark.Problem.objf">objf (tests.gosac_benchmark.Problem attribute)</a>
-</li>
       <li><a href="api/soogo.integrations.html#soogo.integrations.pymoo.PymooProblem.objfunc">objfunc (soogo.integrations.pymoo.PymooProblem attribute)</a>
 </li>
       <li><a href="api/soogo.acquisition.html#soogo.acquisition.pareto_front.ParetoFront.oldTV">oldTV (soogo.acquisition.pareto_front.ParetoFront attribute)</a>
@@ -575,6 +544,8 @@
 
       <ul>
         <li><a href="api/soogo.acquisition.html#soogo.acquisition.base.Acquisition.optimize">(soogo.acquisition.base.Acquisition method)</a>
+</li>
+        <li><a href="api/soogo.acquisition.html#soogo.acquisition.coordinate_perturbation.CoordinatePerturbation.optimize">(soogo.acquisition.coordinate_perturbation.CoordinatePerturbation method)</a>
 </li>
         <li><a href="api/soogo.acquisition.html#soogo.acquisition.coordinate_perturbation_over_nondominated.CoordinatePerturbationOverNondominated.optimize">(soogo.acquisition.coordinate_perturbation_over_nondominated.CoordinatePerturbationOverNondominated method)</a>
 </li>
@@ -596,8 +567,6 @@
 </li>
         <li><a href="api/soogo.acquisition.html#soogo.acquisition.target_value_acquisition.TargetValueAcquisition.optimize">(soogo.acquisition.target_value_acquisition.TargetValueAcquisition method)</a>
 </li>
-        <li><a href="api/soogo.acquisition.html#soogo.acquisition.transition_search.TransitionSearch.optimize">(soogo.acquisition.transition_search.TransitionSearch method)</a>
-</li>
         <li><a href="api/soogo.acquisition.html#soogo.acquisition.weighted_acquisition.WeightedAcquisition.optimize">(soogo.acquisition.weighted_acquisition.WeightedAcquisition method)</a>
 </li>
       </ul></li>
@@ -617,6 +586,8 @@
 </li>
       <li><a href="api/soogo.acquisition.html#soogo.acquisition.pareto_front.ParetoFront">ParetoFront (class in soogo.acquisition.pareto_front)</a>
 </li>
+      <li><a href="api/soogo.acquisition.html#soogo.acquisition.coordinate_perturbation.CoordinatePerturbation.perturbation_probability">perturbation_probability (soogo.acquisition.coordinate_perturbation.CoordinatePerturbation attribute)</a>
+</li>
       <li><a href="api/soogo.model.html#soogo.model.rbf.RbfModel.polynomial_tail">polynomial_tail() (soogo.model.rbf.RbfModel method)</a>
 </li>
       <li><a href="api/soogo.model.html#soogo.model.rbf_kernel.CubicRadialBasisFunction.polynomial_tail_order">polynomial_tail_order() (soogo.model.rbf_kernel.CubicRadialBasisFunction static method)</a>
@@ -633,9 +604,15 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/soogo.model.html#soogo.model.rbf.RbfModel.polynomial_tail_size">polynomial_tail_size() (soogo.model.rbf.RbfModel method)</a>
 </li>
-      <li><a href="api/soogo.model.html#soogo.model.rbf.RbfModel.prepare_mu_measure">prepare_mu_measure() (soogo.model.rbf.RbfModel method)</a>
+      <li><a href="api/soogo.acquisition.html#soogo.acquisition.maximize_ei.MaximizeEI.pool_size">pool_size (soogo.acquisition.maximize_ei.MaximizeEI attribute)</a>
+
+      <ul>
+        <li><a href="api/soogo.acquisition.html#soogo.acquisition.minimize_surrogate.MinimizeSurrogate.pool_size">(soogo.acquisition.minimize_surrogate.MinimizeSurrogate attribute)</a>
 </li>
-      <li><a href="api/tests.html#tests.gosac_benchmark.Problem">Problem (class in tests.gosac_benchmark)</a>
+        <li><a href="api/soogo.acquisition.html#soogo.acquisition.weighted_acquisition.WeightedAcquisition.pool_size">(soogo.acquisition.weighted_acquisition.WeightedAcquisition attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="api/soogo.model.html#soogo.model.rbf.RbfModel.prepare_mu_measure">prepare_mu_measure() (soogo.model.rbf.RbfModel method)</a>
 </li>
       <li><a href="api/soogo.integrations.html#soogo.integrations.pymoo.PymooProblem">PymooProblem (class in soogo.integrations.pymoo)</a>
 </li>
@@ -647,9 +624,13 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/soogo.model.html#soogo.model.rbf_kernel.RadialBasisFunction">RadialBasisFunction (class in soogo.model.rbf_kernel)</a>
 </li>
+      <li><a href="api/soogo.html#soogo.sampling.random_sample">random_sample() (in module soogo.sampling)</a>
+</li>
       <li><a href="api/soogo.model.html#soogo.model.rbf.RbfFilter">RbfFilter (class in soogo.model.rbf)</a>
 </li>
       <li><a href="api/soogo.model.html#soogo.model.rbf.RbfModel">RbfModel (class in soogo.model.rbf)</a>
+</li>
+      <li><a href="api/soogo.acquisition.html#soogo.acquisition.coordinate_perturbation.CoordinatePerturbation.remainingCountinuousSearch">remainingCountinuousSearch (soogo.acquisition.coordinate_perturbation.CoordinatePerturbation attribute)</a>
 </li>
       <li><a href="api/soogo.model.html#soogo.model.base.Surrogate.reserve">reserve() (soogo.model.base.Surrogate method)</a>
 
@@ -671,14 +652,36 @@
         <li><a href="api/soogo.html#soogo.termination.UnsuccessfulImprovement.reset">(soogo.termination.UnsuccessfulImprovement method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/soogo.model.html#soogo.model.base.Surrogate.reset_data">reset_data() (soogo.model.base.Surrogate method)</a>
 
       <ul>
         <li><a href="api/soogo.model.html#soogo.model.gp.GaussianProcess.reset_data">(soogo.model.gp.GaussianProcess method)</a>
 </li>
         <li><a href="api/soogo.model.html#soogo.model.rbf.RbfModel.reset_data">(soogo.model.rbf.RbfModel method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/soogo.acquisition.html#soogo.acquisition.coordinate_perturbation.CoordinatePerturbation.rng">rng (soogo.acquisition.coordinate_perturbation.CoordinatePerturbation attribute)</a>
+
+      <ul>
+        <li><a href="api/soogo.acquisition.html#soogo.acquisition.endpoints_pareto_front.EndPointsParetoFront.rng">(soogo.acquisition.endpoints_pareto_front.EndPointsParetoFront attribute)</a>
+</li>
+        <li><a href="api/soogo.acquisition.html#soogo.acquisition.gosac_sample.GosacSample.rng">(soogo.acquisition.gosac_sample.GosacSample attribute)</a>
+</li>
+        <li><a href="api/soogo.acquisition.html#soogo.acquisition.maximize_distance.MaximizeDistance.rng">(soogo.acquisition.maximize_distance.MaximizeDistance attribute)</a>
+</li>
+        <li><a href="api/soogo.acquisition.html#soogo.acquisition.maximize_ei.MaximizeEI.rng">(soogo.acquisition.maximize_ei.MaximizeEI attribute)</a>
+</li>
+        <li><a href="api/soogo.acquisition.html#soogo.acquisition.minimize_mo_surrogate.MinimizeMOSurrogate.rng">(soogo.acquisition.minimize_mo_surrogate.MinimizeMOSurrogate attribute)</a>
+</li>
+        <li><a href="api/soogo.acquisition.html#soogo.acquisition.minimize_surrogate.MinimizeSurrogate.rng">(soogo.acquisition.minimize_surrogate.MinimizeSurrogate attribute)</a>
+</li>
+        <li><a href="api/soogo.acquisition.html#soogo.acquisition.pareto_front.ParetoFront.rng">(soogo.acquisition.pareto_front.ParetoFront attribute)</a>
+</li>
+        <li><a href="api/soogo.acquisition.html#soogo.acquisition.target_value_acquisition.TargetValueAcquisition.rng">(soogo.acquisition.target_value_acquisition.TargetValueAcquisition attribute)</a>
+</li>
+        <li><a href="api/soogo.html#soogo.sampling.SpaceFillingSampler.rng">(soogo.sampling.SpaceFillingSampler attribute)</a>
 </li>
       </ul></li>
       <li><a href="api/soogo.html#soogo.termination.RobustCondition">RobustCondition (class in soogo.termination)</a>
@@ -693,33 +696,23 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/soogo.optimize.html#soogo.optimize.result.OptimizeResult.sample">sample (soogo.optimize.result.OptimizeResult attribute)</a>
 </li>
-      <li><a href="api/soogo.html#soogo.sampling.Sampler">Sampler (class in soogo.sampling)</a>
-</li>
-      <li><a href="api/soogo.acquisition.html#soogo.acquisition.maximize_ei.MaximizeEI.sampler">sampler (soogo.acquisition.maximize_ei.MaximizeEI attribute)</a>
+      <li><a href="api/soogo.acquisition.html#soogo.acquisition.coordinate_perturbation.CoordinatePerturbation.sampler">sampler (soogo.acquisition.coordinate_perturbation.CoordinatePerturbation attribute)</a>
 
       <ul>
-        <li><a href="api/soogo.acquisition.html#soogo.acquisition.minimize_surrogate.MinimizeSurrogate.sampler">(soogo.acquisition.minimize_surrogate.MinimizeSurrogate attribute)</a>
+        <li><a href="api/soogo.acquisition.html#soogo.acquisition.maximize_ei.MaximizeEI.sampler">(soogo.acquisition.maximize_ei.MaximizeEI attribute)</a>
 </li>
         <li><a href="api/soogo.acquisition.html#soogo.acquisition.weighted_acquisition.WeightedAcquisition.sampler">(soogo.acquisition.weighted_acquisition.WeightedAcquisition attribute)</a>
 </li>
       </ul></li>
-      <li><a href="api/soogo.html#soogo.sampling.SamplingStrategy">SamplingStrategy (class in soogo.sampling)</a>
-</li>
-      <li><a href="api/soogo.html#soogo.sampling.Mitchel91Sampler.scale">scale (soogo.sampling.Mitchel91Sampler attribute)</a>
+      <li><a href="api/soogo.html#soogo.sampling.SpaceFillingSampler.scale">scale (soogo.sampling.SpaceFillingSampler attribute)</a>
 </li>
       <li><a href="api/soogo.model.html#soogo.model.gp.GaussianProcess.scaler">scaler (soogo.model.gp.GaussianProcess attribute)</a>
 </li>
-      <li><a href="api/soogo.acquisition.html#soogo.acquisition.transition_search.TransitionSearch.select_candidates">select_candidates() (soogo.acquisition.transition_search.TransitionSearch method)</a>
-</li>
       <li><a href="api/soogo.acquisition.html#soogo.acquisition.utils.select_weighted_candidates">select_weighted_candidates() (in module soogo.acquisition.utils)</a>
-</li>
-      <li><a href="api/tests.html#tests.test_examples.TestExamples.setup_class">setup_class() (tests.test_examples.TestExamples class method)</a>
 </li>
       <li><a href="api/soogo.optimize.html#soogo.optimize.shebo.shebo">shebo() (in module soogo.optimize.shebo)</a>
 </li>
-      <li><a href="api/soogo.html#soogo.sampling.NormalSampler.sigma">sigma (soogo.sampling.NormalSampler attribute)</a>
-</li>
-      <li><a href="api/soogo.html#soogo.sampling.SamplingStrategy.SLHD">SLHD (soogo.sampling.SamplingStrategy attribute)</a>
+      <li><a href="api/soogo.acquisition.html#soogo.acquisition.coordinate_perturbation.CoordinatePerturbation.sigma">sigma (soogo.acquisition.coordinate_perturbation.CoordinatePerturbation attribute)</a>
 </li>
       <li><a href="api/soogo.optimize.html#soogo.optimize.socemo.socemo">socemo() (in module soogo.optimize.socemo)</a>
 </li>
@@ -735,6 +728,13 @@
 
       <ul>
         <li><a href="api/soogo.acquisition.html#module-soogo.acquisition.base">module</a>
+</li>
+      </ul></li>
+      <li>
+    soogo.acquisition.coordinate_perturbation
+
+      <ul>
+        <li><a href="api/soogo.acquisition.html#module-soogo.acquisition.coordinate_perturbation">module</a>
 </li>
       </ul></li>
       <li>
@@ -808,13 +808,6 @@
 </li>
       </ul></li>
       <li>
-    soogo.acquisition.transition_search
-
-      <ul>
-        <li><a href="api/soogo.acquisition.html#module-soogo.acquisition.transition_search">module</a>
-</li>
-      </ul></li>
-      <li>
     soogo.acquisition.utils
 
       <ul>
@@ -828,8 +821,6 @@
         <li><a href="api/soogo.acquisition.html#module-soogo.acquisition.weighted_acquisition">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     soogo.integrations.nomad
 
@@ -844,6 +835,8 @@
         <li><a href="api/soogo.integrations.html#module-soogo.integrations.pymoo">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     soogo.model.base
 
@@ -870,6 +863,13 @@
 
       <ul>
         <li><a href="api/soogo.model.html#module-soogo.model.rbf_kernel">module</a>
+</li>
+      </ul></li>
+      <li>
+    soogo.model.utils
+
+      <ul>
+        <li><a href="api/soogo.model.html#module-soogo.model.utils">module</a>
 </li>
       </ul></li>
       <li>
@@ -970,11 +970,19 @@
         <li><a href="api/soogo.html#module-soogo.utils">module</a>
 </li>
       </ul></li>
-      <li><a href="api/soogo.html#soogo.sampling.Sampler.strategy">strategy (soogo.sampling.Sampler attribute)</a>
+      <li><a href="api/soogo.html#soogo.sampling.SpaceFillingSampler">SpaceFillingSampler (class in soogo.sampling)</a>
+</li>
+      <li><a href="api/soogo.acquisition.html#soogo.acquisition.multiple_acquisition.MultipleAcquisition.strategy">strategy (soogo.acquisition.multiple_acquisition.MultipleAcquisition attribute)</a>
+</li>
+      <li><a href="api/soogo.acquisition.html#soogo.acquisition.coordinate_perturbation.CoordinatePerturbation.success_count">success_count (soogo.acquisition.coordinate_perturbation.CoordinatePerturbation attribute)</a>
+</li>
+      <li><a href="api/soogo.acquisition.html#soogo.acquisition.coordinate_perturbation.CoordinatePerturbation.success_period">success_period (soogo.acquisition.coordinate_perturbation.CoordinatePerturbation attribute)</a>
 </li>
       <li><a href="api/soogo.model.html#soogo.model.base.Surrogate">Surrogate (class in soogo.model.base)</a>
 </li>
       <li><a href="api/soogo.optimize.html#soogo.optimize.surrogate_optimization.surrogate_optimization">surrogate_optimization() (in module soogo.optimize.surrogate_optimization)</a>
+</li>
+      <li><a href="api/soogo.html#soogo.sampling.SymmetricLatinHypercube">SymmetricLatinHypercube (class in soogo.sampling)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -986,119 +994,23 @@
 </li>
       <li><a href="api/soogo.html#soogo.termination.TerminationCondition">TerminationCondition (class in soogo.termination)</a>
 </li>
-      <li><a href="api/tests.html#tests.test_optimize.test_batched_sampling">test_batched_sampling() (in module tests.test_optimize)</a>
-</li>
-      <li><a href="api/tests.html#tests.test_gosac_bench.test_benchmark">test_benchmark() (in module tests.test_gosac_bench)</a>
-</li>
-      <li><a href="api/tests.html#tests.test_optimize.test_callback">test_callback() (in module tests.test_optimize)</a>
-</li>
-      <li><a href="api/tests.html#tests.test_docs.TestSphinxDocumentation.test_documentation_structure_exists">test_documentation_structure_exists() (tests.test_docs.TestSphinxDocumentation method)</a>
-</li>
-      <li><a href="api/tests.html#tests.test_examples.TestExamples.test_examples_import_soogo">test_examples_import_soogo() (tests.test_examples.TestExamples method)</a>
-</li>
-      <li><a href="api/tests.html#tests.test_examples.TestExamples.test_gosac_notebook">test_gosac_notebook() (tests.test_examples.TestExamples method)</a>
-</li>
-      <li><a href="api/tests.html#tests.test_sampling.test_iindex_mitchel91_sampler">test_iindex_mitchel91_sampler() (in module tests.test_sampling)</a>
-</li>
-      <li><a href="api/tests.html#tests.test_sampling.test_iindex_sampler">test_iindex_sampler() (in module tests.test_sampling)</a>
-</li>
-      <li><a href="api/tests.html#tests.test_sampling.test_mitchel91_sampler">test_mitchel91_sampler() (in module tests.test_sampling)</a>
-</li>
-      <li><a href="api/tests.html#tests.test_docs.TestSphinxDocumentation.test_module_imports_in_docs">test_module_imports_in_docs() (tests.test_docs.TestSphinxDocumentation method)</a>
-</li>
-      <li><a href="api/tests.html#tests.test_optimize.test_multiple_calls">test_multiple_calls() (in module tests.test_optimize)</a>
-</li>
-      <li><a href="api/tests.html#tests.test_sampling.test_normal_sampler">test_normal_sampler() (in module tests.test_sampling)</a>
-</li>
-      <li><a href="api/tests.html#tests.test_examples.TestExamples.test_notebook_syntax">test_notebook_syntax() (tests.test_examples.TestExamples method)</a>
-</li>
-      <li><a href="api/tests.html#tests.test_examples.TestExamples.test_optimization_notebook">test_optimization_notebook() (tests.test_examples.TestExamples method)</a>
-</li>
-      <li><a href="api/tests.html#tests.test_examples.TestExamples.test_optimization_program_1">test_optimization_program_1() (tests.test_examples.TestExamples method)</a>
-</li>
-      <li><a href="api/tests.html#tests.test_examples.TestExamples.test_optimization_program_2">test_optimization_program_2() (tests.test_examples.TestExamples method)</a>
-</li>
-      <li><a href="api/tests.html#tests.test_sampling.test_sampler">test_sampler() (in module tests.test_sampling)</a>
-</li>
-      <li><a href="api/tests.html#tests.test_examples.TestExamples.test_sampling_notebook">test_sampling_notebook() (tests.test_examples.TestExamples method)</a>
-</li>
-      <li><a href="api/tests.html#tests.test_examples.TestExamples.test_script_syntax">test_script_syntax() (tests.test_examples.TestExamples method)</a>
-</li>
-      <li><a href="api/tests.html#tests.test_sampling.test_slhd">test_slhd() (in module tests.test_sampling)</a>
-</li>
-      <li><a href="api/tests.html#tests.test_examples.TestExamples.test_socemo_notebook">test_socemo_notebook() (tests.test_examples.TestExamples method)</a>
-</li>
-      <li><a href="api/tests.html#tests.test_docs.TestSphinxDocumentation.test_sphinx_build">test_sphinx_build() (tests.test_docs.TestSphinxDocumentation method)</a>
-</li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/tests.html#tests.test_docs.TestSphinxDocumentation.test_sphinx_doctree_build">test_sphinx_doctree_build() (tests.test_docs.TestSphinxDocumentation method)</a>
-</li>
-      <li><a href="api/tests.html#tests.test_docs.TestSphinxDocumentation.test_sphinx_no_warnings">test_sphinx_no_warnings() (tests.test_docs.TestSphinxDocumentation method)</a>
-</li>
-      <li><a href="api/tests.html#tests.test_docs.TestSphinxDocumentation.test_versions_template_renders_without_versions_context">test_versions_template_renders_without_versions_context() (tests.test_docs.TestSphinxDocumentation method)</a>
-</li>
-      <li><a href="api/tests.html#tests.test_examples.TestExamples">TestExamples (class in tests.test_examples)</a>
-</li>
-      <li>
-    tests.gosac_benchmark
-
-      <ul>
-        <li><a href="api/tests.html#module-tests.gosac_benchmark">module</a>
-</li>
-      </ul></li>
-      <li>
-    tests.test_docs
-
-      <ul>
-        <li><a href="api/tests.html#module-tests.test_docs">module</a>
-</li>
-      </ul></li>
-      <li>
-    tests.test_examples
-
-      <ul>
-        <li><a href="api/tests.html#module-tests.test_examples">module</a>
-</li>
-      </ul></li>
-      <li>
-    tests.test_gosac_bench
-
-      <ul>
-        <li><a href="api/tests.html#module-tests.test_gosac_bench">module</a>
-</li>
-      </ul></li>
-      <li>
-    tests.test_optimize
-
-      <ul>
-        <li><a href="api/tests.html#module-tests.test_optimize">module</a>
-</li>
-      </ul></li>
-      <li>
-    tests.test_sampling
-
-      <ul>
-        <li><a href="api/tests.html#module-tests.test_sampling">module</a>
-</li>
-      </ul></li>
-      <li><a href="api/tests.html#tests.test_docs.TestSphinxDocumentation">TestSphinxDocumentation (class in tests.test_docs)</a>
-</li>
       <li><a href="api/soogo.model.html#soogo.model.rbf_kernel.ThinPlateRadialBasisFunction">ThinPlateRadialBasisFunction (class in soogo.model.rbf_kernel)</a>
 </li>
       <li><a href="api/soogo.html#soogo.termination.UnsuccessfulImprovement.threshold">threshold (soogo.termination.UnsuccessfulImprovement attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/soogo.acquisition.html#soogo.acquisition.utils.FarEnoughSampleFilter.tol">tol (soogo.acquisition.utils.FarEnoughSampleFilter attribute)</a>
 </li>
       <li><a href="api/soogo.acquisition.html#soogo.acquisition.base.Acquisition.tol">tol() (soogo.acquisition.base.Acquisition method)</a>
 
       <ul>
-        <li><a href="api/soogo.acquisition.html#soogo.acquisition.weighted_acquisition.WeightedAcquisition.tol">(soogo.acquisition.weighted_acquisition.WeightedAcquisition method)</a>
+        <li><a href="api/soogo.acquisition.html#soogo.acquisition.coordinate_perturbation.CoordinatePerturbation.tol">(soogo.acquisition.coordinate_perturbation.CoordinatePerturbation method)</a>
 </li>
       </ul></li>
-      <li><a href="api/soogo.acquisition.html#soogo.acquisition.transition_search.TransitionSearch">TransitionSearch (class in soogo.acquisition.transition_search)</a>
-</li>
       <li><a href="api/soogo.acquisition.html#soogo.acquisition.utils.FarEnoughSampleFilter.tree">tree (soogo.acquisition.utils.FarEnoughSampleFilter attribute)</a>
+</li>
+      <li><a href="api/soogo.html#soogo.sampling.truncnorm_sample">truncnorm_sample() (in module soogo.sampling)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1108,7 +1020,7 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/soogo.optimize.html#soogo.optimize.utils.uncertainty_score">uncertainty_score() (in module soogo.optimize.utils)</a>
 </li>
-      <li><a href="api/soogo.html#soogo.sampling.SamplingStrategy.UNIFORM">UNIFORM (soogo.sampling.SamplingStrategy attribute)</a>
+      <li><a href="api/soogo.acquisition.html#soogo.acquisition.coordinate_perturbation.CoordinatePerturbation.unsuccessful_improvement">unsuccessful_improvement (soogo.acquisition.coordinate_perturbation.CoordinatePerturbation attribute)</a>
 </li>
       <li><a href="api/soogo.html#soogo.termination.UnsuccessfulImprovement">UnsuccessfulImprovement (class in soogo.termination)</a>
 </li>
@@ -1117,7 +1029,7 @@
       <ul>
         <li><a href="api/soogo.acquisition.html#soogo.acquisition.base.Acquisition.update">(soogo.acquisition.base.Acquisition method)</a>
 </li>
-        <li><a href="api/soogo.acquisition.html#soogo.acquisition.weighted_acquisition.WeightedAcquisition.update">(soogo.acquisition.weighted_acquisition.WeightedAcquisition method)</a>
+        <li><a href="api/soogo.acquisition.html#soogo.acquisition.coordinate_perturbation.CoordinatePerturbation.update">(soogo.acquisition.coordinate_perturbation.CoordinatePerturbation method)</a>
 </li>
         <li><a href="api/soogo.model.html#soogo.model.base.Surrogate.update">(soogo.model.base.Surrogate method)</a>
 </li>
@@ -1139,6 +1051,10 @@
 
 <h2 id="V">V</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/soogo.acquisition.html#soogo.acquisition.coordinate_perturbation.BoundedParameter.value">value (soogo.acquisition.coordinate_perturbation.BoundedParameter attribute)</a>
+</li>
+  </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/soogo.html#soogo.termination.UnsuccessfulImprovement.value_range">value_range (soogo.termination.UnsuccessfulImprovement attribute)</a>
 </li>
@@ -1173,8 +1089,6 @@
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/soogo.optimize.html#soogo.optimize.result.OptimizeResult.x">x (soogo.optimize.result.OptimizeResult attribute)</a>
-</li>
-      <li><a href="api/tests.html#tests.gosac_benchmark.Problem.xmin">xmin (tests.gosac_benchmark.Problem attribute)</a>
 </li>
   </ul></td>
 </tr></table>

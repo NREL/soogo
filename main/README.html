@@ -1,21 +1,21 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="./">
+<html class="writer-html5" lang="en">
 <head>
-  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>soogo &mdash; soogo (Surrogate-based 0-th Order Global Optimization)  documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css" />
 
   
-      <script src="_static/jquery.js?v=5d32c60e"></script>
-      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=5929fcd5"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/jquery.js"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+      <script src="_static/doctools.js"></script>
+      <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -59,7 +59,6 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing guidelines</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/soogo.html">API Documentation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api/tests.html">Tests documentation</a></li>
 </ul>
 
         </div>
@@ -91,10 +90,10 @@
 <a class="reference external" href="https://github.com/NREL/soogo/actions/workflows/python-package.yml"><img alt="Python311" src="https://img.shields.io/badge/python-3.11-green.svg" /></a>
 <a class="reference external" href="https://github.com/NREL/soogo/actions/workflows/python-package.yml"><img alt="Python312" src="https://img.shields.io/badge/python-3.12-green.svg" /></a></p>
 <section id="soogo">
-<h1>soogo<a class="headerlink" href="#soogo" title="Link to this heading"></a></h1>
+<h1>soogo<a class="headerlink" href="#soogo" title="Permalink to this heading"></a></h1>
 <p>Surrogate-based 0-th Order Global Optimization for black-box problems.</p>
 <section id="current-functionality">
-<h2>Current functionality<a class="headerlink" href="#current-functionality" title="Link to this heading"></a></h2>
+<h2>Current functionality<a class="headerlink" href="#current-functionality" title="Permalink to this heading"></a></h2>
 <!--- Table below --->
 <table class="docutils align-default">
 <thead>
@@ -171,24 +170,21 @@
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">GosacSample</span></code></p></td>
 <td><p>Minimize a function with constraints to obtain a single new sample point <a class="reference external" href="https://doi.org/10.1007/s10898-017-0496-y">(Müller; 2017b)</a>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">TransitionSearch</span></code></p></td>
-<td><p>Weighted acquisition function that balances local and global search using a weighted score. Filters candidate points using evaluability surrogate. <a class="reference external" href="https://doi.org/10.1287/ijoc.2018.0864">(Müller &amp; Day; 2019)</a>.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">MaximizeDistance</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">MaximizeDistance</span></code></p></td>
 <td><p>Maximizes the minimum distance to the set of current points. Used in <code class="docutils literal notranslate"><span class="pre">shebo()</span></code> and as a fallback in <code class="docutils literal notranslate"><span class="pre">EndPointsParetoFront</span></code> and <code class="docutils literal notranslate"><span class="pre">GosacSample</span></code> <a class="reference external" href="https://doi.org/10.1287/ijoc.2018.0864">(Müller &amp; Day; 2019)</a>.</p></td>
 </tr>
 </tbody>
 </table>
 </section>
 <section id="installation">
-<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h2>
 <p>Use PyPI to install this package:</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>soogo
 </pre></div>
 </div>
 <p>See other installation methods below.</p>
 <section id="binaries">
-<h3>Binaries<a class="headerlink" href="#binaries" title="Link to this heading"></a></h3>
+<h3>Binaries<a class="headerlink" href="#binaries" title="Permalink to this heading"></a></h3>
 <p>The binaries for the latest version are available at https://github.com/NREL/soogo/releases/latest. They can be installed through standard installation, e.g.,</p>
 <p>using pip (https://pip.pypa.io/en/stable/cli/pip_install/):</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/NREL/soogo.git#egg<span class="o">=</span>soogo
@@ -196,28 +192,28 @@
 </div>
 </section>
 <section id="from-source">
-<h3>From source<a class="headerlink" href="#from-source" title="Link to this heading"></a></h3>
+<h3>From source<a class="headerlink" href="#from-source" title="Permalink to this heading"></a></h3>
 <p>This package contains a <a class="reference download internal" download="" href="_downloads/079962c730e6e61f3f9971f670e9cf70/pyproject.toml"><span class="xref download myst">pyproject.toml</span></a> with the list of requirements and dependencies (More about <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> at https://packaging.python.org/en/latest/specifications/pyproject-toml/). With the source downloaded to your local machine, use <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">[soogo/source/directory]</span></code>.</p>
 </section>
 <section id="for-developers">
-<h3>For developers<a class="headerlink" href="#for-developers" title="Link to this heading"></a></h3>
+<h3>For developers<a class="headerlink" href="#for-developers" title="Permalink to this heading"></a></h3>
 <p>This project is configured to use the package manager <a class="reference external" href="https://pdm-project.org/en/stable/">pdm</a>. With pdm installed, run <code class="docutils literal notranslate"><span class="pre">pdm</span> <span class="pre">install</span></code> at the root of this repository to install the dependencies. The file <a class="reference download internal" download="" href="_downloads/079962c730e6e61f3f9971f670e9cf70/pyproject.toml"><span class="xref download myst">pyproject.toml</span></a> has the list of dependencies and configurations for the project.</p>
 </section>
 </section>
 <section id="documentation">
-<h2>Documentation<a class="headerlink" href="#documentation" title="Link to this heading"></a></h2>
+<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this heading"></a></h2>
 <p>This project uses <a class="reference external" href="https://www.sphinx-doc.org/en/master/">Sphinx</a> to generate the documentation. The latest documentation is available at https://nrel.github.io/soogo. To generate the documentation locally, run <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">html</span></code> in the <code class="docutils literal notranslate"><span class="pre">docs</span></code> directory. The homepage of the documentation will then be found at <code class="docutils literal notranslate"><span class="pre">docs/_build/html/index.html</span></code>.</p>
 </section>
 <section id="testing">
-<h2>Testing<a class="headerlink" href="#testing" title="Link to this heading"></a></h2>
+<h2>Testing<a class="headerlink" href="#testing" title="Permalink to this heading"></a></h2>
 <p>This project uses <a class="reference external" href="https://docs.pytest.org/en/stable/">pytest</a> to run the tests. To run the tests, run <code class="docutils literal notranslate"><span class="pre">pytest</span></code> at the root of this repository. Run <code class="docutils literal notranslate"><span class="pre">pytest</span> <span class="pre">--help</span></code> to see the available options.</p>
 </section>
 <section id="contributing">
-<h2>Contributing<a class="headerlink" href="#contributing" title="Link to this heading"></a></h2>
+<h2>Contributing<a class="headerlink" href="#contributing" title="Permalink to this heading"></a></h2>
 <p>Please, read the <a class="reference internal" href="CONTRIBUTING.html"><span class="std std-doc">contributing guidelines</span></a> before contributing to this project.</p>
 </section>
 <section id="license">
-<h2>License<a class="headerlink" href="#license" title="Link to this heading"></a></h2>
+<h2>License<a class="headerlink" href="#license" title="Permalink to this heading"></a></h2>
 <p>This project is licensed under the GPL-3.0 License. See the <a class="reference download internal" download="" href="_downloads/9879d6db96fd29134fc802214163b95a/LICENSE"><span class="xref download myst">LICENSE</span></a> file for details.</p>
 <hr class="docutils" />
 <p><em>NLR Software Record number: SWR-24-57</em></p>

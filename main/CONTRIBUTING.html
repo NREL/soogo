@@ -1,21 +1,21 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="./">
+<html class="writer-html5" lang="en">
 <head>
-  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Contributing guidelines &mdash; soogo (Surrogate-based 0-th Order Global Optimization)  documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css" />
 
   
-      <script src="_static/jquery.js?v=5d32c60e"></script>
-      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=5929fcd5"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/jquery.js"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+      <script src="_static/doctools.js"></script>
+      <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -63,7 +63,6 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api/soogo.html">API Documentation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api/tests.html">Tests documentation</a></li>
 </ul>
 
         </div>
@@ -91,14 +90,14 @@
            <div itemprop="articleBody">
              
   <section id="contributing-guidelines">
-<h1>Contributing guidelines<a class="headerlink" href="#contributing-guidelines" title="Link to this heading"></a></h1>
+<h1>Contributing guidelines<a class="headerlink" href="#contributing-guidelines" title="Permalink to this heading"></a></h1>
 <p>Thank you for investing your precious time to contribute to this project. Please read the following guidelines before contributing.</p>
 <section id="code-style">
-<h2>Code style<a class="headerlink" href="#code-style" title="Link to this heading"></a></h2>
+<h2>Code style<a class="headerlink" href="#code-style" title="Permalink to this heading"></a></h2>
 <p>This project uses <a class="reference external" href="https://docs.astral.sh/ruff/">Ruff</a> to enforce code style. Ruff is a wrapper around <a class="reference external" href="https://black.readthedocs.io/en/stable/">Black</a> and <a class="reference external" href="https://flake8.pycqa.org/en/latest/">Flake8</a>. To use Ruff, run <code class="docutils literal notranslate"><span class="pre">ruff</span> <span class="pre">check</span></code> at the root of this repository to see if there are formatting fixes to be performed. Then run <code class="docutils literal notranslate"><span class="pre">ruff</span> <span class="pre">format</span></code> to format the code. Run <code class="docutils literal notranslate"><span class="pre">ruff</span> <span class="pre">--help</span></code> to see the available options.</p>
 </section>
 <section id="pre-commit-hooks">
-<h2>Pre-commit hooks<a class="headerlink" href="#pre-commit-hooks" title="Link to this heading"></a></h2>
+<h2>Pre-commit hooks<a class="headerlink" href="#pre-commit-hooks" title="Permalink to this heading"></a></h2>
 <p>This project uses <a class="reference external" href="https://pre-commit.com/">pre-commit</a> to automatically check code quality before commits. To set up pre-commit hooks:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>pre-commit
 pre-commit<span class="w"> </span>install
@@ -115,7 +114,7 @@ pre-commit<span class="w"> </span>install
 </ul>
 </section>
 <section id="copyright-headers">
-<h2>Copyright headers<a class="headerlink" href="#copyright-headers" title="Link to this heading"></a></h2>
+<h2>Copyright headers<a class="headerlink" href="#copyright-headers" title="Permalink to this heading"></a></h2>
 <p>All Python source files must include a copyright header at the top of the file. The header should follow this format:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;Module docstring.&quot;&quot;&quot;</span>
 
@@ -140,19 +139,19 @@ pre-commit<span class="w"> </span>install
 <p>For files based on existing algorithms from academic papers, include the original authors in the <code class="docutils literal notranslate"><span class="pre">__credits__</span></code> variable at <a class="reference download internal" download="" href="_downloads/c87aa5496b94731c0227fd2e9607b7ec/__init__.py"><span class="xref download myst">soogo/__init__.py</span></a>.</p>
 </section>
 <section id="documentation-standards">
-<h2>Documentation standards<a class="headerlink" href="#documentation-standards" title="Link to this heading"></a></h2>
+<h2>Documentation standards<a class="headerlink" href="#documentation-standards" title="Permalink to this heading"></a></h2>
 <section id="docstring-format">
-<h3>Docstring format<a class="headerlink" href="#docstring-format" title="Link to this heading"></a></h3>
+<h3>Docstring format<a class="headerlink" href="#docstring-format" title="Permalink to this heading"></a></h3>
 <p>This project uses <strong>Sphinx-style</strong> docstrings with reStructuredText (reST) markup. All public modules, classes, methods, and functions must have docstrings.</p>
 <section id="module-docstrings">
-<h4>Module docstrings<a class="headerlink" href="#module-docstrings" title="Link to this heading"></a></h4>
+<h4>Module docstrings<a class="headerlink" href="#module-docstrings" title="Permalink to this heading"></a></h4>
 <p>Every Python module should start with a brief one-line description:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;Brief description of the module.&quot;&quot;&quot;</span>
 </pre></div>
 </div>
 </section>
 <section id="class-docstrings">
-<h4>Class docstrings<a class="headerlink" href="#class-docstrings" title="Link to this heading"></a></h4>
+<h4>Class docstrings<a class="headerlink" href="#class-docstrings" title="Permalink to this heading"></a></h4>
 <p>Classes should document their purpose, attributes, and parameters:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyClass</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Brief one-line description.</span>
@@ -178,7 +177,7 @@ pre-commit<span class="w"> </span>install
 </div>
 </section>
 <section id="function-docstrings">
-<h4>Function docstrings<a class="headerlink" href="#function-docstrings" title="Link to this heading"></a></h4>
+<h4>Function docstrings<a class="headerlink" href="#function-docstrings" title="Permalink to this heading"></a></h4>
 <p>Functions should document parameters, return values, and include examples when helpful:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">my_function</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">option</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Brief one-line description.</span>
@@ -200,7 +199,7 @@ pre-commit<span class="w"> </span>install
 </div>
 </section>
 <section id="key-formatting-rules">
-<h4>Key formatting rules<a class="headerlink" href="#key-formatting-rules" title="Link to this heading"></a></h4>
+<h4>Key formatting rules<a class="headerlink" href="#key-formatting-rules" title="Permalink to this heading"></a></h4>
 <ul class="simple">
 <li><p><strong>Line length</strong>: Docstrings must not exceed 80 characters per line (enforced by Ruff W505)</p></li>
 <li><p><strong>Parameters</strong>: Use <code class="docutils literal notranslate"><span class="pre">:param</span> <span class="pre">name:</span> <span class="pre">description</span></code> format</p></li>
@@ -212,7 +211,7 @@ pre-commit<span class="w"> </span>install
 </ul>
 </section>
 <section id="example-from-the-codebase">
-<h4>Example from the codebase<a class="headerlink" href="#example-from-the-codebase" title="Link to this heading"></a></h4>
+<h4>Example from the codebase<a class="headerlink" href="#example-from-the-codebase" title="Permalink to this heading"></a></h4>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">gosac</span><span class="p">(</span>
     <span class="n">fun</span><span class="p">,</span>
     <span class="n">gfun</span><span class="p">,</span>
@@ -259,7 +258,7 @@ pre-commit<span class="w"> </span>install
 </section>
 </section>
 <section id="building-documentation">
-<h3>Building documentation<a class="headerlink" href="#building-documentation" title="Link to this heading"></a></h3>
+<h3>Building documentation<a class="headerlink" href="#building-documentation" title="Permalink to this heading"></a></h3>
 <p>To build the HTML documentation locally:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>docs
 pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
