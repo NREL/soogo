@@ -1,6 +1,6 @@
 """Data class for the Rastigrin problem definition."""
 
-# Copyright (c) 2025 Alliance for Energy Innovation, LLC
+# Copyright (c) 2024-2026 Alliance for Energy Innovation, LLC
 # Copyright (C) 2014 Cornell University
 
 # This program is free software: you can redistribute it and/or modify

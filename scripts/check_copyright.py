@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Check that Python files have proper copyright headers."""
 
-# Copyright (c) 2025 Alliance for Energy Innovation, LLC
+# Copyright (c) 2024-2026 Alliance for Energy Innovation, LLC
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

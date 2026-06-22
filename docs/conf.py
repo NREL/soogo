@@ -1,6 +1,6 @@
 """Configuration file for the Sphinx documentation builder."""
 
-# Copyright (c) 2025 Alliance for Energy Innovation, LLC
+# Copyright (c) 2024-2026 Alliance for Energy Innovation, LLC
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -61,7 +61,7 @@ def add_version_context(app, pagename, templatename, context, doctree):
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = "soogo (Surrogate-based 0-th Order Global Optimization)"
-copyright = "2025, Alliance for Energy Innovation, LLC"
+copyright = "2024-2026, Alliance for Energy Innovation, LLC"
 author = "Weslley S. Pereira"
 
 # -- General configuration ---------------------------------------------------
