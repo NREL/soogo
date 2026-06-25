@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --time=0:30:00
+#SBATCH --time=01:00:00
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=104
 #SBATCH --mem=32G
@@ -9,6 +9,7 @@
 if command -v module &> /dev/null; then
     module load conda
     conda activate $CONDAENV
+    echo "Activated conda environment: $CONDAENV"
 fi
 
 if [ $# -eq 0 ]; then

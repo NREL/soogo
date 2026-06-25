@@ -532,8 +532,11 @@ class Camel6:
 
     @staticmethod
     def min():
-        """Get the known minimum value for the function."""
-        return -1.0316
+        """Get the known minimum value for the function.
+
+        Minimum value at [-0.0898216   0.71266783] by Multistart LMSRS algorithm
+        """
+        return -1.0316284505642321
 
 
 class Crossit:
@@ -565,8 +568,10 @@ class Crossit:
 
     @staticmethod
     def min():
-        """Get the known minimum value for the function."""
-        return -2.06261
+        """Get the known minimum value for the function.
+
+        Minimum value at [1.34940047 1.34939777] by CPTVl algorithm"""
+        return -2.062611870810099
 
 
 class Drop:
@@ -695,8 +700,10 @@ class Holder:
 
     @staticmethod
     def min():
-        """Get the known minimum value for the function."""
-        return -19.2085
+        """Get the known minimum value for the function.
+
+        Minimum value at [-8.05502475 -9.66458972] by CPTV algorithm"""
+        return -19.20850256786981
 
 
 class Levy13:

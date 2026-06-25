@@ -1,15 +1,12 @@
 #!/usr/bin/env python
 import subprocess
-from vlse_bench import myNargs
+import sys
 
 useSbatch = False
 
 # All:
 myRfuncs = {
-    "ackley": [
-        [-20, 20] if (i % 2 == 0) else [-200, 200]
-        for i in range(myNargs["ackley"])
-    ],
+    "ackley": [[-20, 20] if (i % 2 == 0) else [-200, 200] for i in range(15)],
     "bukin6": [[-115, 95], [-3, 3]],
     "crossit": [[-10, 10], [-100, 100]],
     "drop": [[-512, 512], [-5.12, 5.12]],
@@ -17,17 +14,16 @@ myRfuncs = {
     "griewank": [[-600.0, 600.0], [-6.0, 6.0]],
     "holder": [[-10.0, 10.0], [9.0, 10.0]],
     "levy": [
-        [-10.0, 10.0] if (i % 2 == 0) else [-1.0, 1.0]
-        for i in range(myNargs["levy"])
+        [-10.0, 10.0] if (i % 2 == 0) else [-1.0, 1.0] for i in range(20)
     ],
     "levy13": [[0.0, 1.0], [-10.0, 10.0]],
     "rastr": [
-        [-10.0, 10.0] if (i % 2 == 0) else [-1.0, 1.0]
-        for i in range(myNargs["rastr"])
+        [-10.0, 10.0] if (i % 2 == 0) else [-1.0, 1.0] for i in range(30)
     ],
 }
 algorithms = ("SRS", "DYCORS", "CPTV", "CPTVl")
 
+sbatch_args = sys.argv[1:]
 for func, bounds in myRfuncs.items():
     flat_bounds = [
         str(bounds[i][j])
@@ -40,7 +36,10 @@ for func, bounds in myRfuncs.items():
         print(bounds)
         if useSbatch:
             subprocess.call(
-                ["sbatch", "./vlse_bench_run.sh", a, func] + flat_bounds
+                ["sbatch"]
+                + sbatch_args
+                + ["./vlse_bench_run.sh", a, func]
+                + flat_bounds
             )
         else:
             subprocess.call(["./vlse_bench_run.sh", a, func] + flat_bounds)

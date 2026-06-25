@@ -17,6 +17,12 @@ myRfuncs = (
     "mccorm",
     "bukin6",
     "camel6",
+    "crossit",
+    "drop",
+    "egg",
+    "griewank",
+    "holder",
+    "levy13",
 )
 algorithms = ("SRS", "DYCORS", "CPTV", "CPTVl")
 

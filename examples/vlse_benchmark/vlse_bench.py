@@ -53,6 +53,11 @@ from copy import deepcopy
 
 from soogo.model import rbf
 
+def parse_number(s: str):
+    if s.isdigit() or (s.startswith("-") and s[1:].isdigit()):
+        return int(s)
+    return float(s)
+
 
 def run_optimizer(
     objf,
@@ -227,9 +232,9 @@ if __name__ == "__main__":
         "-b",
         "--bounds",
         metavar="[low,high]",
-        type=float,
+        type=parse_number,
         nargs="+",
-        help="Pass in order: low0, high0, low1, high1, ...",
+        help="Pass in order: low0 high0 low1 high1 ...",
     )
     args = parser.parse_args()
 
