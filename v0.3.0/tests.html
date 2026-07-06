@@ -50,8 +50,18 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#tests-test-rbf-module">tests.test_rbf module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#tests-test-sampling-module">tests.test_sampling module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-tests.test_rbf">tests.test_rbf module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tests.test_rbf.TestRbfModel"><code class="docutils literal notranslate"><span class="pre">TestRbfModel</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tests.test_rbf.test_median_lpf"><code class="docutils literal notranslate"><span class="pre">test_median_lpf()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-tests.test_sampling">tests.test_sampling module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tests.test_sampling.test_iindex_sampler"><code class="docutils literal notranslate"><span class="pre">test_iindex_sampler()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tests.test_sampling.test_normal_sampler"><code class="docutils literal notranslate"><span class="pre">test_normal_sampler()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tests.test_sampling.test_sampler"><code class="docutils literal notranslate"><span class="pre">test_sampler()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tests.test_sampling.test_slhd"><code class="docutils literal notranslate"><span class="pre">test_slhd()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#tests-test-vlse-bench-module">tests.test_vlse_bench module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-tests">Module contents</a></li>
 </ul>
@@ -95,11 +105,59 @@
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
 </section>
-<section id="tests-test-rbf-module">
-<h2>tests.test_rbf module<a class="headerlink" href="#tests-test-rbf-module" title="Permalink to this heading"></a></h2>
+<section id="module-tests.test_rbf">
+<span id="tests-test-rbf-module"></span><h2>tests.test_rbf module<a class="headerlink" href="#module-tests.test_rbf" title="Permalink to this heading"></a></h2>
+<p>Test the RBF model.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="tests.test_rbf.TestRbfModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tests.test_rbf.</span></span><span class="sig-name descname"><span class="pre">TestRbfModel</span></span><a class="headerlink" href="#tests.test_rbf.TestRbfModel" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.test_rbf.TestRbfModel.rbf_model">
+<span class="sig-name descname"><span class="pre">rbf_model</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;blackboxopt.rbf.RbfModel</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#tests.test_rbf.TestRbfModel.rbf_model" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_rbf.TestRbfModel.test_dim">
+<span class="sig-name descname"><span class="pre">test_dim</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_rbf.TestRbfModel.test_dim" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_rbf.TestRbfModel.test_phi">
+<span class="sig-name descname"><span class="pre">test_phi</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_rbf.TestRbfModel.test_phi" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.test_rbf.test_median_lpf">
+<span class="sig-prename descclassname"><span class="pre">tests.test_rbf.</span></span><span class="sig-name descname"><span class="pre">test_median_lpf</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_rbf.test_median_lpf" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 </section>
-<section id="tests-test-sampling-module">
-<h2>tests.test_sampling module<a class="headerlink" href="#tests-test-sampling-module" title="Permalink to this heading"></a></h2>
+<section id="module-tests.test_sampling">
+<span id="tests-test-sampling-module"></span><h2>tests.test_sampling module<a class="headerlink" href="#module-tests.test_sampling" title="Permalink to this heading"></a></h2>
+<p>Test the sampling functions.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.test_sampling.test_iindex_sampler">
+<span class="sig-prename descclassname"><span class="pre">tests.test_sampling.</span></span><span class="sig-name descname"><span class="pre">test_iindex_sampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boundx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strategy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="blackboxopt.html#blackboxopt.sampling.SamplingStrategy" title="blackboxopt.sampling.SamplingStrategy"><span class="pre">blackboxopt.sampling.SamplingStrategy</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_sampling.test_iindex_sampler" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.test_sampling.test_normal_sampler">
+<span class="sig-prename descclassname"><span class="pre">tests.test_sampling.</span></span><span class="sig-name descname"><span class="pre">test_normal_sampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strategy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="blackboxopt.html#blackboxopt.sampling.SamplingStrategy" title="blackboxopt.sampling.SamplingStrategy"><span class="pre">blackboxopt.sampling.SamplingStrategy</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_sampling.test_normal_sampler" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.test_sampling.test_sampler">
+<span class="sig-prename descclassname"><span class="pre">tests.test_sampling.</span></span><span class="sig-name descname"><span class="pre">test_sampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strategy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="blackboxopt.html#blackboxopt.sampling.SamplingStrategy" title="blackboxopt.sampling.SamplingStrategy"><span class="pre">blackboxopt.sampling.SamplingStrategy</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_sampling.test_sampler" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.test_sampling.test_slhd">
+<span class="sig-prename descclassname"><span class="pre">tests.test_sampling.</span></span><span class="sig-name descname"><span class="pre">test_slhd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boundx</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_sampling.test_slhd" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 </section>
 <section id="tests-test-vlse-bench-module">
 <h2>tests.test_vlse_bench module<a class="headerlink" href="#tests-test-vlse-bench-module" title="Permalink to this heading"></a></h2>
@@ -183,11 +241,13 @@
       
         <dd><a href="../v2.0.1/index.html">v2.0.1</a></dd>
       
+        <dd><a href="../v2.1.0/index.html">v2.1.0</a></dd>
+      
     </dl>
     <dl>
       <dt>Branches</dt>
       
-        <dd><a href="../main/index.html">main</a></dd>
+        <dd><em>No active branches</em></dd>
       
     </dl>
   </div>
