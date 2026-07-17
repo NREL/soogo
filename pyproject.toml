@@ -3,11 +3,11 @@ name = "soogo"
 dynamic = ["version"]
 description = "Surrogate-based 0-th Order Global Optimization for black-box problems"
 authors = [
-    {name = "Weslley da Silva Pereira", email = "weslley.dasilvapereira@nrel.gov"},
+    {name = "Weslley da Silva Pereira", email = "weslley.spereira@gmail.com"},
     {name = "Byron Selvage"},
 ]
 maintainers = [
-    {name = "Weslley da Silva Pereira", email = "weslley.dasilvapereira@nrel.gov"},
+    {name = "Weslley da Silva Pereira", email = "weslley.spereira@gmail.com"},
 ]
 license = {file = "LICENSE"}
 readme = "README.md"
@@ -31,8 +31,8 @@ nomad = ["PyNomadBBO"]
 sklearn = ["scikit-learn"]
 
 [project.urls]
-Homepage = "https://github.com/NREL/soogo"
-Docs = "https://nrel.github.io/soogo"
+Homepage = "https://github.com/NatLabRockies/soogo"
+Docs = "https://NatLabRockies.github.io/soogo"
 
 [build-system]
 requires = ["pdm-backend"]

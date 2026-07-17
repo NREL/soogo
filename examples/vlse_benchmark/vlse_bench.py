@@ -16,9 +16,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 __authors__ = ["Weslley S. Pereira"]
-__contact__ = "weslley.dasilvapereira@nrel.gov"
+__contact__ = "weslley.spereira@gmail.com"
 __maintainer__ = "Weslley S. Pereira"
-__email__ = "weslley.dasilvapereira@nrel.gov"
+__email__ = "weslley.spereira@gmail.com"
 __credits__ = ["Weslley S. Pereira"]
 __deprecated__ = False
 

@@ -1,7 +1,7 @@
-[![Python39](https://img.shields.io/badge/python-3.9-green.svg)](https://github.com/NREL/soogo/actions/workflows/python-package.yml)
-[![Python310](https://img.shields.io/badge/python-3.10-green.svg)](https://github.com/NREL/soogo/actions/workflows/python-package.yml)
-[![Python311](https://img.shields.io/badge/python-3.11-green.svg)](https://github.com/NREL/soogo/actions/workflows/python-package.yml)
-[![Python312](https://img.shields.io/badge/python-3.12-green.svg)](https://github.com/NREL/soogo/actions/workflows/python-package.yml)
+[![Python39](https://img.shields.io/badge/python-3.9-green.svg)](https://github.com/NatLabRockies/soogo/actions/workflows/python-package.yml)
+[![Python310](https://img.shields.io/badge/python-3.10-green.svg)](https://github.com/NatLabRockies/soogo/actions/workflows/python-package.yml)
+[![Python311](https://img.shields.io/badge/python-3.11-green.svg)](https://github.com/NatLabRockies/soogo/actions/workflows/python-package.yml)
+[![Python312](https://img.shields.io/badge/python-3.12-green.svg)](https://github.com/NatLabRockies/soogo/actions/workflows/python-package.yml)
 
 # soogo
 
@@ -61,12 +61,12 @@ See other installation methods below.
 
 ### Binaries
 
-The binaries for the latest version are available at https://github.com/NREL/soogo/releases/latest. They can be installed through standard installation, e.g.,
+The binaries for the latest version are available at https://github.com/NatLabRockies/soogo/releases/latest. They can be installed through standard installation, e.g.,
 
 using pip (https://pip.pypa.io/en/stable/cli/pip_install/):
 
 ```sh
-pip install git+https://github.com/NREL/soogo.git#egg=soogo
+pip install git+https://github.com/NatLabRockies/soogo.git#egg=soogo
 ```
 
 ### From source
@@ -79,7 +79,7 @@ This project is configured to use the package manager [pdm](https://pdm-project.
 
 ## Documentation
 
-This project uses [Sphinx](https://www.sphinx-doc.org/en/master/) to generate the documentation. The latest documentation is available at https://nrel.github.io/soogo. To generate the documentation locally, run `make html` in the `docs` directory. The homepage of the documentation will then be found at `docs/_build/html/index.html`.
+This project uses [Sphinx](https://www.sphinx-doc.org/en/master/) to generate the documentation. The latest documentation is available at https://NatLabRockies.github.io/soogo. To generate the documentation locally, run `make html` in the `docs` directory. The homepage of the documentation will then be found at `docs/_build/html/index.html`.
 
 ## Logging and Output
 
